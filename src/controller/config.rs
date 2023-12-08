@@ -1,7 +1,12 @@
+use std::path::PathBuf;
 use crate::dioxus_desktop::{Config, WindowBuilder};
 
 pub fn config() -> Config{
-    Config::default().with_window(WindowBuilder::new().with_resizable(true).with_inner_size(
-        dioxus_desktop::wry::application::dpi::LogicalSize::new(400.0, 300.0),
-    ))
+    let window = WindowBuilder::new();
+    let window = window.with_title("Esmeralda");
+
+    Config::new()
+        .with_window(window)
+        .with_disable_context_menu(true)
+        .with_resource_directory(PathBuf::from("./src/"))
 }

@@ -6,3 +6,8 @@ edition = "2021"
 [dependencies]
 dioxus = "0.4.3"
 dioxus-desktop = "0.4.3"
+dioxus-html = "0.4.3"
+
+[package.metadata.dioxus]
+# Caminho para o ícone do aplicativo
+icon = "src/view/images/logo.jpg"
