@@ -39,7 +39,11 @@ pub fn crpt(msg: String) {
 
     final_result.extend(write_buffer.take_read_buffer().take_remaining());
 
-    println!("encrypted: {:?}", final_result);
+    let msg: String = unsafe{ 
+        String::from_utf8_lossy(&*final_result).to_string()
+    };
+
+    println!("encrypted: {:?}", msg);
 
     // let mut decryptor = cbc_decryptor(KeySize256, key.as_bytes(), &iv, crypto::blockmodes::PkcsPadding);
     // let mut decrypted_result = Vec::<u8>::new();
