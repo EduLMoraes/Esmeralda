@@ -1,6 +1,5 @@
 mod prelude;
 use std::env;
-use std::fmt::Binary;
 use std::fs::File;
 use std::io::Write;
 use std::io::Read;
@@ -32,6 +31,7 @@ fn main() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
+
     dioxus_desktop::launch_cfg(
         app::app,
         config::config()

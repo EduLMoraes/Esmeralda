@@ -1,5 +1,10 @@
-pub fn head_style() -> String{
-    "<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
         body{
             background-color: rgb(4, 15, 42);
             color: white;
@@ -15,7 +20,6 @@ pub fn head_style() -> String{
             width: auto; 
             display: inline-block; 
             margin-left: 38%; 
-            margin-right: 38%;
             height: 65vh; 
             margin-top: 15%;
         }
@@ -69,5 +73,9 @@ pub fn head_style() -> String{
             text-align:end;
             align-items: baseline;
         }
-    </style>".to_string()
-}
+    </style>
+</head>
+<body>
+    <div id="main"><div id="login"><h1><i>Bem-vindo(a) à <i id="esmeralda">Esmeralda</i></i></h1><h3>Dívidas? Nunca mais!</h3><form data-dioxus-id="2"><input id="username" placeholder="Username" data-dioxus-id="3"><br><input id="passowrd" type="password" placeholder="Senha" data-dioxus-id="4"><br><button type="submit" id="submit">Entrar</button><br><p>Não possuí login?<a id="register" data-dioxus-id="5">Cadastre-se</a></p></form></div><p id="version">v0.1.0</p></div>
+</body>
+</html>

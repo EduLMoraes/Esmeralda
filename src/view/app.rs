@@ -3,14 +3,19 @@ use crate::dioxus::prelude::*;
 pub fn app(cx: Scope) -> Element {
    let username: &UseState<String> = use_state(cx, || String::new());
    let password: &UseState<String> = use_state(cx, || String::new());
+   let version: String = String::from("v0.1.0");
 
    cx.render(rsx! {
       div {
          id: "login",
-                  
+
          h1{
             i{
-               "Bem-vindo(a) à Esmeralda"
+               "Bem-vindo(a) à "
+               i{
+                  id: "esmeralda",
+                  "Esmeralda"
+               }
             }
          }
          h3{
@@ -21,25 +26,20 @@ pub fn app(cx: Scope) -> Element {
             onsubmit: move |event| {
                println!("Username: {username} has loged\nEvent: {:?}", event)
             },
-            label{
-               r#for: "username",
-               "Usuário:"
-            }
+            
             input {
                id: "username",
+               placeholder: "Username",
                value: "{username}",
                oninput: move |evt| username.set(evt.value.clone()),
             },
 
             br{}
             
-            label{
-               r#for: "passowrd",
-               "Senha:"
-            }
             input {
                id: "passowrd",
                r#type: "password",
+               placeholder: "Senha",
                value: "{password}",
                oninput: move |evt| password.set(evt.value.clone()),
             },
@@ -48,6 +48,7 @@ pub fn app(cx: Scope) -> Element {
 
             button {
                r#type: "submit",
+               id: "submit",
                "Entrar"
             }
             
@@ -55,14 +56,19 @@ pub fn app(cx: Scope) -> Element {
 
             p{
                "Não possuí login?"
-            }
-            button {
-               onclick: move |_| {
-                     // Navegue para a página de cadastro
-               },
-               "Cadastre-se"
+               a {
+                  id: "register",
+                  onclick: move |_| {
+                        // Navegue para a página de cadastro
+                  },
+                  "Cadastre-se"
+               }
             }
          }
+      }
+      p{
+         id: "version",
+         "{version}"
       }
    })
 }
