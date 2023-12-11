@@ -1,5 +1,3 @@
-use dioxus_elements::link;
-
 use crate::dioxus::prelude::*;
 
 pub fn app(cx: Scope) -> Element {

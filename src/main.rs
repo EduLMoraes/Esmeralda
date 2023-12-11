@@ -1,9 +1,9 @@
+use prelude::{crypt::get_key, *};
 mod prelude;
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::Read;
-use prelude::{crypt::get_key, *};
 
 fn main() {
     match var("KEYESMERALD") {
