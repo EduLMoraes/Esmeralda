@@ -3,8 +3,6 @@ use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::Read;
-
-use prelude::head::head_style;
 use prelude::{crypt::get_key, *};
 
 fn main() {
