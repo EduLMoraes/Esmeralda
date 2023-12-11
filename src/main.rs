@@ -35,6 +35,5 @@ fn main() {
     dioxus_desktop::launch_cfg(
         app::app,
         config::config()
-            .with_custom_head(head_style()),
     );
 }

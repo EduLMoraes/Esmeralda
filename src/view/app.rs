@@ -1,3 +1,5 @@
+use dioxus_elements::link;
+
 use crate::dioxus::prelude::*;
 
 pub fn app(cx: Scope) -> Element {
@@ -6,6 +8,10 @@ pub fn app(cx: Scope) -> Element {
    let version: String = String::from("v0.1.0");
 
    cx.render(rsx! {
+      link{
+         r#rel: "stylesheet",
+         href: "./src/view/styles/login.css"
+      }
       div {
          id: "login",
 
