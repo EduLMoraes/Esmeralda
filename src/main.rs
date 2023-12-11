@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::Write;
 use std::io::Read;
 
+use prelude::head::head_style;
 use prelude::{crypt::get_key, *};
 
 fn main() {
@@ -34,6 +35,6 @@ fn main() {
     dioxus_desktop::launch_cfg(
         app::app,
         config::config()
-            .with_custom_head(r#"<link rel =  rel="stylesheet" href="./src/public/teste.css">"#.to_string()),
+            .with_custom_head(head_style()),
     );
 }

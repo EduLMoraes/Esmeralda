@@ -31,3 +31,6 @@ pub mod structs;
 /// Telas de visualização
 #[path = "./view/app.rs"]
 pub mod app;
+
+#[path = "./view/head.rs"]
+pub mod head;
