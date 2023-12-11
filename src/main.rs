@@ -31,13 +31,9 @@ fn main() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
-
-    crypt::crpt("hello World".to_string());
-    crypt::crpt("hello world".to_string());
-    // crypt::crpt("hello world.".to_string());
-    // crypt::crpt("hello world.".to_string());
     dioxus_desktop::launch_cfg(
         app::app,
-        config::config(),
+        config::config()
+            .with_custom_head(r#"<link rel =  rel="stylesheet" href="./src/public/teste.css">"#.to_string()),
     );
 }

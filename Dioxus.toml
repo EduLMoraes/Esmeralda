@@ -1,0 +1,20 @@
+[application]
+name = "Meu Projeto Dioxus"
+default_platform = "web"
+out_dir = "dist"
+asset_dir = "public"
+
+[web.app]
+title = "Meu Projeto Dioxus"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "public"]
+
+[web.resource]
+style = ["./public/teste.css"]
+script = []
+
+[web.resource.dev]
+style = []
+script = []
