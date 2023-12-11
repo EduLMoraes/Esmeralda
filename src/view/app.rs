@@ -6,10 +6,8 @@ pub fn app(cx: Scope) -> Element {
 
    cx.render(rsx! {
       div {
-         style: 
-            "justify-content: center; align-items: center; height: auto; text-align: center; background-color: transparent; border: 0; width: auto; display: inline-block; margin-left: 38%; height: auto; margin-top: 15%;"
-            ,
-         
+         id: "login",
+                  
          h1{
             i{
                "Bem-vindo(a) à Esmeralda"
@@ -20,9 +18,6 @@ pub fn app(cx: Scope) -> Element {
          }
 
          form {
-            style: 
-               "display: inline-grid; background-color: whitesmoke; height: 150px; margin-top: 0; margin-left: 0; width: auto; border: black; padding: 20px;",
-
             onsubmit: move |event| {
                println!("Username: {username} has loged\nEvent: {:?}", event)
             },
