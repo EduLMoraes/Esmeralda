@@ -5,6 +5,7 @@ pub fn config() -> Config {
     let window = WindowBuilder::new();
     let window = window.with_title("Esmeralda");
     let window = window.with_transparent(false);
+    let window = window.with_maximized(true);
 
     Config::new()
         .with_window(window)

@@ -63,7 +63,3 @@ input::selection, input::after, input::marker, input:focus{
     border-color: transparent;
     color: green;
 }
-#version{
-    text-align:end;
-    align-items: baseline;
-}
