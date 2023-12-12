@@ -11,6 +11,7 @@ pub fn app(cx: Scope) -> Element {
          href: "./src/view/styles/login.css"
       }
       div {
+         hidden: true,
          id: "login",
 
          h1{
