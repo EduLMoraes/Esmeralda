@@ -16,11 +16,13 @@ pub fn Register(cx: Scope) -> Element{
                 }
             }
             h3{
-                "Dívidas? Nunca mais!"
+                "Vamos criar uma conta! Já tava na hora!"
             }
 
-            p{
-                "registrador"
+            form{
+                onsubmit: move |_| {
+                    println!("Criada")
+                },   
             }
             
         }
