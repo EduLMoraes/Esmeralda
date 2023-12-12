@@ -1,4 +1,4 @@
-use crate::{errors::ErrorLog, structs::*, var, Error, Utc};
+use crate::{errors::ErrorLog, structs::*, var, Error};
 use deadpool_postgres::{Config, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use postgres::NoTls;
 use lazy_static::lazy_static;
@@ -10,9 +10,9 @@ pub fn get_db_config() -> Result<Config, Box<dyn Error>> {
     let mut config = Config::new();
 
     config.user = Some(var("DB_USER").unwrap_or_else(|_| "postgres".into()));
-    config.password = Some(var("DB_PASSWORD").unwrap_or_else(|_| "password".into()));
+    config.password = Some(var("DB_PASSWORD").unwrap_or_else(|_| "postgres".into()));
     config.dbname = Some(var("DB_NAME").unwrap_or_else(|_| "postgres".into()));
-    config.host = Some(var("DB_HOSTNAME").unwrap_or_else(|_| "172.17.0.2".into()));
+    config.host = Some(var("DB_HOSTNAME").unwrap_or_else(|_| "localhost".into()));
     config.manager = Some(ManagerConfig {
         recycling_method: RecyclingMethod::Fast,
     });
@@ -75,9 +75,10 @@ impl DataBase {
     pub async fn get(&self, data: Data) -> Result<(), DataBaseError> {
         match data {
             Data::User(_user) => {
-                let _conn = self.pool.get().await.map_err(|_| {
+                let _conn = self.pool.get().await.map_err(|e| {
+                    println!("{:?}", e);
                     DataBaseError::GetUserError(ErrorLog {
-                        title: "Error to get pool",
+                        title: "Error to get Object<Manager>",
                         code: 804,
                         file: "db.rs",
                     })

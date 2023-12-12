@@ -5,7 +5,7 @@
             "server": "localhost",
             "port": 5432,
             "driver": "PostgreSQL",
-            "name": "Esmeralda",
+            "name": "esmeralda",
             "database": "Esmeralda",
             "username": "postgres"
         }

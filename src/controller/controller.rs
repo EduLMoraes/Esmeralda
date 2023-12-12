@@ -11,9 +11,9 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
 
     let user = Data::User(user);
 
-    // let db_user = db.get(user).await.map_err(|err| {
-    //     ControlError::ErrorExtern(err)
-    // })?;
+    let db_user = db.get(user).await.map_err(|err| {
+        ControlError::ErrorExtern(err)
+    })?;
 
     Ok(())
 }
