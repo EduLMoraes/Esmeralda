@@ -71,7 +71,7 @@ impl DataBase {
         }
     }
 
-    pub async fn get(&self, data: Data) -> Result<(), DataBaseError> {
+    pub async fn get(&self, data: Data) -> Result<Data, DataBaseError> {
         match data {
             Data::User(_user) => {
                 let _conn = self.pool.get().await.map_err(|e| {
@@ -83,7 +83,7 @@ impl DataBase {
                     })
                 })?;
 
-                Ok(())
+                Ok(Data::User(_user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",

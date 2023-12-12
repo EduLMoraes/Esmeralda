@@ -33,7 +33,7 @@ pub fn Login(cx: Scope) -> Element{
             }
 
             form {
-                onsubmit: move |event| {
+                onsubmit: move |_| {
                     let user: User = User{
                         username: username.to_string(),
                         password: password.to_string()

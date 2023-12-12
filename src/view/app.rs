@@ -26,7 +26,7 @@ pub fn app(cx: Scope) -> Element {
 
       p{
          id: "version",
-         "Esmeralda | ©Eduardo Lopes de Moraes | v{version}"
+         "©Esmeralda | v{version}"
       }
    })
 }

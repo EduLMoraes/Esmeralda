@@ -9,13 +9,27 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
 
     user.password = crpt(user.password);
 
-    let user = Data::User(user);
 
-    let db_user = db.get(user).await.map_err(|err| {
+    let data_user = Data::User(user.clone());
+
+    let db_user = db.get(data_user).await.map_err(|err| {
         ControlError::ErrorExtern(err)
     })?;
 
-    Ok(())
+    match db_user {
+        Data::User(data) => {
+            if data.password == user.password{
+                Ok(())
+            }else {
+                Err(ControlError::ErrorAuthenticate(
+                    ErrorLog { title: "Password incorrect", code: 305, file: "controller.rs" }
+                ))
+            }
+        },
+        _ => Err(ControlError::ErrorAuthenticate(
+            ErrorLog { title: "Data type received is invalid", code: 306, file: "controller.rs" }
+        ))
+    }
 }
  
 pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
@@ -24,9 +38,9 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 
         let new_user: Data = Data::NewUser(new_user);
 
-        // db.add(new_user).await.map_err(|err| {
-        //     ControlError::ErrorExtern(err)
-        // })?;
+        db.add(new_user).await.map_err(|err| {
+            ControlError::ErrorExtern(err)
+        })?;
 
         Ok(())
     } else {
