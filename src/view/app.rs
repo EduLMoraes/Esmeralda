@@ -9,6 +9,7 @@ use router::Route;
 pub fn app(cx: Scope) -> Element {
   
    let version: String = String::from(env!("CARGO_PKG_VERSION"));
+   
 
    cx.render(rsx! {
       link{

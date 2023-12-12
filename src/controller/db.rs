@@ -1,6 +1,8 @@
 use crate::{errors::ErrorLog, structs::*, var, Error, Utc};
 use deadpool_postgres::{Config, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use postgres::NoTls;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 
 /// Configuração do banco de dados.
 #[allow(dead_code)]
@@ -30,7 +32,7 @@ impl DataBase {
             pool: get_db_config()
                 .map_err(|_| {
                     DataBaseError::GetConfigError(ErrorLog {
-                        title: "Pool not found",
+                        title: "Config no error",
                         code: 802,
                         file: "db.rs",
                     })
@@ -43,11 +45,9 @@ impl DataBase {
                         file: "db.rs",
                     })
                 })?,
-        };
-        println!(
-            "[{}] adpt_db: DataBase conectado com sucesso!",
-            Utc::now().format("%d/%m/%y - %H:%M:%S")
-        );
+            };
+            
+        println!("Database conectado!");
         Ok(db)
     }
 
@@ -76,7 +76,7 @@ impl DataBase {
         match data {
             Data::User(_user) => {
                 let _conn = self.pool.get().await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
+                    DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get pool",
                         code: 804,
                         file: "db.rs",
@@ -92,6 +92,14 @@ impl DataBase {
             })),
         }
     }
+}
+
+lazy_static! {
+    static ref GLOBAL_DATABASE: Mutex<DataBase> = Mutex::new(DataBase::new().unwrap());
+}
+
+pub fn get_database_instance() -> std::sync::MutexGuard<'static, DataBase> {
+    GLOBAL_DATABASE.lock().unwrap()
 }
 
 #[allow(dead_code)]
@@ -110,6 +118,9 @@ pub enum DataBaseError {
 
     #[error("Add user not working")]
     AddUserError(ErrorLog<'static>),
+
+    #[error("Config error")]
+    GetUserError(ErrorLog<'static>),
 
     #[error("DataType not Acept")]
     DataTypeInvalid(ErrorLog<'static>),

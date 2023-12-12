@@ -1,9 +1,15 @@
+use crate::prelude::controller;
+use crate::tokio::runtime;
+use crate::structs::User;
 use super::*;
 
 #[component]
 pub fn Login(cx: Scope) -> Element{
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());
+
+    let nav = use_navigator(cx);
+    let rt = runtime::Runtime::new().unwrap();
 
     render!(
         link{
@@ -28,7 +34,19 @@ pub fn Login(cx: Scope) -> Element{
 
             form {
                 onsubmit: move |event| {
-                    println!("Username: {username} has loged\nEvent: {:?}", event)
+                    let user: User = User{
+                        username: username.to_string(),
+                        password: password.to_string()
+                    };
+                    
+                    let result = rt.block_on(controller::login(user));
+                    
+                    if result.is_ok(){
+                        nav.push(Route::Home{});
+                    }
+                    else{
+                        println!("{:?}", result.err());
+                    }
                 },
                 
                 input {

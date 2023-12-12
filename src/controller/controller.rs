@@ -5,45 +5,28 @@ use super::Error;
 use super::crypt::crpt;
 
 pub async fn login(mut user: User) -> Result<(), ControlError>{
-    let db = DataBase::new().map_err(|_| {
-        ControlError::ErrorExtern(ErrorLog {
-            title: "Error to get pool by DataBase",
-            code: 800,
-            file: "controller.rs",
-        })
-    })?;
+    let db = get_database_instance();
 
     user.password = crpt(user.password);
 
     let user = Data::User(user);
-    let db_user = db.get(user);
+
+    // let db_user = db.get(user).await.map_err(|err| {
+    //     ControlError::ErrorExtern(err)
+    // })?;
 
     Ok(())
 }
-
-enum ErrorLogin{
-    
-}
-
+ 
 pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
     if new_user.password == password {
-        let db = DataBase::new().map_err(|_| {
-            ControlError::ErrorToAddUser(ErrorLog {
-                title: "Error to get pool by DataBase",
-                code: 800,
-                file: "controller.rs",
-            })
-        })?;
+        let db = get_database_instance();
 
         let new_user: Data = Data::NewUser(new_user);
 
-        db.add(new_user).await.map_err(|_| {
-            ControlError::ErrorToAddUser(ErrorLog {
-                title: "Error to add user by DataBase",
-                code: 800,
-                file: "controller.rs",
-            })
-        })?;
+        // db.add(new_user).await.map_err(|err| {
+        //     ControlError::ErrorExtern(err)
+        // })?;
 
         Ok(())
     } else {
@@ -59,7 +42,7 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 #[derive(Error, Debug, PartialEq)]
 pub enum ControlError {
     #[error("Error of module extern")]
-    ErrorExtern(ErrorLog<'static>),
+    ErrorExtern(DataBaseError),
 
     #[error("Add user error")]
     ErrorToAddUser(ErrorLog<'static>),
