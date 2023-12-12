@@ -1,4 +1,4 @@
-use crate::{errors::ErrorLog, structs::NewUser, var, Error, Utc};
+use crate::{errors::ErrorLog, structs::*, var, Error, Utc};
 use deadpool_postgres::{Config, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use postgres::NoTls;
 
@@ -53,8 +53,29 @@ impl DataBase {
 
     pub async fn add(&self, data: Data) -> Result<(), DataBaseError> {
         match data {
-            Data::NewUser(user) => {
-                let conn = self.pool.get().await.map_err(|_| {
+            Data::NewUser(_user) => {
+                let _conn = self.pool.get().await.map_err(|_| {
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "Error to get pool",
+                        code: 804,
+                        file: "db.rs",
+                    })
+                })?;
+
+                Ok(())
+            }
+            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                title: "Type of data is invalid to add",
+                code: 816,
+                file: "db.rs",
+            })),
+        }
+    }
+
+    pub async fn get(&self, data: Data) -> Result<(), DataBaseError> {
+        match data {
+            Data::User(_user) => {
+                let _conn = self.pool.get().await.map_err(|_| {
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to get pool",
                         code: 804,
@@ -76,6 +97,7 @@ impl DataBase {
 #[allow(dead_code)]
 pub enum Data {
     NewUser(NewUser),
+    User(User)
 }
 
 #[derive(Error, Debug, PartialEq)]

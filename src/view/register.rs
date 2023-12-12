@@ -1,4 +1,4 @@
-use crate::dioxus::prelude::*;
+use super::*;
 
 #[component]
 pub fn Register(cx: Scope) -> Element{
@@ -24,7 +24,15 @@ pub fn Register(cx: Scope) -> Element{
                     println!("Criada")
                 },   
             }
-            
+
+            p{
+                "Já possuí login? "
+                Link {
+                    id: "login",
+                    to: Route::Login {},
+                    "Volte para tela de login."
+                }
+            }
         }
     )
 }
