@@ -21,15 +21,15 @@ struct Columns{
 impl Columns{
     pub fn new() -> Columns{
         Columns{
-            name: false,
-            title: false,
+            name: true,
+            title: true,
             description: false,
             date_in: false,
-            date_out: false,
+            date_out: true,
             paid_installments: false,
             installments: false,
-            value: false,
-            status: false
+            value: true,
+            status: true
         }
     }
 }
