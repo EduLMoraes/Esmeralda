@@ -37,7 +37,7 @@ impl Columns{
 #[component]
 pub fn Home (cx: Scope) -> Element {
     let total_counts = use_state(cx, || 0.0);
-    let counts: Vec<Info> = Vec::new();
+    let counts: Vec<Info> = Info::test();
 
     use_shared_state_provider(cx, || Columns::new());
     let columns = use_shared_state::<Columns>(cx).unwrap().read().clone();
@@ -80,6 +80,7 @@ pub fn Home (cx: Scope) -> Element {
                     }
                 }
             }
+
             div_options::div_options(cx)
         }
     }
