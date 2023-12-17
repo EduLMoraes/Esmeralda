@@ -10,7 +10,7 @@ pub struct User{
     pub password: String
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Info{
     pub debtor: String,
     pub title: String,
@@ -38,7 +38,7 @@ impl Info{
 
         let mut vector: Vec<Info> = Vec::new();
 
-        for _ in 0..200{
+        for _ in 0..5{
             vector.push(info_test.clone());
         }
 

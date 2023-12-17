@@ -1,6 +1,6 @@
 body{
     background-color: rgb(29, 29, 29);
-    font-size: larger;
+    font-size: 1rem;
 }
 #container{
     background-color: rgb(5, 10, 20);
@@ -17,33 +17,47 @@ body{
     border-color: greenyellow;
     border-style: solid;
     border-radius: 20px;
+    border-width: 2px;
     height: 600px;
     display: block;
 }
 
 td{
-    border-color: green;
-    border-style: dotted;
-    border-right: 0;
-    border-left: 0;
+    border-color: rgb(0, 0, 0);
+    border-width: 1px;
+    border-style: solid;
     padding-left: 10px;
     padding-right: 10px;
-    border-bottom: 0;
+    border-top: 0;
+    border-bottom: 1px;
     text-align: center;
     align-items: center;
 }
 
+tr{
+    background-color: rgb(224, 224, 224);
+    color: rgb(0, 0, 0);
+}
+
 #head-table{
     background-color: whitesmoke;
+    border-color: green;
+    border-width: 1px;
+    border-style: solid;
+    border-top: 0;
+    border-bottom: 0;
     color: black;
 }
 
 #stt-neg, #stt-pos{
     border-radius: 100px;
-    min-height: 10px;
-    min-width: 10px;
-    max-width: 10px;
-    max-height: 10px;
+    width: 2vw;
+    height: 2vw;
+    
+    /* min-height: 1.2vh;
+    min-width: 1.2vh;
+    max-width: 1.2vh;
+    max-height: 1.2vh; */
     animation: blinks infinite;
 }
 #stt-neg{
@@ -140,4 +154,11 @@ input{
 #payment{
     height: 15px;
     width: 15px;
+}
+
+#move-page{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
 }

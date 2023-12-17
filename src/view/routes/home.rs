@@ -34,13 +34,26 @@ impl Columns{
     }
 }
 
+const LINES: usize = 10;
+
 #[component]
 pub fn Home (cx: Scope) -> Element {
     let total_counts = use_state(cx, || 0.0);
     let counts: Vec<Info> = Info::test();
+    let size_max: usize = counts.len();
 
     use_shared_state_provider(cx, || Columns::new());
     let columns = use_shared_state::<Columns>(cx).unwrap().read().clone();
+
+    let init = use_state(cx, || 0 as usize);
+    let end = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
+    let page = use_state(cx, || 1);
+
+    
+    let mut more: bool = false;
+    let mut less: bool = false;
+    
+    
 
     render!{
 
@@ -51,10 +64,15 @@ pub fn Home (cx: Scope) -> Element {
         div{ id: "div-body",
             div_active::div_most(cx),
 
+            // working!!
+            // for count in counts{
+            //     total_counts.set( total_counts += count.value)
+            // }
+
             div{ id: "div-table",
                 table{ id: "table-counts", 
-                    th{ format!("Contas: {}", total_counts) }
-                    tr{
+                    th{ format!("Contas: {:2}", total_counts) }
+                    tr{ id: "head-table",
                         td{hidden: !columns.name, "Nome" },
                         td{hidden: !columns.title, "Título" },
                         td{hidden: !columns.description, "Descrição" },
@@ -65,18 +83,54 @@ pub fn Home (cx: Scope) -> Element {
                         td{hidden: !columns.value, "Valor" },
                         td{hidden: !columns.status, "Status" }
                     }
-                    for info in counts {
-                        tr{
-                            td{hidden: !columns.name, format!("{}", info.debtor) },
-                            td{hidden: !columns.title, format!("{}", info.title) },
-                            td{hidden: !columns.description, format!("{}", info.description) },
-                            td{hidden: !columns.date_in, format!("{}", info.date_in) },
-                            td{hidden: !columns.date_out, format!("{}", info.date_out) },
-                            td{hidden: !columns.paid_installments, format!("{}", info.paid_installments) },
-                            td{hidden: !columns.installments, format!("{}", info.installments) },
-                            td{hidden: !columns.value, format!("{:2}", info.value) },
-                            td{hidden: !columns.status, format!("{}", info.status) },
+
+
+                    for i in **init..**end{
+                       
+                        tr{ 
+                            td{hidden: !columns.name, format!("{}", counts[i].debtor) },
+                            td{hidden: !columns.title, format!("{}", counts[i].title) },
+                            td{hidden: !columns.description, format!("{}", counts[i].description) },
+                            td{hidden: !columns.date_in, format!("{}", counts[i].date_in) },
+                            td{hidden: !columns.date_out, format!("{}", counts[i].date_out) },
+                            td{hidden: !columns.paid_installments, format!("{}", counts[i].paid_installments) },
+                            td{hidden: !columns.installments, format!("{}", counts[i].installments) },
+                            td{hidden: !columns.value, format!("{:2}", counts[i].value) },
+                            td{hidden: !columns.status, id: if counts[i].status { "stt-pos" } else { "stt-neg" } },
                         }
+                        
+                    }
+                }
+
+                if **init == 0{
+                    less = true;
+                }
+
+                if **end == size_max{
+                    more = true;
+                }
+
+                div{ id: "move-page",
+                    button{ hidden: less, 
+                        onclick: move |_| {
+                            let (i, e) = back_page(**init, **end);
+                            init.set(i);
+                            end.set(e);
+                            page.set(page - 1);
+                        }, 
+                        "← Página anterior" 
+                    }
+
+                    i{ format!("{page}")}
+
+                    button{ hidden: more, 
+                        onclick: move |_| {
+                            let (i, e) = next_page(**init, **end, &size_max);
+                            init.set(i);
+                            end.set(e);
+                            page.set(page + 1);
+                        }, 
+                        "Próxima página →" 
                     }
                 }
             }
@@ -84,4 +138,28 @@ pub fn Home (cx: Scope) -> Element {
             div_options::div_options(cx)
         }
     }
+}
+
+fn back_page(mut init: usize, mut end: usize) -> (usize, usize) {
+    if init > 0{
+        end = init;
+        init -= LINES;
+    }else if init > 0 && init < LINES{
+        end = init;
+        init += init-0;
+    }
+
+    (init, end)
+}
+
+fn next_page(mut init: usize, mut end: usize, size_max: &usize) -> (usize, usize) {
+    if end <= size_max-LINES{
+        init = end;
+        end += LINES;
+    }else if end < *size_max && end > size_max-LINES{
+        init = end;
+        end += size_max-end;
+    }
+
+    (init, end)
 }
