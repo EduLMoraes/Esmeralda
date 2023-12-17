@@ -114,6 +114,15 @@ form{
     height: 90%;
 }
 
+#div-most{
+    display: flex;
+    flex-direction: column;
+}
+
+#td-most{
+    text-align: left;
+}
+
 input{
     height: 20px;
     border-radius: 8px;

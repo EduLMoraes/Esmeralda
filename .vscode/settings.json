@@ -9,5 +9,6 @@
             "database": "Esmeralda",
             "username": "postgres"
         }
-    ]
+    ],
+    "rust-analyzer.showUnlinkedFileNotification": false
 }

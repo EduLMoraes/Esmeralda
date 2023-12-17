@@ -12,9 +12,12 @@ pub struct User{
 
 pub struct Info{
     pub debtor: String,
+    pub title: String,
+    pub description: String,
     pub value: f64,
     pub date_in: String,
     pub date_out: String,
+    pub paid_installments: String,
     pub installments: String,
     pub status: bool
 }
