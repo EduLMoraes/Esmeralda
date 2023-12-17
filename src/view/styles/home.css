@@ -1,0 +1,134 @@
+body{
+    background-color: rgb(29, 29, 29);
+    font-size: larger;
+}
+#container{
+    background-color: rgb(5, 10, 20);
+    color: white;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    display: flex;
+    flex-wrap: wrap;
+    align-items:flex-start;
+    text-align: left;
+
+}
+
+#table_counts{
+    border-color: greenyellow;
+    border-style: solid;
+    border-radius: 20px;
+    height: 600px;
+    display: block;
+}
+
+td{
+    border-color: green;
+    border-style: dotted;
+    border-right: 0;
+    border-left: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 0;
+    text-align: center;
+    align-items: center;
+}
+
+#head-table{
+    background-color: whitesmoke;
+    color: black;
+}
+
+#stt-neg, #stt-pos{
+    border-radius: 100px;
+    min-height: 10px;
+    min-width: 10px;
+    max-width: 10px;
+    max-height: 10px;
+    animation: blinks infinite;
+}
+#stt-neg{
+    background-color: red;
+    border-color: red;
+    border-style: solid;
+    animation-duration: 0.5s;
+}
+#stt-pos{
+    background-color: greenyellow;
+    border-color: greenyellow;
+    border-style: solid;
+    animation-duration: 0.6s;
+}
+
+@keyframes blinks{
+    0%{
+    }
+    50%{
+        background-color: transparent;
+    }
+}
+#name{
+    color: greenyellow;
+    width: 100%;
+    margin-left: 10px;
+}
+
+button{
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+    border-width: 1px;
+    border-color: blue;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: larger;
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+button:active{
+    background-color: blue;
+}
+
+#div-options{
+    margin-top: 20px;
+    display: inline;
+    flex-wrap: wrap;
+}
+
+#active{
+    background-color: rgb(11, 39, 76);
+    color: wheat;
+}
+form{
+    display: inline-grid;
+    height: 150px;
+    margin-top: 0;
+    margin-left: 0;
+    width: auto;
+    padding: 20px;
+}
+#div-body{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 90%;
+}
+
+input{
+    height: 20px;
+    border-radius: 8px;
+}
+
+#devedor{
+    width: 100px;
+}
+#value{
+    width: 70px;
+}
+#installments{
+    width: 40px;
+}
+#payment{
+    height: 15px;
+    width: 15px;
+}
