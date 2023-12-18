@@ -17,6 +17,7 @@ h4{
     text-decoration: underline;
 }
 
+
 #table_counts{
     border-color: greenyellow;
     border-style: solid;
@@ -165,4 +166,12 @@ input{
     display: flex;
     justify-content: space-evenly;
     text-align: center;
+}
+
+th{
+    width: 100%;
+}
+
+#col-id{
+    width: 20px;
 }

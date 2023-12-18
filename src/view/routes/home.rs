@@ -2,7 +2,7 @@ mod div_options;
 mod div_active;
 use dioxus_elements::GlobalAttributes;
 
-use crate::structs::Info;
+use crate::structs::InterfaceInfo;
 use super::*;
 
 #[derive(Clone, Debug)]
@@ -38,8 +38,8 @@ const LINES: usize = 10;
 
 #[component]
 pub fn Home (cx: Scope) -> Element {
-    use_shared_state_provider(cx, || Info::test());
-    let counts: Vec<Info> = use_shared_state::<Vec<Info>>(cx).unwrap().read().clone();
+    use_shared_state_provider(cx, || InterfaceInfo::test());
+    let mut counts: InterfaceInfo = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
     let size_max: usize = counts.len();
 
     let mut total_debt: f64 = 0.0;
@@ -55,14 +55,14 @@ pub fn Home (cx: Scope) -> Element {
     let end: &UseState<usize> = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
     let page: &UseState<i32> = use_state(cx, || 1);
 
-
+    counts.order_by_date_out(false);
 
     if **total_counts == 0.0 && size_max > 0{
         for i in 0..size_max{
-            if counts[i].status{
-                total_paid += counts[i].value;
+            if counts.get(i).status{
+                total_paid += counts.get(i).value;
             }else{
-                total_debt += counts[i].value;
+                total_debt += counts.get(i).value;
             }
         }
         total_debt_st.set(total_debt);
@@ -85,12 +85,10 @@ pub fn Home (cx: Scope) -> Element {
             div_active::div_most(cx),
 
             div{ id: "div-table",
+                format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st) 
                 table{ id: "table-counts", 
-                    th{ 
-                        format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st) 
-                    }
                     tr{ id: "head-table",
-                        td{ "ID" },
+                        td{ id: "col-id", "ID" },
                         td{hidden: !columns.name, "Nome" },
                         td{hidden: !columns.title, "Título" },
                         td{hidden: !columns.description, "Descrição" },
@@ -106,16 +104,16 @@ pub fn Home (cx: Scope) -> Element {
                     for i in **init..**end{
                        
                         tr{ 
-                            td{ format!("{}", counts[i].id) },
-                            td{hidden: !columns.name, format!("{}", counts[i].debtor) },
-                            td{hidden: !columns.title, format!("{}", counts[i].title) },
-                            td{hidden: !columns.description, format!("{}", counts[i].description) },
-                            td{hidden: !columns.date_in, format!("{}", counts[i].date_in) },
-                            td{hidden: !columns.date_out, format!("{}", counts[i].date_out) },
-                            td{hidden: !columns.paid_installments, format!("{}", counts[i].paid_installments) },
-                            td{hidden: !columns.installments, format!("{}", counts[i].installments) },
-                            td{hidden: !columns.value, format!("{:.2}", counts[i].value) },
-                            td{hidden: !columns.status, id: if counts[i].status { "stt-pos" } else { "stt-neg" } },
+                            td{ id: "col-id", format!("{}", counts.get(i).id) },
+                            td{hidden: !columns.name, format!("{}", counts.get(i).debtor) },
+                            td{hidden: !columns.title, format!("{}", counts.get(i).title) },
+                            td{hidden: !columns.description, format!("{}", counts.get(i).description) },
+                            td{hidden: !columns.date_in, format!("{}", counts.get(i).date_in) },
+                            td{hidden: !columns.date_out, format!("{}", counts.get(i).date_out) },
+                            td{hidden: !columns.paid_installments, format!("{}", counts.get(i).paid_installments) },
+                            td{hidden: !columns.installments, format!("{}", counts.get(i).installments) },
+                            td{hidden: !columns.value, format!("{:.2}", counts.get(i).value) },
+                            td{hidden: !columns.status, id: if counts.get(i).status { "stt-pos" } else { "stt-neg" } },
                         }
                         
                     }
