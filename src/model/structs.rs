@@ -12,6 +12,7 @@ pub struct User{
 
 #[derive(Clone, Debug)]
 pub struct Info{
+    pub id: i32,
     pub debtor: String,
     pub title: String,
     pub description: String,
@@ -22,23 +23,27 @@ pub struct Info{
     pub installments: String,
     pub status: bool
 }
+
+use rand::Rng;
 impl Info{
     pub fn test() -> Vec<Info>{
-        let info_test = Info{
-            debtor: "Guilherme Habreu".to_string(),
-            title: "Grão de Arroz".to_string(),
-            description: "Ele comprou grão por grão".to_string(),
-            value: 0.50,
-            date_in: "12/03/2009".to_string(),
-            date_out: "12/03/2010".to_string(),
-            paid_installments: "5".to_string(),
-            installments: "12".to_string(),
-            status: true
-        };
 
         let mut vector: Vec<Info> = Vec::new();
 
-        for _ in 0..5{
+        for _ in 0..19{
+            let info_test = Info{
+                id: rand::thread_rng().gen_range(0..9000),
+                debtor: "Guilherme Habreu".to_string(),
+                title: "Grão de Arroz".to_string(),
+                description: "Ele comprou grão por grão".to_string(),
+                value: rand::thread_rng().gen_range(0.0..102.78),
+                date_in: format!("{}/{}/{}", rand::thread_rng().gen_range(0..12), rand::thread_rng().gen_range(1..31), rand::thread_rng().gen_range(1900..2023)),
+                date_out: format!("{}/{}/{}", rand::thread_rng().gen_range(0..12), rand::thread_rng().gen_range(1..31), rand::thread_rng().gen_range(1900..2023)),
+                paid_installments: "5".to_string(),
+                installments: "12".to_string(),
+                status: rand::thread_rng().gen_bool(0.5)
+            };
+            
             vector.push(info_test.clone());
         }
 

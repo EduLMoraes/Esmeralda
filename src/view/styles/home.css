@@ -13,6 +13,10 @@ body{
 
 }
 
+h4{
+    text-decoration: underline;
+}
+
 #table_counts{
     border-color: greenyellow;
     border-style: solid;
