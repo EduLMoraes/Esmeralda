@@ -55,7 +55,7 @@ pub fn Home (cx: Scope) -> Element {
     let end: &UseState<usize> = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
     let page: &UseState<i32> = use_state(cx, || 1);
 
-    counts.order_by_date_out(false);
+    counts.order_alphabetical();
 
     if **total_counts == 0.0 && size_max > 0{
         for i in 0..size_max{

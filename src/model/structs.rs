@@ -167,16 +167,42 @@ impl InterfaceInfo{
         }
     }
 
+    pub fn order_alphabetical(&mut self){
+        let width: usize = self.list.len();
+
+        loop{
+            let mut comparisions: bool = true;
+
+            for i in 1..width{ 
+                        
+                if self.list[i].debtor > self.list[i - 1].debtor{
+                    comparisions = false;
+    
+                    let tmp = self.list[i].clone();
+    
+                    self.list[i] = self.list[i - 1].clone();
+                    self.list[i - 1] = tmp;
+                }
+            }
+
+            if comparisions{
+                break;
+            }
+        }
+    }
+
     pub fn test() -> InterfaceInfo{
 
         let mut vector: Vec<Info> = Vec::new();
+
+        let names = vec!["Eduardo", "Ana Luiza", "Eduardo Almeida", "Huan Zerton", "Huan Alter"];
 
         for _ in 0..4{
             let d = thread_rng().gen_range(1..31);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
 
-            let date_in = NaiveDate::from_ymd_opt(y, 1, 1).unwrap();
+            let date_in = NaiveDate::from_ymd_opt(y, m, d).unwrap();
 
             let d = thread_rng().gen_range(1..31);
             let m = thread_rng().gen_range(1..12);
@@ -185,7 +211,7 @@ impl InterfaceInfo{
 
             let info_test = Info{
                 id: rand::thread_rng().gen_range(0..9000),
-                debtor: "Guilherme Habreu".to_string(),
+                debtor: names[rand::thread_rng().gen_range(0..names.len())].to_string(),
                 title: "Grão de Arroz".to_string(),
                 description: "Ele comprou grão por grão".to_string(),
                 value: rand::thread_rng().gen_range(0.0..102.78),
