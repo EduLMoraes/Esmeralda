@@ -446,13 +446,13 @@ impl InterfaceInfo{
         let names = vec!["Eduardo", "Ana Luiza", "Eduardo Almeida", "Huan Zerton", "Huan Alter"];
 
         for _ in 0..250{
-            let d = thread_rng().gen_range(1..30);
+            let d = thread_rng().gen_range(1..29);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
 
             let date_in = NaiveDate::from_ymd_opt(y, m, d).unwrap();
 
-            let d = thread_rng().gen_range(1..30);
+            let d = thread_rng().gen_range(1..29);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
             let date_out = NaiveDate::from_ymd_opt(y, m, d).unwrap();

@@ -63,11 +63,11 @@ pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), Control
     
     let mut extend = path.split('.');
 
-    let extend = extend.nth(1).unwrap();
+    let extend = extend.nth(2).unwrap();
 
     let response = match extend {
         "csv" => export_csv(path, data).await,
-        "pdf" => export_pdf(path, data).await,
+        "pdf" => export_pdf(path, data),
         "html" => export_html(path, data).await,
         _ => return Err(ControlError::ErrorValueInvalid(
             ErrorLog { title: "Extension invalid", code: 305, file: "controller.rs" }

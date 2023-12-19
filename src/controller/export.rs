@@ -1,3 +1,4 @@
+use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::io::BufWriter;
@@ -7,7 +8,7 @@ use printpdf::*;
 use crate::prelude::structs::InterfaceInfo;
 
 #[allow(dead_code)]
-async fn mkdir(path: &str) -> File{
+async fn mkdir(path: &str) -> (File, String){
     let mut new_path: String = String::new();
 
     let paths: Vec<&str> = path.split('/').collect();
@@ -19,19 +20,62 @@ async fn mkdir(path: &str) -> File{
 
     create_dir_all(new_path).unwrap();
 
-    let file = match File::open(path){
-        Ok(file) => file,
-        Err(_) => File::create(path).unwrap(),
-    };
 
-    file
+    let mut limit: usize = 0;
+    for a in path.chars(){
+        if a == '.' && limit == 0{
+            limit += 1;
+        }else if a == '.' {
+            break
+        }else{
+            limit += 1;
+        }
+    }
+
+    let file: File;
+    let mut path = path.to_string();
+    let mut is_alterated: bool = false;
+    let mut count_files = 0;
+
+    loop{
+        if count_files > 0  && count_files < 11{
+            if is_alterated{
+                path.replace_range(limit..limit+3, format!("({count_files})").trim());
+            }else{
+                path.insert_str(limit, format!("({count_files})").trim());
+                is_alterated = true;
+            }
+            println!("{path}");
+        }else if count_files > 0{
+            if is_alterated{
+                path.replace_range(limit..limit+4, format!("({count_files})").trim());
+            }else{
+                path.insert_str(limit, format!("({count_files})").trim());
+                is_alterated = true;
+            }
+            println!("{path}");
+        }
+
+        match fs::metadata(path.clone()){
+            Ok(_) => count_files += 1,
+            Err(_) => {
+                file = File::create(path.clone()).unwrap();
+                            
+                return (file, path)
+            }
+            
+        }
+    }
+
+
 }
 
+
 #[allow(dead_code)]
-pub async fn export_csv( path: &str, data: InterfaceInfo) -> Result<(), String>{
+pub async fn export_csv( path: &str, data: InterfaceInfo) -> Result<String, String>{
     let data = data.list;
 
-    let mut file: File = mkdir(path).await;
+    let (mut file, path) = mkdir(path).await;
 
     let mut data_file = String::new();
 
@@ -56,16 +100,16 @@ pub async fn export_csv( path: &str, data: InterfaceInfo) -> Result<(), String>{
     }
 
     match file.write_all(data_file.as_bytes()) {
-        Ok(_) => Ok(()),
+        Ok(_) => Ok(path),
         Err(e) => Err(e.to_string()),
     }
 }
 
 #[allow(dead_code)]
-pub async fn export_html( path: &str, data: InterfaceInfo) -> Result<(), String>{
+pub async fn export_html( path: &str, data: InterfaceInfo) -> Result<String, String>{
     let data = data.list;
 
-    let mut file: File = mkdir(path).await;
+    let (mut file, path) = mkdir(path).await;
 
     let mut data_file = String::new();
 
@@ -99,13 +143,13 @@ pub async fn export_html( path: &str, data: InterfaceInfo) -> Result<(), String>
 
 
     match file.write_all(data_file.as_bytes()) {
-        Ok(_) => Ok(()),
+        Ok(_) => Ok(path),
         Err(e) => Err(e.to_string()),
     }
 }
 
 #[allow(dead_code)]
-pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
+pub fn export_pdf( path: &str, data: InterfaceInfo) -> Result<String, String>{
     let mut x = Mm(297.0);
     let mut y = Mm(210.0);
 
@@ -171,5 +215,5 @@ pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
 
     doc.save(&mut BufWriter::new(File::create(path).unwrap())).unwrap();
 
-    Ok(())
+    Ok(String::from(path))
 }
