@@ -39,7 +39,9 @@ const LINES: usize = 10;
 #[component]
 pub fn Home (cx: Scope) -> Element {
     use_shared_state_provider(cx, || InterfaceInfo::test());
-    let mut counts: InterfaceInfo = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
+    
+    let shared_counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
+    let counts = use_state(cx, || shared_counts.read().clone());
     let size_max: usize = counts.len();
 
     let mut total_debt: f64 = 0.0;
@@ -55,14 +57,12 @@ pub fn Home (cx: Scope) -> Element {
     let end: &UseState<usize> = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
     let page: &UseState<i32> = use_state(cx, || 1);
 
-    counts.order_alphabetical();
-
     if **total_counts == 0.0 && size_max > 0{
         for i in 0..size_max{
-            if counts.get(i).status{
-                total_paid += counts.get(i).value;
+            if counts.get().get(i).status{
+                total_paid += counts.get().get(i).value;
             }else{
-                total_debt += counts.get(i).value;
+                total_debt += counts.get().get(i).value;
             }
         }
         total_debt_st.set(total_debt);
@@ -70,8 +70,7 @@ pub fn Home (cx: Scope) -> Element {
         total_counts.set(total_debt + total_paid);  
     }
     
-    
-
+    let crescent: &UseState<bool> = use_state(cx, || false);
     let mut more: bool = false;
     let mut less: bool = false;
     
@@ -88,32 +87,121 @@ pub fn Home (cx: Scope) -> Element {
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st) 
                 table{ id: "table-counts", 
                     tr{ id: "head-table",
-                        td{ id: "col-id", "ID" },
-                        td{hidden: !columns.name, "Nome" },
-                        td{hidden: !columns.title, "Título" },
-                        td{hidden: !columns.description, "Descrição" },
-                        td{hidden: !columns.date_in, "Data Inicial" },
-                        td{hidden: !columns.date_out, "Data Final" },
-                        td{hidden: !columns.paid_installments, "Parcelas Pagas" },
-                        td{hidden: !columns.installments, "Parcelas" },
-                        td{hidden: !columns.value, "Valor" },
-                        td{hidden: !columns.status, "Status" }
+                        td{ id: "col-id",
+                            button{
+                                id: "button-order",
+                                onclick: move |_| {
+                                    counts.set(counts.order_by_id(**crescent));
+                                    crescent.set(!**crescent);
+                                }, "ID"
+                            }  
+                        },
+                        td{ id: "with-button",
+                            hidden: !columns.name,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.name, onclick: move |_| {
+                                    counts.set(counts.order_alphabetical("name", **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Nome"
+                            } 
+                        },
+                        td{ id: "with-button",
+                            hidden: !columns.title,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.title,
+                                onclick: move |_|{
+                                    counts.set(counts.order_alphabetical("title", **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Título" 
+                            }
+                        },
+                        td{ id: "with-button",
+                            hidden: !columns.description,  
+                            button{
+                                hidden: !columns.description, onclick: move |_| {
+                                    counts.set(counts.order_alphabetical("desciption", **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Descrição"
+                            }
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.date_in,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.date_in, onclick: move |_| {
+                                    counts.set(counts.order_by_date(true, **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Data Inicial"
+                            } 
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.date_out,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.date_out, onclick: move |_| {
+                                    counts.set(counts.order_by_date(false, **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Data Final"
+                            } 
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.paid_installments,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.paid_installments, onclick: move |_| {
+                                    counts.set(counts.order_by_installments(true, **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Parcelas pagas"
+                            } 
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.installments,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.installments, onclick: move |_| {
+                                    counts.set(counts.order_by_installments(false, **crescent));
+                                    crescent.set(!**crescent);
+                                }, "Parcelas"
+                            } 
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.value,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.value, onclick: move |_| {
+                                    counts.set(counts.get().order_by_value(**crescent));
+                                    crescent.set(!**crescent);
+                                }, "Valor"
+                            } 
+                        },
+                        td{ id: "with-button", 
+                            hidden: !columns.status,  
+                            button{
+                                id: "button-order",
+                                hidden: !columns.status, onclick: move |_| {
+                                    counts.set(counts.order_by_status(**crescent));
+                                    crescent.set(!**crescent);
+                                }, "Status"
+                            } 
+                        }
                     }
 
 
                     for i in **init..**end{
                        
                         tr{ 
-                            td{ id: "col-id", format!("{}", counts.get(i).id) },
-                            td{hidden: !columns.name, format!("{}", counts.get(i).debtor) },
-                            td{hidden: !columns.title, format!("{}", counts.get(i).title) },
-                            td{hidden: !columns.description, format!("{}", counts.get(i).description) },
-                            td{hidden: !columns.date_in, format!("{}", counts.get(i).date_in) },
-                            td{hidden: !columns.date_out, format!("{}", counts.get(i).date_out) },
-                            td{hidden: !columns.paid_installments, format!("{}", counts.get(i).paid_installments) },
-                            td{hidden: !columns.installments, format!("{}", counts.get(i).installments) },
-                            td{hidden: !columns.value, format!("{:.2}", counts.get(i).value) },
-                            td{hidden: !columns.status, id: if counts.get(i).status { "stt-pos" } else { "stt-neg" } },
+                            td{ id: "col-id", format!("{}", counts.get().get(i).id) },
+                            td{ id: "col-name", hidden: !columns.name, format!("{}", counts.get().get(i).debtor) },
+                            td{ id: "col-title", hidden: !columns.title, format!("{}", counts.get().get(i).title) },
+                            td{ id: "col-description", hidden: !columns.description, format!("{}", counts.get().get(i).description) },
+                            td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts.get().get(i).date_in) },
+                            td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts.get().get(i).date_out) },
+                            td{ id: "col-inst", hidden: !columns.paid_installments, format!("{}", counts.get().get(i).paid_installments) },
+                            td{ id: "col-inst", hidden: !columns.installments, format!("{}", counts.get().get(i).installments) },
+                            td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts.get().get(i).value) },
+                            td{ hidden: !columns.status, id: if counts.get().get(i).status { "stt-pos" } else { "stt-neg" } },
                         }
                         
                     }

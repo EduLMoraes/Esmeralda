@@ -13,6 +13,13 @@ body{
 
 }
 
+#button-order{
+    border: 0;
+    background-color: transparent;
+    width: 100%;
+    margin: 0;
+}
+
 h4{
     text-decoration: underline;
 }
@@ -37,6 +44,10 @@ td{
     border-bottom: 1px;
     text-align: center;
     align-items: center;
+}
+
+#with-button{
+    padding: 0;
 }
 
 tr{
