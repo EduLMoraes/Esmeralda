@@ -26,6 +26,25 @@ pub struct Info{
     pub status: bool
 }
 
+impl Info{
+    pub fn new() -> Info{
+        let today = chrono::Utc::now();
+
+        Info{
+            id: rand::thread_rng().gen_range(0..9999),
+            debtor: String::new(),
+            title: String::new(),
+            description: String::new(),
+            value: 0.0,
+            date_in: today.date_naive(),
+            date_out: today.date_naive(),
+            paid_installments: String::new(),
+            installments: String::new(),
+            status: true
+        }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct InterfaceInfo{
     pub list: Vec<Info>

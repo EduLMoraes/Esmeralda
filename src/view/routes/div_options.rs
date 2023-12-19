@@ -22,6 +22,8 @@ pub fn div_options(cx: Scope) -> Element{
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
 
+    let info = use_state::<Info>(cx, || Info::new());
+
     render!(
         div{ id: "div-optiions",
             div{ id: "div-buttons",
@@ -64,21 +66,21 @@ pub fn div_options(cx: Scope) -> Element{
                     p{
                         label{
                             "Nome:" br{}
-                            input{ r#type: "text", id: "debtor" }
+                            input{ r#required: true, r#type: "text", id: "debtor"}
                         }
                         
                         br{}
 
                         label{
                             "Título:" br{}
-                            input{ r#type: "text", id: "title", oninput: move |ev| title.set(ev.value.to_string()) }
+                            input{ r#required:true, r#type: "text", id: "title", oninput: move |ev| title.set(ev.value.to_string()) }
                         }
     
                         br{}
                         
                         label{
                             "Valor:" br{}
-                            input{ r#type: "numeric", id: "value" }
+                            input{ r#required:true, r#type: "numeric", id: "value" }
                         }
                         
                         br{}
@@ -94,14 +96,18 @@ pub fn div_options(cx: Scope) -> Element{
 
                         label{
                             "Parcelas:"
-                            input{  r#type: "number", id: "installments" }
+                            input{ r#required: true,  r#type: "number", id: "installments" }
                         }
     
                         br{}
     
                         label{
                             "Já tá pago?"
-                            input{ r#type: "checkbox", id: "payment" }
+                            input{ r#type: "checkbox", id: "payment", onclick: move |_| {
+                                let mut tmp_info = info.get().clone();
+                                tmp_info.status = !tmp_info.status;
+                                info.set(tmp_info);
+                            } }
                         }
                     }
 

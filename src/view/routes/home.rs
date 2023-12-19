@@ -2,6 +2,7 @@ mod div_options;
 mod div_active;
 use dioxus_elements::GlobalAttributes;
 
+use crate::structs::Info;
 use crate::structs::InterfaceInfo;
 use super::*;
 
