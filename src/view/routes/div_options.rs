@@ -152,6 +152,8 @@ pub fn div_options(cx: Scope) -> Element{
                         label{ "Coluna:" } br{}
                         input{ r#type: "text", placeholder: "Ex.: Título" }
 
+                        br{}
+
                         label{ "Novo valor:"} br{}
                         input{ r#type: "text", placeholder: "Ex.: Frango do Peruzzo" }
                     }
@@ -178,8 +180,10 @@ pub fn div_options(cx: Scope) -> Element{
                             value: "{file}",
                             oninput: move |name| file.set(name.value.clone())
                         }
+                        
+                        br{}
 
-                        label{ "Formato: "} br{}
+                        label{ "Formato: "}
                         select{
                             onchange: move |option|{
                                 extend.set(option.value.to_string());
