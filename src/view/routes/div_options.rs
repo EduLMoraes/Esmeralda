@@ -1,4 +1,7 @@
 use super::*;
+use crate::prelude::controller::save_in_file;
+use crate::tokio::runtime;
+
 
 pub fn div_options(cx: Scope) -> Element{
     let hidden_add: &UseState<bool> = use_state(cx, || true);
@@ -10,10 +13,14 @@ pub fn div_options(cx: Scope) -> Element{
 
     let title: &UseState<String> = use_state(cx, || String::new());
 
-    let mut path: String = String::from("~/Documentos/");
+    let mut path: String = String::from("./esmeralda_exportados/");
     let path_export: &UseState<String> = use_state(cx, || String::new());
     let extend: &UseState<String> = use_state(cx, || String::from(".csv"));
     let file: &UseState<String> = use_state(cx, || String::new());
+
+    let rnt = runtime::Runtime::new().unwrap();
+
+    let counts = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
 
     render!(
         div{ id: "div-optiions",
@@ -201,12 +208,15 @@ pub fn div_options(cx: Scope) -> Element{
                             path.push_str(file.trim());
                             path.push_str(extend.trim());
                             path_export.set(path.clone());
+
+                            rnt.block_on(save_in_file(path.trim(), counts.clone())).unwrap();
+
                             is_confirm.set(true);
                         },
                         "Confirmar"
                     }
 
-                    p{ hidden: !**is_confirm, "Exportada para {path_export} "}
+                    p{ hidden: !**is_confirm, "Última exportação foi '{path_export}' "}
                 }
             }
 

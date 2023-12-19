@@ -1,8 +1,11 @@
+use export::export_csv;
+
 use super::errors::ErrorLog;
 use super::structs::*;
 use super::db::*;
 use super::Error;
 use super::crypt::crpt;
+mod export;
 
 pub async fn login(mut user: User) -> Result<(), ControlError>{
     let db = get_database_instance();
@@ -13,7 +16,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     let data_user = Data::User(user.clone());
 
     let db_user = db.get(data_user).await.map_err(|err| {
-        ControlError::ErrorExtern(err)
+        ControlError::ErrorExternDB(err)
     })?;
 
     match db_user {
@@ -39,7 +42,7 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
         let new_user: Data = Data::NewUser(new_user);
 
         db.add(new_user).await.map_err(|err| {
-            ControlError::ErrorExtern(err)
+            ControlError::ErrorExternDB(err)
         })?;
 
         Ok(())
@@ -52,11 +55,34 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
     }
 }
 
+// pub async fn new_count(count: Info) -> Result<(), ControlError>{
+//     Ok(())
+// }
+
+pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), ControlError>{
+    
+    let response = export_csv(path, data).await;
+
+    match response{
+        Ok(_) => Ok(()),
+        Err(e) => {
+            println!("{}", e);
+            Err(ControlError::ErrorExtern(
+                ErrorLog{ title: "Error in module export", code: 500, file: "controller.rs"}
+            ))
+        },
+    }
+
+}
+
 #[allow(dead_code)]
 #[derive(Error, Debug, PartialEq)]
 pub enum ControlError {
     #[error("Error of module extern")]
-    ErrorExtern(DataBaseError),
+    ErrorExternDB(DataBaseError),
+
+    #[error("Add user error")]
+    ErrorExtern(ErrorLog<'static>),
 
     #[error("Add user error")]
     ErrorToAddUser(ErrorLog<'static>),
