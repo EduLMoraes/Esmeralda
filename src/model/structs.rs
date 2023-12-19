@@ -445,24 +445,24 @@ impl InterfaceInfo{
 
         let names = vec!["Eduardo", "Ana Luiza", "Eduardo Almeida", "Huan Zerton", "Huan Alter"];
 
-        for _ in 0..23{
-            let d = thread_rng().gen_range(1..31);
+        for _ in 0..250{
+            let d = thread_rng().gen_range(1..30);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
 
             let date_in = NaiveDate::from_ymd_opt(y, m, d).unwrap();
 
-            let d = thread_rng().gen_range(1..31);
+            let d = thread_rng().gen_range(1..30);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
             let date_out = NaiveDate::from_ymd_opt(y, m, d).unwrap();
 
             let info_test = Info{
-                id: rand::thread_rng().gen_range(0..9000),
+                id: rand::thread_rng().gen_range(1000..9999),
                 debtor: names[rand::thread_rng().gen_range(0..names.len())].to_string(),
                 title: "Grão de Arroz".to_string(),
                 description: "Ele comprou grão por grão".to_string(),
-                value: rand::thread_rng().gen_range(0.0..102.78),
+                value: rand::thread_rng().gen_range(0.0..1002.78),
                 date_in: date_in,
                 date_out: date_out,
                 paid_installments: "5".to_string(),

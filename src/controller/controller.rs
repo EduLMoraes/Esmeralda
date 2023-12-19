@@ -1,4 +1,4 @@
-use export::export_csv;
+use export::*;
 
 use super::errors::ErrorLog;
 use super::structs::*;
@@ -61,7 +61,17 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 
 pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), ControlError>{
     
-    let response = export_csv(path, data).await;
+    let mut extend = path.split('.');
+
+    let extend = extend.nth(1).unwrap();
+
+    let response = match extend {
+        "csv" => export_csv(path, data).await,
+        "html" => export_html(path, data).await,
+        _ => return Err(ControlError::ErrorValueInvalid(
+            ErrorLog { title: "Extension invalid", code: 305, file: "controller.rs" }
+        ))
+    };
 
     match response{
         Ok(_) => Ok(()),

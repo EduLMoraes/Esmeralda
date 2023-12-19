@@ -15,6 +15,9 @@ pub use std::error::Error;
 #[path = "./controller/controller.rs"]
 pub mod controller;
 
+#[path = "./controller/export.rs"]
+pub mod export;
+
 #[path = "./controller/crypt.rs"]
 pub mod crypt;
 
