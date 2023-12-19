@@ -67,6 +67,7 @@ pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), Control
 
     let response = match extend {
         "csv" => export_csv(path, data).await,
+        "pdf" => export_pdf(path, data).await,
         "html" => export_html(path, data).await,
         _ => return Err(ControlError::ErrorValueInvalid(
             ErrorLog { title: "Extension invalid", code: 305, file: "controller.rs" }

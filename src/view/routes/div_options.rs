@@ -191,9 +191,6 @@ pub fn div_options(cx: Scope) -> Element{
                             option{ value: ".pdf", onchange: move |option|{
                                 extend.set(option.value.to_string());
                             }, ".pdf" }
-                            option{ value: ".xls", onchange: move |option|{
-                                extend.set(option.value.to_string());
-                            }, ".xls" }
                             option{ value: ".html", onchange: move |option|{
                                 extend.set(option.value.to_string());
                             }, ".html" }

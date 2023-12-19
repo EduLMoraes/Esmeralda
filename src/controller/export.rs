@@ -6,6 +6,7 @@ use printpdf::*;
 
 use crate::prelude::structs::InterfaceInfo;
 
+#[allow(dead_code)]
 async fn mkdir(path: &str) -> File{
     let mut new_path: String = String::new();
 
@@ -26,6 +27,7 @@ async fn mkdir(path: &str) -> File{
     file
 }
 
+#[allow(dead_code)]
 pub async fn export_csv( path: &str, data: InterfaceInfo) -> Result<(), String>{
     let data = data.list;
 
@@ -59,6 +61,7 @@ pub async fn export_csv( path: &str, data: InterfaceInfo) -> Result<(), String>{
     }
 }
 
+#[allow(dead_code)]
 pub async fn export_html( path: &str, data: InterfaceInfo) -> Result<(), String>{
     let data = data.list;
 
@@ -101,6 +104,7 @@ pub async fn export_html( path: &str, data: InterfaceInfo) -> Result<(), String>
     }
 }
 
+#[allow(dead_code)]
 pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
     let mut x = Mm(297.0);
     let mut y = Mm(210.0);
@@ -113,7 +117,6 @@ pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
     let doc = doc.with_title("Emeralda");
     let font = doc.add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap()).unwrap();
 
-    x = Mm(0.0);
     y = Mm(205.0);
     let pos_x: Vec<f32> = vec![  5.0, 20.0,   60.0,   100.0,       170.0,         200.0,      230.0,    255.0,  280.0];
     let header: Vec<&str> = vec!["ID","|Nome","|Titulo","|Descricao","|Data Inicial","|Data Final","|Parcelas","|Valor","|Status"];
@@ -124,7 +127,7 @@ pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
 
     x = Mm(0.2);
     y -= Mm(2.0);
-    for i in 0..300{
+    for _ in 0..300{
         current_layer.use_text("____", 12.0, x, y, &font);
         x += Mm(2.0);
     }
@@ -159,7 +162,7 @@ pub async fn export_pdf( path: &str, data: InterfaceInfo) -> Result<(), String>{
 
             current_layer.use_text(&line[col], 12.0, Mm(pos_x[col]), y, &font);
         }
-        
+
         for _ in 0..300{
             current_layer.use_text("____", 12.0, x, y, &font);
             x += Mm(2.0);
