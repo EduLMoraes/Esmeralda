@@ -31,7 +31,7 @@ impl Info{
         let today = chrono::Utc::now();
 
         Info{
-            id: rand::thread_rng().gen_range(0..9999),
+            id: 0,
             debtor: String::new(),
             title: String::new(),
             description: String::new(),
@@ -42,6 +42,10 @@ impl Info{
             installments: 1,
             status: false
         }
+    }
+
+    pub fn new_id(&mut self){
+        self.id += 1;
     }
 }
 
@@ -62,11 +66,7 @@ impl InterfaceInfo{
     }
 
     pub fn put(&mut self, value: Info) {
-        self.list.push(value)
-    }
-
-    pub fn get(&self, index: usize) -> &Info{
-        &self.list[index]
+        self.list.insert(0, value)
     }
 
     pub fn order_by_id(&self, crescent: bool) -> InterfaceInfo{
@@ -458,6 +458,7 @@ impl InterfaceInfo{
         list
     }
 
+    #[allow(dead_code)]
     pub fn test() -> InterfaceInfo{
 
         let mut vector: Vec<Info> = Vec::new();

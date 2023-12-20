@@ -25,7 +25,8 @@ pub fn div_options(cx: Scope) -> Element{
     let extend: &UseState<String> = use_state(cx, || String::from(".csv"));
     let file: &UseState<String> = use_state(cx, || String::new());
 
-    let counts = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
+    let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
+    let mut tmp_counts = counts.read().clone();
 
     let info = use_state::<Info>(cx, || Info::new());
 
@@ -210,6 +211,26 @@ pub fn div_options(cx: Scope) -> Element{
                             let rnt = runtime::Runtime::new().unwrap();
 
                             if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
+                                let exists_counts = counts.read().clone();
+                                let mut tmp_info = info.get().clone();
+                                let mut has_count: bool = true;
+
+                                while has_count{
+                                    has_count = false;
+                                    let exists_counts = &exists_counts.list;
+                                    
+                                    for ec in exists_counts{
+                                        if tmp_info.id == ec.id{
+                                            tmp_info.new_id();
+                                            has_count = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                tmp_counts.put(tmp_info);
+
+                                counts.write().list = tmp_counts.list.clone();
                                 is_confirm.set(true);
                             }
                         },
@@ -220,8 +241,6 @@ pub fn div_options(cx: Scope) -> Element{
                 }
             }
         
-
-
             div{ id: "div-form-buttons",
                 hidden: **hidden_paid, 
 
@@ -314,7 +333,7 @@ pub fn div_options(cx: Scope) -> Element{
                             path_export.set(path.clone());
 
                             let rnt = runtime::Runtime::new().unwrap();
-                            rnt.block_on(save_in_file(path.trim(), &counts)).unwrap();
+                            rnt.block_on(save_in_file(path.trim(), &counts.read().clone())).unwrap();
 
                             is_confirm.set(true);
                         },
