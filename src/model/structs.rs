@@ -21,8 +21,8 @@ pub struct Info{
     pub value: f64,
     pub date_in: NaiveDate,
     pub date_out: NaiveDate,
-    pub paid_installments: String,
-    pub installments: String,
+    pub paid_installments: u32,
+    pub installments: u32,
     pub status: bool
 }
 
@@ -38,9 +38,9 @@ impl Info{
             value: 0.0,
             date_in: today.date_naive(),
             date_out: today.date_naive(),
-            paid_installments: String::new(),
-            installments: String::new(),
-            status: true
+            paid_installments: 1,
+            installments: 1,
+            status: false
         }
     }
 }
@@ -484,8 +484,8 @@ impl InterfaceInfo{
                 value: rand::thread_rng().gen_range(0.0..1002.78),
                 date_in: date_in,
                 date_out: date_out,
-                paid_installments: "5".to_string(),
-                installments: "12".to_string(),
+                paid_installments: 5,
+                installments: 12,
                 status: rand::thread_rng().gen_bool(0.5)
             };
             

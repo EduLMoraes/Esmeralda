@@ -86,6 +86,31 @@ pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), Control
 
 }
 
+pub async fn is_complete(info: &Info) -> bool{
+    if info.debtor.is_empty() || !is_alphabetic(&info.debtor){
+        return false;
+    }else if info.title.is_empty(){
+        return false;
+    }else if info.value == 0.0{
+        return false;
+    }else if info.installments == 0{
+        return false;
+    }
+    
+    true
+}
+
+pub fn is_alphabetic(string: &String) -> bool{
+    for ch in string.chars(){
+        if !ch.is_alphabetic() && ch != ' '{
+           return false;
+        }
+    } 
+
+    true
+}
+
+
 #[allow(dead_code)]
 #[derive(Error, Debug, PartialEq)]
 pub enum ControlError {

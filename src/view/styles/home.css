@@ -125,6 +125,12 @@ button:active{
     flex-wrap: wrap;
 }
 
+#data-invalid{
+    font-size: larger;
+    color: red;
+    
+}
+
 #active{
     background-color: rgb(11, 39, 76);
     color: wheat;

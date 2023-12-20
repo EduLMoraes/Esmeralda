@@ -1,5 +1,9 @@
+use chrono::NaiveDate;
+
 use super::*;
 use crate::prelude::controller::save_in_file;
+use crate::prelude::controller::is_complete;
+use crate::prelude::controller::is_alphabetic;
 use crate::tokio::runtime;
 
 
@@ -10,6 +14,9 @@ pub fn div_options(cx: Scope) -> Element{
     let hidden_export: &UseState<bool> = use_state(cx, || true);
 
     let is_confirm: &UseState<bool> = use_state(cx, || false);
+    let is_value_valid: &UseState<bool> = use_state(cx, || true);
+    let is_inst_valid: &UseState<bool> = use_state(cx, || true);
+    let is_name_valid: &UseState<bool> = use_state(cx, || true);
 
     let title: &UseState<String> = use_state(cx, || String::new());
 
@@ -17,8 +24,6 @@ pub fn div_options(cx: Scope) -> Element{
     let path_export: &UseState<String> = use_state(cx, || String::new());
     let extend: &UseState<String> = use_state(cx, || String::from(".csv"));
     let file: &UseState<String> = use_state(cx, || String::new());
-
-    let rnt = runtime::Runtime::new().unwrap();
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap().read().clone();
 
@@ -66,39 +71,127 @@ pub fn div_options(cx: Scope) -> Element{
                     p{
                         label{
                             "Nome:" br{}
-                            input{ r#required: true, r#type: "text", id: "debtor"}
+                            input{ r#required: true, r#type: "text", id: "debtor", oninput: move |name| {
+                                let name = name.value.clone();
+
+                                is_name_valid.set(is_alphabetic(&name));
+
+                                if **is_name_valid{
+                                    let mut tmp_info = info.get().clone();
+                                    tmp_info.debtor = name;
+                                    info.set(tmp_info);
+                                }
+
+                                is_confirm.set(false);
+                            } }
                         }
                         
+                        p{ id: "data-invalid", hidden: **is_name_valid, "Nome inválido!" }
+
                         br{}
 
                         label{
                             "Título:" br{}
-                            input{ r#required:true, r#type: "text", id: "title", oninput: move |ev| title.set(ev.value.to_string()) }
+                            input{ r#required:true, r#type: "text", id: "title", oninput: move |title| {
+                                let mut tmp_info = info.get().clone();
+                                tmp_info.title = title.value.clone();
+                                info.set(tmp_info);
+                                is_confirm.set(false);
+                            } }
                         }
     
                         br{}
                         
                         label{
                             "Valor:" br{}
-                            input{ r#required:true, r#type: "numeric", id: "value" }
+                            input{ r#required:true, r#type: "text", id: "value", oninput: move |price| {
+                                let price = price.value.clone();
+
+                                let price = price.replace(",", ".");
+
+                                if !price.is_empty(){
+                                    if price.matches(".").count() <= 1{
+                                        if let Some(first_char) = price.chars().next() {
+                                            if first_char != '.' {
+                                                let parse_response = price.trim().parse::<f64>();
+                                                
+                                                match parse_response{
+                                                    Ok(value) => { 
+                                                        let mut tmp_info = info.get().clone();
+
+                                                        tmp_info.value = value;
+                                                        info.set(tmp_info);
+                                                        is_value_valid.set(true);
+                                                    }
+                                                    Err(_) => is_value_valid.set(false)
+                                                }
+                                            } else {
+                                                is_value_valid.set(false);  
+                                            }
+                                        } 
+                                    }else{
+                                        is_value_valid.set(false);
+                                    }
+                                }
+
+                                is_confirm.set(false);
+                            } }
                         }
                         
+                        p{ id: "data-invalid", hidden: **is_value_valid, "Valor inválido!" }
+
                         br{}
 
                         label{
                             "Data:" br{}
-                            input{ r#type: "date", id: "date_in" }
+                            input{ r#type: "date", id: "date_in", oninput: move |date_in| {
+                                let mut tmp_info = info.get().clone();
+                                tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
+                                info.set(tmp_info);
+                            } }
                             " - até - "
-                            input{ r#type: "date", id: "date_out" }
+                            input{ r#type: "date", id: "date_out", oninput: move |date_out| {
+                                let mut tmp_info = info.get().clone();
+                                tmp_info.date_out = date_out.value.trim().parse::<NaiveDate>().unwrap();
+                                info.set(tmp_info);
+
+                                
+                                is_confirm.set(false);
+                            } }
                         }
     
                         br{}
 
                         label{
                             "Parcelas:"
-                            input{ r#required: true,  r#type: "number", id: "installments" }
+                            input{ r#type: "number", id: "installments", r#min: "1", oninput: move |entry| {
+                                let installments = entry.value.clone();
+
+                                if installments.is_empty(){
+                                    is_inst_valid.set(false);
+                                }else{
+                                    match installments.trim().parse(){
+                                        Ok(value) => {
+                                            if value == 0{
+                                                is_inst_valid.set(false);
+                                            }else{
+                                                let mut tmp_info = info.get().clone();
+                                                tmp_info.installments = value;
+                                                info.set(tmp_info);
+    
+                                                is_inst_valid.set(true);
+                                            }
+                                        },
+                                        Err(_) => is_inst_valid.set(false)
+                                    }
+                                }
+
+                                is_confirm.set(false);
+                            } }
                         }
     
+                        p{ id: "data-invalid", hidden: **is_inst_valid, "Número de parcelas inválido!" }
+
                         br{}
     
                         label{
@@ -107,21 +200,27 @@ pub fn div_options(cx: Scope) -> Element{
                                 let mut tmp_info = info.get().clone();
                                 tmp_info.status = !tmp_info.status;
                                 info.set(tmp_info);
+                                is_confirm.set(false);
                             } }
                         }
                     }
 
-                    button{ id: "confirm-form",
+                    button{ r#type: "submit", id: "confirm-form",
                         onclick: move |_| {
-                            is_confirm.set(true);
+                            if **is_name_valid && **is_value_valid && **is_inst_valid{
+                                let rnt = runtime::Runtime::new().unwrap();
+                                is_confirm.set(rnt.block_on(is_complete(&info)));
+                            }
                         },
                         "Confirmar"
                     }
 
-                    p{ hidden: !**is_confirm, "Conta {title} adicionada!" }
+                    p{ hidden: !**is_confirm, "Conta {info.installments} adicionada!" }
                 }
             }
         
+
+
             div{ id: "div-form-buttons",
                 hidden: **hidden_paid, 
 
@@ -213,6 +312,7 @@ pub fn div_options(cx: Scope) -> Element{
                             path.push_str(extend.trim());
                             path_export.set(path.clone());
 
+                            let rnt = runtime::Runtime::new().unwrap();
                             rnt.block_on(save_in_file(path.trim(), counts.clone())).unwrap();
 
                             is_confirm.set(true);
