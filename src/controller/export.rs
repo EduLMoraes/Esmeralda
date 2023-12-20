@@ -80,23 +80,23 @@ pub async fn export_csv( path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     data_file.push_str("ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n");
 
-    // for info in &data.list{
-    //     data_file.push_str(format!(
-    //             "{},{},{},{},{},{},{},{},{:.2},{}", 
-    //             info.id,
-    //             info.debtor, 
-    //             info.title,
-    //             info.description,
-    //             info.date_in.to_string(), 
-    //             info.date_out.to_string(),
-    //             info.paid_installments,
-    //             info.installments,
-    //             info.value,
-    //             info.status
-    //         ).trim()
-    //     );
-    //     data_file.push('\n');
-    // }
+    for info in &data.list{
+        data_file.push_str(format!(
+                "{},{},{},{},{},{},{},{},{:.2},{}", 
+                info.id,
+                info.debtor, 
+                info.title,
+                info.description,
+                info.date_in.to_string(), 
+                info.date_out.to_string(),
+                info.paid_installments,
+                info.installments,
+                info.value,
+                info.status
+            ).trim()
+        );
+        data_file.push('\n');
+    }
 
     match file.write_all(data_file.as_bytes()) {
         Ok(_) => Ok(path),
@@ -116,28 +116,28 @@ pub async fn export_html( path: &str, data: &InterfaceInfo) -> Result<String, St
     data_file.push_str("<td>ID</td><td>Nome</td><td>Titulo</td><td>Descricao</td><td>Data Inicial</td><td>Data Final</td><td>Parcelas</td><td>Valor</td><td>Status</td>");
     data_file.push_str("</tr>");
 
-    // for info in &data.list{
-    //     data_file.push_str("<tr>");
+    for info in &data.list{
+        data_file.push_str("<tr>");
 
-    //     data_file.push_str(format!(
-    //             "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}/{}</td><td>{:.2}</td><td>{}</td>", 
-    //             info.id,
-    //             info.debtor, 
-    //             info.title,
-    //             info.description,
-    //             info.date_in.to_string(), 
-    //             info.date_out.to_string(),
-    //             info.paid_installments,
-    //             info.installments,
-    //             info.value,
-    //             info.status
-    //         ).trim()
-    //     );
+        data_file.push_str(format!(
+                "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}/{}</td><td>{:.2}</td><td>{}</td>", 
+                info.id,
+                info.debtor, 
+                info.title,
+                info.description,
+                info.date_in.to_string(), 
+                info.date_out.to_string(),
+                info.paid_installments,
+                info.installments,
+                info.value,
+                info.status
+            ).trim()
+        );
 
-    //     data_file.push_str("</tr>");
-    // }
+        data_file.push_str("</tr>");
+    }
 
-    // data_file.push_str("</table></body></html>");
+    data_file.push_str("</table></body></html>");
 
 
     match file.write_all(data_file.as_bytes()) {
