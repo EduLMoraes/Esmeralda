@@ -59,7 +59,7 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 //     Ok(())
 // }
 
-pub async fn save_in_file(path: &str, data: InterfaceInfo) -> Result<(), ControlError>{
+pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<(), ControlError>{
     
     let mut extend = path.split('.');
 

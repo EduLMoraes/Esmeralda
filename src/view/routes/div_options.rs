@@ -207,15 +207,16 @@ pub fn div_options(cx: Scope) -> Element{
 
                     button{ r#type: "submit", id: "confirm-form",
                         onclick: move |_| {
-                            if **is_name_valid && **is_value_valid && **is_inst_valid{
-                                let rnt = runtime::Runtime::new().unwrap();
-                                is_confirm.set(rnt.block_on(is_complete(&info)));
+                            let rnt = runtime::Runtime::new().unwrap();
+
+                            if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
+                                is_confirm.set(true);
                             }
                         },
                         "Confirmar"
                     }
 
-                    p{ hidden: !**is_confirm, "Conta {info.installments} adicionada!" }
+                    p{ hidden: !**is_confirm, "Conta {info.title} adicionada!" }
                 }
             }
         
@@ -313,7 +314,7 @@ pub fn div_options(cx: Scope) -> Element{
                             path_export.set(path.clone());
 
                             let rnt = runtime::Runtime::new().unwrap();
-                            rnt.block_on(save_in_file(path.trim(), counts.clone())).unwrap();
+                            rnt.block_on(save_in_file(path.trim(), &counts)).unwrap();
 
                             is_confirm.set(true);
                         },

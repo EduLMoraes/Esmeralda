@@ -20,6 +20,7 @@ pub enum Route {
    #[route("/register")]
    Register {},
 
-   #[route("/home")]
+   #[route("/static")]
+      // #[]
    Home {},
 }
