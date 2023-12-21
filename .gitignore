@@ -20,6 +20,10 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+# Generate by Esmeralda
+./esmeralda_Exportados
+./esmeralda_Exportados/
+
 
 # Added by cargo
 /target
