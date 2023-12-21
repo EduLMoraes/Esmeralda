@@ -6,6 +6,7 @@ use std::io::Write;
 use std::io::Read;
 
 fn main() {
+
     match var("KEYESMERALD") {
         Ok(_) => {
             println!("Variavel de ambiente já existente");

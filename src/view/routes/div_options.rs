@@ -14,11 +14,11 @@ pub fn div_options(cx: Scope) -> Element{
     let hidden_export: &UseState<bool> = use_state(cx, || true);
 
     let is_confirm: &UseState<bool> = use_state(cx, || false);
+
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
-
-    let title: &UseState<String> = use_state(cx, || String::new());
+    let is_id_valid: &UseState<bool> = use_state(cx, || true);
 
     let mut path: String = String::from("./esmeralda_exportados/");
     let path_export: &UseState<String> = use_state(cx, || String::new());
@@ -26,9 +26,10 @@ pub fn div_options(cx: Scope) -> Element{
     let file: &UseState<String> = use_state(cx, || String::new());
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
-    let mut tmp_counts = counts.read().clone();
-
     let info = use_state::<Info>(cx, || Info::new());
+
+    let id_search =  use_state(cx, || 0);
+    let mut has_count: bool = false;
 
     render!(
         div{ id: "div-optiions",
@@ -165,30 +166,33 @@ pub fn div_options(cx: Scope) -> Element{
 
                         label{
                             "Parcelas:"
-                            input{ r#type: "number", id: "installments", r#min: "1", oninput: move |entry| {
-                                let installments = entry.value.clone();
+                            input{ r#type: "number", id: "installments", r#min: "1", 
+                                r#placeholder: "1",
+                                oninput: move |entry| {
+                                    let installments = entry.value.clone();
 
-                                if installments.is_empty(){
-                                    is_inst_valid.set(false);
-                                }else{
-                                    match installments.trim().parse(){
-                                        Ok(value) => {
-                                            if value == 0{
-                                                is_inst_valid.set(false);
-                                            }else{
-                                                let mut tmp_info = info.get().clone();
-                                                tmp_info.installments = value;
-                                                info.set(tmp_info);
-    
-                                                is_inst_valid.set(true);
-                                            }
-                                        },
-                                        Err(_) => is_inst_valid.set(false)
+                                    if installments.is_empty(){
+                                        is_inst_valid.set(false);
+                                    }else{
+                                        match installments.trim().parse(){
+                                            Ok(value) => {
+                                                if value == 0{
+                                                    is_inst_valid.set(false);
+                                                }else{
+                                                    let mut tmp_info = info.get().clone();
+                                                    tmp_info.installments = value;
+                                                    info.set(tmp_info);
+        
+                                                    is_inst_valid.set(true);
+                                                }
+                                            },
+                                            Err(_) => is_inst_valid.set(false)
+                                        }
                                     }
-                                }
 
-                                is_confirm.set(false);
-                            } }
+                                    is_confirm.set(false);
+                                } 
+                            },
                         }
     
                         p{ id: "data-invalid", hidden: **is_inst_valid, "Número de parcelas inválido!" }
@@ -227,6 +231,7 @@ pub fn div_options(cx: Scope) -> Element{
                                         }
                                     }
                                 }
+                                let mut tmp_counts = counts.read().clone();
 
                                 tmp_counts.put(tmp_info);
 
@@ -249,17 +254,66 @@ pub fn div_options(cx: Scope) -> Element{
                     p{
                         label{ "Informe o ID da conta a ser paga: "}
                         br{}
-                        input{ r#type: "number", r#min: "0"}
+                        input{ r#required: true, r#type: "number", r#min: "0",
+                            oninput: move |id|{ 
+                                is_confirm.set(false);
+
+                                match id.value.trim().parse::<i32>(){
+                                    Ok(id) => {
+                                        is_id_valid.set(true);
+                                        id_search.set(id);
+                                    },
+                                    Err(_) => is_id_valid.set(false)
+                                };
+                            }
+
+                        }
                     }
 
+                    p{ id: "data-invalid", hidden: **is_id_valid, "ID inválido!" }
+
                     button{ id: "confirm-form",
+                        r#type: "submit",
                         onclick: move |_| {
-                            is_confirm.set(true);
+                            let mut r = 0;
+                            let mut tmp_counts = counts.read().list.clone();
+
+                            for count in tmp_counts.clone(){
+                                if count.id == **id_search{
+                                    if tmp_counts[r].installments > tmp_counts[r].paid_installments{
+                                        tmp_counts[r].paid_installments += 1;
+        
+                                        println!("{:?}", counts.read().list[r]);
+        
+                                        if tmp_counts[r].installments == tmp_counts[r].paid_installments{
+                                            tmp_counts[r].status = true;   
+                                        }
+                                    }else {
+                                        tmp_counts[r].status = true;
+                                    }
+
+
+                                    has_count = true;
+                                    break;
+                                }
+                                
+                                r += 1;
+                            }
+
+                            counts.write().list = tmp_counts;
+
+                            if !has_count{
+                                is_id_valid.set(false);
+                            }else{
+                                is_confirm.set(true);
+                                is_id_valid.set(true);
+                            }
+
                         },
                         "Confirmar"
                     }
 
-                    p{ hidden: !**is_confirm, "Conta Status de {title} ficou como paga!"}
+                    p{ hidden: !**is_confirm, "Conta {**id_search} paga!"}
                 }
             }
         
@@ -290,7 +344,7 @@ pub fn div_options(cx: Scope) -> Element{
                         "Confirmar"
                     }
 
-                    p{ hidden: !**is_confirm, "Conta {title} editada!"}
+                    p{ hidden: !**is_confirm, "Conta editada!"}
                 }
             }
     

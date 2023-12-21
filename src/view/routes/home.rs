@@ -39,15 +39,13 @@ const LINES: usize = 10;
 
 #[component]
 pub fn Home (cx: Scope) -> Element {
-    use_shared_state_provider(cx, || InterfaceInfo::new());
+    use_shared_state_provider(cx, || InterfaceInfo::test());
     
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info =  counts.read().clone();
 
     let size_max: usize = counts_info.len();
     let contabilized = use_state(cx, || size_max);
-
-    println!("{size_max}");
 
     let mut total_debt: f64 = 0.0;
     let mut total_paid: f64 = 0.0;
