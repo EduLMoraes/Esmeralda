@@ -59,23 +59,25 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 //     Ok(())
 // }
 
-pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<(), ControlError>{
-    
+pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError>{
     let mut extend = path.split('.');
 
-    let extend = extend.nth(2).unwrap();
+    let extend = extend.nth(1);
 
     let response = match extend {
-        "csv" => export_csv(path, data).await,
-        "pdf" => export_pdf(path, data),
-        "html" => export_html(path, data).await,
+        Some("csv") => export_csv(path, data).await,
+        Some("pdf")=> export_pdf(path, data),
+        Some("html") => export_html(path, data).await,
+        None => return Err(ControlError::ErrorValueInvalid(
+            ErrorLog { title: "Extension not found", code: 404, file: "controller.rs" }
+        )),
         _ => return Err(ControlError::ErrorValueInvalid(
             ErrorLog { title: "Extension invalid", code: 305, file: "controller.rs" }
         ))
     };
 
     match response{
-        Ok(_) => Ok(()),
+        Ok(path) => Ok(path),
         Err(e) => {
             println!("{}", e);
             Err(ControlError::ErrorExtern(

@@ -2,7 +2,7 @@
 pub use dioxus;
 pub use dioxus_desktop;
 pub use dioxus_router;
-pub use chrono::prelude::*;
+pub use chrono;
 pub use thiserror::Error;
 pub use tokio;
 

@@ -1,4 +1,4 @@
-use crate::NaiveDate;
+use crate::chrono::NaiveDate;
 
 pub struct NewUser {
     pub username: String,

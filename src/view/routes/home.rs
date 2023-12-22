@@ -1,5 +1,12 @@
+#[path = "./divs/div_options.rs"]
 mod div_options;
+
+#[path = "./divs/div_active.rs"]
 mod div_active;
+
+#[path = "../../controller/pages.rs"]
+mod pages;
+
 use dioxus_elements::GlobalAttributes;
 
 use crate::structs::Info;
@@ -40,9 +47,10 @@ const LINES: usize = 10;
 #[component]
 pub fn Home (cx: Scope) -> Element {
     use_shared_state_provider(cx, || InterfaceInfo::test());
-    
+
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info =  counts.read().clone();
+
 
     let size_max: usize = counts_info.len();
     let contabilized = use_state(cx, || size_max);
@@ -86,8 +94,6 @@ pub fn Home (cx: Scope) -> Element {
 
         div{ id: "div-body",
             div_active::div_most(cx),
-
-            
 
             div{ id: "div-table",
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st) 
@@ -247,7 +253,7 @@ pub fn Home (cx: Scope) -> Element {
                 div{ id: "move-page",
                     button{ hidden: less, 
                         onclick: move |_| {
-                            let (i, e) = back_page(**init, **end);
+                            let (i, e) = pages::back_page(**init, **end, LINES);
                             init.set(i);
                             end.set(e);
                             page.set(page - 1);
@@ -259,7 +265,7 @@ pub fn Home (cx: Scope) -> Element {
 
                     button{ hidden: more, 
                         onclick: move |_| {
-                            let (i, e) = next_page(**init, **end, &size_max);
+                            let (i, e) = pages::next_page(**init, **end, LINES, &size_max);
                             init.set(i);
                             end.set(e);
                             page.set(page + 1);
@@ -270,34 +276,7 @@ pub fn Home (cx: Scope) -> Element {
             }
 
             div_options::div_options(cx)
+
         }
     }
-}
-
-#[allow(unused_assignments)]
-fn back_page(mut init: usize, mut end: usize) -> (usize, usize) {
-    if init > 0{
-        end = init;
-        init -= LINES;
-    }else if init > 0 && init < LINES{
-        end = init;
-        init += init-0;
-    }else{
-        init = 0;
-        end = LINES;
-    }
-
-    (init, end)
-}
-
-fn next_page(mut init: usize, mut end: usize, size_max: &usize) -> (usize, usize) {
-    if end <= size_max-LINES{
-        init = end;
-        end += LINES;
-    }else if end < *size_max && end > size_max-LINES{
-        init = end;
-        end += size_max-end;
-    }
-
-    (init, end)
 }
