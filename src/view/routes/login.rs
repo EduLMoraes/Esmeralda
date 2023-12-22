@@ -1,6 +1,6 @@
 use crate::prelude::controller;
 use crate::tokio::runtime;
-use crate::structs::User;
+use crate::structs_db::User;
 use super::*;
 
 #[component]

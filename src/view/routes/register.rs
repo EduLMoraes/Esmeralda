@@ -1,5 +1,5 @@
 use crate::controller::add_user;
-use crate::structs::NewUser;
+use crate::structs_db::NewUser;
 use crate::tokio::runtime;
 use super::*;
 

@@ -27,12 +27,17 @@ pub mod config;
 #[path = "./controller/db.rs"]
 pub mod db;
 
+/// Modelos para inserção e resgate do banco de dados.
+#[path = "./model/structs_db.rs"]
+pub mod structs_db;
+
 /// Modelos para visualização
 #[path = "./model/errors.rs"]
 pub mod errors;
 
 #[path = "./model/structs.rs"]
 pub mod structs;
+
 
 /// Telas de visualização
 #[path = "./view/app.rs"]

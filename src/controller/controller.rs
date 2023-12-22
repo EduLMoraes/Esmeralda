@@ -1,6 +1,7 @@
 use export::*;
 
 use super::errors::ErrorLog;
+use crate::structs_db::*;
 use super::structs::*;
 use super::db::*;
 use super::Error;
@@ -54,10 +55,6 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
         }))
     }
 }
-
-// pub async fn new_count(count: Info) -> Result<(), ControlError>{
-//     Ok(())
-// }
 
 pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError>{
     let mut extend = path.split('.');
