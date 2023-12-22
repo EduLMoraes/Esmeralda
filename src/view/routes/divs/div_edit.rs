@@ -14,7 +14,6 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let is_date: &UseState<bool> = use_state(cx, || false);
     let is_column: &UseState<bool> = use_state(cx, || true);
     let is_compatible: &UseState<bool> = use_state(cx, || true);
-    let is_confirm: &UseState<bool> = use_state(cx, || false);
 
     let has_id = use_state(cx, || false);
     let has_column = use_state(cx, || false);
@@ -35,7 +34,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                 p{
                     label{ "ID:" } br{}
                     input{ r#type: "number", r#min: "0", r#required: true, oninput: move |id| {
-                        is_confirm.set(false);
+                        msg.write().hidden = true;
                         has_id.set(false);
 
                         match id.value.trim().parse::<i32>(){
@@ -56,7 +55,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                     label{ "Coluna:" } br{}
                     input{ r#type: "text", placeholder: "Ex.: Título", r#required: true, oninput: move |col| {
                         has_column.set(false);
-                        is_confirm.set(false);
+                        msg.write().hidden = true;
                         let column = col.value.to_lowercase();
                         let column: String = remove_diacritics(column.trim());
 
@@ -125,7 +124,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                         is_installment.set(false);
                         is_value.set(false);
                         is_date.set(false);
-                        is_confirm.set(false);
+                        msg.write().hidden = true;
                         has_new_value.set(false);
 
                         if column == "debtor"{
@@ -209,7 +208,6 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                 button{ id: "confirm-form", r#type: "submit",
                     onclick: move |_| {
                         if **has_id && **has_column && **has_new_value{
-                            is_confirm.set(true);
 
                             has_id.set(false);
                             has_column.set(false);

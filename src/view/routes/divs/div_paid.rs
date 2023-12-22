@@ -4,7 +4,6 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
-    let is_confirm: &UseState<bool> = use_state(cx, || false);
     let id_search: &UseState<i32> =  use_state(cx, || 0);
     let mut has_count: bool = false;
 
@@ -21,7 +20,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                     br{}
                     input{ r#required: true, r#type: "number", r#min: "0",
                         oninput: move |id|{ 
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
 
                             match id.value.trim().parse::<i32>(){
                                 Ok(id) => {
@@ -70,9 +69,8 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                         if !has_count{
                             is_id_valid.set(false);
                         }else{
-                            is_confirm.set(true);
                             msg.write().hidden = false;
-                            msg.write().text = "Conta {**id_search} paga!";
+                            msg.write().text = "Conta paga!";
                             is_id_valid.set(true);
                         }
 

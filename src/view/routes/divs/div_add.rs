@@ -7,8 +7,6 @@ use crate::tokio::runtime;
 pub fn add(cx: Scope, hidden_add: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
     
-    let is_confirm: &UseState<bool> = use_state(cx, || false);
-
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
@@ -38,7 +36,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                 info.set(tmp_info);
                             }
 
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
                         } }
                     }
                     
@@ -52,7 +50,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             let mut tmp_info = info.get().clone();
                             tmp_info.title = title.value.clone();
                             info.set(tmp_info);
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
                         } }
                     }
 
@@ -90,7 +88,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                 }
                             }
 
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
                         } }
                     }
                     
@@ -112,7 +110,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             info.set(tmp_info);
 
                             
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
                         } }
                     }
 
@@ -144,7 +142,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                     }
                                 }
 
-                                is_confirm.set(false);
+                                msg.write().hidden = true;
                             } 
                         },
                     }
@@ -159,7 +157,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             let mut tmp_info = info.get().clone();
                             tmp_info.status = !tmp_info.status;
                             info.set(tmp_info);
-                            is_confirm.set(false);
+                            msg.write().hidden = true;
                         } }
                     }
                 }
