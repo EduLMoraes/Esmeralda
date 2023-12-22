@@ -1,8 +1,16 @@
 use super::*;
 
+#[path = "../../../controller/filter.rs"]
+mod filter;
+use crate::structs::Debtor;
+
 pub fn div_most(cx: Scope) -> Element{
-    let columns = use_shared_state::<Columns>(cx).unwrap();
-    let col_now = columns.read().clone();
+    let columns: &UseSharedState<Columns> = use_shared_state::<Columns>(cx).unwrap();
+    let col_now: Columns = columns.read().clone();
+
+    let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
+    let list_counts = counts.read().order_alphabetical("debtor", true);
+    let debtors: Vec<Debtor> = filter::filter_debtors( list_counts.list );
 
     render!(
         div{ id: "div-most",
@@ -112,7 +120,25 @@ pub fn div_most(cx: Scope) -> Element{
                 }
 
             }
-        }
+        
+            table{ id: "table-debtors", 
+                tr{ 
+                    td { "Nome:" }
+                    td { "Valor Dívida:"}
+                    td { "Total:" }
+                    td { "Status:" }
+                }
 
+                for debtor in debtors{
+                    tr{
+                        td { debtor.get_name().clone() }
+                        td { format!("{:.2}", debtor.get_debt()) }
+                        td { format!("{:.2}", debtor.get_value()) }
+                        td { format!("{}", debtor.get_status().to_string()) }
+                    }
+                }
+            }
+        }
+        
     )
 }

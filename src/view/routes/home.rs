@@ -46,7 +46,7 @@ const LINES: usize = 10;
 
 #[component]
 pub fn Home (cx: Scope) -> Element {
-    use_shared_state_provider(cx, || InterfaceInfo::test());
+    use_shared_state_provider(cx, || InterfaceInfo::new());
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info =  counts.read().clone();

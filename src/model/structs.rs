@@ -465,7 +465,7 @@ impl InterfaceInfo{
 
         let names = vec!["Eduardo", "Ana Luiza", "Eduardo Almeida", "Huan Zerton", "Huan Alter"];
 
-        for _ in 0..250{
+        for _ in 0..10{
             let d = thread_rng().gen_range(1..29);
             let m = thread_rng().gen_range(1..12);
             let y = thread_rng().gen_range(1900..2023);
@@ -500,7 +500,6 @@ impl InterfaceInfo{
 }
 
 use std::fmt;
-
 impl fmt::Display for InterfaceInfo{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len(){
@@ -508,5 +507,53 @@ impl fmt::Display for InterfaceInfo{
         }
 
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Debtor{
+    id: i32,
+    name: String,
+    debt: f64,
+    value: f64,
+    status: bool
+}
+
+impl Debtor{
+    pub fn new(id: i32, name: &str, debt: f64, value: f64) -> Debtor{
+        let stt = debt <= value;
+
+        Debtor { id: id, name: name.to_string(), debt: debt, value: value, status:  stt}
+    }
+
+    pub fn get_name(&self) -> &String{
+        &self.name
+    }
+    pub fn get_id(&self) -> i32{
+        self.id
+    }
+    pub fn get_debt(&self) -> f64{
+        self.debt
+    }
+    pub fn get_value(&self) -> f64{
+        self.value
+    }
+    pub fn get_status(&self) -> bool{
+        self.status
+    }
+
+    pub fn add_value(&mut self, v: f64){
+        self.value += v;
+
+        if self.debt == 0.0{
+            self.status = true;
+        }
+    }
+    pub fn add_debt(&mut self, d: f64){
+        self.debt += d;
+
+        if self.debt > 0.0 {
+            self.status = false;
+        }
     }
 }
