@@ -1,7 +1,9 @@
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 5, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 6, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 7, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 8, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 9, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 10, installments: 12, status: false }
-Info { id: 9665, debtor: "Ana Luiza", title: "Grão de Arroz", description: "Ele comprou grão por grão", value: 885.3834696268783, date_in: 1982-01-10, date_out: 1907-02-28, paid_installments: 11, installments: 12, status: false }
+d
+df
+p
+v
+p
+pp
+df
+di
+df

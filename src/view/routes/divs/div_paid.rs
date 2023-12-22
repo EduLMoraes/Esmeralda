@@ -5,7 +5,6 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let id_search: &UseState<i32> =  use_state(cx, || 0);
-    let mut has_count: bool = false;
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
 
@@ -41,13 +40,13 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                     onclick: move |_| {
                         let mut r = 0;
                         let mut tmp_counts = counts.read().list.clone();
+                        let mut has_count: bool = false;
 
                         for count in tmp_counts.clone(){
                             if count.id == **id_search{
                                 if tmp_counts[r].installments > tmp_counts[r].paid_installments{
                                     tmp_counts[r].paid_installments += 1;
 
-                                    println!("{:?}", counts.read().list[r]);
 
                                     if tmp_counts[r].installments == tmp_counts[r].paid_installments{
                                         tmp_counts[r].status = true;   

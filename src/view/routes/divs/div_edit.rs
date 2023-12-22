@@ -5,6 +5,7 @@ use crate::prelude::controller::is_alphabetic;
 
 pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
+    let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
@@ -24,6 +25,8 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let id_search: &UseState<i32> =  use_state(cx, || 0);
     let col_search: &UseState<String> = use_state(cx, || String::new());
     let new_value: &UseState<String> = use_state(cx, || String::new());
+
+
 
     render!(
         div{ id: "div-form-buttons",
@@ -53,64 +56,79 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                     br{}
 
                     label{ "Coluna:" } br{}
-                    input{ r#type: "text", placeholder: "Ex.: Título", r#required: true, oninput: move |col| {
-                        has_column.set(false);
-                        msg.write().hidden = true;
-                        let column = col.value.to_lowercase();
-                        let column: String = remove_diacritics(column.trim());
+                    select{
+                        onchange: move |column|{
+                            has_column.set(false);
+                            msg.write().hidden = true;
+                            has_new_value.set(false);
 
-                        match column.trim(){
-                            "nome" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("text");
-                                col_search.set( String::from("debtor") )
-                            },
-                            "titulo" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("text");
-                                col_search.set( String::from("title") )
-                            },
-                            "descricrao" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("text");
-                                col_search.set( String::from("description") )
-                            },
-                            "data inicial" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("date");
-                                col_search.set( String::from("date_in") )
-                            },
-                            "data final" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("date");
-                                col_search.set( String::from("date_out") )
-                            },
-                            "parcelas pagas" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("number");
-                                col_search.set( String::from("paid_installments") )
-                            },
-                            "parcelas" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("number");
-                                col_search.set( String::from("installments") )
-                            },
-                            "valor" => {
-                                has_column.set(true);
-                                is_column.set(true);
-                                type_input.set("number");
-                                col_search.set( String::from("value") )
-                            },
-                            _ => is_column.set(false)
-                        }
-                    } }
+                            let column = &column.value.to_lowercase();
+                            let column: String = remove_diacritics(column.trim());
+
+                            println!("{column}");
+
+                            match column.trim(){
+                                "n" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("text");
+                                    col_search.set( String::from("debtor") )
+                                },
+                                "t" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("text");
+                                    col_search.set( String::from("title") )
+                                },
+                                "d" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("text");
+                                    col_search.set( String::from("description") )
+                                },
+                                "di" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("date");
+                                    col_search.set( String::from("date_in") )
+                                },
+                                "df" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("date");
+                                    col_search.set( String::from("date_out") )
+                                },
+                                "pp" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("number");
+                                    col_search.set( String::from("paid_installments") )
+                                },
+                                "p" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("number");
+                                    col_search.set( String::from("installments") )
+                                },
+                                "v" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("number");
+                                    col_search.set( String::from("value") )
+                                },
+                                _ => is_column.set(false)
+                            }
+                        },
+
+                        option{ value: "n", "Nome"}
+                        option{ value: "t", "Título"}
+                        option{ value: "d", "Descrição"}
+                        option{ value: "di", "Data Inicial"}
+                        option{ value: "df", "Data Final"}
+                        option{ value: "pp", "Parcelas Pagas"}
+                        option{ value: "p", "Parcelas" }
+                        option{ value: "v", "Valor" }
+                    }
                     
                     p{ id: "data-invalid", hidden: **is_column, "Coluna inválida!" }
 
@@ -196,25 +214,53 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                     Err(_) => is_compatible.set(false)
                                 }
                             }
-
+                        }else if column == "title" || column == "description"{
+                            is_compatible.set(true);
+                            has_new_value.set(true);
+                            
+                            new_value.set( value.to_string() )
                         }
-                    } }
+                    }, new_value.get().clone() }
 
                     p{ id: "data-invalid", hidden: **is_compatible, "Valor inválido!" }
-
-
                 }
 
                 button{ id: "confirm-form", r#type: "submit",
                     onclick: move |_| {
                         if **has_id && **has_column && **has_new_value{
 
-                            has_id.set(false);
-                            has_column.set(false);
-                            has_new_value.set(false);
+                            let mut r = 0;
+                            let mut has_count: bool = false;
+                            let tmp_counts = counts.read().list.clone();
 
-                            msg.write().hidden = false;
-                            msg.write().text = "Conta editada!";
+                            for count in tmp_counts{
+                                if count.id == **id_search{
+                                    match col_search.get().trim(){
+                                        "debtor"            => { counts.write().list[r].debtor = new_value.get().clone() },
+                                        "title"             => { counts.write().list[r].title = new_value.get().clone() },
+                                        "description"       => { counts.write().list[r].description = new_value.get().clone() },
+                                        "date_in"           => { counts.write().list[r].date_in = new_value.get().clone().parse::<NaiveDate>().unwrap() },
+                                        "date_out"          => { counts.write().list[r].date_out = new_value.get().clone().parse::<NaiveDate>().unwrap() },
+                                        "value"             => { counts.write().list[r].value = new_value.get().clone().parse::<f64>().unwrap() },
+                                        "paid_installments" => { counts.write().list[r].paid_installments = new_value.get().clone().parse::<u32>().unwrap() },
+                                        "installments"      => { counts.write().list[r].installments = new_value.get().clone().parse::<u32>().unwrap()} ,
+                                        _ => println!("Coluna inválida")
+                                    }
+
+                                    has_count = true;
+                                    break;
+                                }
+                                
+                                r += 1;
+                            }
+
+                            if !has_count{
+                                is_id_valid.set(false);
+                            }else{
+                                msg.write().hidden = false;
+                                msg.write().text = "Conta editada!";
+                                is_id_valid.set(true);
+                            }
                         }
                     },
                     "Confirmar"
