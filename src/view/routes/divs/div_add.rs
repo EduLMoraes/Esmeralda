@@ -12,9 +12,8 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
-
     let info: &UseState<Info> = use_state::<Info>(cx, || Info::new());
-    
+    let is_new = use_state(cx, || true);
     
     render!(
         div{ id: "div-form-buttons",
@@ -33,11 +32,13 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             if **is_name_valid{
                                 let mut tmp_info = info.get().clone();
                                 tmp_info.debtor = name;
+                                is_new.set(true);
                                 info.set(tmp_info);
-                            }
+                            }   
 
                             msg.write().hidden = true;
-                        } }
+
+                        }}
                     }
                     
                     p{ id: "data-invalid", hidden: **is_name_valid, "Nome inválido!" }
@@ -49,8 +50,11 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                         input{ r#required:true, r#type: "text", id: "title", oninput: move |title| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.title = title.value.clone();
+                            is_new.set(true);
                             info.set(tmp_info);
-                            msg.write().hidden = true;
+
+                            msg.write().hidden  = true;
+
                         } }
                     }
 
@@ -74,8 +78,10 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                                     let mut tmp_info = info.get().clone();
 
                                                     tmp_info.value = value;
+                                                    is_new.set(true);
                                                     info.set(tmp_info);
-                                                    is_value_valid.set(true);
+
+                                                    is_value_valid.set( true);
                                                 }
                                                 Err(_) => is_value_valid.set(false)
                                             }
@@ -89,6 +95,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             }
 
                             msg.write().hidden = true;
+
                         } }
                     }
                     
@@ -101,16 +108,19 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                         input{ r#type: "date", id: "date_in", oninput: move |date_in| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
+                            is_new.set(true);
                             info.set(tmp_info);
-                        } }
+                        } } 
                         " - até - "
                         input{ r#type: "date", id: "date_out", oninput: move |date_out| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.date_out = date_out.value.trim().parse::<NaiveDate>().unwrap();
+                            is_new.set(true);
                             info.set(tmp_info);
 
                             
                             msg.write().hidden = true;
+
                         } }
                     }
 
@@ -133,8 +143,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                             }else{
                                                 let mut tmp_info = info.get().clone();
                                                 tmp_info.installments = value;
+                                                is_new.set(true);
                                                 info.set(tmp_info);
-    
+                                                
                                                 is_inst_valid.set(true);
                                             }
                                         },
@@ -143,6 +154,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                 }
 
                                 msg.write().hidden = true;
+
                             } 
                         },
                     }
@@ -156,8 +168,11 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                         input{ r#type: "checkbox", id: "payment", onclick: move |_| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.status = !tmp_info.status;
+                            is_new.set(true);
                             info.set(tmp_info);
-                            msg.write().hidden = true;
+
+                            msg.write().hidden  = true;
+
                         } }
                     }
                 }
@@ -166,7 +181,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                     onclick: move |_| {
                         let rnt = runtime::Runtime::new().unwrap();
 
-                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
+                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)) && **is_new{
                             let exists_counts = counts.read().clone();
                             let mut tmp_info = info.get().clone();
                             let mut has_count: bool = true;
@@ -188,7 +203,10 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             tmp_counts.put(tmp_info);
 
                             counts.write().list = tmp_counts.list.clone();
-                            
+                            info.set(Info::new());
+
+                            is_new.set(false);
+
                             msg.write().hidden = false;
                             msg.write().text = "Conta adicionada!"
                         }
