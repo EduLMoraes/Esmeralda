@@ -11,7 +11,11 @@ pub fn Register(cx: Scope) -> Element{
     let username = use_state(cx, || String::new());
     let rt = runtime::Runtime::new().unwrap();
     let nav = use_navigator(cx);
-
+    let is_email = use_state(cx, || true);
+    let is_equal = use_state(cx, || true);
+    let is_user = use_state(cx, || true);
+    let is_pass = use_state(cx, || true);
+    let is_pass2 = use_state(cx, || true);
 
     render!(
         link{
@@ -56,7 +60,10 @@ pub fn Register(cx: Scope) -> Element{
                     r#type: "email",
                     id: "email",
                     placeholder: "Email",
-                    oninput: move |input| email.set(input.value.to_string())
+                    oninput: move |input| {
+                        
+                        email.set(input.value.to_string())
+                    }
                 }   
                 input{
                     r#type: "text",

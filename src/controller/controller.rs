@@ -37,7 +37,13 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
 }
  
 pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
-    if new_user.password == password {
+    if new_user.is_empty(){
+        Err(ControlError::ErrorToAddUser(ErrorLog { 
+            title: "No has data for add user", 
+            code: 305, 
+            file: "controler.rs" 
+        }))
+    }else if new_user.password == password {
         let db = get_database_instance();
 
         let new_user: Data = Data::NewUser(new_user);
