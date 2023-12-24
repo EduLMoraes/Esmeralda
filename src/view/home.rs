@@ -11,6 +11,18 @@ use crate::move_pages;
 use crate::control;
 use crate::tokio;
 
+/// Represents a struct called `Columns` with several boolean fields.
+///
+/// # Fields
+/// - `name`: Represents the presence of the name column.
+/// - `title`: Represents the presence of the title column.
+/// - `description`: Represents the presence of the description column.
+/// - `date_in`: Represents the presence of the date_in column.
+/// - `date_out`: Represents the presence of the date_out column.
+/// - `paid_installments`: Represents the presence of the paid_installments column.
+/// - `installments`: Represents the presence of the installments column.
+/// - `value`: Represents the presence of the value column.
+/// - `status`: Represents the presence of the status column.
 #[derive(Clone, Debug)]
 struct Columns{
     name: bool,
@@ -25,6 +37,16 @@ struct Columns{
 }
 
 impl Columns{
+    /// Creates a new instance of the `Columns` struct with default field values.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let columns = Columns::new();
+    /// ```
+    ///
+    /// # Returns
+    /// A new instance of the `Columns` struct with default field values.
     pub fn new() -> Columns{
         Columns{
             name: true,
@@ -42,6 +64,40 @@ impl Columns{
 
 const LINES: usize = 10;
 
+/// Renders a web page for the 'Home' component.
+///
+/// # Arguments
+///
+/// * `cx` - The scope object that provides access to the component's context.
+///
+/// # Returns
+///
+/// An `Element` representing the rendered web page.
+///
+/// # Example
+///
+/// ```rust
+/// #[component]
+/// pub fn Home(cx: Scope) -> Element {
+///     // function implementation
+/// }
+/// ```
+///
+/// # Code Analysis
+///
+/// This function renders a web page using various state and shared state variables to manage the data and UI elements on the page. It follows the following steps:
+///
+/// 1. Creates a new Tokio runtime and uses it to execute a blocking operation to recover the shared state.
+/// 2. Retrieves the shared state of `InterfaceInfo` and clones its value.
+/// 3. Calculates the maximum size of the data and initializes a state variable `contabilized` with this value.
+/// 4. Initializes state variables for `total_debt`, `total_paid`, `total_debt_st`, `total_paid_st`, and `total_counts`.
+/// 5. Sets the shared state of `Columns` to a new instance of `Columns`.
+/// 6. Retrieves the value of `Columns` shared state and clones it.
+/// 7. Initializes state variables for `init`, `end`, and `page`.
+/// 8. If the `total_counts` is 0 and the size is greater than 0 or the size has changed, it calculates the total debt and total paid amounts and updates the state variables accordingly.
+/// 9. Initializes state variables for `crescent`, `more`, and `less`.
+/// 10. Renders the HTML elements using the `render!` macro.
+///
 #[component]
 pub fn Home (cx: Scope) -> Element {
     let run = tokio::runtime::Runtime::new().unwrap();

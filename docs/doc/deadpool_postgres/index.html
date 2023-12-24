@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Deadpool for PostgreSQL Latest Version Unsafe forbidden Rust 1.63+"><title>deadpool_postgres - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="deadpool_postgres" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../deadpool_postgres/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../deadpool_postgres/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate deadpool_postgres</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.11.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">deadpool_postgres</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/deadpool_postgres/lib.rs.html#1-618">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="deadpool-for-postgresql-latest-version-unsafe-forbidden-rust-163"><a href="#deadpool-for-postgresql-latest-version-unsafe-forbidden-rust-163">Deadpool for PostgreSQL <img src="https://img.shields.io/crates/v/deadpool-postgres.svg" alt="Latest Version" /> <img src="https://img.shields.io/badge/unsafe-forbidden-success.svg" alt="Unsafe forbidden" title="Unsafe forbidden" /> <img src="https://img.shields.io/badge/rustc-1.63+-lightgray.svg" alt="Rust 1.63+" title="Rust 1.63+" /></a></h2>
+<p>Deadpool is a dead simple async pool for connections and objects
+of any type.</p>
+<p>This crate implements a <a href="https://crates.io/crates/deadpool"><code>deadpool</code></a>
+manager for <a href="https://crates.io/crates/tokio-postgres"><code>tokio-postgres</code></a>
+and also provides a <code>statement</code> cache by wrapping <code>tokio_postgres::Client</code>
+and <code>tokio_postgres::Transaction</code>.</p>
+<h3 id="features"><a href="#features">Features</a></h3><div><table><thead><tr><th>Feature</th><th>Description</th><th>Extra dependencies</th><th>Default</th></tr></thead><tbody>
+<tr><td><code>rt_tokio_1</code></td><td>Enable support for <a href="https://crates.io/crates/tokio">tokio</a> crate</td><td><code>deadpool/rt_tokio_1</code></td><td>yes</td></tr>
+<tr><td><code>rt_async-std_1</code></td><td>Enable support for <a href="https://crates.io/crates/config">async-std</a> crate</td><td><code>deadpool/rt_async-std_1</code></td><td>no</td></tr>
+<tr><td><code>serde</code></td><td>Enable support for <a href="https://crates.io/crates/serde">serde</a> crate</td><td><code>deadpool/serde</code>, <code>serde/derive</code></td><td>no</td></tr>
+</tbody></table>
+</div>
+<p><strong>Important:</strong> <code>async-std</code> support is currently limited to the
+<code>async-std</code> specific timeout function. You still need to enable
+the <code>tokio1</code> feature of <code>async-std</code> in order to use this crate
+with <code>async-std</code>.</p>
+<h3 id="example"><a href="#example">Example</a></h3>
+<p>The following example assumes a PostgreSQL reachable via an unix domain
+socket and peer auth enabled for the local user in
+<a href="https://www.postgresql.org/docs/current/auth-pg-hba-conf.html">pg_hba.conf</a>.
+If you’re running Windows you probably want to specify the <code>host</code>, <code>user</code>
+and <code>password</code> in the connection config or use an alternative
+<a href="https://www.postgresql.org/docs/current/auth-methods.html">authentication method</a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>deadpool_postgres::{Config, Manager, ManagerConfig, Pool, RecyclingMethod, Runtime};
+<span class="kw">use </span>tokio_postgres::NoTls;
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() {
+    <span class="kw">let </span><span class="kw-2">mut </span>cfg = Config::new();
+    cfg.dbname = <span class="prelude-val">Some</span>(<span class="string">&quot;deadpool&quot;</span>.to_string());
+    cfg.manager = <span class="prelude-val">Some</span>(ManagerConfig { recycling_method: RecyclingMethod::Fast });
+    <span class="kw">let </span>pool = cfg.create_pool(<span class="prelude-val">Some</span>(Runtime::Tokio1), NoTls).unwrap();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="number">10 </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>client = pool.get().<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>stmt = client.prepare_cached(<span class="string">&quot;SELECT 1 + $1&quot;</span>).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>rows = client.query(<span class="kw-2">&amp;</span>stmt, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>i]).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>value: i32 = rows[<span class="number">0</span>].get(<span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(value, i + <span class="number">1</span>);
+    }
+}</code></pre></div>
+<h3 id="example-with-config-and-dotenv-crate"><a href="#example-with-config-and-dotenv-crate">Example with <code>config</code> and <code>dotenv</code> crate</a></h3><div class="example-wrap"><pre class="language-env"><code># .env
+PG__DBNAME=deadpool
+</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>deadpool_postgres::{Manager, Pool, Runtime};
+<span class="kw">use </span>dotenv::dotenv;
+<span class="kw">use </span>tokio_postgres::NoTls;
+
+<span class="attr">#[derive(Debug, serde::Deserialize)]
+</span><span class="kw">struct </span>Config {
+    pg: deadpool_postgres::Config
+}
+
+<span class="kw">impl </span>Config {
+    <span class="kw">pub fn </span>from_env() -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, config::ConfigError&gt; {
+        config::Config::builder()
+           .add_source(config::Environment::default().separator(<span class="string">&quot;__&quot;</span>))
+           .build()<span class="question-mark">?
+           </span>.try_deserialize()
+    }
+}
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() {
+    dotenv().ok();
+    <span class="kw">let </span><span class="kw-2">mut </span>cfg = Config::from_env().unwrap();
+    <span class="kw">let </span>pool = cfg.pg.create_pool(<span class="prelude-val">Some</span>(Runtime::Tokio1), NoTls).unwrap();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="number">10 </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>client = pool.get().<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>stmt = client.prepare_cached(<span class="string">&quot;SELECT 1 + $1&quot;</span>).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>rows = client.query(<span class="kw-2">&amp;</span>stmt, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>i]).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>value: i32 = rows[<span class="number">0</span>].get(<span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(value, i + <span class="number">1</span>);
+    }
+}</code></pre></div>
+<p><strong>Note:</strong> The code above uses the crate name <code>config_crate</code> because of the
+<code>config</code> feature and both features and dependencies share the same namespace.
+In your own code you will probably want to use <code>::config::ConfigError</code> and
+<code>::config::Config</code> instead.</p>
+<h3 id="example-using-an-existing-tokio_postgresconfig-object"><a href="#example-using-an-existing-tokio_postgresconfig-object">Example using an existing <code>tokio_postgres::Config</code> object</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::env;
+<span class="kw">use </span>deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
+<span class="kw">use </span>tokio_postgres::NoTls;
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() {
+    <span class="kw">let </span><span class="kw-2">mut </span>pg_config = tokio_postgres::Config::new();
+    pg_config.host_path(<span class="string">&quot;/run/postgresql&quot;</span>);
+    pg_config.host_path(<span class="string">&quot;/tmp&quot;</span>);
+    pg_config.user(env::var(<span class="string">&quot;USER&quot;</span>).unwrap().as_str());
+    pg_config.dbname(<span class="string">&quot;deadpool&quot;</span>);
+    <span class="kw">let </span>mgr_config = ManagerConfig {
+        recycling_method: RecyclingMethod::Fast
+    };
+    <span class="kw">let </span>mgr = Manager::from_config(pg_config, NoTls, mgr_config);
+    <span class="kw">let </span>pool = Pool::builder(mgr).max_size(<span class="number">16</span>).build().unwrap();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="number">10 </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>client = pool.get().<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>stmt = client.prepare_cached(<span class="string">&quot;SELECT 1 + $1&quot;</span>).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>rows = client.query(<span class="kw-2">&amp;</span>stmt, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>i]).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>value: i32 = rows[<span class="number">0</span>].get(<span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(value, i + <span class="number">1</span>);
+    }
+}</code></pre></div>
+<h3 id="faq"><a href="#faq">FAQ</a></h3>
+<ul>
+<li>
+<p><strong>The database is unreachable. Why does the pool creation not fail?</strong></p>
+<p>Deadpool has <a href="https://crates.io/crates/deadpool/#reasons-for-yet-another-connection-pool">identical startup and runtime behaviour</a>
+and therefore the pool creation will never fail.</p>
+<p>If you want your application to crash on startup if no database
+connection can be established just call <code>pool.get().await</code> right after
+creating the pool.</p>
+</li>
+<li>
+<p><strong>Why are connections retrieved from the pool sometimes unuseable?</strong></p>
+<p>In <code>deadpool-postgres 0.5.5</code> a new recycling method was implemented which
+is the default since <code>0.8</code>. With that recycling method the manager no
+longer performs a test query prior returning the connection but relies
+solely on <code>tokio_postgres::Client::is_closed</code> instead. Under some rare
+circumstances (e.g. unreliable networks) this can lead to <code>tokio_postgres</code>
+not noticing a disconnect and reporting the connection as useable.</p>
+<p>The old and slightly slower recycling method can be enabled by setting
+<code>ManagerConfig::recycling_method</code> to <code>RecyclingMethod::Verified</code> or when
+using the <code>config</code> crate by setting <code>PG__MANAGER__RECYCLING_METHOD=Verified</code>.</p>
+</li>
+<li>
+<p><strong>How can I enable features of the <code>tokio-postgres</code> crate?</strong></p>
+<p>Make sure that you depend on the same version of <code>tokio-postgres</code> as
+<code>deadpool-postgres</code> does and enable the needed features in your own
+<code>Crate.toml</code> file:</p>
+<div class="example-wrap"><pre class="language-toml"><code>[dependencies]
+deadpool-postgres = { version = &quot;0.9&quot; }
+tokio-postgres = { version = &quot;0.7&quot;, features = [&quot;with-uuid-0_8&quot;] }
+</code></pre></div>
+<p><strong>Important:</strong> The version numbers of <code>deadpool-postgres</code> and
+<code>tokio-postgres</code> do not necessarily match. If they do it is just a
+coincidence that both crates have the same MAJOR and MINOR version
+number.</p>
+<div><table><thead><tr><th>deadpool-postgres</th><th>tokio-postgres</th></tr></thead><tbody>
+<tr><td>0.7 – 0.11</td><td>0.7</td></tr>
+<tr><td>0.6</td><td>0.6</td></tr>
+<tr><td>0.4 – 0.5</td><td>0.5</td></tr>
+<tr><td>0.2 – 0.3</td><td>0.5.0-alpha</td></tr>
+</tbody></table>
+</div></li>
+<li>
+<p><strong>How can I clear the statement cache?</strong></p>
+<p>You can call <code>pool.manager().statement_cache.clear()</code> to clear all
+statement caches or <code>pool.manager().statement_cache.remove()</code> to remove
+a single statement from all caches.</p>
+<p><strong>Important:</strong> The <code>ClientWrapper</code> also provides a <code>statement_cache</code>
+field which has <code>clear()</code> and <code>remove()</code> methods which only affect
+a single client.</p>
+</li>
+</ul>
+<h3 id="license"><a href="#license">License</a></h3>
+<p>Licensed under either of</p>
+<ul>
+<li>Apache License, Version 2.0 (<a href="LICENSE-APACHE">LICENSE-APACHE</a> or <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>)</li>
+<li>MIT license (<a href="LICENSE-MIT">LICENSE-MIT</a> or <a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>)</li>
+</ul>
+<p>at your option.</p>
+</div></details><h2 id="reexports" class="small-section-header"><a href="#reexports">Re-exports</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.tokio_postgres"><code>pub use <a class="mod" href="../tokio_postgres/index.html" title="mod tokio_postgres">tokio_postgres</a>;</code></div></li></ul><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.ClientWrapper.html" title="struct deadpool_postgres::ClientWrapper">ClientWrapper</a></div><div class="desc docblock-short">Wrapper around <a href="../tokio_postgres/client/struct.Client.html" title="struct tokio_postgres::client::Client"><code>tokio_postgres::Client</code></a> with a <a href="struct.StatementCache.html" title="struct deadpool_postgres::StatementCache"><code>StatementCache</code></a>.</div></li><li><div class="item-name"><a class="struct" href="struct.Config.html" title="struct deadpool_postgres::Config">Config</a></div><div class="desc docblock-short">Configuration object.</div></li><li><div class="item-name"><a class="struct" href="struct.Manager.html" title="struct deadpool_postgres::Manager">Manager</a></div><div class="desc docblock-short"><a href="../deadpool/managed/trait.Manager.html" title="trait deadpool::managed::Manager"><code>Manager</code></a> for creating and recycling PostgreSQL connections.</div></li><li><div class="item-name"><a class="struct" href="struct.ManagerConfig.html" title="struct deadpool_postgres::ManagerConfig">ManagerConfig</a></div><div class="desc docblock-short">Configuration object for a <a href="struct.Manager.html" title="struct deadpool_postgres::Manager"><code>Manager</code></a>.</div></li><li><div class="item-name"><a class="struct" href="struct.Metrics.html" title="struct deadpool_postgres::Metrics">Metrics</a></div><div class="desc docblock-short">Statistics regarding an object returned by the pool</div></li><li><div class="item-name"><a class="struct" href="struct.PoolConfig.html" title="struct deadpool_postgres::PoolConfig">PoolConfig</a></div><div class="desc docblock-short"><a href="../deadpool/managed/struct.Pool.html" title="struct deadpool::managed::Pool"><code>Pool</code></a> configuration.</div></li><li><div class="item-name"><a class="struct" href="struct.StatementCache.html" title="struct deadpool_postgres::StatementCache">StatementCache</a></div><div class="desc docblock-short">Representation of a cache of <a href="../tokio_postgres/statement/struct.Statement.html" title="struct tokio_postgres::statement::Statement"><code>Statement</code></a>s.</div></li><li><div class="item-name"><a class="struct" href="struct.StatementCaches.html" title="struct deadpool_postgres::StatementCaches">StatementCaches</a></div><div class="desc docblock-short">Structure holding a reference to all <a href="struct.StatementCache.html" title="struct deadpool_postgres::StatementCache"><code>StatementCache</code></a>s and providing
+access for clearing all caches and removing single statements from them.</div></li><li><div class="item-name"><a class="struct" href="struct.Status.html" title="struct deadpool_postgres::Status">Status</a></div><div class="desc docblock-short">The current pool status.</div></li><li><div class="item-name"><a class="struct" href="struct.Timeouts.html" title="struct deadpool_postgres::Timeouts">Timeouts</a></div><div class="desc docblock-short">Timeouts when getting <a href="../deadpool/managed/struct.Object.html" title="struct deadpool::managed::Object"><code>Object</code></a>s from a <a href="../deadpool/managed/struct.Pool.html" title="struct deadpool::managed::Pool"><code>Pool</code></a>.</div></li><li><div class="item-name"><a class="struct" href="struct.Transaction.html" title="struct deadpool_postgres::Transaction">Transaction</a></div><div class="desc docblock-short">Wrapper around <a href="../tokio_postgres/transaction/struct.Transaction.html" title="struct tokio_postgres::transaction::Transaction"><code>tokio_postgres::Transaction</code></a> with a <a href="struct.StatementCache.html" title="struct deadpool_postgres::StatementCache"><code>StatementCache</code></a>
+from the <a href="type.Client.html" title="type deadpool_postgres::Client"><code>Client</code></a> object it was created by.</div></li><li><div class="item-name"><a class="struct" href="struct.TransactionBuilder.html" title="struct deadpool_postgres::TransactionBuilder">TransactionBuilder</a></div><div class="desc docblock-short">Wrapper around <a href="../tokio_postgres/transaction_builder/struct.TransactionBuilder.html" title="struct tokio_postgres::transaction_builder::TransactionBuilder"><code>tokio_postgres::TransactionBuilder</code></a> with a
+<a href="struct.StatementCache.html" title="struct deadpool_postgres::StatementCache"><code>StatementCache</code></a> from the <a href="type.Client.html" title="type deadpool_postgres::Client"><code>Client</code></a> object it was created by.</div></li></ul><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.ChannelBinding.html" title="enum deadpool_postgres::ChannelBinding">ChannelBinding</a></div><div class="desc docblock-short">Channel binding configuration.</div></li><li><div class="item-name"><a class="enum" href="enum.ConfigError.html" title="enum deadpool_postgres::ConfigError">ConfigError</a></div><div class="desc docblock-short">This error is returned if there is something wrong with the configuration</div></li><li><div class="item-name"><a class="enum" href="enum.RecyclingMethod.html" title="enum deadpool_postgres::RecyclingMethod">RecyclingMethod</a></div><div class="desc docblock-short">Possible methods of how a connection is recycled.</div></li><li><div class="item-name"><a class="enum" href="enum.Runtime.html" title="enum deadpool_postgres::Runtime">Runtime</a></div><div class="desc docblock-short">Enumeration for picking a runtime implementation.</div></li><li><div class="item-name"><a class="enum" href="enum.SslMode.html" title="enum deadpool_postgres::SslMode">SslMode</a></div><div class="desc docblock-short">TLS configuration.</div></li><li><div class="item-name"><a class="enum" href="enum.TargetSessionAttrs.html" title="enum deadpool_postgres::TargetSessionAttrs">TargetSessionAttrs</a></div><div class="desc docblock-short">Properties required of a session.</div></li></ul><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.GenericClient.html" title="trait deadpool_postgres::GenericClient">GenericClient</a></div><div class="desc docblock-short">A trait allowing abstraction over connections and transactions.</div></li></ul><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.BuildError.html" title="type deadpool_postgres::BuildError">BuildError</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/builder/enum.BuildError.html" title="enum deadpool::managed::builder::BuildError"><code>deadpool::managed::BuildError</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.Client.html" title="type deadpool_postgres::Client">Client</a></div><div class="desc docblock-short">Type alias for <a href="type.Object.html" title="type deadpool_postgres::Object"><code>Object</code></a></div></li><li><div class="item-name"><a class="type" href="type.CreatePoolError.html" title="type deadpool_postgres::CreatePoolError">CreatePoolError</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/config/enum.CreatePoolError.html" title="enum deadpool::managed::config::CreatePoolError"><code>deadpool::managed::CreatePoolError</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.Hook.html" title="type deadpool_postgres::Hook">Hook</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/hooks/enum.Hook.html" title="enum deadpool::managed::hooks::Hook"><code>deadpool::managed::Hook</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.HookError.html" title="type deadpool_postgres::HookError">HookError</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/hooks/enum.HookError.html" title="enum deadpool::managed::hooks::HookError"><code>deadpool::managed::HookError</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.Object.html" title="type deadpool_postgres::Object">Object</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/struct.Object.html" title="struct deadpool::managed::Object"><code>deadpool::managed::Object</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.Pool.html" title="type deadpool_postgres::Pool">Pool</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/struct.Pool.html" title="struct deadpool::managed::Pool"><code>deadpool::managed::Pool</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.PoolBuilder.html" title="type deadpool_postgres::PoolBuilder">PoolBuilder</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/builder/struct.PoolBuilder.html" title="struct deadpool::managed::builder::PoolBuilder"><code>deadpool::managed::PoolBuilder</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.PoolError.html" title="type deadpool_postgres::PoolError">PoolError</a></div><div class="desc docblock-short">Type alias for using <a href="../deadpool/managed/errors/enum.PoolError.html" title="enum deadpool::managed::errors::PoolError"><code>deadpool::managed::PoolError</code></a> with <a href="../tokio_postgres/index.html" title="mod tokio_postgres"><code>tokio_postgres</code></a>.</div></li></ul></section></div></main></body></html>

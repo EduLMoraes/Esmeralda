@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["exchange","keypair","signature","verify"]};

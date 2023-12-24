@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::Write;
 use std::io::Read;
 
+/// Checks if the "KEYESMERALD" environment variable exists. If it does, prints a message. If it doesn't, creates a file called ".key" if it doesn't exist, reads the contents of the file into a string variable called "key_env", and checks if it is empty. If it is empty, calls the "get_key" function to generate a random key, writes the key to the file, and sets the "KEYESMERALD" environment variable to the generated key. Finally, sets another environment variable called "ESMERALDSCREEN" to "login" and launches a desktop application using the "launch_cfg" function.
 fn main() {
 
     match var("KEYESMERALD") {

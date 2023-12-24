@@ -1,8 +1,29 @@
 use crate::chrono::NaiveDate;
 use crate::control::get_user_instance;
 
+/// The `Info` struct represents information about a debtor.
+///
+/// # Fields
+///
+/// - `id`: An integer representing the ID of the debtor.
+/// - `debtor`: A string representing the name of the debtor.
+/// - `title`: A string representing the title of the debtor.
+/// - `description`: A string representing the description of the debtor.
+/// - `value`: A float representing the value of the debtor.
+/// - `date_in`: A `NaiveDate` representing the date the debtor was created.
+/// - `date_out`: A `NaiveDate` representing the date the debtor is due.
+/// - `paid_installments`: An unsigned integer representing the number of paid installments.
+/// - `installments`: An unsigned integer representing the total number of installments.
+/// - `status`: A boolean representing the status of the debtor.
+///
+/// # Example Usage
+///
+/// ```rust
+/// let mut info = Info::new();
+/// info.new_id();
+/// ```
 #[derive(Clone, Debug)]
-pub struct Info{
+pub struct Info {
     pub id: i32,
     pub debtor: String,
     pub title: String,
@@ -12,15 +33,29 @@ pub struct Info{
     pub date_out: NaiveDate,
     pub paid_installments: u32,
     pub installments: u32,
-    pub status: bool
+    pub status: bool,
 }
 
-impl Info{
-    pub fn new() -> Info{
+impl Info {
+    /// Creates a new instance of the `Info` struct.
+    ///
+    /// The `id` field is initialized by concatenating the user's ID with a '0' and parsing it as an integer.
+    /// The other fields are initialized with default values.
+    ///
+    /// # Returns
+    ///
+    /// An instance of the `Info` struct with initialized fields.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// let info = Info::new();
+    /// ```
+    pub fn new() -> Info {
         let today = chrono::Utc::now();
         let user = get_user_instance().as_ref().unwrap().clone();
 
-        Info{
+        Info {
             id: format!("{}0{}", user.id, 0).trim().parse::<i32>().unwrap(),
             debtor: String::new(),
             title: String::new(),
@@ -30,17 +65,70 @@ impl Info{
             date_out: today.date_naive(),
             paid_installments: 1,
             installments: 1,
-            status: false
+            status: false,
         }
     }
 
-    pub fn new_id(&mut self){
+    /// Generates a new ID for the debtor.
+    ///
+    /// The `id` field is incremented by 1.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// let mut info = Info::new();
+    /// info.new_id();
+    /// ```
+    pub fn new_id(&mut self) {
         let id = self.id + 1;
-
         self.id = id;
     }
 }
-
+/// Represents a collection of `Info` objects and provides methods to manipulate and order the list based on different criteria.
+///
+/// Example Usage:
+/// ```
+/// let mut interface = InterfaceInfo::new();
+///
+/// let info1 = Info { id: 1, debtor: "John", value: 100.0 };
+/// let info2 = Info { id: 2, debtor: "Alice", value: 200.0 };
+///
+/// interface.put(info1);
+/// interface.put(info2);
+///
+/// let ordered_list = interface.order_by_id(true);
+///
+/// println!("{}", ordered_list);
+/// ```
+///
+/// Outputs:
+/// ```
+/// Info { id: 1, debtor: "John", value: 100.0 }
+/// Info { id: 2, debtor: "Alice", value: 200.0 }
+/// ```
+///
+/// Inputs:
+/// - `value`: A `Info` object to be inserted into the list.
+/// - `crescent`: A boolean value indicating whether the list should be ordered in ascending or descending order.
+/// - `column`: A string indicating the column to be used for alphabetical ordering.
+///
+/// Outputs:
+/// - The `len` method returns the number of `Info` objects in the list.
+/// - The `put` method inserts a `Info` object into the list.
+/// - The `order_by_id`, `order_by_value`, `order_by_status`, `order_by_date`, and `order_by_installments` methods return a new `InterfaceInfo` object with the ordered list.
+/// - The `order_alphabetical` method returns a new `InterfaceInfo` object with the alphabetically ordered list.
+/// - The `test` method returns a randomly generated `InterfaceInfo` object for testing purposes.
+/// - The `Display` trait implementation allows printing the list of `Info` objects.
+///
+/// Flow:
+/// 1. The `InterfaceInfo` struct has a `list` field that stores a vector of `Info` objects.
+/// 2. The `new` method initializes an empty `InterfaceInfo` object.
+/// 3. The `len` method returns the length of the list.
+/// 4. The `put` method inserts a `Info` object at the beginning of the list.
+/// 5. The `order_by_id`, `order_by_value`, `order_by_status`, `order_by_date`, and `order_by_installments` methods order the list based on the specified criteria.
+/// 6. The `order_alphabetical` method orders the list alphabetically based on the specified column.
+/// 7. The `test` method generates a random list of `Info` objects for testing purposes.
+/// 8. The `Display` trait implementation allows printing the list of `Info` objects.
 #[derive(Clone, Debug)]
 pub struct InterfaceInfo{
     pub list: Vec<Info>
@@ -501,8 +589,8 @@ impl fmt::Display for InterfaceInfo{
         Ok(())
     }
 }
-
 #[derive(Debug, Clone)]
+/// Represents a debtor with an ID, name, debt amount, value amount, and status.
 pub struct Debtor{
     id: i32,
     name: String,
@@ -512,28 +600,62 @@ pub struct Debtor{
 }
 
 impl Debtor{
+    /// Initializes a new `Debtor` with the provided ID, name, debt, and value.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The ID of the debtor.
+    /// * `name` - The name of the debtor.
+    /// * `debt` - The amount of debt owed by the debtor.
+    /// * `value` - The value of assets owned by the debtor.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let debtor = Debtor::new(1, "John Doe", 100.0, 50.0);
+    /// ```
     pub fn new(id: i32, name: &str, debt: f32, value: f32) -> Debtor{
         let stt = debt <= value;
 
         Debtor { id: id, name: name.to_string(), debt: debt, value: value, status:  stt}
     }
 
+    /// Returns a reference to the name of the debtor.
     pub fn get_name(&self) -> &String{
         &self.name
     }
+
+    /// Returns the ID of the debtor.
     pub fn get_id(&self) -> i32{
         self.id
     }
+
+    /// Returns the amount of debt owed by the debtor.
     pub fn get_debt(&self) -> f32{
         self.debt
     }
+
+    /// Returns the value of assets owned by the debtor.
     pub fn get_value(&self) -> f32{
         self.value
     }
+
+    /// Returns the status of the debtor (true if the debt is less than or equal to the value, false otherwise).
     pub fn get_status(&self) -> bool{
         self.status
     }
 
+    /// Updates the value amount of the debtor and potentially the status.
+    ///
+    /// # Arguments
+    ///
+    /// * `v` - The value to be added to the debtor's value amount.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// debtor.add_value(25.0);
+    /// ```
     pub fn add_value(&mut self, v: f32){
         self.value += v;
 
@@ -541,6 +663,18 @@ impl Debtor{
             self.status = true;
         }
     }
+
+    /// Updates the debt amount of the debtor and potentially the status.
+    ///
+    /// # Arguments
+    ///
+    /// * `d` - The debt to be added to the debtor's debt amount.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// debtor.add_debt(75.0);
+    /// ```
     pub fn add_debt(&mut self, d: f32){
         self.debt += d;
 

@@ -5,6 +5,18 @@ use crate::structs_db::User;
 use crate::errors::*;
 
 #[component]
+/// Renders a login form.
+///
+/// # Arguments
+///
+/// * `cx` - The scope object used to create the login form.
+///
+/// # Example
+///
+/// ```rust
+/// let cx: Scope = ...; // create a scope object
+/// let login_form: Element = Login(cx); // render the login form
+/// ```
 pub fn Login(cx: Scope) -> Element{
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());

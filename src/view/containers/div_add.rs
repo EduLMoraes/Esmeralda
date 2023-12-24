@@ -5,6 +5,27 @@ use crate::control::save;
 use crate::alphabetic::is_alphabetic;
 use crate::tokio::runtime;
 
+/// Adds a new item to a list by generating a form.
+///
+/// This function generates a form for adding a new item to a list. The form includes input fields for the name, title, value, date, and number of installments of the item. It also includes a checkbox for indicating whether the item has been paid. The function performs validation on the input fields and updates the state accordingly. When the form is submitted, the function checks if the input is valid and adds the item to the list if it is.
+///
+/// # Arguments
+///
+/// * `cx` - A `Scope` object that represents the current scope of the application.
+/// * `hidden_add` - A boolean value indicating whether the form should be hidden or not.
+///
+/// # Example
+///
+/// ```rust
+/// let cx = Scope::new();
+/// let hidden_add = false;
+/// let element = add(cx, hidden_add);
+/// ```
+///
+/// # Returns
+///
+/// An `Element` object representing the rendered form.
+///
 pub fn add(cx: Scope, hidden_add: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
     

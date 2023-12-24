@@ -4,6 +4,35 @@ use crate::control::add_user;
 use crate::structs_db::NewUser;
 use crate::tokio::runtime;
 
+/// Renders a registration form for a web application using the `yew` framework.
+///
+/// # Example Usage
+///
+/// ```rust
+/// #[component]
+/// pub fn Register(cx: Scope) -> Element {
+///     // Function body
+/// }
+/// ```
+///
+/// # Inputs
+///
+/// - `cx` (Scope): The scope object provided by the `yew` framework.
+///
+/// # Flow
+///
+/// 1. Initializes several state variables using the `use_state` function provided by the `yew` framework.
+/// 2. Creates a new `Runtime` object from the `tokio` crate.
+/// 3. Defines a form with several input fields and a submit button.
+/// 4. When the form is submitted, creates a `NewUser` object with the values entered in the input fields.
+/// 5. Calls the `add_user` function with the `NewUser` object and the value of the `confirm_pass` input field.
+/// 6. If the `add_user` function returns successfully, sets the `is_newly` state variable to `true`. Otherwise, prints an error message.
+/// 7. Includes validation for the email and password fields, displaying error messages if the input is invalid.
+/// 8. The submit button calls a function that checks if the password and confirm password fields have the same value, and updates the `is_equal` state variable accordingly.
+///
+/// # Outputs
+///
+/// - The rendered HTML element representing the registration form.
 #[component]
 pub fn Register(cx: Scope) -> Element{
     let email = use_state(cx, || String::new());

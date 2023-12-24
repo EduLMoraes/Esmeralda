@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["PolygonMode","WindingOrder"],"struct":["Line","Polygon"]};

@@ -6,11 +6,37 @@ mod div_edit;
 mod div_export;
 
 
-struct Message<'a>{
+/// Represents a message with a hidden flag and text content.
+///
+/// # Fields
+///
+/// - `hidden`: A boolean indicating whether the message is hidden or not.
+/// - `text`: A reference to a string representing the content of the message.
+///
+/// # Example
+///
+/// ```
+/// struct Message<'a> {
+///     hidden: bool,
+///     text: &'a str,
+/// }
+/// ```
+struct Message<'a> {
     hidden: bool,
-    text: &'a str
+    text: &'a str,
 }
 
+/// Renders a div element with buttons for different actions and includes other modules based on the value of the hidden flags.
+///
+/// # Arguments
+///
+/// * `cx` - The scope parameter used to create the HTML element.
+///
+/// # Example
+///
+/// ```rust
+/// div_options(scope);
+/// ```
 pub fn div_options(cx: Scope) -> Element{
     use_shared_state_provider::<Message>(cx, || Message{ hidden: true, text: ""});
 

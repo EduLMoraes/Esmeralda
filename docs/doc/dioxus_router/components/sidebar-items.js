@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["IntoRoutable"],"fn":["FailureExternalNavigation","GoBackButton","GoForwardButton","Link","Outlet","Router"],"struct":["HistoryButtonProps","LinkProps","RouterConfigFactory","RouterProps"]};

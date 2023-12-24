@@ -5,6 +5,20 @@ use crate::var;
 use crate::Error;
 
 #[allow(dead_code)]
+/// Returns a Result containing a Config object or an error.
+///
+/// # Example
+/// ```
+/// let config_result = get_config();
+/// match config_result {
+///     Ok(config) => {
+///         // Use the config object
+///     },
+///     Err(error) => {
+///         // Handle the error
+///     }
+/// }
+/// ```
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
     let mut config = Config::new();
 

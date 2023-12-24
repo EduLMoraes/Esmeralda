@@ -11,6 +11,26 @@ use postgres::{NoTls, Statement};
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
+/// This code snippet defines a `DataBase` struct in Rust. It contains methods for creating a new database connection, adding data to the database, getting data from the database, and editing data in the database.
+
+/// Example Usage:
+/// ```
+/// let db = DataBase::new()?;
+/// db.add(Data::NewUser(user))?;
+/// let data = db.get(Data::User(user))?;
+/// db.edit(Data::Counts(counts, user))?;
+/// ```
+
+/// Inputs:
+/// - `data`: An enum that represents different types of data to be added, retrieved, or edited in the database.
+/// - `user`: An instance of the `User` struct that contains user information.
+/// - `counts`: An instance of the `InterfaceInfo` struct that contains a list of `Info` structs.
+
+/// Outputs:
+/// - `Result<Self, DataBaseError>`: The `new` method returns a `Result` with either a `DataBase` instance or a `DataBaseError`.
+/// - `Result<(), DataBaseError>`: The `add` and `edit` methods return a `Result` with either an empty value or a `DataBaseError`.
+/// - `Result<Data, DataBaseError>`: The `get` method returns a `Result` with either a `Data` enum or a `DataBaseError`.
+///
 #[allow(dead_code)]
 pub struct DataBase {
     pub pool: Pool,
@@ -292,7 +312,6 @@ impl DataBase {
     }
 }
 
-
 lazy_static! {
     static ref GLOBAL_DATABASE: Mutex<DataBase> = Mutex::new(DataBase::new().unwrap());
 }
@@ -301,6 +320,7 @@ pub fn get_database_instance() -> std::sync::MutexGuard<'static, DataBase> {
     GLOBAL_DATABASE.lock().unwrap()
 }
 
+/// Represents different types of data that can be used as input for a function or method.
 #[allow(dead_code)]
 pub enum Data {
     NewUser(NewUser),

@@ -3,6 +3,20 @@ use nfd::Response;
 use crate::control::save_in_file;
 use crate::tokio::runtime;
 
+/// Renders a form that allows the user to select a file format for exporting data and handles the logic for saving the exported data to a file.
+///
+/// # Arguments
+///
+/// * `cx` - The scope of the component.
+/// * `hidden_export` - A boolean value indicating whether the export form should be hidden or not.
+///
+/// # Example
+///
+/// ```rust
+/// let cx = Scope::new();
+/// let hidden_export = false;
+/// export(cx, hidden_export);
+/// ```
 pub fn export(cx: Scope, hidden_export: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
 

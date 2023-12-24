@@ -1,6 +1,21 @@
 use crate::dioxus_desktop::{Config, WindowBuilder};
 use std::path::PathBuf;
 
+/// Returns a `Config` object with specified properties set.
+///
+/// # Example
+///
+/// ```
+/// let config = get_config();
+/// ```
+///
+/// # Arguments
+///
+/// None
+///
+/// # Returns
+///
+/// A `Config` object with the specified properties set.
 pub fn get_config() -> Config {
     let window = WindowBuilder::new();
     let window = window.with_title("Esmeralda");

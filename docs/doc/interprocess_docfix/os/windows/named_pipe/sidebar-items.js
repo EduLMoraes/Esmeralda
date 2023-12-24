@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["PipeDirection","PipeMode","PipeStreamRole"],"fn":["connect"],"struct":["ByteReaderPipeStream","ByteWriterPipeStream","DuplexBytePipeStream","DuplexMsgPipeStream","Incoming","MsgReaderPipeStream","MsgWriterPipeStream","PipeListener","PipeListenerOptions"],"trait":["PipeStream"]};

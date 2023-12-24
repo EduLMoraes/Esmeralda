@@ -5,6 +5,34 @@ use crate::alphabetic::is_alphabetic;
 use crate::control;
 use crate::tokio;
 
+/// Renders an HTML form for editing a specific account.
+///
+/// # Arguments
+///
+/// * `cx` - The scope object used for managing the state of the form.
+/// * `hidden_edit` - A boolean value indicating whether the form should be hidden or not.
+///
+/// # Returns
+///
+/// The rendered HTML element representing the edit form.
+///
+/// # Example
+///
+/// ```rust
+/// let cx = Scope::new();
+/// let hidden_edit = false;
+/// let element = edit(cx, hidden_edit);
+/// ```
+///
+/// # Code Analysis
+///
+/// This function initializes various state variables using the `use_state` and `use_shared_state` functions.
+/// It renders an HTML form using the `render!` macro, which includes input fields for the account ID, column selection, and new value.
+/// The function also includes event handlers for input changes and form submission.
+/// The event handlers update the state variables based on the user's input and perform validation checks.
+/// If all the inputs are valid, the function updates the corresponding account information and displays a success message.
+/// The function also calls an external function `control::edit` to perform the actual account editing.
+///
 pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();

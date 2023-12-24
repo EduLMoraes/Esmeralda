@@ -9,7 +9,6 @@ pub use tokio;
 pub use std::env::var;
 pub use std::error::Error;
 
-
 #[path = "./controller/control.rs"]
 pub mod control;
 

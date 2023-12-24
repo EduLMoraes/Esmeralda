@@ -2,6 +2,24 @@ use super::*;
 
 use crate::control::save;
 
+/// Handles the payment of an account.
+///
+/// # Arguments
+///
+/// * `cx` - A scope object that represents the current scope.
+/// * `hidden_paid` - A boolean indicating whether the payment is hidden.
+///
+/// # Returns
+///
+/// An element representing the rendered HTML.
+///
+/// # Example
+///
+/// ```rust
+/// let scope = Scope::new();
+/// let hidden_paid = false;
+/// let element = paid(scope, hidden_paid);
+/// ```
 pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
 

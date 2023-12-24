@@ -5,6 +5,23 @@ use crate::structs::Debtor;
 #[path = "../../controller/utils/filter.rs"]
 mod filter;
 
+/// Generates an HTML element representing a table with checkboxes for each column and a list of debtors.
+///
+/// # Arguments
+///
+/// * `cx` - The scope object used to access shared state.
+///
+/// # Example
+///
+/// ```rust
+/// let cx: Scope = ...; // create a scope
+/// let element: Element = div_most(cx); // generate the HTML element
+/// ```
+///
+/// # Returns
+///
+/// The generated HTML element representing the table.
+///
 pub fn div_most(cx: Scope) -> Element{
     let columns: &UseSharedState<Columns> = use_shared_state::<Columns>(cx).unwrap();
     let col_now: Columns = columns.read().clone();

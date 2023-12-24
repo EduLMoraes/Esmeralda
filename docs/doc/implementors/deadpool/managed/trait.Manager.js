@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"deadpool_postgres":[["impl <a class=\"trait\" href=\"deadpool/managed/trait.Manager.html\" title=\"trait deadpool::managed::Manager\">Manager</a> for <a class=\"struct\" href=\"deadpool_postgres/struct.Manager.html\" title=\"struct deadpool_postgres::Manager\">Manager</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

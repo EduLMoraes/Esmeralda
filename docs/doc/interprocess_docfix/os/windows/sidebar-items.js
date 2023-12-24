@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["named_pipe","signal","unnamed_pipe"],"trait":["ShareHandle"]};
