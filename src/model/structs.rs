@@ -1,4 +1,5 @@
 use crate::chrono::NaiveDate;
+use crate::control::get_user_instance;
 
 #[derive(Clone, Debug)]
 pub struct Info{
@@ -17,9 +18,10 @@ pub struct Info{
 impl Info{
     pub fn new() -> Info{
         let today = chrono::Utc::now();
+        let user = get_user_instance().as_ref().unwrap().clone();
 
         Info{
-            id: 0,
+            id: format!("{}0{}", user.id, 0).trim().parse::<i32>().unwrap(),
             debtor: String::new(),
             title: String::new(),
             description: String::new(),
@@ -33,7 +35,9 @@ impl Info{
     }
 
     pub fn new_id(&mut self){
-        self.id += 1;
+        let id = self.id + 1;
+
+        self.id = id;
     }
 }
 

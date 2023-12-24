@@ -49,7 +49,7 @@ fn gen_user_instance(usr: UserDb){
      });
 }
 
-fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
+pub fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
     USER_LOGGED.lock().unwrap()
 }
 
@@ -149,6 +149,8 @@ pub async fn recover() -> Result<InterfaceInfo, ControlError>{
         _ => Err(ControlError::ErrorExtern(ErrorLog { title: "Error to recover data", code: 306, file: "control.rs" })),
     }
 }
+
+
 
 pub async fn is_complete(info: &Info) -> bool{
     if info.debtor.is_empty() || !is_alphabetic(&info.debtor){

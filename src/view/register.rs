@@ -11,7 +11,6 @@ pub fn Register(cx: Scope) -> Element{
     let confirm_pass = use_state(cx, || String::new());
     let username = use_state(cx, || String::new());
     let rt = runtime::Runtime::new().unwrap();
-    let nav = use_navigator(cx);
     let is_email = use_state(cx, || true);
     let is_equal = use_state(cx, || true);
     let is_newly = use_state(cx, || false);
@@ -49,7 +48,6 @@ pub fn Register(cx: Scope) -> Element{
                     
                     if result.is_ok(){
                         is_newly.set(true);
-                        // nav.push(Route::Home{});
                     }
                     else{
                         println!("{:?}", result.err());

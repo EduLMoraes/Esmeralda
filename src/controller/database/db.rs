@@ -82,6 +82,7 @@ impl DataBase {
 
                 for i in 0..counts.len(){
                     let stmt: Statement = conn.prepare("INSERT INTO counts (
+                            count_id,
                             user_id, 
                             debtor, 
                             title, 
@@ -92,15 +93,16 @@ impl DataBase {
                             date_in, 
                             date_out, 
                             status
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, TO_DATE($8, 'YYYY-MM-DD'), TO_DATE($9, 'YYYY-MM-DD'), $10) ").await.map_err(|_| {
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11) ").await.map_err(|_| {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
                             file: "db.rs",
                         })
                     })?;
-    
+                    
                     conn.execute(&stmt, &[
+                            &counts.list[i].id,
                             &user.id, 
                             &counts.list[i].debtor, 
                             &counts.list[i].title, 
