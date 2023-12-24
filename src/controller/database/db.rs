@@ -1,17 +1,14 @@
 #[path = "../config/to_db.rs"]
 mod to_db;
-mod error_db;
 
 use crate::errors::ErrorLog;
+use crate::errors::DataBaseError;
 use crate::structs::*; 
 use crate::structs_db::*; 
-use crate::Error;
 use deadpool_postgres::{Pool, Runtime, GenericClient};
 use postgres::{NoTls, Statement};
 use lazy_static::lazy_static;
 use std::sync::Mutex;
-
-
 
 #[allow(dead_code)]
 pub struct DataBase {
@@ -162,8 +159,10 @@ impl DataBase {
                     })
                 })?;
 
+                let id = row.get::<_, i64>("user_id") as i32;
+
                 let user = UserDb {
-                    id: row.get("id"),
+                    id: id,
                     username: row.get("username"),
                     password: row.get("password"),
                 };
@@ -194,22 +193,4 @@ pub enum Data {
     User(User),
     UserDb(UserDb),
     Counts(InterfaceInfo, UserDb),
-}
-
-#[derive(Error, Debug, PartialEq)]
-pub enum DataBaseError {
-    #[error("Config error")]
-    GetConfigError(ErrorLog<'static>),
-
-    #[error("Require pool error")]
-    CreatePoolError(ErrorLog<'static>),
-
-    #[error("Add user not working")]
-    AddUserError(ErrorLog<'static>),
-
-    #[error("Config error")]
-    GetUserError(ErrorLog<'static>),
-
-    #[error("DataType not Acept")]
-    DataTypeInvalid(ErrorLog<'static>),
 }

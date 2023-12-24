@@ -1,16 +1,14 @@
-use super::cryptography::crpt;
-use super::errors::ErrorLog;
+use super::cryptography::encrpt;
+use super::errors::*;
 use super::structs::*;
 use super::db::*;
-use super::Error;
 use crate::export::*;
 use crate::structs_db::*;
-
 
 pub async fn login(mut user: User) -> Result<(), ControlError>{
     let db = get_database_instance();
 
-    user.password = crpt(user.password);
+    user.password = encrpt(user.password);
 
 
     let data_user = Data::User(user.clone());
@@ -20,7 +18,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     })?;
 
     match db_user {
-        Data::User(data) => {
+        Data::UserDb(data) => {
             if data.password == user.password{
                 Ok(())
             }else {
@@ -44,6 +42,9 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
         }))
     }else if new_user.password == password {
         let db = get_database_instance();
+
+        let mut new_user = new_user;
+        new_user.password = encrpt(new_user.password);
 
         let new_user: Data = Data::NewUser(new_user);
 
@@ -115,21 +116,3 @@ pub fn is_alphabetic(string: &String) -> bool{
 }
 
 
-#[allow(dead_code)]
-#[derive(Error, Debug, PartialEq)]
-pub enum ControlError {
-    #[error("Error of module extern")]
-    ErrorExternDB(DataBaseError),
-
-    #[error("Add user error")]
-    ErrorExtern(ErrorLog<'static>),
-
-    #[error("Add user error")]
-    ErrorToAddUser(ErrorLog<'static>),
-
-    #[error("Authenticate error")]
-    ErrorAuthenticate(ErrorLog<'static>),
-
-    #[error("Error of value invalid")]
-    ErrorValueInvalid(ErrorLog<'static>)
-}

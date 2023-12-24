@@ -35,3 +35,43 @@ impl<'a> fmt::Display for ErrorLog<'a> {
         )
     }
 }
+
+use crate::Error;
+
+#[derive(Error, Debug, PartialEq)]
+#[allow(dead_code)]
+pub enum DataBaseError {
+    #[error("Config error")]
+    GetConfigError(ErrorLog<'static>),
+
+    #[error("Require pool error")]
+    CreatePoolError(ErrorLog<'static>),
+
+    #[error("Add user not working")]
+    AddUserError(ErrorLog<'static>),
+
+    #[error("Config error")]
+    GetUserError(ErrorLog<'static>),
+
+    #[error("DataType not Acept")]
+    DataTypeInvalid(ErrorLog<'static>),
+}
+
+#[allow(dead_code)]
+#[derive(Error, Debug, PartialEq)]
+pub enum ControlError {
+    #[error("Error of module extern")]
+    ErrorExternDB(DataBaseError),
+
+    #[error("Add user error")]
+    ErrorExtern(ErrorLog<'static>),
+
+    #[error("Add user error")]
+    ErrorToAddUser(ErrorLog<'static>),
+
+    #[error("Authenticate error")]
+    ErrorAuthenticate(ErrorLog<'static>),
+
+    #[error("Error of value invalid")]
+    ErrorValueInvalid(ErrorLog<'static>)
+}

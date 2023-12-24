@@ -7,12 +7,9 @@ use crypto::buffer::{RefReadBuffer, RefWriteBuffer};
 use rand::{thread_rng, Rng};
 
 #[allow(dead_code)]
-pub fn crpt(msg: String) -> String{
+pub fn encrpt(msg: String) -> String{
     let iv = [0u8; 16];
     let key = env::var("KEYESMERALD").unwrap();
-    // thread_rng().fill(&mut iv);
-    // println!("iv: {:?}", iv);
-    // println!("key: {:?}", key);
 
     let mut encryptor = cbc_encryptor(
         KeySize256,

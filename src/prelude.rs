@@ -45,9 +45,6 @@ pub mod to_app;
 #[path = "./controller/database/db.rs"]
 pub mod db;
 
-#[path = "./controller/database/error_db.rs"]
-pub mod error_db;
-
 /// <h2>Model</h2>
 #[path = "./model/app.rs"]
 pub mod app;

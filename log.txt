@@ -1,1 +1,0 @@
-Some(ErrorExternDB(AddUserError(ErrorLog { title: "Error to prepare query", code: 808, file: "db.rs" })))
