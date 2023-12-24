@@ -5,6 +5,7 @@ use crate::errors::ErrorLog;
 use crate::errors::DataBaseError;
 use crate::structs::*; 
 use crate::structs_db::*; 
+use chrono::NaiveDate;
 use deadpool_postgres::{Pool, Runtime, GenericClient};
 use postgres::{NoTls, Statement};
 use lazy_static::lazy_static;
@@ -91,7 +92,7 @@ impl DataBase {
                             date_in, 
                             date_out, 
                             status
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ").await.map_err(|_| {
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11) ").await.map_err(|_| {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
@@ -106,13 +107,14 @@ impl DataBase {
                             &counts.list[i].title, 
                             &counts.list[i].description, 
                             &counts.list[i].value, 
-                            &counts.list[i].paid_installments, 
-                            &counts.list[i].installments, 
+                            &(counts.list[i].paid_installments as i32), 
+                            &(counts.list[i].installments as i32), 
                             &counts.list[i].date_in.to_string(), 
                             &counts.list[i].date_out.to_string(), 
                             &counts.list[i].status
                         ])
-                        .await.map_err(|_| {
+                        .await.map_err(|err| {
+                            println!("{err}");
                             DataBaseError::AddUserError(ErrorLog {
                                 title: "Error to execute query",
                                 code: 808,
@@ -159,7 +161,7 @@ impl DataBase {
                     })
                 })?;
 
-                let id = row.get::<_, i64>("user_id") as i32;
+                let id = row.get::<_, i32>("user_id");
 
                 let user = UserDb {
                     id: id,
@@ -168,6 +170,117 @@ impl DataBase {
                 };
 
                 Ok(Data::UserDb(user))
+            },
+            Data::Counts(mut i_info, user) => {
+                let conn = self.pool.get().await.map_err(|e| {
+                    println!("{:?}", e);
+                    DataBaseError::GetUserError(ErrorLog {
+                        title: "Error to get Object<Manager>",
+                        code: 804,
+                        file: "db.rs",
+                    })
+                })?;
+
+                let stmt = conn.prepare("SELECT 
+                        TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
+                        TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
+                        * FROM counts WHERE user_id = $1 ").await.map_err(|_| {
+                    DataBaseError::GetUserError(ErrorLog {
+                        title: "Error to prepare query to get user",
+                        code: 804,
+                        file: "db.rs",
+                    })
+                })?;
+
+                let rows = conn.query(&stmt, &[&user.id]).await.map_err(|_| {
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "User not found!",
+                        code: 804,
+                        file: "db.rs",
+                    })
+                })?;
+
+                for row in rows{
+                    let info = Info{
+                        id: row.get::<_, i32>("count_id"),
+                        debtor: row.get::<_, String>("debtor"),
+                        title: row.get::<_, String>("title"),
+                        description: row.get::<_, String>("description"),
+                        value: row.get::<_, f32>("value"),
+                        date_in: row.get::<_, String>("date_in").parse::<NaiveDate>().unwrap(),
+                        date_out: row.get::<_, String>("date_out").parse::<NaiveDate>().unwrap(),
+                        paid_installments: row.get::<_, u32>("paid_installments"),
+                        installments: row.get::<_, u32>("installments"),
+                        status: row.get::<_, bool>("status")
+                    };
+
+                    i_info.put(info)
+                }
+
+                Ok(Data::Counts(i_info, user))
+            },
+            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                title: "Type of data is invalid to add",
+                code: 816,
+                file: "db.rs",
+            })),
+        }
+    }
+
+    pub async fn edit(&self, data: Data) -> Result<(), DataBaseError> {
+        match data {
+            Data::Counts(counts, user) => {
+                let conn = self.pool.get().await.map_err(|_| {
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "Error to get pool",
+                        code: 804,
+                        file: "db.rs",
+                    })
+                })?;
+
+                for i in 0..counts.len(){
+                    let stmt: Statement = conn.prepare("UPDATE counts SET
+                            debtor = $3, 
+                            title = $4, 
+                            description = $5, 
+                            value = $6,  
+                            paid_installments = $7, 
+                            installments = $8, 
+                            date_in = TO_DATE($9, 'YYYY-MM-DD'), 
+                            date_out = TO_DATE($10, 'YYYY-MM-DD'), 
+                            status = $11 
+                            WHERE count_id = $1 AND user_id = $2").await.map_err(|_| {
+                        DataBaseError::AddUserError(ErrorLog {
+                            title: "Error to prepare query",
+                            code: 808,
+                            file: "db.rs",
+                        })
+                    })?;
+    
+                    conn.execute(&stmt, &[
+                            &counts.list[i].id,
+                            &user.id, 
+                            &counts.list[i].debtor, 
+                            &counts.list[i].title, 
+                            &counts.list[i].description, 
+                            &counts.list[i].value, 
+                            &(counts.list[i].paid_installments as i32), 
+                            &(counts.list[i].installments as i32), 
+                            &counts.list[i].date_in.to_string(), 
+                            &counts.list[i].date_out.to_string(), 
+                            &counts.list[i].status
+                        ])
+                        .await.map_err(|err| {
+                            println!("{err}");
+                            DataBaseError::AddUserError(ErrorLog {
+                                title: "Error to execute query",
+                                code: 808,
+                                file: "db.rs",
+                            })
+                        })?;
+                }
+
+                Ok(())
             },
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",

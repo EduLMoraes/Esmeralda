@@ -6,7 +6,7 @@ pub struct Info{
     pub debtor: String,
     pub title: String,
     pub description: String,
-    pub value: f64,
+    pub value: f32,
     pub date_in: NaiveDate,
     pub date_out: NaiveDate,
     pub paid_installments: u32,
@@ -502,13 +502,13 @@ impl fmt::Display for InterfaceInfo{
 pub struct Debtor{
     id: i32,
     name: String,
-    debt: f64,
-    value: f64,
+    debt: f32,
+    value: f32,
     status: bool
 }
 
 impl Debtor{
-    pub fn new(id: i32, name: &str, debt: f64, value: f64) -> Debtor{
+    pub fn new(id: i32, name: &str, debt: f32, value: f32) -> Debtor{
         let stt = debt <= value;
 
         Debtor { id: id, name: name.to_string(), debt: debt, value: value, status:  stt}
@@ -520,24 +520,24 @@ impl Debtor{
     pub fn get_id(&self) -> i32{
         self.id
     }
-    pub fn get_debt(&self) -> f64{
+    pub fn get_debt(&self) -> f32{
         self.debt
     }
-    pub fn get_value(&self) -> f64{
+    pub fn get_value(&self) -> f32{
         self.value
     }
     pub fn get_status(&self) -> bool{
         self.status
     }
 
-    pub fn add_value(&mut self, v: f64){
+    pub fn add_value(&mut self, v: f32){
         self.value += v;
 
         if self.debt == 0.0{
             self.status = true;
         }
     }
-    pub fn add_debt(&mut self, d: f64){
+    pub fn add_debt(&mut self, d: f32){
         self.debt += d;
 
         if self.debt > 0.0 {

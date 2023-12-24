@@ -34,6 +34,9 @@ pub mod export;
 #[path = "./controller/utils/move_pages.rs"]
 pub mod move_pages;
 
+#[path = "./controller/utils/alphabetic.rs"]
+pub mod alphabetic;
+
 /// <h3>Configurations</h3>
 #[path = "./controller/config/to_db.rs"]
 pub mod to_db;

@@ -8,6 +8,8 @@ use super::*;
 use crate::structs::*;
 use crate::structs::InterfaceInfo;
 use crate::move_pages;
+use crate::control;
+use crate::tokio;
 
 #[derive(Clone, Debug)]
 struct Columns{
@@ -42,7 +44,8 @@ const LINES: usize = 10;
 
 #[component]
 pub fn Home (cx: Scope) -> Element {
-    use_shared_state_provider(cx, || InterfaceInfo::new());
+    let run = tokio::runtime::Runtime::new().unwrap();
+    use_shared_state_provider(cx, || run.block_on(control::recover()).unwrap());
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info =  counts.read().clone();
@@ -51,11 +54,11 @@ pub fn Home (cx: Scope) -> Element {
     let size_max: usize = counts_info.len();
     let contabilized = use_state(cx, || size_max);
 
-    let mut total_debt: f64 = 0.0;
-    let mut total_paid: f64 = 0.0;
-    let total_debt_st: &UseState<f64> = use_state(cx, || 0.0);
-    let total_paid_st: &UseState<f64> = use_state(cx, || 0.0);
-    let total_counts: &UseState<f64> = use_state(cx, || 0.0);
+    let mut total_debt: f32 = 0.0;
+    let mut total_paid: f32 = 0.0;
+    let total_debt_st: &UseState<f32> = use_state(cx, || 0.0);
+    let total_paid_st: &UseState<f32> = use_state(cx, || 0.0);
+    let total_counts: &UseState<f32> = use_state(cx, || 0.0);
 
     use_shared_state_provider(cx, || Columns::new());
     let columns: Columns = use_shared_state::<Columns>(cx).unwrap().read().clone();

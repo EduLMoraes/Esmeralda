@@ -1,7 +1,8 @@
 use super::*;
 use crate::chrono::NaiveDate;
-use crate::prelude::control::is_complete;
-use crate::prelude::control::is_alphabetic;
+use crate::control::is_complete;
+use crate::control::save;
+use crate::alphabetic::is_alphabetic;
 use crate::tokio::runtime;
 
 pub fn add(cx: Scope, hidden_add: bool) -> Element{
@@ -21,6 +22,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
             h4{ "Adicionando "}
             form{
+                    
                 p{
                     label{
                         "Nome:" br{}
@@ -71,7 +73,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                 if price.matches(".").count() <= 1{
                                     if let Some(first_char) = price.chars().next() {
                                         if first_char != '.' {
-                                            let parse_response = price.trim().parse::<f64>();
+                                            let parse_response = price.trim().parse::<f32>();
                                             
                                             match parse_response{
                                                 Ok(value) => { 
@@ -208,7 +210,11 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             is_new.set(false);
 
                             msg.write().hidden = false;
-                            msg.write().text = "Conta adicionada!"
+                            msg.write().text = "Conta adicionada!";
+
+                            let run = tokio::runtime::Runtime::new().unwrap();
+                            let response = run.block_on( save( &counts.read() ) );
+                            println!("{response:?}");
                         }
                     },
                     "Confirmar"

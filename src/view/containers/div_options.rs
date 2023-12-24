@@ -5,6 +5,7 @@ mod div_paid;
 mod div_edit;
 mod div_export;
 
+
 struct Message<'a>{
     hidden: bool,
     text: &'a str

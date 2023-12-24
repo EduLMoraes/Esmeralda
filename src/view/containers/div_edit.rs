@@ -1,7 +1,9 @@
 use super::*;
 use diacritics::remove_diacritics;
 use crate::chrono::NaiveDate;
-use crate::prelude::control::is_alphabetic;
+use crate::alphabetic::is_alphabetic;
+use crate::control;
+use crate::tokio;
 
 pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
@@ -16,14 +18,14 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let is_column: &UseState<bool> = use_state(cx, || true);
     let is_compatible: &UseState<bool> = use_state(cx, || true);
 
-    let has_id = use_state(cx, || false);
-    let has_column = use_state(cx, || false);
-    let has_new_value = use_state(cx, || false);
+    let has_id: &UseState<bool> = use_state(cx, || false);
+    let has_column: &UseState<bool> = use_state(cx, || true);
+    let has_new_value: &UseState<bool> = use_state(cx, || false);
 
     let type_input: &UseState<&str> = use_state(cx, || "text");
 
     let id_search: &UseState<i32> =  use_state(cx, || 0);
-    let col_search: &UseState<String> = use_state(cx, || String::new());
+    let col_search: &UseState<String> = use_state(cx, || "debtor".to_string());
     let new_value: &UseState<String> = use_state(cx, || String::new());
 
 
@@ -175,7 +177,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                 if price.matches(".").count() <= 1{
                                     if let Some(first_char) = price.chars().next() {
                                         if first_char != '.' {
-                                            let parse_response = price.trim().parse::<f64>();
+                                            let parse_response = price.trim().parse::<f32>();
                                             
                                             match parse_response{
                                                 Ok(value) => { 
@@ -241,7 +243,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                         "description"       => { counts.write().list[r].description = new_value.get().clone() },
                                         "date_in"           => { counts.write().list[r].date_in = new_value.get().clone().parse::<NaiveDate>().unwrap() },
                                         "date_out"          => { counts.write().list[r].date_out = new_value.get().clone().parse::<NaiveDate>().unwrap() },
-                                        "value"             => { counts.write().list[r].value = new_value.get().clone().parse::<f64>().unwrap() },
+                                        "value"             => { counts.write().list[r].value = new_value.get().clone().parse::<f32>().unwrap() },
                                         "paid_installments" => { counts.write().list[r].paid_installments = new_value.get().clone().parse::<u32>().unwrap() },
                                         "installments"      => { counts.write().list[r].installments = new_value.get().clone().parse::<u32>().unwrap()} ,
                                         _ => println!("Coluna inválida")
@@ -260,6 +262,10 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                 msg.write().hidden = false;
                                 msg.write().text = "Conta editada!";
                                 is_id_valid.set(true);
+
+                                let run = tokio::runtime::Runtime::new().unwrap();
+                                let response = run.block_on( control::edit( &counts.read().clone() ) );
+                                println!("{:?}", response);
                             }
                         }
                     },

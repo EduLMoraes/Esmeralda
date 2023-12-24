@@ -1,5 +1,7 @@
 use super::*;
 
+use crate::control::save;
+
 pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();
 
@@ -14,6 +16,14 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
 
             h4{ "Pagando" }
             form{
+                onsubmit: move |_|{
+                    let run = tokio::runtime::Runtime::new().unwrap();
+                    let response = run.block_on( save( &counts.read() ) );
+                    match response{
+                        Ok(_) => {},
+                        Err(err) => println!("{}", err)
+                    }
+                },
                 p{
                     label{ "Informe o ID da conta a ser paga: "}
                     br{}

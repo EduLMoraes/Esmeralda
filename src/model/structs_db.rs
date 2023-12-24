@@ -20,8 +20,11 @@ pub struct User{
     pub password: String
 }
 
+
+#[derive(Clone)]
 pub struct UserDb{
     pub id: i32,
     pub username: String,
     pub password: String
 }
+

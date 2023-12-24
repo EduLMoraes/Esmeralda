@@ -4,12 +4,19 @@ use super::structs::*;
 use super::db::*;
 use crate::export::*;
 use crate::structs_db::*;
+use crate::alphabetic::is_alphabetic;
+use dioxus_desktop::wry::http::Error;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 
 pub async fn login(mut user: User) -> Result<(), ControlError>{
     let db = get_database_instance();
 
     user.password = encrpt(user.password);
 
+    
+    
+    
 
     let data_user = Data::User(user.clone());
 
@@ -20,6 +27,8 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     match db_user {
         Data::UserDb(data) => {
             if data.password == user.password{
+                gen_user_instance(data);
+
                 Ok(())
             }else {
                 Err(ControlError::ErrorAuthenticate(
@@ -33,6 +42,22 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     }
 }
  
+lazy_static! {
+    static ref USER_LOGGED: Mutex<Option<UserDb>> = Mutex::new(None);
+}
+
+fn gen_user_instance(usr: UserDb){
+    *USER_LOGGED.lock().unwrap() = Some(UserDb {
+        id: usr.id,
+        username: usr.username,
+        password: usr.password,
+     });
+}
+
+fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
+    USER_LOGGED.lock().unwrap()
+}
+
 pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
     if new_user.is_empty(){
         Err(ControlError::ErrorToAddUser(ErrorLog { 
@@ -91,6 +116,46 @@ pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, Co
 
 }
 
+pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError>{
+    let db_instance = get_database_instance();
+    
+    if let Some(user_logged) = get_user_instance().as_ref(){
+        db_instance.add(Data::Counts(data.clone(), user_logged.clone())).await.map_err(|err| {
+            ControlError::ErrorExternDB(err)
+        })?;
+    }
+
+    Ok(())
+}
+
+pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError>{
+    let db_instance = get_database_instance();
+    
+    if let Some(user_logged) = get_user_instance().as_ref(){
+        db_instance.edit(Data::Counts(data.clone(), user_logged.clone())).await.map_err(|err| {
+            ControlError::ErrorExternDB(err)
+        })?;
+    }
+
+    Ok(())
+}
+
+pub async fn recover() -> Result<InterfaceInfo, ControlError>{
+    let data = InterfaceInfo::new();
+    let db_instance = get_database_instance();
+    
+    let user_logged = get_user_instance().as_ref().unwrap().clone();
+
+    let recovered_data = db_instance.get(Data::Counts(data, user_logged)).await.map_err(|err| {
+            ControlError::ErrorExternDB(err)
+    })?;
+
+    match recovered_data{
+        Data::Counts(data, _) => Ok(data),
+        _ => Err(ControlError::ErrorExtern(ErrorLog { title: "Error to recover data", code: 306, file: "control.rs" })),
+    }
+}
+
 pub async fn is_complete(info: &Info) -> bool{
     if info.debtor.is_empty() || !is_alphabetic(&info.debtor){
         return false;
@@ -105,14 +170,5 @@ pub async fn is_complete(info: &Info) -> bool{
     true
 }
 
-pub fn is_alphabetic(string: &String) -> bool{
-    for ch in string.chars(){
-        if !ch.is_alphabetic() && ch != ' '{
-           return false;
-        }
-    } 
-
-    true
-}
 
 

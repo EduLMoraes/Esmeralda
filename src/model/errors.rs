@@ -73,5 +73,8 @@ pub enum ControlError {
     ErrorAuthenticate(ErrorLog<'static>),
 
     #[error("Error of value invalid")]
-    ErrorValueInvalid(ErrorLog<'static>)
+    ErrorValueInvalid(ErrorLog<'static>),
+
+    #[error("Error to save")]
+    ErrorNotSave(ErrorLog<'static>)
 }
