@@ -2,14 +2,17 @@ use super::*;
 use crate::control;
 use crate::tokio::runtime;
 use crate::structs_db::User;
+use crate::errors::*;
 
 #[component]
 pub fn Login(cx: Scope) -> Element{
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());
+    let login_failed: &UseState<bool> = use_state(cx, || false);
 
-    let nav = use_navigator(cx);
-    let rt = runtime::Runtime::new().unwrap();
+    let nav: &Navigator = use_navigator(cx);
+    let rt: runtime::Runtime = runtime::Runtime::new().unwrap();
+
 
     render!(
         link{
@@ -45,10 +48,17 @@ pub fn Login(cx: Scope) -> Element{
                         nav.push(Route::Home{});
                     }
                     else{
-                        println!("{:?}", result.err());
+                        let _ = result.map_err(move |err| {
+                            match err{
+                                ControlError::ErrorAuthenticate(_) => { login_failed.set( true ) },
+                                _ => {}
+                            };
+                        });
                     }
                 },
                 
+                p{ hidden: !**login_failed, id: "data-invalid", "Nome de usuário ou senha incorreto!" }
+
                 input {
                     id: "username",
                     placeholder: "Username",
