@@ -67,3 +67,7 @@ input::selection, input::after, input::marker, input:focus{
     border-color: transparent;
     color: green;
 }
+
+#input-invalid{
+    border-color: red;
+}

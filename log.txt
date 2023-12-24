@@ -1,4 +1,1 @@
-Some(ErrorExternDB(GetUserError(ErrorLog { title: "Error to prepare query to get user", code: 804, file: "db.rs" })))
-Some(ErrorExternDB(GetUserError(ErrorLog { title: "Error to prepare query to get user", code: 804, file: "db.rs" })))
-Some(ErrorToAddUser(ErrorLog { title: "No has data for add user", code: 305, file: "controler.rs" }))
-Some(ErrorToAddUser(ErrorLog { title: "No has data for add user", code: 305, file: "controler.rs" }))
+Some(ErrorExternDB(AddUserError(ErrorLog { title: "Error to prepare query", code: 808, file: "db.rs" })))

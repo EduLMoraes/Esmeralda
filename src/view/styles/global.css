@@ -1,3 +1,9 @@
+#data-invalid{
+    font-size: larger;
+    color: red;
+    
+}
+
 #container{
     justify-content: center; 
     align-items: center; 

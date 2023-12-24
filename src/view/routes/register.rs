@@ -1,3 +1,5 @@
+#[path = "../../controller/email_valid.rs"]
+mod email_valid;
 use crate::controller::add_user;
 use crate::structs_db::NewUser;
 use crate::tokio::runtime;
@@ -13,9 +15,6 @@ pub fn Register(cx: Scope) -> Element{
     let nav = use_navigator(cx);
     let is_email = use_state(cx, || true);
     let is_equal = use_state(cx, || true);
-    let is_user = use_state(cx, || true);
-    let is_pass = use_state(cx, || true);
-    let is_pass2 = use_state(cx, || true);
 
     render!(
         link{
@@ -58,35 +57,51 @@ pub fn Register(cx: Scope) -> Element{
 
                 input{
                     r#type: "email",
-                    id: "email",
+                    r#required: "true",
+                    id: if **is_email { "email" } else { "input-invalid" },
                     placeholder: "Email",
                     oninput: move |input| {
-                        
+                        is_email.set(email_valid::validate( &input.value ));
                         email.set(input.value.to_string())
                     }
                 }   
+                p { hidden: **is_email, id: "data-invalid", "Email inválido." }
+
                 input{
                     r#type: "text",
+                    r#required: "true",
                     id: "username",
                     placeholder: "Usuário",
-                    oninput: move |input| username.set(input.value.to_string())
+                    oninput: move |input| {
+                        username.set(input.value.to_string());
+                    }
                 } 
+
                 input{
                     r#type: "password",
+                    r#required: "true",
                     id: "password",
                     placeholder: "Senha",
-                    oninput: move |input| password.set(input.value.to_string())
+                    oninput: move |input| {
+                        password.set(input.value.to_string());
+                    }
                 } 
+
                 input{
                     r#type: "password",
+                    r#required: "true",
                     id: "confirm_pass",
                     placeholder: "Confirme sua senha",
-                    oninput: move |input| confirm_pass.set(input.value.to_string())
+                    oninput: move |input| {
+                        confirm_pass.set(input.value.to_string())
+                    }
                 } 
+                p { hidden: **is_equal, id: "data-invalid", "As senhas não são iguais." }
 
                 button {
                     r#type: "submit",
                     id: "submit",
+                    onclick: move |_| is_equal.set( password.get() == confirm_pass.get() ),
                     "Cadastrar e entrar"
                 }
                 p{

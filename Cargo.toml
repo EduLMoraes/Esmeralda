@@ -16,6 +16,7 @@ nfd = "0.0.4"
 postgres = "0.19.7"
 printpdf = "0.6.0"
 rand = "0.8.5"
+regex = "1.10.2"
 rust-crypto = "0.2.36"
 serde = {version = "1.0.193", features = ["derive"]}
 thiserror = "1.0.50"
