@@ -1,5 +1,4 @@
--- DROP TABLE counts;
--- DROP TABLE users;
+
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -9,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS counts (
-	count_id INTEGER PRIMARY KEY,
+	count_id SERIAL PRIMARY KEY,
 	user_id INTEGER NOT NULL,
 	debtor VARCHAR(100) NOT NULL,
 	title VARCHAR(50) NOT NULL,
@@ -22,7 +21,4 @@ CREATE TABLE IF NOT EXISTS counts (
 	status BOOLEAN NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users
 );
-
-SELECT * FROM users;
-SELECT * FROM counts;
 

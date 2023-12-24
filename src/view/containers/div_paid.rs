@@ -81,6 +81,10 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                             msg.write().hidden = false;
                             msg.write().text = "Conta paga!";
                             is_id_valid.set(true);
+                            
+                            let run = tokio::runtime::Runtime::new().unwrap();
+                            let response = run.block_on( control::edit( &counts.read().clone() ) );
+                            println!("{:?}", response);
                         }
 
                     },

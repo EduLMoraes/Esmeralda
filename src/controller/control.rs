@@ -5,7 +5,6 @@ use super::db::*;
 use crate::export::*;
 use crate::structs_db::*;
 use crate::alphabetic::is_alphabetic;
-use dioxus_desktop::wry::http::Error;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
@@ -13,10 +12,6 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     let db = get_database_instance();
 
     user.password = encrpt(user.password);
-
-    
-    
-    
 
     let data_user = Data::User(user.clone());
 
@@ -76,7 +71,6 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
         db.add(new_user).await.map_err(|err| {
             ControlError::ErrorExternDB(err)
         })?;
-
         Ok(())
     } else {
         Err(ControlError::ErrorToAddUser(ErrorLog {

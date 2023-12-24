@@ -14,6 +14,7 @@ pub fn Register(cx: Scope) -> Element{
     let nav = use_navigator(cx);
     let is_email = use_state(cx, || true);
     let is_equal = use_state(cx, || true);
+    let is_newly = use_state(cx, || false);
 
     render!(
         link{
@@ -47,12 +48,15 @@ pub fn Register(cx: Scope) -> Element{
                     let result = rt.block_on(add_user(user, confirm_pass.to_string()));
                     
                     if result.is_ok(){
-                        nav.push(Route::Home{});
+                        is_newly.set(true);
+                        // nav.push(Route::Home{});
                     }
                     else{
                         println!("{:?}", result.err());
                     }
                 },
+
+                p{ hidden: !**is_newly, id: "sucess", "Cadastrado(a) com sucesso! Agora volte ao login e logue (^-^)"}
 
                 input{
                     r#type: "email",
@@ -101,7 +105,7 @@ pub fn Register(cx: Scope) -> Element{
                     r#type: "submit",
                     id: "submit",
                     onclick: move |_| is_equal.set( password.get() == confirm_pass.get() ),
-                    "Cadastrar e entrar"
+                    "Cadastrar-se"
                 }
                 p{
                     "Já possuí login? "

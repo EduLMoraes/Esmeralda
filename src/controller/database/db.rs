@@ -60,7 +60,8 @@ impl DataBase {
                     })
                 })?;
 
-                conn.execute(&stmt, &[&user.username, &user.password, &user.email]).await.map_err(|_| {
+                conn.execute(&stmt, &[&user.username, &user.password, &user.email]).await.map_err(|err| {
+                    println!("{}", err);
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to execute query",
                         code: 808,
@@ -81,7 +82,6 @@ impl DataBase {
 
                 for i in 0..counts.len(){
                     let stmt: Statement = conn.prepare("INSERT INTO counts (
-                            count_id,
                             user_id, 
                             debtor, 
                             title, 
@@ -92,7 +92,7 @@ impl DataBase {
                             date_in, 
                             date_out, 
                             status
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11) ").await.map_err(|_| {
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, TO_DATE($8, 'YYYY-MM-DD'), TO_DATE($9, 'YYYY-MM-DD'), $10) ").await.map_err(|_| {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
@@ -101,7 +101,6 @@ impl DataBase {
                     })?;
     
                     conn.execute(&stmt, &[
-                            &counts.list[i].id,
                             &user.id, 
                             &counts.list[i].debtor, 
                             &counts.list[i].title, 
@@ -154,7 +153,7 @@ impl DataBase {
                 })?;
 
                 let row = conn.query_one(&stmt, &[&user.username]).await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
+                    DataBaseError::GetUserError(ErrorLog {
                         title: "User not found!",
                         code: 804,
                         file: "db.rs",
@@ -209,8 +208,8 @@ impl DataBase {
                         value: row.get::<_, f32>("value"),
                         date_in: row.get::<_, String>("date_in").parse::<NaiveDate>().unwrap(),
                         date_out: row.get::<_, String>("date_out").parse::<NaiveDate>().unwrap(),
-                        paid_installments: row.get::<_, u32>("paid_installments"),
-                        installments: row.get::<_, u32>("installments"),
+                        paid_installments: row.get::<_, i32>("paid_installments").to_string().parse::<u32>().unwrap(),
+                        installments: row.get::<_, i32>("installments").to_string().parse::<u32>().unwrap(),
                         status: row.get::<_, bool>("status")
                     };
 
