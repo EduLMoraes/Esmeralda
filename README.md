@@ -7,4 +7,4 @@ dívida e o total daquela dívida.
 ## Versão
 `v0.1.023`
 
-2533 linhas. Última contagem em 20/12/2023 - 20:30
+4574 linhas. Última contagem em 24/12/2023 - 15:58
