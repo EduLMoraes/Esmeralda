@@ -1,7 +1,7 @@
 use super::*;
 use diacritics::remove_diacritics;
 use crate::chrono::NaiveDate;
-use crate::prelude::controller::is_alphabetic;
+use crate::prelude::control::is_alphabetic;
 
 pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
     let msg = use_shared_state::<Message>(cx).unwrap();

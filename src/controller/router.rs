@@ -1,14 +1,14 @@
-use dioxus_router::prelude::*;
+// use dioxus_router::prelude::*;
 use crate::dioxus::prelude::*;
+use crate::dioxus_router::prelude::*;
 
-#[path = "../view/routes/register.rs"]
+#[path = "../view/register.rs"]
 mod register;
 use register::Register;
-#[path = "../view/routes/login.rs"]
+#[path = "../view/login.rs"]
 mod login;
 use login::Login;
-
-#[path = "../view/routes/home.rs"]
+#[path = "../view/home.rs"]
 mod home;
 use home::Home;
 

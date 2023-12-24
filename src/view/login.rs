@@ -1,7 +1,7 @@
-use crate::prelude::controller;
+use super::*;
+use crate::control;
 use crate::tokio::runtime;
 use crate::structs_db::User;
-use super::*;
 
 #[component]
 pub fn Login(cx: Scope) -> Element{
@@ -39,7 +39,7 @@ pub fn Login(cx: Scope) -> Element{
                         password: password.to_string()
                     };
                     
-                    let result = rt.block_on(controller::login(user));
+                    let result = rt.block_on(control::login(user));
                     
                     if result.is_ok(){
                         nav.push(Route::Home{});

@@ -1,7 +1,7 @@
 use super::*;
 use crate::chrono::NaiveDate;
-use crate::prelude::controller::is_complete;
-use crate::prelude::controller::is_alphabetic;
+use crate::prelude::control::is_complete;
+use crate::prelude::control::is_alphabetic;
 use crate::tokio::runtime;
 
 pub fn add(cx: Scope, hidden_add: bool) -> Element{

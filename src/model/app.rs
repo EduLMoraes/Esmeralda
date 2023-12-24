@@ -1,4 +1,4 @@
-use crate::dioxus_router::prelude::Router;
+use crate::dioxus_router::prelude::*;
 use crate::dioxus::prelude::*;
 use crate::env;
 

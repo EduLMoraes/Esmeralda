@@ -70,7 +70,6 @@ async fn mkdir(path: &str) -> (File, String){
 
 }
 
-
 #[allow(dead_code)]
 pub async fn export_csv( path: &str, data: &InterfaceInfo) -> Result<String, String>{
 

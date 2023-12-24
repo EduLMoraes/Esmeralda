@@ -1,7 +1,7 @@
 use crate::dioxus_desktop::{Config, WindowBuilder};
 use std::path::PathBuf;
 
-pub fn config() -> Config {
+pub fn get_config() -> Config {
     let window = WindowBuilder::new();
     let window = window.with_title("Esmeralda");
     let window = window.with_transparent(false);

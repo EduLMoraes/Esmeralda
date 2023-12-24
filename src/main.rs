@@ -1,5 +1,6 @@
-use prelude::{crypt::get_key, *};
 mod prelude;
+use prelude::*;
+use prelude::cryptography::get_key;
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -35,6 +36,6 @@ fn main() {
 
     dioxus_desktop::launch_cfg(
         app::app,
-        config::config()
+        to_app::get_config()
     );
 }

@@ -1,17 +1,13 @@
-#[path = "./divs/div_options.rs"]
+#[path = "./containers/div_options.rs"]
 mod div_options;
 
-#[path = "./divs/div_active.rs"]
+#[path = "./containers/div_active.rs"]
 mod div_active;
 
-#[path = "../../controller/pages.rs"]
-mod pages;
-
-use dioxus_elements::GlobalAttributes;
-
-use crate::structs::Info;
-use crate::structs::InterfaceInfo;
 use super::*;
+use crate::structs::*;
+use crate::structs::InterfaceInfo;
+use crate::move_pages;
 
 #[derive(Clone, Debug)]
 struct Columns{
@@ -253,7 +249,7 @@ pub fn Home (cx: Scope) -> Element {
                 div{ id: "move-page",
                     button{ hidden: less, 
                         onclick: move |_| {
-                            let (i, e) = pages::back_page(**init, **end, LINES);
+                            let (i, e) = move_pages::back_page(**init, **end, LINES);
                             init.set(i);
                             end.set(e);
                             page.set(page - 1);
@@ -265,7 +261,7 @@ pub fn Home (cx: Scope) -> Element {
 
                     button{ hidden: more, 
                         onclick: move |_| {
-                            let (i, e) = pages::next_page(**init, **end, LINES, &size_max);
+                            let (i, e) = move_pages::next_page(**init, **end, LINES, &size_max);
                             init.set(i);
                             end.set(e);
                             page.set(page + 1);

@@ -1,8 +1,9 @@
 use super::*;
 
-#[path = "../../../controller/filter.rs"]
-mod filter;
 use crate::structs::Debtor;
+
+#[path = "../../controller/utils/filter.rs"]
+mod filter;
 
 pub fn div_most(cx: Scope) -> Element{
     let columns: &UseSharedState<Columns> = use_shared_state::<Columns>(cx).unwrap();

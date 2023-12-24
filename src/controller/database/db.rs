@@ -1,24 +1,17 @@
-use crate::{errors::ErrorLog, structs::*, structs_db::*, var, Error};
-use deadpool_postgres::{Config, ManagerConfig, Pool, RecyclingMethod, Runtime, GenericClient};
+#[path = "../config/to_db.rs"]
+mod to_db;
+mod error_db;
+
+use crate::errors::ErrorLog;
+use crate::structs::*; 
+use crate::structs_db::*; 
+use crate::Error;
+use deadpool_postgres::{Pool, Runtime, GenericClient};
 use postgres::{NoTls, Statement};
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
-/// Configuração do banco de dados.
-#[allow(dead_code)]
-pub fn get_db_config() -> Result<Config, Box<dyn Error>> {
-    let mut config = Config::new();
 
-    config.user = Some(var("DB_USER").unwrap_or_else(|_| "postgres".into()));
-    config.password = Some(var("DB_PASSWORD").unwrap_or_else(|_| "postgres".into()));
-    config.dbname = Some(var("DB_NAME").unwrap_or_else(|_| "Esmeralda".into()));
-    config.host = Some(var("DB_HOSTNAME").unwrap_or_else(|_| "localhost".into()));
-    config.manager = Some(ManagerConfig {
-        recycling_method: RecyclingMethod::Fast,
-    });
-
-    Ok(config)
-}
 
 #[allow(dead_code)]
 pub struct DataBase {
@@ -29,7 +22,7 @@ pub struct DataBase {
 impl DataBase {
     pub fn new() -> Result<Self, DataBaseError> {
         let db = DataBase {
-            pool: get_db_config()
+            pool: to_db::get_config()
                 .map_err(|_| {
                     DataBaseError::GetConfigError(ErrorLog {
                         title: "Config no error",

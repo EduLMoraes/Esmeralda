@@ -1,9 +1,8 @@
-#[path = "../../controller/email_valid.rs"]
-mod email_valid;
-use crate::controller::add_user;
+use super::*;
+use crate::email_valid;
+use crate::control::add_user;
 use crate::structs_db::NewUser;
 use crate::tokio::runtime;
-use super::*;
 
 #[component]
 pub fn Register(cx: Scope) -> Element{
