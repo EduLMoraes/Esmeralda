@@ -35,7 +35,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let info: &UseState<Info> = use_state::<Info>(cx, || Info::new());
-    let is_new = use_state(cx, || true);
+    let is_new: &UseState<bool> = use_state(cx, || true);
     
     render!(
         div{ id: "div-form-buttons",
@@ -61,7 +61,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                             msg.write().hidden = true;
 
-                        }}
+                        }, info.get().debtor.to_string() }
                     }
                     
                     p{ id: "data-invalid", hidden: **is_name_valid, "Nome inválido!" }
@@ -78,7 +78,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                             msg.write().hidden  = true;
 
-                        } }
+                        }, info.get().title.to_string() }
                     }
 
                     br{}
@@ -119,7 +119,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                             msg.write().hidden = true;
 
-                        } }
+                        }, info.get().value.to_string() }
                     }
                     
                     p{ id: "data-invalid", hidden: **is_value_valid, "Valor inválido!" }
@@ -133,9 +133,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
                             is_new.set(true);
                             info.set(tmp_info);
-                        } } 
+                        }, info.get().date_in.to_string() } 
                         " - até - "
-                        input{ r#type: "date", id: "date_out", oninput: move |date_out| {
+                        input{ r#type: "date", id: "date_out", value: "00/00/2000", oninput: move |date_out| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.date_out = date_out.value.trim().parse::<NaiveDate>().unwrap();
                             is_new.set(true);
@@ -144,7 +144,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             
                             msg.write().hidden = true;
 
-                        } }
+                        }, info.get().date_out.to_string() }
                     }
 
                     br{}
@@ -178,7 +178,8 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                                 msg.write().hidden = true;
 
-                            } 
+                            }, 
+                            info.get().installments.to_string()
                         },
                     }
 
@@ -196,15 +197,15 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                             msg.write().hidden  = true;
 
-                        } }
+                        }, value: info.get().status }
                     }
                 }
 
-                button{ r#type: "submit", id: "confirm-form",
+                button{ r#type: "reset", id: "confirm-form",
                     onclick: move |_| {
                         let rnt = runtime::Runtime::new().unwrap();
 
-                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)) && **is_new{
+                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
                             let exists_counts = counts.read().clone();
                             let mut tmp_info = info.get().clone();
                             let mut has_count: bool = true;

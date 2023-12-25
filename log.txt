@@ -1,0 +1,15 @@
+db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
+DETAIL: Key (count_id)=(101) already exists.
+Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
+db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
+DETAIL: Key (count_id)=(108) already exists.
+Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
+db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
+DETAIL: Key (count_id)=(109) already exists.
+Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
+db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
+DETAIL: Key (count_id)=(110) already exists.
+Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
+db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
+DETAIL: Key (count_id)=(111) already exists.
+Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))

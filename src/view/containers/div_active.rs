@@ -152,7 +152,7 @@ pub fn div_most(cx: Scope) -> Element{
                         td { debtor.get_name().clone() }
                         td { format!("{:.2}", debtor.get_debt()) }
                         td { format!("{:.2}", debtor.get_value()) }
-                        td { format!("{}", debtor.get_status().to_string()) }
+                        td { id: if debtor.get_status() { "stt-pos" } else { "stt-neg" } }
                     }
                 }
             }
