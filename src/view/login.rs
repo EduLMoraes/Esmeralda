@@ -3,6 +3,10 @@ use crate::control;
 use crate::tokio::runtime;
 use crate::structs_db::User;
 use crate::errors::*;
+use crate::Instant;
+mod styles;
+use styles::style_login;
+use styles::style_global;
 
 #[component]
 /// Renders a login form.
@@ -20,17 +24,17 @@ use crate::errors::*;
 pub fn Login(cx: Scope) -> Element{
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());
-    let login_failed: &UseState<bool> = use_state(cx, || false);
+    let data_incompatible: &UseState<bool> = use_state(cx, || false);
+    let user_not_exists: &UseState<bool> = use_state(cx, || false);
 
     let nav: &Navigator = use_navigator(cx);
     let rt: runtime::Runtime = runtime::Runtime::new().unwrap();
 
 
     render!(
-        link{
-            r#rel: "stylesheet",
-            href: "./src/view/styles/login.css"
-        }
+        style {{ style_global() }}
+        style {{ style_login() }}
+
         div{
             id: "login",
 
@@ -54,22 +58,34 @@ pub fn Login(cx: Scope) -> Element{
                         password: password.to_string()
                     };
                     
+                    let now = Instant::now();
                     let result = rt.block_on(control::login(user));
-                    
+                    let elapsed = now.elapsed();
+
+                    println!("L1 -> Time to login --- [{:.3?}]", elapsed);
+
                     if result.is_ok(){
                         nav.push(Route::Home{});
                     }
                     else{
                         let _ = result.map_err(move |err| {
                             match err{
-                                ControlError::ErrorAuthenticate(_) => { login_failed.set( true ) },
-                                _ => {}
+                                ControlError::ErrorAuthenticate(err) => { 
+                                    println!("{err}"); 
+                                    data_incompatible.set( true ); 
+                                },
+                                ControlError::ErrorExternDB(err) => {
+                                    println!("{err}");
+                                    user_not_exists.set(true);
+                                },
+                                _ => { }
                             };
                         });
                     }
                 },
                 
-                p{ hidden: !**login_failed, id: "data-invalid", "Nome de usuário ou senha incorreto!" }
+                p{ hidden: !**user_not_exists, id: "data-invalid", "Usuário não cadastrado!" }
+                p{ hidden: !**data_incompatible, id: "data-invalid", "Nome de usuário ou senha incorreto!" }
 
                 input {
                     id: "username",

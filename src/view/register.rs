@@ -3,6 +3,10 @@ use crate::email_valid;
 use crate::control::add_user;
 use crate::structs_db::NewUser;
 use crate::tokio::runtime;
+use crate::Instant;
+mod styles;
+use styles::style_global;
+use styles::style_register;
 
 /// Renders a registration form for a web application using the `yew` framework.
 ///
@@ -45,10 +49,9 @@ pub fn Register(cx: Scope) -> Element{
     let is_newly = use_state(cx, || false);
 
     render!(
-        link{
-            r#rel: "stylesheet",
-            href: "./src/view/styles/register.css"
-        }
+        style {{ style_global() }}
+        style {{ style_register() }}
+        
         div {
             id: "register",
 
@@ -72,8 +75,12 @@ pub fn Register(cx: Scope) -> Element{
                         username: username.to_string(),
                         password: password.to_string()
                     };
-                    
+
+                    let now = Instant::now();
                     let result = rt.block_on(add_user(user, confirm_pass.to_string()));
+                    let elapsed = now.elapsed();
+
+                    println!("R1 -> Time to add user --- [{:.3?}]", elapsed);
                     
                     if result.is_ok(){
                         is_newly.set(true);
@@ -91,7 +98,13 @@ pub fn Register(cx: Scope) -> Element{
                     id: if **is_email { "email" } else { "input-invalid" },
                     placeholder: "Email",
                     oninput: move |input| {
+
+                        let now = Instant::now();
                         is_email.set(email_valid::validate( &input.value ));
+                        let elapsed = now.elapsed();
+
+                        println!("R2 -> Time to validate email in register --- [{:.3?}]", elapsed);
+
                         email.set(input.value.to_string())
                     }
                 }   

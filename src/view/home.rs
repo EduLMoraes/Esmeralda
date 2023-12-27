@@ -10,6 +10,10 @@ use crate::structs::InterfaceInfo;
 use crate::move_pages;
 use crate::control;
 use crate::tokio;
+use crate::Instant;
+mod styles;
+use styles::style_global;
+use styles::style_home;
 
 /// Represents a struct called `Columns` with several boolean fields.
 ///
@@ -101,7 +105,10 @@ const LINES: usize = 10;
 #[component]
 pub fn Home (cx: Scope) -> Element {
     let run = tokio::runtime::Runtime::new().unwrap();
+
+    let now = Instant::now();
     use_shared_state_provider(cx, || run.block_on(control::recover()).unwrap());
+    println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info =  counts.read().clone();
@@ -123,6 +130,8 @@ pub fn Home (cx: Scope) -> Element {
     let end: &UseState<usize> = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
     let page: &UseState<i32> = use_state(cx, || 1);
 
+    let now = Instant::now();
+
     if **total_counts == 0.0 && size_max > 0 || size_max != **contabilized{
         for i in 0..size_max{
             if counts_info.list[i].status{
@@ -137,13 +146,16 @@ pub fn Home (cx: Scope) -> Element {
         contabilized.set(size_max);
     }
     
+    println!("H2 -> Time to contabilized --- [{:.3?}]", now.elapsed());
+
     let crescent: &UseState<bool> = use_state(cx, || false);
     let mut more: bool = false;
     let mut less: bool = false;
     
     render!{
 
-        link{ r#rel: "stylesheet", href: "./src/view/styles/home.css" }
+        style {{ style_global() }}
+        style {{ style_home() }}
 
         h2{ id: "name",  "Esmeralda" }
 
@@ -160,8 +172,11 @@ pub fn Home (cx: Scope) -> Element {
                                 onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_id(**crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("Hx -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "ID"
                             }  
                         },
@@ -172,8 +187,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.name, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_alphabetical("name", **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H3 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Nome"
                             } 
                         },
@@ -185,8 +203,11 @@ pub fn Home (cx: Scope) -> Element {
                                 onclick: move |_|{
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_alphabetical("title", **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H4 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Título" 
                             }
                         },
@@ -197,8 +218,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.description, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_alphabetical("desciption", **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H5 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Descrição"
                             }
                         },
@@ -209,8 +233,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.date_in, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_date(true, **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H6 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Data Inicial"
                             } 
                         },
@@ -221,8 +248,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.date_out, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_date(false, **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H7 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Data Final"
                             } 
                         },
@@ -233,8 +263,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.paid_installments, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_installments(true, **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H8 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Parcelas pagas"
                             } 
                         },
@@ -245,8 +278,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.installments, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_installments(false, **crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H9 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Parcelas"
                             } 
                         },
@@ -257,8 +293,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.value, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_value(**crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H10 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Valor"
                             } 
                         },
@@ -269,8 +308,11 @@ pub fn Home (cx: Scope) -> Element {
                                 hidden: !columns.status, onclick: move |_| {
                                     let ci =  counts.read().clone();
 
+                                    let now = Instant::now();
                                     counts.write().list = ci.order_by_status(**crescent).list;
                                     crescent.set(!**crescent);
+
+                                    println!("H11 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Status"
                             } 
                         }
@@ -308,10 +350,14 @@ pub fn Home (cx: Scope) -> Element {
                 div{ id: "move-page",
                     button{ hidden: less, 
                         onclick: move |_| {
+                            let now = Instant::now();
+
                             let (i, e) = move_pages::back_page(**init, **end, LINES);
                             init.set(i);
                             end.set(e);
                             page.set(page - 1);
+
+                            println!("H11 -> Time to back page --- [{:.3?}]", now.elapsed());
                         }, 
                         "← Página anterior" 
                     }
@@ -320,10 +366,14 @@ pub fn Home (cx: Scope) -> Element {
 
                     button{ hidden: more, 
                         onclick: move |_| {
+                            let now = Instant::now();
+
                             let (i, e) = move_pages::next_page(**init, **end, LINES, &size_max);
                             init.set(i);
                             end.set(e);
                             page.set(page + 1);
+
+                            println!("h12 -> Time to next page --- [{:.3?}]", now.elapsed());
                         }, 
                         "Próxima página →" 
                     }

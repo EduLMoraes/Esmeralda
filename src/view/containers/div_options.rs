@@ -6,25 +6,7 @@ mod div_edit;
 mod div_export;
 
 
-/// Represents a message with a hidden flag and text content.
-///
-/// # Fields
-///
-/// - `hidden`: A boolean indicating whether the message is hidden or not.
-/// - `text`: A reference to a string representing the content of the message.
-///
-/// # Example
-///
-/// ```
-/// struct Message<'a> {
-///     hidden: bool,
-///     text: &'a str,
-/// }
-/// ```
-struct Message<'a> {
-    hidden: bool,
-    text: &'a str,
-}
+
 
 /// Renders a div element with buttons for different actions and includes other modules based on the value of the hidden flags.
 ///

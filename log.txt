@@ -1,15 +1,16 @@
-db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
-DETAIL: Key (count_id)=(101) already exists.
-Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
-db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
-DETAIL: Key (count_id)=(108) already exists.
-Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
-db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
-DETAIL: Key (count_id)=(109) already exists.
-Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
-db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
-DETAIL: Key (count_id)=(110) already exists.
-Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
-db error: ERROR: duplicate key value violates unique constraint "counts_pkey"
-DETAIL: Key (count_id)=(111) already exists.
-Err(ErrorExternDB(AddUserError(ErrorLog { title: "Error to execute query", code: 808, file: "db.rs" })))
+R2 -> Time to validate email in register --- [1.671ms]
+R2 -> Time to validate email in register --- [1.352ms]
+R2 -> Time to validate email in register --- [959.492µs]
+R2 -> Time to validate email in register --- [1.344ms]
+R2 -> Time to validate email in register --- [1.344ms]
+R2 -> Time to validate email in register --- [1.369ms]
+R2 -> Time to validate email in register --- [660.064µs]
+R2 -> Time to validate email in register --- [1.304ms]
+R2 -> Time to validate email in register --- [1.384ms]
+R2 -> Time to validate email in register --- [1.416ms]
+R2 -> Time to validate email in register --- [1.999ms]
+R1 -> Time to add user --- [129.585ms]
+C3 Time to login --- 2.155ms
+L1 -> Time to login --- [2.247ms]
+H1 -> Time to recover user --- [1.492ms]
+H2 -> Time to contabilized --- [577.000ns]

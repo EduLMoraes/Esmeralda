@@ -79,14 +79,17 @@ pub enum ControlError {
     /// Error related to an external module.
     #[error("Error of module extern")]
     ErrorExternDB(DataBaseError),
-
+    
     /// Error when adding a user.
     #[error("Add user error")]
     ErrorExtern(ErrorLog<'static>),
-
+    
     /// Error when adding a user.
     #[error("Add user error")]
     ErrorToAddUser(ErrorLog<'static>),
+    
+    #[error("Error of user trying loggin not exists")]
+    UserNotExists(ErrorLog<'static>),
 
     /// Authentication error.
     #[error("Authenticate error")]

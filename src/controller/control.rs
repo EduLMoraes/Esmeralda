@@ -5,6 +5,7 @@ use super::db::*;
 use crate::export::*;
 use crate::structs_db::*;
 use crate::alphabetic::is_alphabetic;
+use crate::Instant;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
@@ -34,6 +35,8 @@ use std::sync::Mutex;
 /// * `Ok(())` - If the user authentication is successful.
 /// * `Err(ControlError::ErrorAuthenticate)` - If the password is incorrect or the retrieved data is of an invalid type.
 pub async fn login(mut user: User) -> Result<(), ControlError>{
+    let start = Instant::now();
+
     let db = get_database_instance();
 
     user.password = encrpt(user.password);
@@ -41,24 +44,38 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
     let data_user = Data::User(user.clone());
 
     let db_user = db.get(data_user).await.map_err(|err| {
+        println!("{err:?}");
+        println!("C1 Time to login --- {:.3?}", start.elapsed());
         ControlError::ErrorExternDB(err)
     })?;
 
     match db_user {
         Data::UserDb(data) => {
-            if data.password == user.password{
+            if data.username.is_empty(){
+                println!("C2 Time to login --- {:.3?}", start.elapsed());
+
+                Err(ControlError::UserNotExists( ErrorLog{
+                    title: "User not exists on system", code: 305, file: "control.rs"
+                } ))
+            }else if data.password == user.password{
                 gen_user_instance(data);
 
+                println!("C3 Time to login --- {:.3?}", start.elapsed());
                 Ok(())
             }else {
+                println!("C4 Time to login --- {:.3?}", start.elapsed());
+                
                 Err(ControlError::ErrorAuthenticate(
                     ErrorLog { title: "Password incorrect", code: 305, file: "controller.rs" }
                 ))
             }
         },
-        _ => Err(ControlError::ErrorAuthenticate(
-            ErrorLog { title: "Data type received is invalid", code: 306, file: "controller.rs" }
-        ))
+        _ => {
+            println!("C5 Time to login --- {:.3?}", start.elapsed());
+            Err(ControlError::ErrorAuthenticate(
+                ErrorLog { title: "Data type received is invalid", code: 306, file: "controller.rs" }
+            ))
+        }
     }
 }
  
