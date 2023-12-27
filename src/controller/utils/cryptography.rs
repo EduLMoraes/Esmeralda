@@ -98,7 +98,6 @@ pub fn encrpt(msg: String) -> String{
 ///
 /// ```
 /// let key = get_key();
-/// println!("Generated key: {}", key);
 /// ```
 ///
 /// # Returns
@@ -107,10 +106,10 @@ pub fn encrpt(msg: String) -> String{
 pub fn get_key() -> String {
     let mut key = String::new();
 
-    for _ in 0..1024 {
+    for _ in 0..32 {
         let index: u8 = thread_rng().gen_range(33..126);
         key.push(index as char);
     }
-    println!("{}", key);
+
     key
 }

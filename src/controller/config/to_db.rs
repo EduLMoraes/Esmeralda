@@ -24,7 +24,7 @@ pub fn get_config() -> Result<Config, Box<dyn Error>> {
 
     config.user = Some(var("DB_USER").unwrap_or_else(|_| "postgres".into()));
     config.password = Some(var("DB_PASSWORD").unwrap_or_else(|_| "postgres".into()));
-    config.dbname = Some(var("DB_NAME").unwrap_or_else(|_| "Esmeralda".into()));
+    config.dbname = Some(var("DB_NAME").unwrap_or_else(|_| "esmeralda".into()));
     config.host = Some(var("DB_HOSTNAME").unwrap_or_else(|_| "localhost".into()));
     config.manager = Some(ManagerConfig {
         recycling_method: RecyclingMethod::Fast,
