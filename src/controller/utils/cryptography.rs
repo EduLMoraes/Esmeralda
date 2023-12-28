@@ -103,7 +103,8 @@ pub fn encrpt(msg: String) -> String{
 /// # Returns
 ///
 /// A randomly generated key of length 1024 characters.
-    pub fn get_key() -> String {
+#[allow(dead_code)]
+pub fn get_key() -> String {
         let mut key = String::new();
 
         for _ in 0..32 {

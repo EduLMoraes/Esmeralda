@@ -123,8 +123,6 @@ async fn test_export_csv_appends_number_to_file_name_if_file_exists() {
 #[tokio::test]
 async fn test_export_csv_returns_error_if_unable_to_create_file() {
     // Arrange
-    let temp_dir = env::temp_dir();
-    let path = temp_dir.as_path().join("test.csv");
     let data = export::InterfaceInfo {
         list: vec![
             structs::Info {

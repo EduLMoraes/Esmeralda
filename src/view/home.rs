@@ -5,7 +5,6 @@ mod div_options;
 mod div_active;
 
 use super::*;
-use crate::prelude::structs::*;
 use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::move_pages;
 use crate::prelude::control;

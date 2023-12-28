@@ -64,7 +64,6 @@ async fn mkdir(path: &str) -> Result<(File, String), String>{
                 }
             }
         
-            let file: File;
             let mut path = path.to_string();
             let mut is_alterated: bool = false;
             let mut count_files = 0;

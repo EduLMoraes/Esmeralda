@@ -154,7 +154,6 @@ pub struct InterfaceInfo{
     pub list: Vec<Info>
 }
 
-use rand::{Rng, thread_rng};
 impl InterfaceInfo{
     #[allow(dead_code)]
     pub fn new() -> InterfaceInfo{

@@ -16,6 +16,7 @@ use std::path::PathBuf;
 /// # Returns
 ///
 /// A `Config` object with the specified properties set.
+#[allow(dead_code)]
 pub fn get_config() -> Config {
     let window = WindowBuilder::new();
     let window = window.with_title("Esmeralda");

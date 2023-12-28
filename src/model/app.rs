@@ -22,6 +22,7 @@ use router::Route;
 /// let scope = Scope::new();
 /// let element = app(scope);
 /// ```
+#[allow(dead_code)]
 pub fn app(cx: Scope) -> Element {
     let version: String = String::from(env!("CARGO_PKG_VERSION"));
 
