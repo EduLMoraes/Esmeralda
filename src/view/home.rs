@@ -5,12 +5,12 @@ mod div_options;
 mod div_active;
 
 use super::*;
-use crate::structs::*;
-use crate::structs::InterfaceInfo;
-use crate::move_pages;
-use crate::control;
-use crate::tokio;
-use crate::Instant;
+use crate::prelude::structs::*;
+use crate::prelude::structs::InterfaceInfo;
+use crate::prelude::move_pages;
+use crate::prelude::control;
+use crate::prelude::tokio;
+use crate::prelude::Instant;
 mod styles;
 use styles::style_global;
 use styles::style_home;

@@ -1,4 +1,4 @@
-use crate::dioxus_desktop::{Config, WindowBuilder};
+use crate::prelude::dioxus_desktop::{Config, WindowBuilder};
 use std::path::PathBuf;
 
 /// Returns a `Config` object with specified properties set.

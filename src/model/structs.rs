@@ -1,5 +1,5 @@
-use crate::chrono::NaiveDate;
-use crate::control::get_user_instance;
+use crate::prelude::chrono::NaiveDate;
+use crate::prelude::control::get_user_instance;
 
 /// Represents a message with a hidden flag and text content.
 ///
@@ -42,7 +42,7 @@ pub struct Message<'a> {
 /// let mut info = Info::new();
 /// info.new_id();
 /// ```
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Info {
     pub id: i32,
     pub debtor: String,
@@ -149,7 +149,7 @@ impl Info {
 /// 6. The `order_alphabetical` method orders the list alphabetically based on the specified column.
 /// 7. The `test` method generates a random list of `Info` objects for testing purposes.
 /// 8. The `Display` trait implementation allows printing the list of `Info` objects.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct InterfaceInfo{
     pub list: Vec<Info>
 }
@@ -556,46 +556,6 @@ impl InterfaceInfo{
             }
         }
         list
-    }
-
-    #[allow(dead_code)]
-    pub fn test() -> InterfaceInfo{
-
-        let mut vector: Vec<Info> = Vec::new();
-
-        let names = vec!["Eduardo", "Ana Luiza", "Eduardo Almeida", "Huan Zerton", "Huan Alter"];
-
-        for _ in 0..10{
-            let d = thread_rng().gen_range(1..29);
-            let m = thread_rng().gen_range(1..12);
-            let y = thread_rng().gen_range(1900..2023);
-
-            let date_in = NaiveDate::from_ymd_opt(y, m, d).unwrap();
-
-            let d = thread_rng().gen_range(1..29);
-            let m = thread_rng().gen_range(1..12);
-            let y = thread_rng().gen_range(1900..2023);
-            let date_out = NaiveDate::from_ymd_opt(y, m, d).unwrap();
-
-            let info_test = Info{
-                id: rand::thread_rng().gen_range(1000..9999),
-                debtor: names[rand::thread_rng().gen_range(0..names.len())].to_string(),
-                title: "Grão de Arroz".to_string(),
-                description: "Ele comprou grão por grão".to_string(),
-                value: rand::thread_rng().gen_range(0.0..1002.78),
-                date_in: date_in,
-                date_out: date_out,
-                paid_installments: 5,
-                installments: 12,
-                status: rand::thread_rng().gen_bool(0.5)
-            };
-            
-            vector.push(info_test.clone());
-        }
-
-        InterfaceInfo{
-            list: vector
-        }
     }
 }
 

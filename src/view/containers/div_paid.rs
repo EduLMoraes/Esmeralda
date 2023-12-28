@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::control::save;
+use crate::prelude::control::save;
 
 /// Handles the payment of an account.
 ///

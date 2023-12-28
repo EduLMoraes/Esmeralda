@@ -1,4 +1,5 @@
 use super::*;
+use crate::prelude::structs::Message;
 
 mod div_add;
 mod div_paid;

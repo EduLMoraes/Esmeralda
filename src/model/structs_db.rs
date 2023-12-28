@@ -1,4 +1,5 @@
 /// Represents a new user with a username, password, and email.
+#[derive(PartialEq, Debug)]
 pub struct NewUser {
     pub username: String,
     pub password: String,
@@ -21,14 +22,14 @@ impl NewUser {
     }
 }
 /// Represents a user with a username and password.
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct User {
     pub username: String,
     pub password: String,
 }
 
 /// Represents a user in a database.
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct UserDb {
     pub id: i32,
     pub username: String,

@@ -1,5 +1,5 @@
-use crate::dioxus::prelude::*;
-use crate::dioxus_router::prelude::*;
+use crate::prelude::dioxus::prelude::*;
+use crate::prelude::dioxus_router::prelude::*;
 
 #[path = "../view/register.rs"]
 mod register;

@@ -1,6 +1,6 @@
-use crate::dioxus_router::prelude::*;
-use crate::dioxus::prelude::*;
-use crate::env;
+use crate::prelude::dioxus_router::prelude::*;
+use crate::prelude::dioxus::prelude::*;
+use std::env;
 
 #[path = "../controller/router.rs"]
 mod router;

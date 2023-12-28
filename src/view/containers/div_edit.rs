@@ -1,9 +1,10 @@
 use super::*;
 use diacritics::remove_diacritics;
-use crate::chrono::NaiveDate;
-use crate::alphabetic::is_alphabetic;
-use crate::control;
-use crate::tokio;
+use crate::prelude::chrono::NaiveDate;
+use crate::prelude::alphabetic::is_alphabetic;
+use crate::prelude::control;
+use crate::prelude::tokio;
+use crate::prelude::structs::Message;
 
 /// Renders an HTML form for editing a specific account.
 ///

@@ -46,7 +46,7 @@ impl<'a> fmt::Display for ErrorLog<'a> {
     }
 }
 
-use crate::Error;
+use crate::prelude::Error;
 /// Represents different types of errors that can occur in a database.
 #[derive(Error, Debug, PartialEq)]
 #[allow(dead_code)]

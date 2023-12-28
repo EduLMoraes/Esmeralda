@@ -2,10 +2,10 @@ use super::cryptography::encrpt;
 use super::errors::*;
 use super::structs::*;
 use super::db::*;
-use crate::export::*;
-use crate::structs_db::*;
-use crate::alphabetic::is_alphabetic;
-use crate::Instant;
+use crate::prelude::export::*;
+use crate::prelude::structs_db::*;
+use crate::prelude::alphabetic::is_alphabetic;
+use crate::prelude::Instant;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 

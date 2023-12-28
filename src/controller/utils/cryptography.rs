@@ -103,13 +103,13 @@ pub fn encrpt(msg: String) -> String{
 /// # Returns
 ///
 /// A randomly generated key of length 1024 characters.
-pub fn get_key() -> String {
-    let mut key = String::new();
+    pub fn get_key() -> String {
+        let mut key = String::new();
 
-    for _ in 0..32 {
-        let index: u8 = thread_rng().gen_range(33..126);
-        key.push(index as char);
+        for _ in 0..32 {
+            let index: u8 = thread_rng().gen_range(33..126);
+            key.push(index as char);
+        }
+
+        key
     }
-
-    key
-}

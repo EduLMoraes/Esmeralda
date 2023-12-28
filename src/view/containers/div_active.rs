@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::structs::Debtor;
+use crate::prelude::structs::Debtor;
 
 #[path = "../../controller/utils/filter.rs"]
 mod filter;

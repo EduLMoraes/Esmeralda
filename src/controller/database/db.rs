@@ -1,10 +1,10 @@
 #[path = "../config/to_db.rs"]
 mod to_db;
 
-use crate::errors::ErrorLog;
-use crate::errors::DataBaseError;
-use crate::structs::*; 
-use crate::structs_db::*; 
+use crate::prelude::errors::ErrorLog;
+use crate::prelude::errors::DataBaseError;
+use crate::prelude::structs::*; 
+use crate::prelude::structs_db::*; 
 use chrono::NaiveDate;
 use deadpool_postgres::{Pool, Runtime, GenericClient};
 use postgres::{NoTls, Statement};
@@ -322,6 +322,7 @@ pub fn get_database_instance() -> std::sync::MutexGuard<'static, DataBase> {
 
 /// Represents different types of data that can be used as input for a function or method.
 #[allow(dead_code)]
+#[derive(Debug, PartialEq)]
 pub enum Data {
     NewUser(NewUser),
     User(User),

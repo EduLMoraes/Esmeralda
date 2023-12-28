@@ -1,9 +1,9 @@
 use super::*;
-use crate::control;
-use crate::tokio::runtime;
-use crate::structs_db::User;
-use crate::errors::*;
-use crate::Instant;
+use crate::prelude::control;
+use crate::prelude::tokio::runtime;
+use crate::prelude::structs_db::User;
+use crate::prelude::errors::*;
+use crate::prelude::Instant;
 mod styles;
 use styles::style_login;
 use styles::style_global;

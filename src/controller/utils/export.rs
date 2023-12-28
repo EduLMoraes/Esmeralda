@@ -5,7 +5,7 @@ use std::io::BufWriter;
 use std::fs::create_dir_all;
 use printpdf::*;
 
-use crate::prelude::structs::InterfaceInfo;
+pub use crate::prelude::structs::InterfaceInfo;
 
 /// Creates a directory structure and returns a file and its path. If the directory already exists, it appends a number to the file name to avoid overwriting existing files.
 ///
@@ -41,7 +41,7 @@ use crate::prelude::structs::InterfaceInfo;
 ///
 /// The function is marked as `async` and may need to be used within an asynchronous context.
 #[allow(dead_code)]
-async fn mkdir(path: &str) -> (File, String){
+async fn mkdir(path: &str) -> Result<(File, String), String>{
     let mut new_path: String = String::new();
 
     let paths: Vec<&str> = path.split('/').collect();
@@ -51,52 +51,61 @@ async fn mkdir(path: &str) -> (File, String){
         new_path.push('/');
     }
 
-    create_dir_all(new_path).unwrap();
-
-
-    let mut limit: usize = 0;
-    for a in path.chars(){
-        if a == '.' && limit == 0{
-            limit += 1;
-        }else if a == '.' {
-            break
-        }else{
-            limit += 1;
-        }
-    }
-
-    let file: File;
-    let mut path = path.to_string();
-    let mut is_alterated: bool = false;
-    let mut count_files = 0;
-
-    loop{
-        if count_files > 0  && count_files < 11{
-            if is_alterated{
-                path.replace_range(limit..limit+3, format!("({count_files})").trim());
-            }else{
-                path.insert_str(limit, format!("({count_files})").trim());
-                is_alterated = true;
+    match create_dir_all(new_path){
+        Ok(_) => {
+            let mut limit: usize = 0;
+            for a in path.chars(){
+                if a == '.' && limit == 0{
+                    limit += 1;
+                }else if a == '.' {
+                    break
+                }else{
+                    limit += 1;
+                }
             }
-            println!("{path}");
-        }else if count_files > 0{
-            if is_alterated{
-                path.replace_range(limit..limit+4, format!("({count_files})").trim());
-            }else{
-                path.insert_str(limit, format!("({count_files})").trim());
-                is_alterated = true;
+        
+            let file: File;
+            let mut path = path.to_string();
+            let mut is_alterated: bool = false;
+            let mut count_files = 0;
+        
+            loop{
+                if count_files > 0  && count_files < 11{
+                    if is_alterated{
+                        path.replace_range(limit..limit+3, format!("({count_files})").trim());
+                    }else{
+                        path.insert_str(limit, format!("({count_files})").trim());
+                        is_alterated = true;
+                    }
+                    println!("{path}");
+                }else if count_files > 0{
+                    if is_alterated{
+                        path.replace_range(limit..limit+4, format!("({count_files})").trim());
+                    }else{
+                        path.insert_str(limit, format!("({count_files})").trim());
+                        is_alterated = true;
+                    }
+                    println!("{path}");
+                }
+        
+                match fs::metadata(path.clone()){
+                    Ok(_) => count_files += 1,
+                    Err(_) => {
+                        let file = match File::create(path.clone()){
+                            Ok(f) => {
+                                f
+                            },
+                            Err(e) => return Err(e.to_string())
+                        };
+                                    
+                        return Ok((file, path))
+                    }
+                    
+                }
             }
-            println!("{path}");
-        }
-
-        match fs::metadata(path.clone()){
-            Ok(_) => count_files += 1,
-            Err(_) => {
-                file = File::create(path.clone()).unwrap();
-                            
-                return (file, path)
-            }
-            
+        },
+        Err(e) => {
+            Err(e.to_string())
         }
     }
 }
@@ -120,7 +129,7 @@ async fn mkdir(path: &str) -> (File, String){
 /// # Code Snippet
 #[allow(dead_code)]
 pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, String> {
-    let (mut file, path) = mkdir(path).await;
+    let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();
 
@@ -177,7 +186,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
 /// * If there is an error during the file export, the function returns a `Result` containing an error message.
 #[allow(dead_code)]
 pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, String> {
-    let (mut file, path) = mkdir(path).await;
+    let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();
 

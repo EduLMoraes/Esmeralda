@@ -1,9 +1,9 @@
 use super::*;
-use crate::email_valid;
-use crate::control::add_user;
-use crate::structs_db::NewUser;
-use crate::tokio::runtime;
-use crate::Instant;
+use crate::prelude::email_valid;
+use crate::prelude::control::add_user;
+use crate::prelude::structs_db::NewUser;
+use crate::prelude::tokio::runtime;
+use crate::prelude::Instant;
 mod styles;
 use styles::style_global;
 use styles::style_register;
