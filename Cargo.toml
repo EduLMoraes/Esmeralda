@@ -2,10 +2,7 @@
 name = "esmeralda"
 version = "0.1.0"
 edition = "2021"
-
-[dev-dependencies]
-mockall = "0.12.1"
-
+author = "Eduardo Moraes <17eduardo05@gmail.com>"
 
 [dependencies]
 chrono = "0.4.31"
