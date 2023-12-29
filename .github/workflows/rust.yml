@@ -16,5 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install gdk-3
+      run: sudo apt-get install libgtk-3-dev  # Este comando pode variar dependendo da versão do Ubuntu
     - name: Run tests
       run: cargo test --verbose
+
