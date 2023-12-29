@@ -30,7 +30,7 @@ async fn test_export_csv_success() {
     let result = control::save_in_file(path.to_str().unwrap(), &data).await;
 
     assert!(result.is_ok());
-    assert_ne!(result.unwrap(), path.to_str().unwrap());
+    assert_eq!(result.unwrap(), path.to_str().unwrap());
     assert!(fs::metadata(path).is_ok());
 }
 
@@ -81,7 +81,7 @@ async fn test_export_html_success() {
     let result = control::save_in_file(path.to_str().unwrap(), &data).await;
 
     assert!(result.is_ok());
-    assert_ne!(result.unwrap(), path.to_str().unwrap());
+    assert_eq!(result.unwrap(), path.to_str().unwrap());
     assert!(fs::metadata(path).is_ok());
 }
 
