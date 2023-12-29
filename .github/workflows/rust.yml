@@ -16,9 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install gdk-3 and javascriptcoregtk-4.1
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgtk-3-dev libjavascriptcoregtk-4.0-dev javascriptcoregtk-4.1
+        sudo apt-get install -y libgtk-3-dev libjavascriptcoregtk-4.0-dev javascriptcoregtk-4.1 libsoup-3.0
     - name: Run tests
       run: cargo test --verbose
