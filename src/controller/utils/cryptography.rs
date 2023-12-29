@@ -1,7 +1,7 @@
 use std::env;
 
-use crypto::aes::KeySize::KeySize256;
 use crypto::aes::cbc_encryptor;
+use crypto::aes::KeySize::KeySize256;
 use crypto::buffer::{BufferResult, ReadBuffer, WriteBuffer};
 use crypto::buffer::{RefReadBuffer, RefWriteBuffer};
 use rand::{thread_rng, Rng};
@@ -57,7 +57,7 @@ use rand::{thread_rng, Rng};
 ///     msg
 /// }
 /// ```
-pub fn encrpt(msg: String) -> String{
+pub fn encrpt(msg: String) -> String {
     let iv = [0u8; 16];
     let key = env::var("KEYESMERALD").unwrap();
 
@@ -105,12 +105,12 @@ pub fn encrpt(msg: String) -> String{
 /// A randomly generated key of length 1024 characters.
 #[allow(dead_code)]
 pub fn get_key() -> String {
-        let mut key = String::new();
+    let mut key = String::new();
 
-        for _ in 0..32 {
-            let index: u8 = thread_rng().gen_range(33..126);
-            key.push(index as char);
-        }
-
-        key
+    for _ in 0..32 {
+        let index: u8 = thread_rng().gen_range(33..126);
+        key.push(index as char);
     }
+
+    key
+}

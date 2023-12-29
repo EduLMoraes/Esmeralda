@@ -1,8 +1,8 @@
-use deadpool_postgres::Config;
-use deadpool_postgres::ManagerConfig; 
-use deadpool_postgres::RecyclingMethod; 
-use crate::prelude::var; 
+use crate::prelude::var;
 use crate::prelude::Error;
+use deadpool_postgres::Config;
+use deadpool_postgres::ManagerConfig;
+use deadpool_postgres::RecyclingMethod;
 
 #[allow(dead_code)]
 /// Returns a Result containing a Config object or an error.

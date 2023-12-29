@@ -1,5 +1,5 @@
-use crate::prelude::dioxus_router::prelude::*;
 use crate::prelude::dioxus::prelude::*;
+use crate::prelude::dioxus_router::prelude::*;
 use std::env;
 
 #[path = "../controller/router.rs"]
@@ -27,6 +27,7 @@ pub fn app(cx: Scope) -> Element {
     let version: String = String::from(env!("CARGO_PKG_VERSION"));
 
     cx.render(rsx! {
+
         link {
             r#rel: "stylesheet",
             href: "./src/view/styles/global.css"

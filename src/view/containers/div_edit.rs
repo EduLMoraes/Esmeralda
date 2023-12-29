@@ -1,10 +1,10 @@
 use super::*;
-use diacritics::remove_diacritics;
-use crate::prelude::chrono::NaiveDate;
 use crate::prelude::alphabetic::is_alphabetic;
+use crate::prelude::chrono::NaiveDate;
 use crate::prelude::control;
-use crate::prelude::tokio;
 use crate::prelude::structs::Message;
+use crate::prelude::tokio;
+use diacritics::remove_diacritics;
 
 /// Renders an HTML form for editing a specific account.
 ///
@@ -34,7 +34,7 @@ use crate::prelude::structs::Message;
 /// If all the inputs are valid, the function updates the corresponding account information and displays a success message.
 /// The function also calls an external function `control::edit` to perform the actual account editing.
 ///
-pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
+pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
 
@@ -53,15 +53,13 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
 
     let type_input: &UseState<&str> = use_state(cx, || "text");
 
-    let id_search: &UseState<i32> =  use_state(cx, || 0);
+    let id_search: &UseState<i32> = use_state(cx, || 0);
     let col_search: &UseState<String> = use_state(cx, || "debtor".to_string());
     let new_value: &UseState<String> = use_state(cx, || String::new());
 
-
-
     render!(
         div{ id: "div-form-buttons",
-            hidden: hidden_edit, 
+            hidden: hidden_edit,
 
             h4{ "Editando conta "}
             form{
@@ -160,7 +158,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                         option{ value: "p", "Parcelas" }
                         option{ value: "v", "Valor" }
                     }
-                    
+
                     p{ id: "data-invalid", hidden: **is_column, "Coluna inválida!" }
 
                     br{}
@@ -182,7 +180,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                             if **is_name_valid{
                                 is_compatible.set(true);
                                 has_new_value.set(true);
-                                
+
                                 new_value.set( value.to_string() )
                             }else{
                                 is_compatible.set(false)
@@ -207,9 +205,9 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                     if let Some(first_char) = price.chars().next() {
                                         if first_char != '.' {
                                             let parse_response = price.trim().parse::<f32>();
-                                            
+
                                             match parse_response{
-                                                Ok(value) => { 
+                                                Ok(value) => {
                                                     is_value.set(true);
                                                     new_value.set( value.to_string() );
 
@@ -219,9 +217,9 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                                 Err(_) => is_compatible.set(false)
                                             }
                                         } else {
-                                            is_compatible.set(false);  
+                                            is_compatible.set(false);
                                         }
-                                    } 
+                                    }
                                 }else{
                                     is_compatible.set(false);
                                 }
@@ -248,7 +246,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                         }else if column == "title" || column == "description"{
                             is_compatible.set(true);
                             has_new_value.set(true);
-                            
+
                             new_value.set( value.to_string() )
                         }
                     }, new_value.get().clone() }
@@ -281,7 +279,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element{
                                     has_count = true;
                                     break;
                                 }
-                                
+
                                 r += 1;
                             }
 

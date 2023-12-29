@@ -2,12 +2,9 @@ use super::*;
 use crate::prelude::structs::Message;
 
 mod div_add;
-mod div_paid;
 mod div_edit;
 mod div_export;
-
-
-
+mod div_paid;
 
 /// Renders a div element with buttons for different actions and includes other modules based on the value of the hidden flags.
 ///
@@ -20,8 +17,11 @@ mod div_export;
 /// ```rust
 /// div_options(scope);
 /// ```
-pub fn div_options(cx: Scope) -> Element{
-    use_shared_state_provider::<Message>(cx, || Message{ hidden: true, text: ""});
+pub fn div_options(cx: Scope) -> Element {
+    use_shared_state_provider::<Message>(cx, || Message {
+        hidden: true,
+        text: "",
+    });
 
     let msg = use_shared_state::<Message>(cx).unwrap();
 
@@ -65,11 +65,11 @@ pub fn div_options(cx: Scope) -> Element{
             }
 
             div_add::add(cx, *hidden_add.get())
-            
+
             div_paid::paid(cx, *hidden_paid.get())
-            
+
             div_edit::edit(cx, *hidden_edit.get())
-            
+
             div_export::export(cx, *hidden_export.get())
 
         }

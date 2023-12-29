@@ -150,14 +150,14 @@ impl Info {
 /// 7. The `test` method generates a random list of `Info` objects for testing purposes.
 /// 8. The `Display` trait implementation allows printing the list of `Info` objects.
 #[derive(Clone, Debug, PartialEq)]
-pub struct InterfaceInfo{
-    pub list: Vec<Info>
+pub struct InterfaceInfo {
+    pub list: Vec<Info>,
 }
 
-impl InterfaceInfo{
+impl InterfaceInfo {
     #[allow(dead_code)]
-    pub fn new() -> InterfaceInfo{
-        InterfaceInfo{ list: Vec::new() }
+    pub fn new() -> InterfaceInfo {
+        InterfaceInfo { list: Vec::new() }
     }
 
     pub fn len(&self) -> usize {
@@ -168,17 +168,16 @@ impl InterfaceInfo{
         self.list.insert(0, value)
     }
 
-    pub fn order_by_id(&self, crescent: bool) -> InterfaceInfo{
+    pub fn order_by_id(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = list.len();
 
-        loop{
+        loop {
             let mut comparisions: bool = true;
 
             if crescent {
-                for i in 1..width{ 
-                
-                    if list.list[i].id < list.list[i - 1].id{
+                for i in 1..width {
+                    if list.list[i].id < list.list[i - 1].id {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -187,10 +186,9 @@ impl InterfaceInfo{
                         list.list[i - 1] = tmp;
                     }
                 }
-            }else{
-                for i in 1..width{ 
-                
-                    if list.list[i].id > list.list[i - 1].id{
+            } else {
+                for i in 1..width {
+                    if list.list[i].id > list.list[i - 1].id {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -201,25 +199,23 @@ impl InterfaceInfo{
                 }
             }
 
-
-            if comparisions{
+            if comparisions {
                 break;
             }
         }
         list
     }
 
-    pub fn order_by_value(&self, crescent: bool) -> InterfaceInfo{
+    pub fn order_by_value(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = list.len();
 
-        loop{
+        loop {
             let mut comparisions: bool = true;
 
             if crescent {
-                for i in 1..width{ 
-                
-                    if list.list[i].value < list.list[i - 1].value{
+                for i in 1..width {
+                    if list.list[i].value < list.list[i - 1].value {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -228,10 +224,9 @@ impl InterfaceInfo{
                         list.list[i - 1] = tmp;
                     }
                 }
-            }else{
-                for i in 1..width{ 
-                
-                    if list.list[i].value > list.list[i - 1].value{
+            } else {
+                for i in 1..width {
+                    if list.list[i].value > list.list[i - 1].value {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -242,25 +237,23 @@ impl InterfaceInfo{
                 }
             }
 
-
-            if comparisions{
+            if comparisions {
                 break;
             }
         }
         list
     }
 
-    pub fn order_by_status(&self, crescent: bool) -> InterfaceInfo{
+    pub fn order_by_status(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = list.len();
 
-        loop{
+        loop {
             let mut comparisions: bool = true;
 
             if crescent {
-                for i in 1..width{ 
-                
-                    if list.list[i].status < list.list[i - 1].status{
+                for i in 1..width {
+                    if list.list[i].status < list.list[i - 1].status {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -269,10 +262,9 @@ impl InterfaceInfo{
                         list.list[i - 1] = tmp;
                     }
                 }
-            }else{
-                for i in 1..width{ 
-                
-                    if list.list[i].status > list.list[i - 1].status{
+            } else {
+                for i in 1..width {
+                    if list.list[i].status > list.list[i - 1].status {
                         comparisions = false;
 
                         let tmp = list.list[i].clone();
@@ -283,273 +275,254 @@ impl InterfaceInfo{
                 }
             }
 
-
-            if comparisions{
+            if comparisions {
                 break;
             }
         }
         list
     }
 
-    pub fn order_by_date(&self, is_in: bool, crescent: bool) -> InterfaceInfo{
+    pub fn order_by_date(&self, is_in: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = self.list.len();
 
-        if is_in{
-            loop{
+        if is_in {
+            loop {
                 let mut comparisions: bool = true;
 
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].date_in < list.list[i - 1].date_in{
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].date_in < list.list[i - 1].date_in {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].date_in > list.list[i - 1].date_in{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].date_in > list.list[i - 1].date_in {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
 
-
-                if comparisions{
+                if comparisions {
                     break;
                 }
             }
-        }else{
-            loop{
+        } else {
+            loop {
                 let mut comparisions: bool = true;
 
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].date_out < list.list[i - 1].date_out{
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].date_out < list.list[i - 1].date_out {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].date_out > list.list[i - 1].date_out{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].date_out > list.list[i - 1].date_out {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
 
-
-                if comparisions{
+                if comparisions {
                     break;
                 }
             }
-        }   
+        }
         list
     }
 
-    pub fn order_by_installments(&self, is_paid: bool, crescent: bool) -> InterfaceInfo{
+    pub fn order_by_installments(&self, is_paid: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = self.list.len();
 
-        if is_paid{
-            loop{
+        if is_paid {
+            loop {
                 let mut comparisions: bool = true;
 
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].paid_installments < list.list[i - 1].paid_installments{
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].paid_installments < list.list[i - 1].paid_installments {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].paid_installments > list.list[i - 1].paid_installments{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].paid_installments > list.list[i - 1].paid_installments {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
 
-
-                if comparisions{
+                if comparisions {
                     break;
                 }
             }
-        }else{
-            loop{
+        } else {
+            loop {
                 let mut comparisions: bool = true;
 
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].installments < list.list[i - 1].installments{
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].installments < list.list[i - 1].installments {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].installments > list.list[i - 1].installments{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].installments > list.list[i - 1].installments {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
 
-
-                if comparisions{
+                if comparisions {
                     break;
                 }
             }
-        }   
+        }
         list
     }
 
-    pub fn order_alphabetical(&self, column: &str, crescent: bool) -> InterfaceInfo{
+    pub fn order_alphabetical(&self, column: &str, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
         let width: usize = self.list.len();
 
         if column == "name" {
-            loop{
+            loop {
                 let mut comparisions: bool = true;
-    
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].debtor < list.list[i - 1].debtor{
+
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].debtor < list.list[i - 1].debtor {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].debtor > list.list[i - 1].debtor{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].debtor > list.list[i - 1].debtor {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
-    
-                if comparisions{
+
+                if comparisions {
                     break;
                 }
             }
-        }else if column == "title" {
-            loop{
+        } else if column == "title" {
+            loop {
                 let mut comparisions: bool = true;
-    
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].title < list.list[i - 1].title{
+
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].title < list.list[i - 1].title {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].title > list.list[i - 1].title{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].title > list.list[i - 1].title {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
-    
-                if comparisions{
+
+                if comparisions {
                     break;
                 }
             }
-        }else if column == "description" {
-            loop{
+        } else if column == "description" {
+            loop {
                 let mut comparisions: bool = true;
-    
-                if crescent{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].description < list.list[i - 1].description{
+
+                if crescent {
+                    for i in 1..width {
+                        if list.list[i].description < list.list[i - 1].description {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
-                }else{
-                    for i in 1..width{ 
-                        
-                        if list.list[i].description > list.list[i - 1].description{
+                } else {
+                    for i in 1..width {
+                        if list.list[i].description > list.list[i - 1].description {
                             comparisions = false;
-        
+
                             let tmp = list.list[i].clone();
-        
+
                             list.list[i] = list.list[i - 1].clone();
                             list.list[i - 1] = tmp;
                         }
                     }
                 }
-    
-                if comparisions{
+
+                if comparisions {
                     break;
                 }
             }
@@ -559,9 +532,9 @@ impl InterfaceInfo{
 }
 
 use std::fmt;
-impl fmt::Display for InterfaceInfo{
+impl fmt::Display for InterfaceInfo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for i in 0..self.len(){
+        for i in 0..self.len() {
             write!(f, "{:?}\n", self.list[i])?;
         }
 
@@ -570,15 +543,15 @@ impl fmt::Display for InterfaceInfo{
 }
 #[derive(Debug, Clone)]
 /// Represents a debtor with an ID, name, debt amount, value amount, and status.
-pub struct Debtor{
+pub struct Debtor {
     id: i32,
     name: String,
     debt: f32,
     value: f32,
-    status: bool
+    status: bool,
 }
 
-impl Debtor{
+impl Debtor {
     /// Initializes a new `Debtor` with the provided ID, name, debt, and value.
     ///
     /// # Arguments
@@ -593,34 +566,40 @@ impl Debtor{
     /// ```
     /// let debtor = Debtor::new(1, "John Doe", 100.0, 50.0);
     /// ```
-    pub fn new(id: i32, name: &str, debt: f32, value: f32) -> Debtor{
+    pub fn new(id: i32, name: &str, debt: f32, value: f32) -> Debtor {
         let stt = debt <= value;
 
-        Debtor { id: id, name: name.to_string(), debt: debt, value: value, status:  stt}
+        Debtor {
+            id: id,
+            name: name.to_string(),
+            debt: debt,
+            value: value,
+            status: stt,
+        }
     }
 
     /// Returns a reference to the name of the debtor.
-    pub fn get_name(&self) -> &String{
+    pub fn get_name(&self) -> &String {
         &self.name
     }
 
     /// Returns the ID of the debtor.
-    pub fn get_id(&self) -> i32{
+    pub fn get_id(&self) -> i32 {
         self.id
     }
 
     /// Returns the amount of debt owed by the debtor.
-    pub fn get_debt(&self) -> f32{
+    pub fn get_debt(&self) -> f32 {
         self.debt
     }
 
     /// Returns the value of assets owned by the debtor.
-    pub fn get_value(&self) -> f32{
+    pub fn get_value(&self) -> f32 {
         self.value
     }
 
     /// Returns the status of the debtor (true if the debt is less than or equal to the value, false otherwise).
-    pub fn get_status(&self) -> bool{
+    pub fn get_status(&self) -> bool {
         self.status
     }
 
@@ -635,10 +614,10 @@ impl Debtor{
     /// ```
     /// debtor.add_value(25.0);
     /// ```
-    pub fn add_value(&mut self, v: f32){
+    pub fn add_value(&mut self, v: f32) {
         self.value += v;
 
-        if self.debt == 0.0{
+        if self.debt == 0.0 {
             self.status = true;
         }
     }
@@ -654,7 +633,7 @@ impl Debtor{
     /// ```
     /// debtor.add_debt(75.0);
     /// ```
-    pub fn add_debt(&mut self, d: f32){
+    pub fn add_debt(&mut self, d: f32) {
         self.debt += d;
 
         if self.debt > 0.0 {

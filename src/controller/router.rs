@@ -41,10 +41,10 @@ use home::Home;
 pub enum Route {
     #[route("/")]
     Login {},
-    
+
     #[route("/register")]
     Register {},
-    
+
     #[route("/static")]
     Home {},
 }

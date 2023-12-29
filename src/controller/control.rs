@@ -1,10 +1,10 @@
 use super::cryptography::encrpt;
+use super::db::*;
 use super::errors::*;
 use super::structs::*;
-use super::db::*;
+use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::export::*;
 use crate::prelude::structs_db::*;
-use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::Instant;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
@@ -34,7 +34,7 @@ use std::sync::Mutex;
 ///
 /// * `Ok(())` - If the user authentication is successful.
 /// * `Err(ControlError::ErrorAuthenticate)` - If the password is incorrect or the retrieved data is of an invalid type.
-pub async fn login(mut user: User) -> Result<(), ControlError>{
+pub async fn login(mut user: User) -> Result<(), ControlError> {
     let start = Instant::now();
 
     let db = get_database_instance();
@@ -51,34 +51,40 @@ pub async fn login(mut user: User) -> Result<(), ControlError>{
 
     match db_user {
         Data::UserDb(data) => {
-            if data.username.is_empty(){
+            if data.username.is_empty() {
                 println!("C2 Time to login --- {:.3?}", start.elapsed());
 
-                Err(ControlError::UserNotExists( ErrorLog{
-                    title: "User not exists on system", code: 305, file: "control.rs"
-                } ))
-            }else if data.password == user.password{
+                Err(ControlError::UserNotExists(ErrorLog {
+                    title: "User not exists on system",
+                    code: 305,
+                    file: "control.rs",
+                }))
+            } else if data.password == user.password {
                 gen_user_instance(data);
 
                 println!("C3 Time to login --- {:.3?}", start.elapsed());
                 Ok(())
-            }else {
+            } else {
                 println!("C4 Time to login --- {:.3?}", start.elapsed());
-                
-                Err(ControlError::ErrorAuthenticate(
-                    ErrorLog { title: "Password incorrect", code: 305, file: "controller.rs" }
-                ))
+
+                Err(ControlError::ErrorAuthenticate(ErrorLog {
+                    title: "Password incorrect",
+                    code: 305,
+                    file: "controller.rs",
+                }))
             }
-        },
+        }
         _ => {
             println!("C5 Time to login --- {:.3?}", start.elapsed());
-            Err(ControlError::ErrorAuthenticate(
-                ErrorLog { title: "Data type received is invalid", code: 306, file: "controller.rs" }
-            ))
+            Err(ControlError::ErrorAuthenticate(ErrorLog {
+                title: "Data type received is invalid",
+                code: 306,
+                file: "controller.rs",
+            }))
         }
     }
 }
- 
+
 lazy_static! {
     static ref USER_LOGGED: Mutex<Option<UserDb>> = Mutex::new(None);
 }
@@ -172,13 +178,13 @@ pub fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
 /// let result = add_user(new_user, password).await;
 /// ```
 pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
-    if new_user.is_empty(){
-        Err(ControlError::ErrorToAddUser(ErrorLog { 
-            title: "No has data for add user", 
-            code: 305, 
-            file: "controler.rs" 
+    if new_user.is_empty() {
+        Err(ControlError::ErrorToAddUser(ErrorLog {
+            title: "No has data for add user",
+            code: 305,
+            file: "controler.rs",
         }))
-    }else if new_user.password == password {
+    } else if new_user.password == password {
         let db = get_database_instance();
 
         let mut new_user = new_user;
@@ -186,9 +192,9 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 
         let new_user: Data = Data::NewUser(new_user);
 
-        db.add(new_user).await.map_err(|err| {
-            ControlError::ErrorExternDB(err)
-        })?;
+        db.add(new_user)
+            .await
+            .map_err(|err| ControlError::ErrorExternDB(err))?;
         Ok(())
     } else {
         Err(ControlError::ErrorToAddUser(ErrorLog {
@@ -250,33 +256,42 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError>{
+pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> {
     let mut extend = path.split('.');
 
     let extend = extend.nth(1);
 
     let response = match extend {
         Some("csv") => export_csv(path, data).await,
-        Some("pdf")=> export_pdf(path, data),
+        Some("pdf") => export_pdf(path, data),
         Some("html") => export_html(path, data).await,
-        None => return Err(ControlError::ErrorValueInvalid(
-            ErrorLog { title: "Extension not found", code: 404, file: "controller.rs" }
-        )),
-        _ => return Err(ControlError::ErrorValueInvalid(
-            ErrorLog { title: "Extension invalid", code: 305, file: "controller.rs" }
-        ))
+        None => {
+            return Err(ControlError::ErrorValueInvalid(ErrorLog {
+                title: "Extension not found",
+                code: 404,
+                file: "controller.rs",
+            }))
+        }
+        _ => {
+            return Err(ControlError::ErrorValueInvalid(ErrorLog {
+                title: "Extension invalid",
+                code: 305,
+                file: "controller.rs",
+            }))
+        }
     };
 
-    match response{
+    match response {
         Ok(path) => Ok(path),
         Err(e) => {
             println!("{}", e);
-            Err(ControlError::ErrorExtern(
-                ErrorLog{ title: "Error in module export", code: 500, file: "controller.rs"}
-            ))
-        },
+            Err(ControlError::ErrorExtern(ErrorLog {
+                title: "Error in module export",
+                code: 500,
+                file: "controller.rs",
+            }))
+        }
     }
-
 }
 
 /// Saves the provided `InterfaceInfo` data to the global database.
@@ -306,13 +321,14 @@ pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, Co
 ///     Ok(())
 /// # }
 /// ```
-pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError>{
+pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
-    
-    if let Some(user_logged) = get_user_instance().as_ref(){
-        db_instance.add(Data::Counts(data.clone(), user_logged.clone())).await.map_err(|err| {
-            ControlError::ErrorExternDB(err)
-        })?;
+
+    if let Some(user_logged) = get_user_instance().as_ref() {
+        db_instance
+            .add(Data::Counts(data.clone(), user_logged.clone()))
+            .await
+            .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
 
     Ok(())
@@ -378,13 +394,14 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError>{
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError>{
+pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
-    
-    if let Some(user_logged) = get_user_instance().as_ref(){
-        db_instance.edit(Data::Counts(data.clone(), user_logged.clone())).await.map_err(|err| {
-            ControlError::ErrorExternDB(err)
-        })?;
+
+    if let Some(user_logged) = get_user_instance().as_ref() {
+        db_instance
+            .edit(Data::Counts(data.clone(), user_logged.clone()))
+            .await
+            .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
 
     Ok(())
@@ -410,19 +427,24 @@ pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError>{
 /// # Panics
 ///
 /// This function will panic if the `get_user_instance` function returns `None`.
-pub async fn recover() -> Result<InterfaceInfo, ControlError>{
+pub async fn recover() -> Result<InterfaceInfo, ControlError> {
     let data = InterfaceInfo::new();
     let db_instance = get_database_instance();
-    
+
     let user_logged = get_user_instance().as_ref().unwrap().clone();
 
-    let recovered_data = db_instance.get(Data::Counts(data, user_logged)).await.map_err(|err| {
-            ControlError::ErrorExternDB(err)
-    })?;
+    let recovered_data = db_instance
+        .get(Data::Counts(data, user_logged))
+        .await
+        .map_err(|err| ControlError::ErrorExternDB(err))?;
 
-    match recovered_data{
+    match recovered_data {
         Data::Counts(data, _) => Ok(data),
-        _ => Err(ControlError::ErrorExtern(ErrorLog { title: "Error to recover data", code: 306, file: "control.rs" })),
+        _ => Err(ControlError::ErrorExtern(ErrorLog {
+            title: "Error to recover data",
+            code: 306,
+            file: "control.rs",
+        })),
     }
 }
 

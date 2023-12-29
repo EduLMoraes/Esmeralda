@@ -18,7 +18,8 @@ pub fn style_global() -> String {
         height: auto; 
         text-align: end;
         align-items: baseline;
-    }".to_string()
+    }"
+    .to_string()
 }
 
 #[allow(dead_code)]
@@ -88,7 +89,8 @@ pub fn style_login() -> String {
         border-color: transparent;
         color: green;
     }
-".to_string()
+"
+    .to_string()
 }
 
 #[allow(dead_code)]
@@ -165,7 +167,8 @@ pub fn style_register() -> String {
     
     #input-invalid{
         border-color: red;
-    }".to_string()
+    }"
+    .to_string()
 }
 
 #[allow(dead_code)]
@@ -363,5 +366,6 @@ pub fn style_home() -> String {
     
     #table-debtors{
         margin-top: 20px;
-    }".to_string()
+    }"
+    .to_string()
 }

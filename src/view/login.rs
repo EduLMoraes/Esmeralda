@@ -1,12 +1,12 @@
 use super::*;
 use crate::prelude::control;
-use crate::prelude::tokio::runtime;
-use crate::prelude::structs_db::User;
 use crate::prelude::errors::*;
+use crate::prelude::structs_db::User;
+use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
 mod styles;
-use styles::style_login;
 use styles::style_global;
+use styles::style_login;
 
 #[component]
 /// Renders a login form.
@@ -21,7 +21,7 @@ use styles::style_global;
 /// let cx: Scope = ...; // create a scope object
 /// let login_form: Element = Login(cx); // render the login form
 /// ```
-pub fn Login(cx: Scope) -> Element{
+pub fn Login(cx: Scope) -> Element {
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());
     let data_incompatible: &UseState<bool> = use_state(cx, || false);
@@ -29,7 +29,6 @@ pub fn Login(cx: Scope) -> Element{
 
     let nav: &Navigator = use_navigator(cx);
     let rt: runtime::Runtime = runtime::Runtime::new().unwrap();
-
 
     render!(
         style {{ style_global() }}
@@ -57,7 +56,7 @@ pub fn Login(cx: Scope) -> Element{
                         username: username.to_string(),
                         password: password.to_string()
                     };
-                    
+
                     let now = Instant::now();
                     let result = rt.block_on(control::login(user));
                     let elapsed = now.elapsed();
@@ -70,9 +69,9 @@ pub fn Login(cx: Scope) -> Element{
                     else{
                         let _ = result.map_err(move |err| {
                             match err{
-                                ControlError::ErrorAuthenticate(err) => { 
-                                    println!("{err}"); 
-                                    data_incompatible.set( true ); 
+                                ControlError::ErrorAuthenticate(err) => {
+                                    println!("{err}");
+                                    data_incompatible.set( true );
                                 },
                                 ControlError::ErrorExternDB(err) => {
                                     println!("{err}");
@@ -83,7 +82,7 @@ pub fn Login(cx: Scope) -> Element{
                         });
                     }
                 },
-                
+
                 p{ hidden: !**user_not_exists, id: "data-invalid", "Usuário não cadastrado!" }
                 p{ hidden: !**data_incompatible, id: "data-invalid", "Nome de usuário ou senha incorreto!" }
 
@@ -95,7 +94,7 @@ pub fn Login(cx: Scope) -> Element{
                 },
 
                 br{}
-                
+
                 input {
                     id: "passowrd",
                     r#type: "password",
@@ -111,7 +110,7 @@ pub fn Login(cx: Scope) -> Element{
                     id: "submit",
                     "Entrar"
                 }
-                
+
                 br{}
 
                 p{
@@ -122,7 +121,7 @@ pub fn Login(cx: Scope) -> Element{
                         "Cadastre-se"
                     }
                 }
-                
+
             }
         }
     )

@@ -1,6 +1,6 @@
 use super::*;
-use std::collections::HashMap;
 use crate::prelude::structs::Info;
+use std::collections::HashMap;
 
 #[allow(unreachable_code)]
 /// Filters the list of debt information for each debtor and calculates the total value and debt for each debtor.
@@ -89,11 +89,16 @@ use crate::prelude::structs::Info;
 /// ```
 pub fn filter_debtors(list: Vec<Info>) -> Vec<Debtor> {
     let mut debtors_map: HashMap<String, Debtor> = HashMap::new();
-    
+
     for info in list {
         let name = info.debtor.trim().to_string();
-        let debtor = debtors_map.entry(name.clone()).or_insert(Debtor::new(info.id, name.clone().trim(), 0.0, 0.0));
-        
+        let debtor = debtors_map.entry(name.clone()).or_insert(Debtor::new(
+            info.id,
+            name.clone().trim(),
+            0.0,
+            0.0,
+        ));
+
         if info.status {
             debtor.add_value(info.value);
         } else {

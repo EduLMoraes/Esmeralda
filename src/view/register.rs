@@ -1,6 +1,6 @@
 use super::*;
-use crate::prelude::email_valid;
 use crate::prelude::control::add_user;
+use crate::prelude::email_valid;
 use crate::prelude::structs_db::NewUser;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
@@ -38,7 +38,7 @@ use styles::style_register;
 ///
 /// - The rendered HTML element representing the registration form.
 #[component]
-pub fn Register(cx: Scope) -> Element{
+pub fn Register(cx: Scope) -> Element {
     let email = use_state(cx, || String::new());
     let password = use_state(cx, || String::new());
     let confirm_pass = use_state(cx, || String::new());
@@ -51,7 +51,7 @@ pub fn Register(cx: Scope) -> Element{
     render!(
         style {{ style_global() }}
         style {{ style_register() }}
-        
+
         div {
             id: "register",
 
@@ -81,7 +81,7 @@ pub fn Register(cx: Scope) -> Element{
                     let elapsed = now.elapsed();
 
                     println!("R1 -> Time to add user --- [{:.3?}]", elapsed);
-                    
+
                     if result.is_ok(){
                         is_newly.set(true);
                     }
@@ -107,7 +107,7 @@ pub fn Register(cx: Scope) -> Element{
 
                         email.set(input.value.to_string())
                     }
-                }   
+                }
                 p { hidden: **is_email, id: "data-invalid", "Email inválido." }
 
                 input{
@@ -118,7 +118,7 @@ pub fn Register(cx: Scope) -> Element{
                     oninput: move |input| {
                         username.set(input.value.to_string());
                     }
-                } 
+                }
 
                 input{
                     r#type: "password",
@@ -128,7 +128,7 @@ pub fn Register(cx: Scope) -> Element{
                     oninput: move |input| {
                         password.set(input.value.to_string());
                     }
-                } 
+                }
 
                 input{
                     r#type: "password",
@@ -138,7 +138,7 @@ pub fn Register(cx: Scope) -> Element{
                     oninput: move |input| {
                         confirm_pass.set(input.value.to_string())
                     }
-                } 
+                }
                 p { hidden: **is_equal, id: "data-invalid", "As senhas não são iguais." }
 
                 button {

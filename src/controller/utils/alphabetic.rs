@@ -17,12 +17,12 @@
 /// # Returns
 ///
 /// Returns `true` if the input string contains only alphabetic characters or spaces, otherwise returns `false`.
-pub fn is_alphabetic(string: &String) -> bool{
-    for ch in string.chars(){
-        if !ch.is_alphabetic() && ch != ' '{
-           return false;
+pub fn is_alphabetic(string: &String) -> bool {
+    for ch in string.chars() {
+        if !ch.is_alphabetic() && ch != ' ' {
+            return false;
         }
-    } 
+    }
 
     true
 }

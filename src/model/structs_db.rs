@@ -35,4 +35,3 @@ pub struct UserDb {
     pub username: String,
     pub password: String,
 }
-

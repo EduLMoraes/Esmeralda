@@ -1,11 +1,11 @@
 use super::*;
+use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::chrono::NaiveDate;
 use crate::prelude::control::is_complete;
 use crate::prelude::control::save;
-use crate::prelude::alphabetic::is_alphabetic;
-use crate::prelude::tokio::runtime;
-use crate::prelude::structs::Message;
 use crate::prelude::structs::Info;
+use crate::prelude::structs::Message;
+use crate::prelude::tokio::runtime;
 
 /// Adds a new item to a list by generating a form.
 ///
@@ -28,9 +28,9 @@ use crate::prelude::structs::Info;
 ///
 /// An `Element` object representing the rendered form.
 ///
-pub fn add(cx: Scope, hidden_add: bool) -> Element{
+pub fn add(cx: Scope, hidden_add: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
-    
+
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
@@ -38,14 +38,14 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let info: &UseState<Info> = use_state::<Info>(cx, || Info::new());
     let is_new: &UseState<bool> = use_state(cx, || true);
-    
+
     render!(
         div{ id: "div-form-buttons",
-            hidden: hidden_add, 
+            hidden: hidden_add,
 
             h4{ "Adicionando "}
             form{
-                    
+
                 p{
                     label{
                         "Nome:" br{}
@@ -59,13 +59,13 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                 tmp_info.debtor = name;
                                 is_new.set(true);
                                 info.set(tmp_info);
-                            }   
+                            }
 
                             msg.write().hidden = true;
 
                         }, info.get().debtor.to_string() }
                     }
-                    
+
                     p{ id: "data-invalid", hidden: **is_name_valid, "Nome inválido!" }
 
                     br{}
@@ -84,7 +84,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                     }
 
                     br{}
-                    
+
                     label{
                         "Valor:" br{}
                         input{ r#required:true, r#type: "text", id: "value", oninput: move |price| {
@@ -97,9 +97,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                     if let Some(first_char) = price.chars().next() {
                                         if first_char != '.' {
                                             let parse_response = price.trim().parse::<f32>();
-                                            
+
                                             match parse_response{
-                                                Ok(value) => { 
+                                                Ok(value) => {
                                                     let mut tmp_info = info.get().clone();
 
                                                     tmp_info.value = value;
@@ -111,9 +111,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                                 Err(_) => is_value_valid.set(false)
                                             }
                                         } else {
-                                            is_value_valid.set(false);  
+                                            is_value_valid.set(false);
                                         }
-                                    } 
+                                    }
                                 }else{
                                     is_value_valid.set(false);
                                 }
@@ -123,7 +123,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                         }, info.get().value.to_string() }
                     }
-                    
+
                     p{ id: "data-invalid", hidden: **is_value_valid, "Valor inválido!" }
 
                     br{}
@@ -135,7 +135,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
                             is_new.set(true);
                             info.set(tmp_info);
-                        }, info.get().date_in.to_string() } 
+                        }, info.get().date_in.to_string() }
                         " - até - "
                         input{ r#type: "date", id: "date_out", value: "00/00/2000", oninput: move |date_out| {
                             let mut tmp_info = info.get().clone();
@@ -143,7 +143,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             is_new.set(true);
                             info.set(tmp_info);
 
-                            
+
                             msg.write().hidden = true;
 
                         }, info.get().date_out.to_string() }
@@ -153,7 +153,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                     label{
                         "Parcelas:"
-                        input{ r#type: "number", id: "installments", r#min: "1", 
+                        input{ r#type: "number", id: "installments", r#min: "1",
                             r#placeholder: "1",
                             oninput: move |entry| {
                                 let installments = entry.value.clone();
@@ -170,7 +170,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                                                 tmp_info.installments = value;
                                                 is_new.set(true);
                                                 info.set(tmp_info);
-                                                
+
                                                 is_inst_valid.set(true);
                                             }
                                         },
@@ -180,7 +180,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
 
                                 msg.write().hidden = true;
 
-                            }, 
+                            },
                             info.get().installments.to_string()
                         },
                     }
@@ -215,7 +215,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element{
                             while has_count{
                                 has_count = false;
                                 let exists_counts = &exists_counts.list;
-                                
+
                                 for ec in exists_counts{
                                     if tmp_info.id == ec.id{
                                         tmp_info.new_id();

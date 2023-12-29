@@ -45,7 +45,6 @@ fn test_handle_messages_of_various_lengths() {
     assert_ne!(result, "");
 }
 
-
 // Generates a key of length 1024 characters
 #[test]
 fn test_generate_key_length() {
@@ -53,7 +52,7 @@ fn test_generate_key_length() {
     assert_eq!(key.len(), 32);
 }
 
-    // Returns a randomly generated key
+// Returns a randomly generated key
 #[test]
 fn test_generate_key_random() {
     let key1 = cryptography::get_key();
@@ -61,21 +60,21 @@ fn test_generate_key_random() {
     assert_ne!(key1, key2);
 }
 
-    // None
+// None
 #[test]
 fn test_none() {
     // No behavior to test
     assert!(true);
 }
 
-    // The generated key contains only printable ASCII characters
+// The generated key contains only printable ASCII characters
 #[test]
 fn test_generate_key_printable_ascii() {
     let key = cryptography::get_key();
     assert!(key.chars().all(|c| c.is_ascii_graphic()));
 }
 
-    // The generated key is unique for each call
+// The generated key is unique for each call
 #[test]
 fn test_generate_key_unique() {
     let key1 = cryptography::get_key();
@@ -83,7 +82,7 @@ fn test_generate_key_unique() {
     assert_ne!(key1, key2);
 }
 
-    // The generated key is not predictable
+// The generated key is not predictable
 #[test]
 fn test_generate_key_unpredictable() {
     let key1 = cryptography::get_key();

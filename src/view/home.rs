@@ -5,9 +5,9 @@ mod div_options;
 mod div_active;
 
 use super::*;
-use crate::prelude::structs::InterfaceInfo;
-use crate::prelude::move_pages;
 use crate::prelude::control;
+use crate::prelude::move_pages;
+use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
 mod styles;
@@ -27,7 +27,7 @@ use styles::style_home;
 /// - `value`: Represents the presence of the value column.
 /// - `status`: Represents the presence of the status column.
 #[derive(Clone, Debug)]
-struct Columns{
+struct Columns {
     name: bool,
     title: bool,
     description: bool,
@@ -36,10 +36,10 @@ struct Columns{
     paid_installments: bool,
     installments: bool,
     value: bool,
-    status: bool
+    status: bool,
 }
 
-impl Columns{
+impl Columns {
     /// Creates a new instance of the `Columns` struct with default field values.
     ///
     /// # Example
@@ -50,8 +50,8 @@ impl Columns{
     ///
     /// # Returns
     /// A new instance of the `Columns` struct with default field values.
-    pub fn new() -> Columns{
-        Columns{
+    pub fn new() -> Columns {
+        Columns {
             name: true,
             title: true,
             description: false,
@@ -60,7 +60,7 @@ impl Columns{
             paid_installments: false,
             installments: false,
             value: true,
-            status: true
+            status: true,
         }
     }
 }
@@ -102,7 +102,7 @@ const LINES: usize = 10;
 /// 10. Renders the HTML elements using the `render!` macro.
 ///
 #[component]
-pub fn Home (cx: Scope) -> Element {
+pub fn Home(cx: Scope) -> Element {
     let run = tokio::runtime::Runtime::new().unwrap();
 
     let now = Instant::now();
@@ -110,8 +110,7 @@ pub fn Home (cx: Scope) -> Element {
     println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
-    let counts_info =  counts.read().clone();
-
+    let counts_info = counts.read().clone();
 
     let size_max: usize = counts_info.len();
     let contabilized = use_state(cx, || size_max);
@@ -126,16 +125,22 @@ pub fn Home (cx: Scope) -> Element {
     let columns: Columns = use_shared_state::<Columns>(cx).unwrap().read().clone();
 
     let init: &UseState<usize> = use_state(cx, || 0 as usize);
-    let end: &UseState<usize> = use_state(cx, || if size_max > LINES { LINES as usize } else { size_max });
+    let end: &UseState<usize> = use_state(cx, || {
+        if size_max > LINES {
+            LINES as usize
+        } else {
+            size_max
+        }
+    });
     let page: &UseState<i32> = use_state(cx, || 1);
 
     let now = Instant::now();
 
-    if **total_counts == 0.0 && size_max > 0 || size_max != **contabilized{
-        for i in 0..size_max{
-            if counts_info.list[i].status{
+    if **total_counts == 0.0 && size_max > 0 || size_max != **contabilized {
+        for i in 0..size_max {
+            if counts_info.list[i].status {
                 total_paid += counts_info.list[i].value;
-            }else{
+            } else {
                 total_debt += counts_info.list[i].value;
             }
         }
@@ -144,14 +149,14 @@ pub fn Home (cx: Scope) -> Element {
         total_counts.set(total_debt + total_paid);
         contabilized.set(size_max);
     }
-    
+
     println!("H2 -> Time to contabilized --- [{:.3?}]", now.elapsed());
 
     let crescent: &UseState<bool> = use_state(cx, || false);
     let mut more: bool = false;
     let mut less: bool = false;
-    
-    render!{
+
+    render! {
 
         style {{ style_global() }}
         style {{ style_home() }}
@@ -162,8 +167,8 @@ pub fn Home (cx: Scope) -> Element {
             div_active::div_most(cx),
 
             div{ id: "div-table",
-                format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st) 
-                table{ id: "table-counts", 
+                format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st)
+                table{ id: "table-counts",
                     tr{ id: "head-table",
                         td{ id: "col-id",
                             button{
@@ -177,10 +182,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("Hx -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "ID"
-                            }  
+                            }
                         },
                         td{ id: "with-button",
-                            hidden: !columns.name,  
+                            hidden: !columns.name,
                             button{
                                 id: "button-order",
                                 hidden: !columns.name, onclick: move |_| {
@@ -192,10 +197,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H3 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Nome"
-                            } 
+                            }
                         },
                         td{ id: "with-button",
-                            hidden: !columns.title,  
+                            hidden: !columns.title,
                             button{
                                 id: "button-order",
                                 hidden: !columns.title,
@@ -207,11 +212,11 @@ pub fn Home (cx: Scope) -> Element {
                                     crescent.set(!**crescent);
 
                                     println!("H4 -> Time to ordened table --- [{:.3?}]", now.elapsed());
-                                }, "Título" 
+                                }, "Título"
                             }
                         },
                         td{ id: "with-button",
-                            hidden: !columns.description,  
+                            hidden: !columns.description,
                             button{
                                 id: "button-order",
                                 hidden: !columns.description, onclick: move |_| {
@@ -225,8 +230,8 @@ pub fn Home (cx: Scope) -> Element {
                                 }, "Descrição"
                             }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.date_in,  
+                        td{ id: "with-button",
+                            hidden: !columns.date_in,
                             button{
                                 id: "button-order",
                                 hidden: !columns.date_in, onclick: move |_| {
@@ -238,10 +243,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H6 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Data Inicial"
-                            } 
+                            }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.date_out,  
+                        td{ id: "with-button",
+                            hidden: !columns.date_out,
                             button{
                                 id: "button-order",
                                 hidden: !columns.date_out, onclick: move |_| {
@@ -253,10 +258,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H7 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Data Final"
-                            } 
+                            }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.paid_installments,  
+                        td{ id: "with-button",
+                            hidden: !columns.paid_installments,
                             button{
                                 id: "button-order",
                                 hidden: !columns.paid_installments, onclick: move |_| {
@@ -268,10 +273,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H8 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Parcelas pagas"
-                            } 
+                            }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.installments,  
+                        td{ id: "with-button",
+                            hidden: !columns.installments,
                             button{
                                 id: "button-order",
                                 hidden: !columns.installments, onclick: move |_| {
@@ -283,10 +288,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H9 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Parcelas"
-                            } 
+                            }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.value,  
+                        td{ id: "with-button",
+                            hidden: !columns.value,
                             button{
                                 id: "button-order",
                                 hidden: !columns.value, onclick: move |_| {
@@ -298,10 +303,10 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H10 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Valor"
-                            } 
+                            }
                         },
-                        td{ id: "with-button", 
-                            hidden: !columns.status,  
+                        td{ id: "with-button",
+                            hidden: !columns.status,
                             button{
                                 id: "button-order",
                                 hidden: !columns.status, onclick: move |_| {
@@ -313,13 +318,13 @@ pub fn Home (cx: Scope) -> Element {
 
                                     println!("H11 -> Time to ordened table --- [{:.3?}]", now.elapsed());
                                 }, "Status"
-                            } 
+                            }
                         }
                     }
 
                     for i in **init..**end{
-                       
-                        tr{ 
+
+                        tr{
                             td{ id: "col-id", format!("{}", counts_info.list[i].id) },
                             td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
                             td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
@@ -331,7 +336,7 @@ pub fn Home (cx: Scope) -> Element {
                             td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
                             td{ hidden: !columns.status, id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } },
                         }
-                        
+
                     }
 
                 }
@@ -347,7 +352,7 @@ pub fn Home (cx: Scope) -> Element {
                 }
 
                 div{ id: "move-page",
-                    button{ hidden: less, 
+                    button{ hidden: less,
                         onclick: move |_| {
                             let now = Instant::now();
 
@@ -357,13 +362,13 @@ pub fn Home (cx: Scope) -> Element {
                             page.set(page - 1);
 
                             println!("H11 -> Time to back page --- [{:.3?}]", now.elapsed());
-                        }, 
-                        "← Página anterior" 
+                        },
+                        "← Página anterior"
                     }
 
                     i{ format!("{page}")}
 
-                    button{ hidden: more, 
+                    button{ hidden: more,
                         onclick: move |_| {
                             let now = Instant::now();
 
@@ -373,8 +378,8 @@ pub fn Home (cx: Scope) -> Element {
                             page.set(page + 1);
 
                             println!("h12 -> Time to next page --- [{:.3?}]", now.elapsed());
-                        }, 
-                        "Próxima página →" 
+                        },
+                        "Próxima página →"
                     }
                 }
             }

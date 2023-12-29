@@ -1,9 +1,9 @@
-use std::fs;
-use std::fs::File;
-use std::io::Write;
-use std::io::BufWriter;
-use std::fs::create_dir_all;
 use printpdf::*;
+use std::fs;
+use std::fs::create_dir_all;
+use std::fs::File;
+use std::io::BufWriter;
+use std::io::Write;
 
 pub use crate::prelude::structs::InterfaceInfo;
 
@@ -41,71 +41,66 @@ pub use crate::prelude::structs::InterfaceInfo;
 ///
 /// The function is marked as `async` and may need to be used within an asynchronous context.
 #[allow(dead_code)]
-async fn mkdir(path: &str) -> Result<(File, String), String>{
+async fn mkdir(path: &str) -> Result<(File, String), String> {
     let mut new_path: String = String::new();
 
     let paths: Vec<&str> = path.split('/').collect();
 
-    for i in 0..paths.len() - 1{
+    for i in 0..paths.len() - 1 {
         new_path.push_str(paths[i]);
         new_path.push('/');
     }
 
-    match create_dir_all(new_path){
+    match create_dir_all(new_path) {
         Ok(_) => {
             let mut limit: usize = 0;
-            for a in path.chars(){
-                if a == '.' && limit == 0{
+            for a in path.chars() {
+                if a == '.' && limit == 0 {
                     limit += 1;
-                }else if a == '.' {
-                    break
-                }else{
+                } else if a == '.' {
+                    break;
+                } else {
                     limit += 1;
                 }
             }
-        
+
             let mut path = path.to_string();
             let mut is_alterated: bool = false;
             let mut count_files = 0;
-        
-            loop{
-                if count_files > 0  && count_files < 11{
-                    if is_alterated{
-                        path.replace_range(limit..limit+3, format!("({count_files})").trim());
-                    }else{
+
+            loop {
+                if count_files > 0 && count_files < 11 {
+                    if is_alterated {
+                        path.replace_range(limit..limit + 3, format!("({count_files})").trim());
+                    } else {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
                     println!("{path}");
-                }else if count_files > 0{
-                    if is_alterated{
-                        path.replace_range(limit..limit+4, format!("({count_files})").trim());
-                    }else{
+                } else if count_files > 0 {
+                    if is_alterated {
+                        path.replace_range(limit..limit + 4, format!("({count_files})").trim());
+                    } else {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
                     println!("{path}");
                 }
-        
-                match fs::metadata(path.clone()){
+
+                match fs::metadata(path.clone()) {
                     Ok(_) => count_files += 1,
                     Err(_) => {
-                        let file = match File::create(path.clone()){
-                            Ok(f) => {
-                                f
-                            },
-                            Err(e) => return Err(e.to_string())
+                        let file = match File::create(path.clone()) {
+                            Ok(f) => f,
+                            Err(e) => return Err(e.to_string()),
                         };
-                                    
-                        return Ok((file, path))
+
+                        return Ok((file, path));
                     }
-                    
                 }
             }
-        },
-        Err(e) => {
-            Err(e.to_string())
         }
+        Err(e) => Err(e.to_string()),
     }
 }
 
@@ -132,23 +127,27 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
 
     let mut data_file = String::new();
 
-    data_file.push_str("ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n");
+    data_file.push_str(
+        "ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n",
+    );
 
     for info in &data.list {
-        data_file.push_str(format!(
-            "{},{},{},{},{},{},{},{},{:.2},{}",
-            info.id,
-            info.debtor,
-            info.title,
-            info.description,
-            info.date_in.to_string(),
-            info.date_out.to_string(),
-            info.paid_installments,
-            info.installments,
-            info.value,
-            info.status
-        )
-        .trim());
+        data_file.push_str(
+            format!(
+                "{},{},{},{},{},{},{},{},{:.2},{}",
+                info.id,
+                info.debtor,
+                info.title,
+                info.description,
+                info.date_in.to_string(),
+                info.date_out.to_string(),
+                info.paid_installments,
+                info.installments,
+                info.value,
+                info.status
+            )
+            .trim(),
+        );
         data_file.push('\n');
     }
 
@@ -241,15 +240,28 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
 
     let mut page_count = 1;
 
-    let (doc, page, layer) = PdfDocument::new("PDF_Document_title", x, y, format!("Página {}", page_count));
+    let (doc, page, layer) =
+        PdfDocument::new("PDF_Document_title", x, y, format!("Página {}", page_count));
     let mut current_layer = doc.get_page(page).get_layer(layer);
 
     let doc = doc.with_title("Emeralda");
-    let font = doc.add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap()).unwrap();
+    let font = doc
+        .add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap())
+        .unwrap();
 
     y = Mm(205.0);
     let pos_x: Vec<f32> = vec![5.0, 20.0, 60.0, 100.0, 170.0, 200.0, 230.0, 255.0, 280.0];
-    let header: Vec<&str> = vec!["ID", "|Nome", "|Titulo", "|Descricao", "|Data Inicial", "|Data Final", "|Parcelas", "|Valor", "|Status"];
+    let header: Vec<&str> = vec![
+        "ID",
+        "|Nome",
+        "|Titulo",
+        "|Descricao",
+        "|Data Inicial",
+        "|Data Final",
+        "|Parcelas",
+        "|Valor",
+        "|Status",
+    ];
 
     for col in 0..9 {
         current_layer.use_text(header[col], 12.0, Mm(pos_x[col]), y, &font);
@@ -285,7 +297,10 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
                 format!("| {:.38}", data.list[i].description),
                 format!("| {}", data.list[i].date_in.to_string()),
                 format!("| {}", data.list[i].date_out.to_string()),
-                format!("| {}/{}", data.list[i].paid_installments, data.list[i].installments),
+                format!(
+                    "| {}/{}",
+                    data.list[i].paid_installments, data.list[i].installments
+                ),
                 format!("| {:.2}", data.list[i].value),
                 format!("| {}", if data.list[i].status { "Pagou" } else { "Deve" }),
             ];
@@ -299,7 +314,8 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
         }
     }
 
-    doc.save(&mut BufWriter::new(File::create(path).unwrap())).unwrap();
+    doc.save(&mut BufWriter::new(File::create(path).unwrap()))
+        .unwrap();
 
     Ok(String::from(path))
 }

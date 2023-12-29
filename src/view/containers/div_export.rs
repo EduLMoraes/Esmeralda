@@ -1,8 +1,8 @@
 use super::*;
-use nfd::Response;
 use crate::prelude::control::save_in_file;
-use crate::prelude::tokio::runtime;
 use crate::prelude::structs::Message;
+use crate::prelude::tokio::runtime;
+use nfd::Response;
 
 /// Renders a form that allows the user to select a file format for exporting data and handles the logic for saving the exported data to a file.
 ///
@@ -18,7 +18,7 @@ use crate::prelude::structs::Message;
 /// let hidden_export = false;
 /// export(cx, hidden_export);
 /// ```
-pub fn export(cx: Scope, hidden_export: bool) -> Element{
+pub fn export(cx: Scope, hidden_export: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
 
     let mut path: String = String::new();
@@ -28,7 +28,7 @@ pub fn export(cx: Scope, hidden_export: bool) -> Element{
 
     render!(
         div{ id: "div-form-buttons",
-            hidden: hidden_export, 
+            hidden: hidden_export,
 
             h4{ "Exportando" }
             form{

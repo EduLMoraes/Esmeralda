@@ -20,17 +20,17 @@ use crate::prelude::control::save;
 /// let hidden_paid = false;
 /// let element = paid(scope, hidden_paid);
 /// ```
-pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
+pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
-    let id_search: &UseState<i32> =  use_state(cx, || 0);
+    let id_search: &UseState<i32> = use_state(cx, || 0);
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
 
     render!(
         div{ id: "div-form-buttons",
-            hidden: hidden_paid, 
+            hidden: hidden_paid,
 
             h4{ "Pagando" }
             form{
@@ -46,7 +46,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                     label{ "Informe o ID da conta a ser paga: "}
                     br{}
                     input{ r#required: true, r#type: "number", r#min: "0",
-                        oninput: move |id|{ 
+                        oninput: move |id|{
                             msg.write().hidden = true;
 
                             match id.value.trim().parse::<i32>(){
@@ -77,7 +77,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
 
 
                                     if tmp_counts[r].installments == tmp_counts[r].paid_installments{
-                                        tmp_counts[r].status = true;   
+                                        tmp_counts[r].status = true;
                                     }
                                 }else {
                                     tmp_counts[r].status = true;
@@ -87,7 +87,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                                 has_count = true;
                                 break;
                             }
-                            
+
                             r += 1;
                         }
 
@@ -99,7 +99,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                             msg.write().hidden = false;
                             msg.write().text = "Conta paga!";
                             is_id_valid.set(true);
-                            
+
                             let run = tokio::runtime::Runtime::new().unwrap();
                             let response = run.block_on( control::edit( &counts.read().clone() ) );
                             println!("{:?}", response);
@@ -112,6 +112,6 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element{
                 p{ hidden: msg.read().hidden, msg.read().text }
             }
         }
-   
+
     )
 }
