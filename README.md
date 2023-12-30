@@ -9,7 +9,7 @@ dívida e o total daquela dívida.
 4574 linhas. Última contagem em 24/12/2023 - 15:58
 
 ### *Versão* 🤖
-`v0.1.0`
+`v0.1.2`
 
 ### *Licença* 📜
 O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](https://github.com/EduLMoraes/Esmeralda/blob/main/LICENSE).

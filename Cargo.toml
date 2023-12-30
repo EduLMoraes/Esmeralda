@@ -1,6 +1,6 @@
 [package]
 name = "esmeralda"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 author = "Eduardo Moraes <17eduardo05@gmail.com>"
 
