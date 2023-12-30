@@ -153,6 +153,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                 is_date_valid.set(true);
 
                                 tmp_info.date_out = input_data;
+                                let installments = tmp_info.date_in - input_data;
+                                println!("{}", installments);
+                                
                                 is_new.set(true);
                                 info.set(tmp_info);
                                 msg.write().hidden = true;
