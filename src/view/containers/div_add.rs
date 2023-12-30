@@ -6,6 +6,7 @@ use crate::prelude::control::save;
 use crate::prelude::structs::Info;
 use crate::prelude::structs::Message;
 use crate::prelude::tokio::runtime;
+use crate::prelude::compare_dates::signed_month_difference;
 
 /// Adds a new item to a list by generating a form.
 ///
@@ -153,9 +154,9 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                 is_date_valid.set(true);
 
                                 tmp_info.date_out = input_data;
-                                let installments = tmp_info.date_in - input_data;
-                                println!("{}", installments);
-                                
+                                let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                tmp_info.installments = installments as u32;
+
                                 is_new.set(true);
                                 info.set(tmp_info);
                                 msg.write().hidden = true;
