@@ -87,6 +87,7 @@ use std::collections::HashMap;
 ///     debtors
 /// }
 /// ```
+#[allow(unused_assignments)]
 pub fn filter_debtors(list: Vec<Info>) -> Vec<Debtor> {
     let mut debtors_map: HashMap<String, Debtor> = HashMap::new();
 
