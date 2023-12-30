@@ -3,10 +3,15 @@ O propósito da Esmeralda é ajudar a controlar os gastos e o dinheiro,
 sabendo para onde vai o dinheiro, quanto se pode gastar, quem fez a
 dívida e o total daquela dívida.
 
-## *Versão* 🤖
+## *Detalhes*:
+
+### *Total de Linhas*:
+4574 linhas. Última contagem em 24/12/2023 - 15:58
+
+### *Versão* 🤖
 `v0.1.0`
 
-## *Licença* 📜
+### *Licença* 📜
 O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](https://github.com/EduLMoraes/Esmeralda/blob/main/LICENSE).
 
 ## *Imagens* 📷
@@ -44,10 +49,8 @@ Aqui é onde a mágica acontece.
 ![Home](./assets/gif/ordened.gif)
 
 
-## *Detalhes*:
 
-### *Total de Linhas*:
-4574 linhas. Última contagem em 24/12/2023 - 15:58
+
 
 ### *Contribuidores*:
 <table>

@@ -13,9 +13,12 @@ fn main() {
             println!("Variavel de ambiente já existente");
         }
         Err(_) => {
-            let mut file = match File::open(".key") {
+            let mut path = env::var("HOME").unwrap();
+            path.push_str("/.key");
+
+            let mut file = match File::open(&path) {
                 Ok(file) => file,
-                Err(_) => File::create(".key").unwrap(),
+                Err(_) => File::create(&path).unwrap(),
             };
 
             let mut key_env: String = String::new();

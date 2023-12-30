@@ -1,4 +1,8 @@
 -- Active: 1703697893287@@127.0.0.1@5432@esmeralda
+CREATE DATABASE esmeralda;
+
+\c esmeralda
+
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
