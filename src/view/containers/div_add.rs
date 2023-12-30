@@ -34,6 +34,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
+    let is_date_valid: &UseState<bool> = use_state(cx, || true);
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let info: &UseState<Info> = use_state::<Info>(cx, || Info::new());
@@ -132,22 +133,37 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                         "Data:" br{}
                         input{ r#type: "date", id: "date_in", oninput: move |date_in| {
                             let mut tmp_info = info.get().clone();
-                            tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
-                            is_new.set(true);
-                            info.set(tmp_info);
+                            let input_data = date_in.value.trim().parse::<NaiveDate>().unwrap();
+                            
+                            if input_data <= tmp_info.date_out{
+                                is_date_valid.set(true);
+                                tmp_info.date_in = input_data;
+                                is_new.set(true);
+                                info.set(tmp_info);
+                            } else{
+                                is_date_valid.set(false);
+                            }
                         }, info.get().date_in.to_string() }
                         " - até - "
-                        input{ r#type: "date", id: "date_out", value: "00/00/2000", oninput: move |date_out| {
+                        input{ r#type: "date", id: "date_out", oninput: move |date_out| {
                             let mut tmp_info = info.get().clone();
-                            tmp_info.date_out = date_out.value.trim().parse::<NaiveDate>().unwrap();
-                            is_new.set(true);
-                            info.set(tmp_info);
+                            let input_data = date_out.value.trim().parse::<NaiveDate>().unwrap();
 
+                            if input_data >= tmp_info.date_in{
+                                is_date_valid.set(true);
 
-                            msg.write().hidden = true;
+                                tmp_info.date_out = input_data;
+                                is_new.set(true);
+                                info.set(tmp_info);
+                                msg.write().hidden = true;
+
+                            }else{
+                                is_date_valid.set(false);
+                            }
 
                         }, info.get().date_out.to_string() }
                     }
+                    p{ id: "data-invalid", hidden: **is_date_valid, "Datas inválidas!"}
 
                     br{}
 
@@ -207,7 +223,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                     onclick: move |_| {
                         let rnt = runtime::Runtime::new().unwrap();
 
-                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
+                        if **is_name_valid && **is_value_valid && **is_inst_valid && **is_date_valid && rnt.block_on(is_complete(&info)){
                             let exists_counts = counts.read().clone();
                             let mut tmp_info = info.get().clone();
                             let mut has_count: bool = true;
