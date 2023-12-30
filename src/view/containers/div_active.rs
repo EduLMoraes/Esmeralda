@@ -95,17 +95,6 @@ pub fn div_most(cx: Scope) -> Element {
                 }
 
                 tr{
-                    td{id: "td-most", "Parcelas pagas" },
-                    td{ onclick: move |_| columns.write().paid_installments = !col_now.paid_installments,
-                        input{
-                            r#type: "checkbox",
-                            id: "most",
-                            checked: col_now.paid_installments,
-                        }
-                    }
-                }
-
-                tr{
                     td{id: "td-most", "Parcelas" },
                     td{ onclick: move |_| columns.write().installments = !col_now.installments,
                         input{
@@ -143,16 +132,17 @@ pub fn div_most(cx: Scope) -> Element {
             table{ id: "table-debtors",
                 tr{
                     td { "Nome:" }
-                    td { "Valor Dívida:"}
-                    td { "Total:" }
+                    td { id: "col-debtor-value", "Valor da Dívida:"}
+                    td { id: "col-debtor-value", "Valor Pago Total:" }
                     td { "Status:" }
                 }
 
                 for debtor in debtors{
+
                     tr{
-                        td { debtor.get_name().clone() }
-                        td { format!("{:.2}", debtor.get_debt()) }
-                        td { format!("{:.2}", debtor.get_value()) }
+                        td { id: "col-name", debtor.get_name().clone() }
+                        td { id: "col-value", format!("{:.2}", debtor.get_debt()) }
+                        td { id: "col-value", format!("{:.2}", debtor.get_value()) }
                         td { id: if debtor.get_status() { "stt-pos" } else { "stt-neg" } }
                     }
                 }

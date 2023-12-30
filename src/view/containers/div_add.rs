@@ -31,6 +31,7 @@ use crate::prelude::compare_dates::signed_month_difference;
 ///
 pub fn add(cx: Scope, hidden_add: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
+    let cnt = use_shared_state::<Contabilized>(cx).unwrap();
 
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
@@ -218,7 +219,12 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                         input{ r#type: "checkbox", id: "payment", onclick: move |_| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.status = !tmp_info.status;
-                            tmp_info.paid_installments = tmp_info.installments;
+
+                            if tmp_info.status{
+                                tmp_info.paid_installments = tmp_info.installments;
+                            }else{
+                                tmp_info.paid_installments = 0;
+                            }
 
                             is_new.set(true);
                             info.set(tmp_info);
@@ -264,6 +270,8 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
 
                             let run = tokio::runtime::Runtime::new().unwrap();
                             let response = run.block_on( save( &counts.read() ) );
+
+                            *cnt.write() = Contabilized::No;
                             println!("{response:?}");
                         }
                     },

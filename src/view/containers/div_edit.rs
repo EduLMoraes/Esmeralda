@@ -37,6 +37,7 @@ use diacritics::remove_diacritics;
 pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
+    let cnt = use_shared_state::<Contabilized>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
@@ -292,6 +293,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
 
                                 let run = tokio::runtime::Runtime::new().unwrap();
                                 let response = run.block_on( control::edit( &counts.read().clone() ) );
+                                *cnt.write() = Contabilized::No;
                                 println!("{:?}", response);
                             }
                         }

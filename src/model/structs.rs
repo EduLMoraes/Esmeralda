@@ -83,7 +83,7 @@ impl Info {
             value: 0.0,
             date_in: today.date_naive(),
             date_out: today.date_naive(),
-            paid_installments: 1,
+            paid_installments: 0,
             installments: 1,
             status: false,
         }
