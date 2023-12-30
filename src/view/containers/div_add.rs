@@ -174,7 +174,6 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                     label{
                         "Parcelas:"
                         input{ r#type: "number", id: "installments", r#min: "1",
-                            r#placeholder: "1",
                             oninput: move |entry| {
                                 let installments = entry.value.clone();
 
