@@ -1,6 +1,9 @@
+use chrono::Months;
+
 use super::*;
 use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::chrono::NaiveDate;
+use crate::prelude::chrono::Datelike;
 use crate::prelude::control::is_complete;
 use crate::prelude::control::save;
 use crate::prelude::structs::Info;
@@ -133,44 +136,47 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
 
                     label{
                         "Data:" br{}
-                        input{ r#type: "date", id: "date_in", oninput: move |date_in| {
-                            let mut tmp_info = info.get().clone();
-                            let input_data = date_in.value.trim().parse::<NaiveDate>().unwrap();
-                            
-                            if input_data <= tmp_info.date_out{
-                                is_date_valid.set(true);
+                        input{ r#type: "date", id: "date_in", 
+                            r#placeholder: "{info.get().date_in.to_string()}",
+                            oninput: move |date_in| {
+                                let mut tmp_info = info.get().clone();
+                                let input_data = date_in.value.trim().parse::<NaiveDate>().unwrap();
                                 
-                                tmp_info.date_in = input_data;
-                                let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
-                                tmp_info.installments = installments as u32;
+                                if input_data <= tmp_info.date_out{
+                                    is_date_valid.set(true);
+                                    
+                                    tmp_info.date_in = input_data;
+                                    let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                    tmp_info.installments = installments as u32;
 
-                                is_new.set(true);
-                                info.set(tmp_info);
-                            } else{
-                                is_date_valid.set(false);
-                            }
+                                    is_new.set(true);
+                                    info.set(tmp_info);
+                                } else{
+                                    is_date_valid.set(false);
+                                }
                         }, info.get().date_in.to_string() }
                         " - até - "
-                        input{ r#type: "date", id: "date_out", oninput: move |date_out| {
-                            let mut tmp_info = info.get().clone();
-                            let input_data = date_out.value.trim().parse::<NaiveDate>().unwrap();
+                        input{ r#type: "date", id: "date_out", 
+                            r#placeholder: "{info.get().date_out.to_string()}",
+                            oninput: move |date_out| {
+                                let mut tmp_info = info.get().clone();
+                                let input_data = date_out.value.trim().parse::<NaiveDate>().unwrap();
 
-                            if input_data >= tmp_info.date_in{
-                                is_date_valid.set(true);
+                                if input_data >= tmp_info.date_in{
+                                    is_date_valid.set(true);
 
-                                tmp_info.date_out = input_data;
-                                let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
-                                tmp_info.installments = installments as u32;
+                                    tmp_info.date_out = input_data;
+                                    let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                    tmp_info.installments = installments as u32;
 
-                                is_new.set(true);
-                                info.set(tmp_info);
-                                msg.write().hidden = true;
+                                    is_new.set(true);
+                                    info.set(tmp_info);
+                                    msg.write().hidden = true;
 
-                            }else{
-                                is_date_valid.set(false);
-                            }
-
-                        }, info.get().date_out.to_string() }
+                                }else{
+                                    is_date_valid.set(false);
+                                }
+                        }, info.get().date_out.to_string()}
                     }
                     p{ id: "data-invalid", hidden: **is_date_valid, "Datas inválidas!"}
 
@@ -193,6 +199,15 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                             }else{
                                                 let mut tmp_info = info.get().clone();
                                                 tmp_info.installments = value;
+
+                                                let dif_time = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+
+                                                if dif_time < tmp_info.installments as i32{
+                                                    tmp_info.date_out = tmp_info.date_out.checked_add_months(Months::new(1)).unwrap();
+                                                }else if dif_time > tmp_info.installments as i32{
+                                                    tmp_info.date_out = tmp_info.date_out.checked_sub_months(Months::new(1)).unwrap();
+                                                }
+                                                
                                                 is_new.set(true);
                                                 info.set(tmp_info);
 
