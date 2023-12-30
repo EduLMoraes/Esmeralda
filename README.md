@@ -11,6 +11,10 @@ dívida e o total daquela dívida.
 ### *Versão* 🤖
 `v0.1.2`
 
+### Features
+[ → Veja as mudanças aqui ←](./features.md) 
+  
+
 ### *Licença* 📜
 O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](https://github.com/EduLMoraes/Esmeralda/blob/main/LICENSE).
 

@@ -138,7 +138,11 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                             
                             if input_data <= tmp_info.date_out{
                                 is_date_valid.set(true);
+                                
                                 tmp_info.date_in = input_data;
+                                let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                tmp_info.installments = installments as u32;
+
                                 is_new.set(true);
                                 info.set(tmp_info);
                             } else{
@@ -174,6 +178,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                     label{
                         "Parcelas:"
                         input{ r#type: "number", id: "installments", r#min: "1",
+                            r#placeholder: "{info.get().installments.to_string()}",
                             oninput: move |entry| {
                                 let installments = entry.value.clone();
 
@@ -213,6 +218,8 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                         input{ r#type: "checkbox", id: "payment", onclick: move |_| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.status = !tmp_info.status;
+                            tmp_info.paid_installments = tmp_info.installments;
+
                             is_new.set(true);
                             info.set(tmp_info);
 
