@@ -22,6 +22,9 @@ pub mod cryptography;
 #[path = "./controller/utils/email_valid.rs"]
 pub mod email_valid;
 
+#[path = "./controller/utils/compare_dates.rs"]
+pub mod compare_dates;
+
 #[path = "./controller/utils/export.rs"]
 pub mod export;
 

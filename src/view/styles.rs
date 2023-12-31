@@ -192,6 +192,7 @@ pub fn style_home() -> String {
         border: 0;
         background-color: transparent;
         width: 100%;
+        text-align: center;
         margin: 0;
     }
     
@@ -223,6 +224,7 @@ pub fn style_home() -> String {
     
     #with-button{
         padding: 0;
+        max-width: 150px;
     }
     
     tr{
@@ -364,8 +366,28 @@ pub fn style_home() -> String {
         width: 20px;
     }
     
+    #col-value{
+        text-align: right;
+        max-width: 70px;
+    }
+
+    #col-name{
+        text-align: left;
+        max-width: 120px;
+    }
+
+    #col-title, #col-description{
+        text-align: left;
+        max-width: 150px;
+    }
+
+    #col-debtor-value{
+        max-width: 70px;
+    }
+
     #table-debtors{
         margin-top: 20px;
-    }"
+    }
+    "
     .to_string()
 }

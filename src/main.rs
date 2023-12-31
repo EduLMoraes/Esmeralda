@@ -33,7 +33,6 @@ fn main() {
         }
     }
 
-    env::set_var("ESMERALDSCREEN", "login");
 
     dioxus_desktop::launch_cfg(app::app, to_app::get_config());
 }

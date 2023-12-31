@@ -22,6 +22,7 @@ use crate::prelude::control::save;
 /// ```
 pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
+    let cnt = use_shared_state::<Contabilized>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let id_search: &UseState<i32> = use_state(cx, || 0);
@@ -102,6 +103,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
 
                             let run = tokio::runtime::Runtime::new().unwrap();
                             let response = run.block_on( control::edit( &counts.read().clone() ) );
+                            *cnt.write() = Contabilized::No;
                             println!("{:?}", response);
                         }
 

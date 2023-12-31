@@ -1,3 +1,5 @@
+use chrono::Months;
+
 use super::*;
 use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::chrono::NaiveDate;
@@ -6,6 +8,7 @@ use crate::prelude::control::save;
 use crate::prelude::structs::Info;
 use crate::prelude::structs::Message;
 use crate::prelude::tokio::runtime;
+use crate::prelude::compare_dates::signed_month_difference;
 
 /// Adds a new item to a list by generating a form.
 ///
@@ -30,10 +33,12 @@ use crate::prelude::tokio::runtime;
 ///
 pub fn add(cx: Scope, hidden_add: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
+    let cnt = use_shared_state::<Contabilized>(cx).unwrap();
 
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
+    let is_date_valid: &UseState<bool> = use_state(cx, || true);
 
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let info: &UseState<Info> = use_state::<Info>(cx, || Info::new());
@@ -130,31 +135,56 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
 
                     label{
                         "Data:" br{}
-                        input{ r#type: "date", id: "date_in", oninput: move |date_in| {
-                            let mut tmp_info = info.get().clone();
-                            tmp_info.date_in = date_in.value.trim().parse::<NaiveDate>().unwrap();
-                            is_new.set(true);
-                            info.set(tmp_info);
+                        input{ r#type: "date", id: "date_in", 
+                            r#placeholder: "{info.get().date_in.to_string()}",
+                            oninput: move |date_in| {
+                                let mut tmp_info = info.get().clone();
+                                let input_data = date_in.value.trim().parse::<NaiveDate>().unwrap();
+                                
+                                if input_data <= tmp_info.date_out{
+                                    is_date_valid.set(true);
+                                    
+                                    tmp_info.date_in = input_data;
+                                    let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                    tmp_info.installments = installments as u32;
+
+                                    is_new.set(true);
+                                    info.set(tmp_info);
+                                } else{
+                                    is_date_valid.set(false);
+                                }
                         }, info.get().date_in.to_string() }
                         " - até - "
-                        input{ r#type: "date", id: "date_out", value: "00/00/2000", oninput: move |date_out| {
-                            let mut tmp_info = info.get().clone();
-                            tmp_info.date_out = date_out.value.trim().parse::<NaiveDate>().unwrap();
-                            is_new.set(true);
-                            info.set(tmp_info);
+                        input{ r#type: "date", id: "date_out", 
+                            r#placeholder: "{info.get().date_out.to_string()}",
+                            oninput: move |date_out| {
+                                let mut tmp_info = info.get().clone();
+                                let input_data = date_out.value.trim().parse::<NaiveDate>().unwrap();
 
+                                if input_data >= tmp_info.date_in{
+                                    is_date_valid.set(true);
 
-                            msg.write().hidden = true;
+                                    tmp_info.date_out = input_data;
+                                    let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+                                    tmp_info.installments = installments as u32;
 
-                        }, info.get().date_out.to_string() }
+                                    is_new.set(true);
+                                    info.set(tmp_info);
+                                    msg.write().hidden = true;
+
+                                }else{
+                                    is_date_valid.set(false);
+                                }
+                        }, info.get().date_out.to_string()}
                     }
+                    p{ id: "data-invalid", hidden: **is_date_valid, "Datas inválidas!"}
 
                     br{}
 
                     label{
                         "Parcelas:"
                         input{ r#type: "number", id: "installments", r#min: "1",
-                            r#placeholder: "1",
+                            r#placeholder: "{info.get().installments.to_string()}",
                             oninput: move |entry| {
                                 let installments = entry.value.clone();
 
@@ -168,6 +198,15 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                             }else{
                                                 let mut tmp_info = info.get().clone();
                                                 tmp_info.installments = value;
+
+                                                let dif_time = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
+
+                                                if dif_time < tmp_info.installments as i32{
+                                                    tmp_info.date_out = tmp_info.date_out.checked_add_months(Months::new(1)).unwrap();
+                                                }else if dif_time > tmp_info.installments as i32{
+                                                    tmp_info.date_out = tmp_info.date_out.checked_sub_months(Months::new(1)).unwrap();
+                                                }
+                                                
                                                 is_new.set(true);
                                                 info.set(tmp_info);
 
@@ -194,6 +233,13 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                         input{ r#type: "checkbox", id: "payment", onclick: move |_| {
                             let mut tmp_info = info.get().clone();
                             tmp_info.status = !tmp_info.status;
+
+                            if tmp_info.status{
+                                tmp_info.paid_installments = tmp_info.installments;
+                            }else{
+                                tmp_info.paid_installments = 0;
+                            }
+
                             is_new.set(true);
                             info.set(tmp_info);
 
@@ -207,7 +253,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                     onclick: move |_| {
                         let rnt = runtime::Runtime::new().unwrap();
 
-                        if **is_name_valid && **is_value_valid && **is_inst_valid && rnt.block_on(is_complete(&info)){
+                        if **is_name_valid && **is_value_valid && **is_inst_valid && **is_date_valid && rnt.block_on(is_complete(&info)){
                             let exists_counts = counts.read().clone();
                             let mut tmp_info = info.get().clone();
                             let mut has_count: bool = true;
@@ -238,6 +284,8 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
 
                             let run = tokio::runtime::Runtime::new().unwrap();
                             let response = run.block_on( save( &counts.read() ) );
+
+                            *cnt.write() = Contabilized::No;
                             println!("{response:?}");
                         }
                     },

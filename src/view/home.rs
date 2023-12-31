@@ -4,15 +4,26 @@ mod div_options;
 #[path = "./containers/div_active.rs"]
 mod div_active;
 
+#[path = "../controller/utils/filter.rs"]
+mod filter;
+
 use super::*;
 use crate::prelude::control;
 use crate::prelude::move_pages;
 use crate::prelude::structs::InterfaceInfo;
+use crate::prelude::structs::Debtor;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
 mod styles;
 use styles::style_global;
 use styles::style_home;
+
+/// Represents the contabilized status of something.
+#[derive(PartialEq)]
+enum Contabilized {
+    Yes = 1,
+    No = 0,
+}
 
 /// Represents a struct called `Columns` with several boolean fields.
 ///
@@ -33,7 +44,6 @@ struct Columns {
     description: bool,
     date_in: bool,
     date_out: bool,
-    paid_installments: bool,
     installments: bool,
     value: bool,
     status: bool,
@@ -57,7 +67,6 @@ impl Columns {
             description: false,
             date_in: false,
             date_out: true,
-            paid_installments: false,
             installments: false,
             value: true,
             status: true,
@@ -105,15 +114,21 @@ const LINES: usize = 10;
 pub fn Home(cx: Scope) -> Element {
     let run = tokio::runtime::Runtime::new().unwrap();
 
-    let now = Instant::now();
-    use_shared_state_provider(cx, || run.block_on(control::recover()).unwrap());
-    println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
+    use_shared_state_provider(cx, || {
+        let now = Instant::now();
+        let recovered = run.block_on(control::recover()).unwrap();
+        println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
+        
+        recovered
+    });
+
+    use_shared_state_provider(cx, || Contabilized::No );
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info = counts.read().clone();
 
     let size_max: usize = counts_info.len();
-    let contabilized = use_state(cx, || size_max);
+    let contabilized = use_shared_state::<Contabilized>(cx).unwrap();
 
     let mut total_debt: f32 = 0.0;
     let mut total_paid: f32 = 0.0;
@@ -132,22 +147,25 @@ pub fn Home(cx: Scope) -> Element {
             size_max
         }
     });
+
     let page: &UseState<i32> = use_state(cx, || 1);
+    
+    let list_counts = counts.read().order_alphabetical("debtor", true);
+    let debtors: Vec<Debtor> = filter::filter_debtors(list_counts.list);
 
     let now = Instant::now();
 
-    if **total_counts == 0.0 && size_max > 0 || size_max != **contabilized {
-        for i in 0..size_max {
-            if counts_info.list[i].status {
-                total_paid += counts_info.list[i].value;
-            } else {
-                total_debt += counts_info.list[i].value;
-            }
+    if *contabilized.read() == Contabilized::No {
+        *contabilized.write() = Contabilized::Yes;
+
+        for debtor in debtors {
+            total_paid += debtor.get_value();
+            total_debt += debtor.get_debt();
         }
+
         total_debt_st.set(total_debt);
         total_paid_st.set(total_paid);
         total_counts.set(total_debt + total_paid);
-        contabilized.set(size_max);
     }
 
     println!("H2 -> Time to contabilized --- [{:.3?}]", now.elapsed());
@@ -260,21 +278,7 @@ pub fn Home(cx: Scope) -> Element {
                                 }, "Data Final"
                             }
                         },
-                        td{ id: "with-button",
-                            hidden: !columns.paid_installments,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.paid_installments, onclick: move |_| {
-                                    let ci =  counts.read().clone();
 
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_installments(true, **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    println!("H8 -> Time to ordened table --- [{:.3?}]", now.elapsed());
-                                }, "Parcelas pagas"
-                            }
-                        },
                         td{ id: "with-button",
                             hidden: !columns.installments,
                             button{
@@ -287,7 +291,7 @@ pub fn Home(cx: Scope) -> Element {
                                     crescent.set(!**crescent);
 
                                     println!("H9 -> Time to ordened table --- [{:.3?}]", now.elapsed());
-                                }, "Parcelas"
+                                }, "Parcelas Pago/Total"
                             }
                         },
                         td{ id: "with-button",
@@ -302,7 +306,7 @@ pub fn Home(cx: Scope) -> Element {
                                     crescent.set(!**crescent);
 
                                     println!("H10 -> Time to ordened table --- [{:.3?}]", now.elapsed());
-                                }, "Valor"
+                                }, "Valor p/ parcela"
                             }
                         },
                         td{ id: "with-button",
@@ -331,8 +335,7 @@ pub fn Home(cx: Scope) -> Element {
                             td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
                             td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
                             td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
-                            td{ id: "col-inst", hidden: !columns.paid_installments, format!("{}", counts_info.list[i].paid_installments) },
-                            td{ id: "col-inst", hidden: !columns.installments, format!("{}", counts_info.list[i].installments) },
+                            td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
                             td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
                             td{ hidden: !columns.status, id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } },
                         }
