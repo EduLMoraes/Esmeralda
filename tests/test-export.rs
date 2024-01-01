@@ -210,25 +210,25 @@ mod test_export_html {
     }
 
     #[tokio::test]
-    async fn test_export_html_unable_to_create_file() {
+    async fn test_export_html_create_file_not_exists() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("nonexistent_directory/output.html");
         let data = structs::InterfaceInfo::new();
 
         let result = export::export_html(file_path.to_str().unwrap(), &data).await;
 
-        assert!(result.is_err());
+        assert!(result.is_ok());
     }
 
     #[tokio::test]
-    async fn test_export_html_unable_to_write_to_file() {
+    async fn test_export_html_write_to_file() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
         let data = structs::InterfaceInfo::new();
 
         let result = export::export_html(file_path.to_str().unwrap(), &data).await;
 
-        assert!(result.is_err());
+        assert!(result.is_ok());
     }
 }
 
