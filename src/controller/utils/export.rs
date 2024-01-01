@@ -240,11 +240,9 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
 
     let mut page_count = 1;
 
-    let (doc, page, layer) =
-        PdfDocument::new("PDF_Document_title", x, y, format!("Página {}", page_count));
+    let (doc, page, layer) = PdfDocument::new("Esmeralda", x, y, format!("Página {}", page_count));
     let mut current_layer = doc.get_page(page).get_layer(layer);
 
-    let doc = doc.with_title("Emeralda");
     let font = doc
         .add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap())
         .unwrap();

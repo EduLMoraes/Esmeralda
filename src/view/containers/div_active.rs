@@ -51,7 +51,7 @@ pub fn div_most(cx: Scope) -> Element {
 
                 tr{
                     td{id: "td-most", "Título" },
-                    td{ onclick: move |_| columns.write().title = !col_now.title, 
+                    td{ onclick: move |_| columns.write().title = !col_now.title,
                         input{
                             r#type: "checkbox",
                             id: "most",
