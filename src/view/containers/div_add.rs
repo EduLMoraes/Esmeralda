@@ -3,12 +3,12 @@ use chrono::Months;
 use super::*;
 use crate::prelude::alphabetic::is_alphabetic;
 use crate::prelude::chrono::NaiveDate;
+use crate::prelude::compare_dates::signed_month_difference;
 use crate::prelude::control::is_complete;
 use crate::prelude::control::save;
 use crate::prelude::structs::Info;
 use crate::prelude::structs::Message;
 use crate::prelude::tokio::runtime;
-use crate::prelude::compare_dates::signed_month_difference;
 
 /// Adds a new item to a list by generating a form.
 ///
@@ -135,15 +135,15 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
 
                     label{
                         "Data:" br{}
-                        input{ r#type: "date", id: "date_in", 
+                        input{ r#type: "date", id: "date_in",
                             r#placeholder: "{info.get().date_in.to_string()}",
                             oninput: move |date_in| {
                                 let mut tmp_info = info.get().clone();
                                 let input_data = date_in.value.trim().parse::<NaiveDate>().unwrap();
-                                
+
                                 if input_data <= tmp_info.date_out{
                                     is_date_valid.set(true);
-                                    
+
                                     tmp_info.date_in = input_data;
                                     let installments = signed_month_difference(tmp_info.date_in, tmp_info.date_out) + 1;
                                     tmp_info.installments = installments as u32;
@@ -155,7 +155,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                 }
                         }, info.get().date_in.to_string() }
                         " - até - "
-                        input{ r#type: "date", id: "date_out", 
+                        input{ r#type: "date", id: "date_out",
                             r#placeholder: "{info.get().date_out.to_string()}",
                             oninput: move |date_out| {
                                 let mut tmp_info = info.get().clone();
@@ -206,7 +206,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                                 }else if dif_time > tmp_info.installments as i32{
                                                     tmp_info.date_out = tmp_info.date_out.checked_sub_months(Months::new(1)).unwrap();
                                                 }
-                                                
+
                                                 is_new.set(true);
                                                 info.set(tmp_info);
 

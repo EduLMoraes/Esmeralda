@@ -10,8 +10,8 @@ mod filter;
 use super::*;
 use crate::prelude::control;
 use crate::prelude::move_pages;
-use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::structs::Debtor;
+use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
 mod styles;
@@ -118,11 +118,11 @@ pub fn Home(cx: Scope) -> Element {
         let now = Instant::now();
         let recovered = run.block_on(control::recover()).unwrap();
         println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
-        
+
         recovered
     });
 
-    use_shared_state_provider(cx, || Contabilized::No );
+    use_shared_state_provider(cx, || Contabilized::No);
 
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info = counts.read().clone();
@@ -149,7 +149,7 @@ pub fn Home(cx: Scope) -> Element {
     });
 
     let page: &UseState<i32> = use_state(cx, || 1);
-    
+
     let list_counts = counts.read().order_alphabetical("debtor", true);
     let debtors: Vec<Debtor> = filter::filter_debtors(list_counts.list);
 

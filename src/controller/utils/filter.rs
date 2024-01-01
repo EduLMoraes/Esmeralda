@@ -101,11 +101,11 @@ pub fn filter_debtors(list: Vec<Info>) -> Vec<Debtor> {
         ));
 
         let mut value = 0.0;
-        if info.installments != info.paid_installments{
+        if info.installments != info.paid_installments {
             let remaining_installments = info.installments - info.paid_installments;
 
             value = info.value * remaining_installments as f32;
-        }else{
+        } else {
             value = info.value * info.paid_installments as f32;
         }
 

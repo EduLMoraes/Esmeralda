@@ -33,6 +33,5 @@ fn main() {
         }
     }
 
-
     dioxus_desktop::launch_cfg(app::app, to_app::get_config());
 }
