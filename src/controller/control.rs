@@ -494,7 +494,7 @@ pub async fn recover() -> Result<InterfaceInfo, ControlError> {
 /// }
 /// ```
 pub async fn is_complete(info: &Info) -> bool {
-    if info.debtor.is_empty() || !is_alphabetic(&info.debtor) {
+    if info.debtor.trim().is_empty() || !is_alphabetic(&info.debtor) {
         return false;
     } else if info.title.is_empty() {
         return false;

@@ -5,7 +5,6 @@ use prelude::export;
 use prelude::structs;
 use std::env;
 use std::env::temp_dir;
-use std::fs;
 use std::path::Path;
 
 #[cfg(test)]
@@ -235,4 +234,82 @@ mod test_export_html {
 #[cfg(test)]
 mod test_export_pdf {
     use super::*;
+
+    #[test]
+    fn test_export_pdf_with_expected_format_and_content() {
+        let path = "test.pdf";
+        let data = structs::InterfaceInfo::new();
+
+        let result = export::export_pdf(path, &data);
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_export_pdf_with_empty_input_data() {
+        let path = "test.pdf";
+        let data = structs::InterfaceInfo::new();
+
+        let result = export::export_pdf(path, &data);
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_export_pdf_with_very_large_input_data() {
+        let path = "test.pdf";
+        let mut data = structs::InterfaceInfo::new();
+
+        for _ in 0..10000 {
+            data.put(structs::Info {
+                id: 1,
+                debtor: "John Doe".to_string(),
+                title: "Invoice".to_string(),
+                description: "Payment for services".to_string(),
+                date_in: "2022-01-01".parse::<NaiveDate>().unwrap(),
+                date_out: "2022-02-28".parse::<NaiveDate>().unwrap(),
+                paid_installments: 1,
+                installments: 3,
+                value: 100.0,
+                status: true,
+            });
+        }
+
+        let result = export::export_pdf(path, &data);
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_export_pdf_with_very_small_input_data() {
+        let path = "test.pdf";
+        let data = structs::InterfaceInfo::new();
+
+        let result = export::export_pdf(path, &data);
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_export_pdf_with_very_long_strings_in_input_data() {
+        let path = "test.pdf";
+        let mut data = structs::InterfaceInfo::new();
+
+        data.put( structs::Info{
+            id: 1,
+            debtor: "John Doe Silver Algostin Guilherme Santos Pedro Fabiancio".to_string(),
+            title: "Invoice the RPG in game of life on real life, like video of youtube with montage of dragons and dungeons".to_string(),
+            description: "Payment for services in multiplataform of game of thrones and this is so test with long strings.".to_string(),
+            date_in: "2022-01-01".parse::<NaiveDate>().unwrap(),
+            date_out: "2022-02-28".parse::<NaiveDate>().unwrap(),
+            paid_installments: 1,
+            installments: 3,
+            value: 100.0,
+            status: true,
+        } );
+
+        let result = export::export_pdf(path, &data);
+
+        assert!(result.is_ok());
+    }
 }
