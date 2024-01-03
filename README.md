@@ -3,7 +3,15 @@ O propósito da Esmeralda é ajudar a controlar os gastos e o dinheiro,
 sabendo para onde vai o dinheiro, quanto se pode gastar, quem fez a
 dívida e o total daquela dívida.
 
-## *Detalhes*:
+## Sumário:
+  1.    [Detalhes](#details)
+  2.    [Features](./features.md)
+  3.    [Licença](./LICENSE) 
+  4.    [Imagens](#images)
+  5.    [Passo a passo para usar](#how-use)
+  6.    [Créditos](#credits)
+
+## *Detalhes*: <section id="details"/>
 
 ### *Total de Linhas*:
 4574 linhas. Última contagem em 24/12/2023 - 15:58
@@ -16,9 +24,9 @@ dívida e o total daquela dívida.
   
 
 ### *Licença* 📜
-O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](https://github.com/EduLMoraes/Esmeralda/blob/main/LICENSE).
+O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](./LICENSE).
 
-## *Imagens* 📷
+## *Imagens* 📷 <section id = "images" />
 
 ### *Icone*
 ![Icon](./assets/images/icon.ico)
@@ -53,10 +61,28 @@ Aqui é onde a mágica acontece.
 ![Home](./assets/gif/ordened.gif)
 
 
+## Como usar? <section id="how-use"/>
+Para usá-lo é necessário seguir alguns passos antes para que tudo funcione
+como deve.
 
+#### 1 - Dependencias: <br>
+  1.1 - O Esmeralda depende que você tenha o banco de dados **PostgreSQL**
+  instalado e com algumas configurações específicas como nome de usuário
+  e senha serem "postgre" (o padrão).
 
+  1.2 - Rode o código SQL encontrado  [-> aqui <-](./src/controller/database/construct_db.sql), com a conexão ativa.
+ 
+ ---
+#### 2 - Download do executável
+  2.1 - Na versão *(v0.1.2)* em diante, encontradas [aqui](https://github.com/EduLMoraes/Esmeralda/releases) você encontra o executável do *Esmeralda*, para distro Unix é o sem extensão de arquivo, para **windows** é o que contém extensão **.exe**, baixe-o de acordo com seu sistema operacional.
 
-### *Contribuidores*:
+---
+#### 3 - Usando
+  3.1 - Agora com tudo baixado e configurado, basta rodar ele, ir na tela de cadastro e criar seu login, logar e seguir usando-o normalmente, como mostrado em [imagens](#images)
+
+---
+
+### *Contribuidores*: <section id="credits"/>
 <table>
   <tr>
      <td align="center"><a href="https://github.com/EduardoMoreaes"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/88555769?v=4" width="100px;" alt=""/><br /><sub><b>Eduardo Moraes</b></sub></a><br /><a href="https://github.com/EduardoMoreaes" title="Desenvolvedor">👨‍🚀</a></td>
