@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub fn style_global() -> String {
     "#data-invalid{
         font-size: larger;
