@@ -2,6 +2,10 @@ use crate::prelude::dioxus::prelude::*;
 use crate::prelude::dioxus_router::prelude::*;
 use std::env;
 
+#[path = "../view/styles.rs"]
+mod styles;
+use styles::style_global;
+
 #[path = "../controller/router.rs"]
 mod router;
 use router::Route;
@@ -28,10 +32,8 @@ pub fn app(cx: Scope) -> Element {
 
     cx.render(rsx! {
 
-        link {
-            r#rel: "stylesheet",
-            href: "./src/view/styles/global.css"
-        }
+        style {{ style_global() }}
+
 
         div {
             id: "container",

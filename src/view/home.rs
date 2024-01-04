@@ -15,7 +15,6 @@ use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
 mod styles;
-use styles::style_global;
 use styles::style_home;
 
 /// Represents the contabilized status of something.
@@ -176,7 +175,6 @@ pub fn Home(cx: Scope) -> Element {
 
     render! {
 
-        style {{ style_global() }}
         style {{ style_home() }}
 
         h2{ id: "name",  "Esmeralda" }

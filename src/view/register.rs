@@ -5,7 +5,6 @@ use crate::prelude::structs_db::NewUser;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
 mod styles;
-use styles::style_global;
 use styles::style_register;
 
 /// Renders a registration form for a web application using the `yew` framework.
@@ -49,7 +48,6 @@ pub fn Register(cx: Scope) -> Element {
     let is_newly = use_state(cx, || false);
 
     render!(
-        style {{ style_global() }}
         style {{ style_register() }}
 
         div {

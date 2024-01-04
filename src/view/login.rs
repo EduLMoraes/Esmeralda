@@ -5,7 +5,6 @@ use crate::prelude::structs_db::User;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
 mod styles;
-use styles::style_global;
 use styles::style_login;
 
 #[component]
@@ -31,7 +30,6 @@ pub fn Login(cx: Scope) -> Element {
     let rt: runtime::Runtime = runtime::Runtime::new().unwrap();
 
     render!(
-        style {{ style_global() }}
         style {{ style_login() }}
 
         div{
