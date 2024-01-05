@@ -16,6 +16,9 @@ pub mod control;
 #[path = "./controller/router.rs"]
 pub mod router;
 
+#[path = "./controller/log/whrite.rs"]
+pub mod whrite;
+
 #[path = "./controller/utils/cryptography.rs"]
 pub mod cryptography;
 
