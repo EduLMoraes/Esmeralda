@@ -41,7 +41,7 @@ pub use crate::prelude::structs::InterfaceInfo;
 ///
 /// The function is marked as `async` and may need to be used within an asynchronous context.
 #[allow(dead_code)]
-async fn mkdir(path: &str) -> Result<(File, String), String> {
+pub async fn mkdir(path: &str) -> Result<(File, String), String> {
     let mut new_path: String = String::new();
 
     let paths: Vec<&str> = path.split('/').collect();
