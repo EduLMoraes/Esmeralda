@@ -7,6 +7,8 @@ mod div_active;
 #[path = "../controller/utils/filter.rs"]
 mod filter;
 
+use std::path::PathBuf;
+
 use super::*;
 use crate::prelude::control;
 use crate::prelude::move_pages;
@@ -14,6 +16,7 @@ use crate::prelude::structs::Debtor;
 use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
+use crate::prelude::logger::log;
 mod styles;
 use styles::style_home;
 
@@ -116,7 +119,7 @@ pub fn Home(cx: Scope) -> Element {
     use_shared_state_provider(cx, || {
         let now = Instant::now();
         let recovered = run.block_on(control::recover()).unwrap();
-        println!("H1 -> Time to recover user --- [{:.3?}]", now.elapsed());
+        let _ = log("./log/log.txt".into(), &format!("[HOME] Recover user in...[{:.3?}]\n", now.elapsed()));
 
         recovered
     });
@@ -167,7 +170,7 @@ pub fn Home(cx: Scope) -> Element {
         total_counts.set(total_debt + total_paid);
     }
 
-    println!("H2 -> Time to contabilized --- [{:.3?}]", now.elapsed());
+    let _ = log("./log/log.txt".into(), &format!("[HOME] Counts contabilized in...[{:.3?}]\n", now.elapsed()));
 
     let crescent: &UseState<bool> = use_state(cx, || false);
     let mut more: bool = false;
@@ -196,7 +199,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_id(**crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("Hx -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by id in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "ID"
                             }
                         },
@@ -211,7 +215,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_alphabetical("name", **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H3 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by name in...[{:.3?}]\n", now.elapsed()));
+                                    ;
                                 }, "Nome"
                             }
                         },
@@ -227,7 +232,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_alphabetical("title", **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H4 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by title in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Título"
                             }
                         },
@@ -239,10 +245,11 @@ pub fn Home(cx: Scope) -> Element {
                                     let ci =  counts.read().clone();
 
                                     let now = Instant::now();
-                                    counts.write().list = ci.order_alphabetical("desciption", **crescent).list;
+                                    counts.write().list = ci.order_alphabetical("description", **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H5 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by description in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Descrição"
                             }
                         },
@@ -257,7 +264,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_date(true, **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H6 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by date_in in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Data Inicial"
                             }
                         },
@@ -272,7 +280,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_date(false, **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H7 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by date_out in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Data Final"
                             }
                         },
@@ -288,7 +297,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_installments(false, **crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H9 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by installments in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Parcelas Pago/Total"
                             }
                         },
@@ -303,7 +313,8 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_value(**crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H10 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by value in...[{:.3?}]\n", now.elapsed()));
+
                                 }, "Valor p/ parcela"
                             }
                         },
@@ -318,7 +329,7 @@ pub fn Home(cx: Scope) -> Element {
                                     counts.write().list = ci.order_by_status(**crescent).list;
                                     crescent.set(!**crescent);
 
-                                    println!("H11 -> Time to ordened table --- [{:.3?}]", now.elapsed());
+                                    let _ = log("./log/log.txt".into(), &format!("[HOME] Ordened table by status in...[{:.3?}]\n", now.elapsed()));
                                 }, "Status"
                             }
                         }
@@ -362,7 +373,7 @@ pub fn Home(cx: Scope) -> Element {
                             end.set(e);
                             page.set(page - 1);
 
-                            println!("H11 -> Time to back page --- [{:.3?}]", now.elapsed());
+                            let _ = log("./log/log.txt".into(), &format!("[HOME] Back page in...[{:.3?}]\n", now.elapsed()));
                         },
                         "← Página anterior"
                     }
@@ -378,7 +389,7 @@ pub fn Home(cx: Scope) -> Element {
                             end.set(e);
                             page.set(page + 1);
 
-                            println!("h12 -> Time to next page --- [{:.3?}]", now.elapsed());
+                            let _ = log("./log/log.txt".into(), &format!("[HOME] Next page in...[{:.3?}]\n", now.elapsed()));
                         },
                         "Próxima página →"
                     }
