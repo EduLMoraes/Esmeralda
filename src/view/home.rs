@@ -9,12 +9,12 @@ mod filter;
 
 use super::*;
 use crate::prelude::control;
+use crate::prelude::logger::log;
 use crate::prelude::move_pages;
 use crate::prelude::structs::Debtor;
 use crate::prelude::structs::InterfaceInfo;
 use crate::prelude::tokio;
 use crate::prelude::Instant;
-use crate::prelude::logger::log;
 use std::path::PathBuf;
 mod styles;
 use styles::style_home;
@@ -119,7 +119,10 @@ pub fn Home(cx: Scope) -> Element {
     use_shared_state_provider(cx, || {
         let now = Instant::now();
         let recovered = run.block_on(control::recover()).unwrap();
-        let _ = log(path.read().clone(), &format!("[HOME] Recover user in...[{:.3?}]\n", now.elapsed()));
+        let _ = log(
+            path.read().clone(),
+            &format!("[HOME] Recover user in...[{:.3?}]\n", now.elapsed()),
+        );
 
         recovered
     });
@@ -170,7 +173,10 @@ pub fn Home(cx: Scope) -> Element {
         total_counts.set(total_debt + total_paid);
     }
 
-    let _ = log(path.read().clone(), &format!("[HOME] Counts contabilized in...[{:.3?}]\n", now.elapsed()));
+    let _ = log(
+        path.read().clone(),
+        &format!("[HOME] Counts contabilized in...[{:.3?}]\n", now.elapsed()),
+    );
 
     let crescent: &UseState<bool> = use_state(cx, || false);
     let mut more: bool = false;

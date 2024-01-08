@@ -1,5 +1,0 @@
-Backend(Error { kind: Connect, cause: Some(Os { code: 111, kind: ConnectionRefused, message: "Conexão recusada" }) })
-GetUserError(ErrorLog { title: "Error to get Object<Manager>", code: 804, file: "db.rs" })
-C1 Time to login --- 5.020ms
-L1 -> Time to login --- [5.090ms]
-Error to get user from db

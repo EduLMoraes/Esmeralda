@@ -3,9 +3,9 @@ pub use dioxus;
 pub use dioxus::prelude::*;
 pub use dioxus_desktop;
 pub use dioxus_router;
+pub use logger;
 pub use thiserror::Error;
 pub use tokio;
-pub use logger;
 
 pub use std::env::var;
 pub use std::error::Error;

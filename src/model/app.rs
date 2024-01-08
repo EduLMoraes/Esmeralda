@@ -1,7 +1,7 @@
 use crate::prelude::dioxus::prelude::*;
 use crate::prelude::dioxus_router::prelude::*;
-use std::path::PathBuf;
 use std::env;
+use std::path::PathBuf;
 
 #[path = "../view/styles.rs"]
 mod styles;

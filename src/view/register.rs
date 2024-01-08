@@ -1,10 +1,10 @@
 use super::*;
 use crate::prelude::control::add_user;
 use crate::prelude::email_valid;
+use crate::prelude::logger::log;
 use crate::prelude::structs_db::NewUser;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
-use crate::prelude::logger::log;
 use std::path::PathBuf;
 mod styles;
 use styles::style_register;
@@ -41,7 +41,7 @@ use styles::style_register;
 #[component]
 pub fn Register(cx: Scope) -> Element {
     let path = use_shared_state::<PathBuf>(cx).unwrap().read();
-    
+
     let email = use_state(cx, || String::new());
     let password = use_state(cx, || String::new());
     let confirm_pass = use_state(cx, || String::new());
