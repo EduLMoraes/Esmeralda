@@ -11,8 +11,11 @@ use std::io::Write;
 fn main() {
     match var("KEYESMERALD") {
         Ok(_) => {
+            let mut path = env::var("HOME").unwrap();
+            path.push_str("/esmeralda/log.log");
+
             let _ = log(
-                "./log/log.txt".into(),
+                path.into(),
                 &format!("[MAIN] Variabel of environment already exists\n"),
             );
         }
