@@ -38,6 +38,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
     let counts: &UseSharedState<InterfaceInfo> = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let cnt = use_shared_state::<Contabilized>(cx).unwrap();
+    let path = use_shared_state::<PathBuf>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let is_name_valid: &UseState<bool> = use_state(cx, || true);
@@ -94,8 +95,6 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
 
                             let column = &column.value.to_lowercase();
                             let column: String = remove_diacritics(column.trim());
-
-                            println!("{column}");
 
                             match column.trim(){
                                 "n" => {
@@ -274,7 +273,8 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                                         "value"             => { counts.write().list[r].value = new_value.get().clone().parse::<f32>().unwrap() },
                                         "paid_installments" => { counts.write().list[r].paid_installments = new_value.get().clone().parse::<u32>().unwrap() },
                                         "installments"      => { counts.write().list[r].installments = new_value.get().clone().parse::<u32>().unwrap()} ,
-                                        _ => println!("Coluna inválida")
+                                        _ => { let _ = log(path.read().clone(), &format!("[CONTAINER EDIT] Column invalid\n")); }
+
                                     }
 
                                     has_count = true;
@@ -294,7 +294,10 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                                 let run = tokio::runtime::Runtime::new().unwrap();
                                 let response = run.block_on( control::edit( &counts.read().clone() ) );
                                 *cnt.write() = Contabilized::No;
-                                println!("{:?}", response);
+
+                                if response.is_err(){
+                                    let _ = log(path.read().clone(), &format!("[CONTAINER EDIT] {response:?}\n"));
+                                }
                             }
                         }
                     },

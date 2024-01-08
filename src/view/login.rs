@@ -1,9 +1,11 @@
 use super::*;
 use crate::prelude::control;
 use crate::prelude::errors::*;
+use crate::prelude::logger::log;
 use crate::prelude::structs_db::User;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
+use std::path::PathBuf;
 mod styles;
 use styles::style_login;
 
@@ -21,6 +23,8 @@ use styles::style_login;
 /// let login_form: Element = Login(cx); // render the login form
 /// ```
 pub fn Login(cx: Scope) -> Element {
+    let path = use_shared_state::<PathBuf>(cx).unwrap();
+
     let username: &UseState<String> = use_state(cx, || String::new());
     let password: &UseState<String> = use_state(cx, || String::new());
     let data_incompatible: &UseState<bool> = use_state(cx, || false);
@@ -57,9 +61,8 @@ pub fn Login(cx: Scope) -> Element {
 
                     let now = Instant::now();
                     let result = rt.block_on(control::login(user));
-                    let elapsed = now.elapsed();
 
-                    println!("L1 -> Time to login --- [{:.3?}]", elapsed);
+                    let _ = log(path.read().clone(), &format!("[LOGIN] Login user in...[{:.3?}]\n", now.elapsed()));
 
                     if result.is_ok(){
                         nav.push(Route::Home{});
@@ -68,11 +71,11 @@ pub fn Login(cx: Scope) -> Element {
                         let _ = result.map_err(move |err| {
                             match err{
                                 ControlError::ErrorAuthenticate(err) => {
-                                    println!("{err}");
+                                    let _ = log(path.read().clone(), &format!("[LOGIN] {err}\n"));
                                     data_incompatible.set( true );
                                 },
                                 ControlError::ErrorExternDB(err) => {
-                                    println!("{err}");
+                                    let _ = log(path.read().clone(), &format!("[LOGIN] {err}\n"));
                                     user_not_exists.set(true);
                                 },
                                 _ => { }

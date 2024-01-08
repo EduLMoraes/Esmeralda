@@ -1,9 +1,11 @@
 use super::*;
 use crate::prelude::control::add_user;
 use crate::prelude::email_valid;
+use crate::prelude::logger::log;
 use crate::prelude::structs_db::NewUser;
 use crate::prelude::tokio::runtime;
 use crate::prelude::Instant;
+use std::path::PathBuf;
 mod styles;
 use styles::style_register;
 
@@ -38,6 +40,8 @@ use styles::style_register;
 /// - The rendered HTML element representing the registration form.
 #[component]
 pub fn Register(cx: Scope) -> Element {
+    let path = use_shared_state::<PathBuf>(cx).unwrap().read();
+
     let email = use_state(cx, || String::new());
     let password = use_state(cx, || String::new());
     let confirm_pass = use_state(cx, || String::new());
@@ -76,15 +80,14 @@ pub fn Register(cx: Scope) -> Element {
 
                     let now = Instant::now();
                     let result = rt.block_on(add_user(user, confirm_pass.to_string()));
-                    let elapsed = now.elapsed();
 
-                    println!("R1 -> Time to add user --- [{:.3?}]", elapsed);
+                    let _ = log(path.clone(), &format!("[REGISTER] Register user in...[{:.3?}]\n", now.elapsed()));
 
                     if result.is_ok(){
                         is_newly.set(true);
                     }
                     else{
-                        println!("{:?}", result.err());
+                        let _ = log(path.clone(), &format!("[REGISTER] {:?}\n", result.err()));
                     }
                 },
 
@@ -99,9 +102,8 @@ pub fn Register(cx: Scope) -> Element {
 
                         let now = Instant::now();
                         is_email.set(email_valid::validate( &input.value ));
-                        let elapsed = now.elapsed();
 
-                        println!("R2 -> Time to validate email in register --- [{:.3?}]", elapsed);
+                        let _ = log(use_shared_state::<PathBuf>(cx).unwrap().read().clone(), &format!("[REGISTER] Validate email in...[{:.3?}]\n", now.elapsed()));
 
                         email.set(input.value.to_string())
                     }

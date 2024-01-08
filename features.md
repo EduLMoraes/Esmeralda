@@ -4,6 +4,13 @@
     <td> Versão </td>
     <td> Descrição </td>
   </tr>
+   <tr> 
+    <td> v0.1.3 </td>
+    <td>
+        Corrigido bug que impossibilitava ordenar a tabela pela descrição.
+        <br>
+    </td>
+  <tr>
   <tr> 
     <td> v0.1.2 </td>
     <td>
