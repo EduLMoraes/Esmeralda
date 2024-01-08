@@ -1,5 +1,6 @@
 mod prelude;
 use prelude::cryptography::get_key;
+use prelude::logger::log;
 use prelude::*;
 use std::env;
 use std::fs::File;
@@ -10,7 +11,7 @@ use std::io::Write;
 fn main() {
     match var("KEYESMERALD") {
         Ok(_) => {
-            println!("Variavel de ambiente já existente");
+            let _ = log("./log/log.txt".into(), &format!("[MAIN] Variabel of environment already exists\n"));
         }
         Err(_) => {
             let mut path = env::var("HOME").unwrap();

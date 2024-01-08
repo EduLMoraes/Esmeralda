@@ -23,6 +23,7 @@ use crate::prelude::control::save;
 pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
     let cnt = use_shared_state::<Contabilized>(cx).unwrap();
+    let path = use_shared_state::<PathBuf>(cx).unwrap();
 
     let is_id_valid: &UseState<bool> = use_state(cx, || true);
     let id_search: &UseState<i32> = use_state(cx, || 0);
@@ -40,7 +41,7 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
                     let response = run.block_on( save( &counts.read() ) );
                     match response{
                         Ok(_) => {},
-                        Err(err) => println!("{}", err)
+                        Err(err) => { let _ = log(path.read().clone(), &format!("[CONTAINER PAID] {err}\n")); }
                     }
                 },
                 p{
@@ -104,7 +105,10 @@ pub fn paid(cx: Scope, hidden_paid: bool) -> Element {
                             let run = tokio::runtime::Runtime::new().unwrap();
                             let response = run.block_on( control::edit( &counts.read().clone() ) );
                             *cnt.write() = Contabilized::No;
-                            println!("{:?}", response);
+
+                            if response.is_err(){
+                                let _ = log(path.read().clone(), &format!("[CONTAINER PAID] {response:?}\n"));
+                            }
                         }
 
                     },

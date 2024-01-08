@@ -34,6 +34,7 @@ use crate::prelude::tokio::runtime;
 pub fn add(cx: Scope, hidden_add: bool) -> Element {
     let msg = use_shared_state::<Message>(cx).unwrap();
     let cnt = use_shared_state::<Contabilized>(cx).unwrap();
+    let path = use_shared_state::<PathBuf>(cx).unwrap();
 
     let is_value_valid: &UseState<bool> = use_state(cx, || true);
     let is_inst_valid: &UseState<bool> = use_state(cx, || true);
@@ -286,7 +287,11 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                             let response = run.block_on( save( &counts.read() ) );
 
                             *cnt.write() = Contabilized::No;
-                            println!("{response:?}");
+
+                            if response.is_err(){
+                                let _ = log(path.read().clone(), &format!("[CONTAINER ADD] {response:?}\n"));
+                            }
+
                         }
                     },
                     "Confirmar"

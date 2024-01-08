@@ -1,5 +1,6 @@
 use crate::prelude::dioxus::prelude::*;
 use crate::prelude::dioxus_router::prelude::*;
+use std::path::PathBuf;
 use std::env;
 
 #[path = "../view/styles.rs"]
@@ -29,6 +30,12 @@ use router::Route;
 #[allow(dead_code)]
 pub fn app(cx: Scope) -> Element {
     let version: String = String::from(env!("CARGO_PKG_VERSION"));
+
+    use_shared_state_provider(cx, || {
+        let mut path = env::var("HOME").unwrap();
+        path.push_str("/esmeralda/log.log");
+        PathBuf::from(path)
+    });
 
     cx.render(rsx! {
 
