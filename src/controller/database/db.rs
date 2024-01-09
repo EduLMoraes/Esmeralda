@@ -129,7 +129,10 @@ impl DataBase {
                     conn.execute(
                         &stmt,
                         &[
-                            &format!("{}{}", user.id, counts.list[i].id).trim().parse::<i32>().unwrap(),
+                            &format!("{}{}", user.id, counts.list[i].id)
+                                .trim()
+                                .parse::<i32>()
+                                .unwrap(),
                             &user.id,
                             &counts.list[i].debtor,
                             &counts.list[i].title,
@@ -320,7 +323,10 @@ impl DataBase {
                     conn.execute(
                         &stmt,
                         &[
-                            &format!("{}{}", user.id, counts.list[i].id).trim().parse::<i32>().unwrap(),
+                            &format!("{}{}", user.id, counts.list[i].id)
+                                .trim()
+                                .parse::<i32>()
+                                .unwrap(),
                             &user.id,
                             &counts.list[i].debtor,
                             &counts.list[i].title,

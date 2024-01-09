@@ -439,26 +439,26 @@ pub async fn recover() -> Result<InterfaceInfo, ControlError> {
         .map_err(|err| ControlError::ErrorExternDB(err))?;
 
     match recovered_data {
-        Data::Counts(mut data, _) => { 
-
+        Data::Counts(mut data, _) => {
             let id_user_len = user_logged.id.to_string().len();
-           
-            let list: Vec<Info> = data.list
-            .iter_mut()
-            .map(|count| { 
-                let count_id: String = count.id.to_string();
-                let count_id = count_id.split_at(id_user_len);
 
-                count.id = count_id.1.trim().parse().unwrap();
+            let list: Vec<Info> = data
+                .list
+                .iter_mut()
+                .map(|count| {
+                    let count_id: String = count.id.to_string();
+                    let count_id = count_id.split_at(id_user_len);
 
-                count.clone()
-            })
-            .collect();
+                    count.id = count_id.1.trim().parse().unwrap();
+
+                    count.clone()
+                })
+                .collect();
 
             data.list = list;
 
             Ok(data)
-        },
+        }
         _ => Err(ControlError::ErrorExtern(ErrorLog {
             title: "Error to recover data",
             code: 306,

@@ -99,9 +99,7 @@ impl Info {
     /// info.new_id();
     /// ```
     pub fn new_id(&mut self) {
-
         self.id = self.id + 1;
-        
     }
 }
 /// Represents a collection of `Info` objects and provides methods to manipulate and order the list based on different criteria.
@@ -171,10 +169,10 @@ impl InterfaceInfo {
     pub fn order_by_id(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
 
-        if crescent{
+        if crescent {
             list.list.sort_by_cached_key(|a| a.id);
-        }else{
-            list.list.sort_by_cached_key(|a| Reverse(a.id) );
+        } else {
+            list.list.sort_by_cached_key(|a| Reverse(a.id));
         }
 
         list
@@ -220,11 +218,11 @@ impl InterfaceInfo {
 
     pub fn order_by_status(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        
-        if crescent{
+
+        if crescent {
             list.list.sort_by_cached_key(|a| a.status);
-        }else{
-            list.list.sort_by_cached_key(|a| Reverse(a.status) );
+        } else {
+            list.list.sort_by_cached_key(|a| Reverse(a.status));
         }
 
         list
@@ -232,15 +230,13 @@ impl InterfaceInfo {
 
     pub fn order_by_date(&self, is_in: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        
-        if crescent{
-            list.list.sort_by_cached_key(|a|  
-                if is_in { a.date_in } else { a.date_out }
-            );
-        }else{
-            list.list.sort_by_cached_key(|a| Reverse(
-                if is_in { a.date_in } else { a.date_out }) 
-            );
+
+        if crescent {
+            list.list
+                .sort_by_cached_key(|a| if is_in { a.date_in } else { a.date_out });
+        } else {
+            list.list
+                .sort_by_cached_key(|a| Reverse(if is_in { a.date_in } else { a.date_out }));
         }
 
         list
@@ -248,15 +244,23 @@ impl InterfaceInfo {
 
     pub fn order_by_installments(&self, is_paid: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        
-        if crescent{
-            list.list.sort_by_cached_key(|a|  
-                if is_paid { a.paid_installments } else { a.installments }
-            );
-        }else{
-            list.list.sort_by_cached_key(|a| Reverse(
-                if is_paid { a.paid_installments } else { a.installments }) 
-            );
+
+        if crescent {
+            list.list.sort_by_cached_key(|a| {
+                if is_paid {
+                    a.paid_installments
+                } else {
+                    a.installments
+                }
+            });
+        } else {
+            list.list.sort_by_cached_key(|a| {
+                Reverse(if is_paid {
+                    a.paid_installments
+                } else {
+                    a.installments
+                })
+            });
         }
 
         list
@@ -266,22 +270,28 @@ impl InterfaceInfo {
         let mut list = self.clone();
 
         if column == "name" {
-            if crescent{
-                list.list.sort_by_cached_key(|a| a.debtor.to_string().to_lowercase());
-            }else{
-                list.list.sort_by_cached_key(|a| Reverse( a.debtor.to_string().to_lowercase()));
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.debtor.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.debtor.to_string().to_lowercase()));
             }
         } else if column == "title" {
-            if crescent{
-                list.list.sort_by_cached_key(|a| a.title.to_string().to_lowercase());
-            }else{
-                list.list.sort_by_cached_key(|a| Reverse( a.title.to_string().to_lowercase()));
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.title.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.title.to_string().to_lowercase()));
             }
         } else if column == "description" {
-            if crescent{
-                list.list.sort_by_cached_key(|a| a.description.to_string().to_lowercase());
-            }else{
-                list.list.sort_by_cached_key(|a| Reverse( a.description.to_string().to_lowercase()));
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.description.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.description.to_string().to_lowercase()));
             }
         }
         list
