@@ -5,6 +5,17 @@
     <td> Descrição </td>
   </tr>
    <tr> 
+    <td> v0.1.4 </td>
+    <td>
+        Ordenação pelas colunas Nome, Título, ID, Data inicial/final, status ficaram mais rápidas.
+        <br>
+    </td>
+    <td>
+        Corrigido bug dos IDs colapsarem uns com os outros.
+        <br>
+    </td>
+  <tr>
+  <tr> 
     <td> v0.1.3 </td>
     <td>
         Corrigido bug que impossibilitava ordenar a tabela pela descrição.

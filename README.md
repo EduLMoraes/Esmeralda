@@ -13,11 +13,9 @@ dívida e o total daquela dívida.
 
 ## *Detalhes*: <section id="details"/>
 
-### *Total de Linhas*:
-4574 linhas. Última contagem em 24/12/2023 - 15:58
-
 ### *Versão* 🤖
-`v0.1.3`
+`v0.1.4`
+
 
 ### Features
 [ → Veja as mudanças aqui ←](./features.md) 

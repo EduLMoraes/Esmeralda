@@ -1,5 +1,5 @@
 use crate::prelude::chrono::NaiveDate;
-use crate::prelude::control::get_user_instance;
+use std::cmp::Reverse;
 
 /// Represents a message with a hidden flag and text content.
 ///
@@ -73,10 +73,9 @@ impl Info {
     /// ```
     pub fn new() -> Info {
         let today = chrono::Utc::now();
-        let user = get_user_instance().as_ref().unwrap().clone();
 
         Info {
-            id: format!("{}0{}", user.id, 0).trim().parse::<i32>().unwrap(),
+            id: 0,
             debtor: String::new(),
             title: String::new(),
             description: String::new(),
@@ -100,8 +99,7 @@ impl Info {
     /// info.new_id();
     /// ```
     pub fn new_id(&mut self) {
-        let id = self.id + 1;
-        self.id = id;
+        self.id = self.id + 1;
     }
 }
 /// Represents a collection of `Info` objects and provides methods to manipulate and order the list based on different criteria.
@@ -170,39 +168,13 @@ impl InterfaceInfo {
 
     pub fn order_by_id(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        let width: usize = list.len();
 
-        loop {
-            let mut comparisions: bool = true;
-
-            if crescent {
-                for i in 1..width {
-                    if list.list[i].id < list.list[i - 1].id {
-                        comparisions = false;
-
-                        let tmp = list.list[i].clone();
-
-                        list.list[i] = list.list[i - 1].clone();
-                        list.list[i - 1] = tmp;
-                    }
-                }
-            } else {
-                for i in 1..width {
-                    if list.list[i].id > list.list[i - 1].id {
-                        comparisions = false;
-
-                        let tmp = list.list[i].clone();
-
-                        list.list[i] = list.list[i - 1].clone();
-                        list.list[i - 1] = tmp;
-                    }
-                }
-            }
-
-            if comparisions {
-                break;
-            }
+        if crescent {
+            list.list.sort_by_cached_key(|a| a.id);
+        } else {
+            list.list.sort_by_cached_key(|a| Reverse(a.id));
         }
+
         list
     }
 
@@ -246,285 +218,80 @@ impl InterfaceInfo {
 
     pub fn order_by_status(&self, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        let width: usize = list.len();
 
-        loop {
-            let mut comparisions: bool = true;
-
-            if crescent {
-                for i in 1..width {
-                    if list.list[i].status < list.list[i - 1].status {
-                        comparisions = false;
-
-                        let tmp = list.list[i].clone();
-
-                        list.list[i] = list.list[i - 1].clone();
-                        list.list[i - 1] = tmp;
-                    }
-                }
-            } else {
-                for i in 1..width {
-                    if list.list[i].status > list.list[i - 1].status {
-                        comparisions = false;
-
-                        let tmp = list.list[i].clone();
-
-                        list.list[i] = list.list[i - 1].clone();
-                        list.list[i - 1] = tmp;
-                    }
-                }
-            }
-
-            if comparisions {
-                break;
-            }
+        if crescent {
+            list.list.sort_by_cached_key(|a| a.status);
+        } else {
+            list.list.sort_by_cached_key(|a| Reverse(a.status));
         }
+
         list
     }
 
     pub fn order_by_date(&self, is_in: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        let width: usize = self.list.len();
 
-        if is_in {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].date_in < list.list[i - 1].date_in {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                } else {
-                    for i in 1..width {
-                        if list.list[i].date_in > list.list[i - 1].date_in {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
-            }
+        if crescent {
+            list.list
+                .sort_by_cached_key(|a| if is_in { a.date_in } else { a.date_out });
         } else {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].date_out < list.list[i - 1].date_out {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                } else {
-                    for i in 1..width {
-                        if list.list[i].date_out > list.list[i - 1].date_out {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
-            }
+            list.list
+                .sort_by_cached_key(|a| Reverse(if is_in { a.date_in } else { a.date_out }));
         }
+
         list
     }
 
     pub fn order_by_installments(&self, is_paid: bool, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        let width: usize = self.list.len();
 
-        if is_paid {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].paid_installments < list.list[i - 1].paid_installments {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
+        if crescent {
+            list.list.sort_by_cached_key(|a| {
+                if is_paid {
+                    a.paid_installments
                 } else {
-                    for i in 1..width {
-                        if list.list[i].paid_installments > list.list[i - 1].paid_installments {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
+                    a.installments
                 }
-
-                if comparisions {
-                    break;
-                }
-            }
+            });
         } else {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].installments < list.list[i - 1].installments {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
+            list.list.sort_by_cached_key(|a| {
+                Reverse(if is_paid {
+                    a.paid_installments
                 } else {
-                    for i in 1..width {
-                        if list.list[i].installments > list.list[i - 1].installments {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
-            }
+                    a.installments
+                })
+            });
         }
+
         list
     }
 
     pub fn order_alphabetical(&self, column: &str, crescent: bool) -> InterfaceInfo {
         let mut list = self.clone();
-        let width: usize = self.list.len();
 
         if column == "name" {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].debtor < list.list[i - 1].debtor {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                } else {
-                    for i in 1..width {
-                        if list.list[i].debtor > list.list[i - 1].debtor {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.debtor.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.debtor.to_string().to_lowercase()));
             }
         } else if column == "title" {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].title < list.list[i - 1].title {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                } else {
-                    for i in 1..width {
-                        if list.list[i].title > list.list[i - 1].title {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.title.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.title.to_string().to_lowercase()));
             }
         } else if column == "description" {
-            loop {
-                let mut comparisions: bool = true;
-
-                if crescent {
-                    for i in 1..width {
-                        if list.list[i].description < list.list[i - 1].description {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                } else {
-                    for i in 1..width {
-                        if list.list[i].description > list.list[i - 1].description {
-                            comparisions = false;
-
-                            let tmp = list.list[i].clone();
-
-                            list.list[i] = list.list[i - 1].clone();
-                            list.list[i - 1] = tmp;
-                        }
-                    }
-                }
-
-                if comparisions {
-                    break;
-                }
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.description.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.description.to_string().to_lowercase()));
             }
         }
         list

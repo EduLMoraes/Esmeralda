@@ -118,7 +118,7 @@ pub fn filter_debtors(list: Vec<Info>) -> Vec<Debtor> {
     }
 
     let mut debtors: Vec<Debtor> = debtors_map.into_values().collect();
-    debtors.sort_by_key(|debtor| debtor.get_id()); // Ordenar se necessário por ID
+    debtors.sort_by_key(|debtor| debtor.get_id());
 
     debtors
 }

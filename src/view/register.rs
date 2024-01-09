@@ -40,7 +40,7 @@ use styles::style_register;
 /// - The rendered HTML element representing the registration form.
 #[component]
 pub fn Register(cx: Scope) -> Element {
-    let path = use_shared_state::<PathBuf>(cx).unwrap().read();
+    let path = use_shared_state::<PathBuf>(cx).unwrap();
 
     let email = use_state(cx, || String::new());
     let password = use_state(cx, || String::new());
@@ -81,13 +81,13 @@ pub fn Register(cx: Scope) -> Element {
                     let now = Instant::now();
                     let result = rt.block_on(add_user(user, confirm_pass.to_string()));
 
-                    let _ = log(path.clone(), &format!("[REGISTER] Register user in...[{:.3?}]\n", now.elapsed()));
+                    let _ = log(path.read().clone(), &format!("[REGISTER] Register user in...[{:.3?}]\n", now.elapsed()));
 
                     if result.is_ok(){
                         is_newly.set(true);
                     }
                     else{
-                        let _ = log(path.clone(), &format!("[REGISTER] {:?}\n", result.err()));
+                        let _ = log(path.read().clone(), &format!("[REGISTER] {:?}\n", result.err()));
                     }
                 },
 
@@ -103,7 +103,7 @@ pub fn Register(cx: Scope) -> Element {
                         let now = Instant::now();
                         is_email.set(email_valid::validate( &input.value ));
 
-                        let _ = log(use_shared_state::<PathBuf>(cx).unwrap().read().clone(), &format!("[REGISTER] Validate email in...[{:.3?}]\n", now.elapsed()));
+                        let _ = log(path.read().clone(), &format!("[REGISTER] Validate email in...[{:.3?}]\n", now.elapsed()));
 
                         email.set(input.value.to_string())
                     }
