@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"trait":["Any","CloneAny","CloneAnySend","CloneAnySendSync","CloneAnySync","UncheckedAnyExt"]};

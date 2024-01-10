@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["body","document","document_element","head","history","window"],"mod":["errors","format","iter"]};

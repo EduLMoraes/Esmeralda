@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Format","GlyphVariationResult"],"struct":["Subtable","Subtables"]};

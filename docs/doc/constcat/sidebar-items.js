@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["concat","concat_bytes","concat_slices"]};

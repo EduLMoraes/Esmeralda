@@ -24,7 +24,7 @@ Cargo.lock
 # Generate by Esmeralda
 ./esmeralda_Exportados
 ./esmeralda_Exportados/
-
+./docs
 
 # Added by cargo
 /target

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MAX_UDSOCKET_PATH_LEN"],"enum":["AncillaryData","AncillaryDataBuf","UdSocketPath"],"mod":["tokio"],"struct":["AncillaryDataDecoder","EncodedAncillaryData","Incoming","UdSocket","UdStream","UdStreamListener"],"trait":["ToUdSocketPath"]};

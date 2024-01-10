@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Event"],"fn":["send_keys"],"struct":["KeyInputState"]};

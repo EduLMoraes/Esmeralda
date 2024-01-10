@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["OnceState"],"struct":["Lazy","Once","RawMutex","RawRwLock"],"type":["MappedMutexGuard","MappedRwLockReadGuard","MappedRwLockWriteGuard","Mutex","MutexGuard","ReentrantMutex","ReentrantMutexGuard","RwLock","RwLockReadGuard","RwLockUpgradableReadGuard","RwLockWriteGuard"]};

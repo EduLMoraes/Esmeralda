@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["base64","hex","json"],"trait":["Decodable","Decoder","DecoderHelpers","Encodable","Encoder","EncoderHelpers"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CharacterSet","FromBase64Error","Newline"],"static":["MIME","STANDARD","URL_SAFE"],"struct":["Config"],"trait":["FromBase64","ToBase64"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["register_interface"],"trait":["ObjectInterface","ObjectInterfaceExt","ObjectInterfaceType","PrerequisiteList"]};

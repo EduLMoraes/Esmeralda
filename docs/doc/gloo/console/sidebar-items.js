@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["assert","clear","console","console_dbg","debug","dir","dirxml","error","group","group_end","info","log","table","trace","warn"],"struct":["Counter","Timer"]};

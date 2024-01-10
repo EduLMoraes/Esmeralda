@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["List","ListIter","PtrSlice","SList","SListIter","Slice"]};

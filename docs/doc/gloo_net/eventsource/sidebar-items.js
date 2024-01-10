@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["EventSourceError","State"],"mod":["futures"]};

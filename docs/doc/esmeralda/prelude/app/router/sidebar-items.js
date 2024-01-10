@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["HomeParseError","LoginParseError","RegisterParseError","Route","RouteMatchError"],"mod":["home","login","register"]};

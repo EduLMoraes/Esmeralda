@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Entry"],"mod":["any","raw"],"struct":["Map","OccupiedEntry","VacantEntry"],"type":["AnyMap","SendSyncAnyMap"]};

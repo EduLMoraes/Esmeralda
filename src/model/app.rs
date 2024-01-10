@@ -32,7 +32,11 @@ pub fn app(cx: Scope) -> Element {
     let version: String = String::from(env!("CARGO_PKG_VERSION"));
 
     use_shared_state_provider(cx, || {
-        let mut path = env::var("HOME").unwrap();
+        let mut path = match std::env::consts::OS {
+            "windows" => env::var("HOMEPATH").unwrap(),
+            _ => env::var("HOME").unwrap()
+        };
+        
         path.push_str("/esmeralda/log.log");
         PathBuf::from(path)
     });

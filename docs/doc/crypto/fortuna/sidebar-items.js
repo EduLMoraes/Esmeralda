@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MIN_POOL_SIZE"],"struct":["Fortuna"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["LINES"],"fn":["Home"],"mod":["div_active","div_options"],"struct":["Columns"]};
