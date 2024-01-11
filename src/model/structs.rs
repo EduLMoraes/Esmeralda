@@ -295,7 +295,16 @@ impl InterfaceInfo {
                 list.list
                     .sort_by_cached_key(|a| Reverse(a.description.to_string().to_lowercase()));
             }
+        } else if column == "nature" {
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.nature.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.nature.to_string().to_lowercase()));
+            }
         }
+        
         list
     }
 }

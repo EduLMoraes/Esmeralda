@@ -115,6 +115,17 @@ pub fn div_most(cx: Scope) -> Element {
                         }
                     }
                 }
+                
+                tr{
+                    td{id: "td-most", "Natureza do gasto" },
+                    td{ onclick: move |_| columns.write().nature = !col_now.nature,
+                        input{
+                            r#type: "checkbox",
+                            id: "most",
+                            checked: col_now.nature,
+                        }
+                    }
+                }
 
                 tr{
                     td{id: "td-most", "Status" },
