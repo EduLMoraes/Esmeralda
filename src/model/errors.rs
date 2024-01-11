@@ -63,6 +63,10 @@ pub enum DataBaseError {
     #[error("Error to add user")]
     AddUserError(ErrorLog<'static>),
 
+    /// Add count not working
+    #[error("Error to add user")]
+    AddCountError(ErrorLog<'static>),
+
     /// Config error
     #[error("Error to get user from db")]
     GetUserError(ErrorLog<'static>),

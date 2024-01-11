@@ -27,6 +27,7 @@ mod test_export_csv {
                     installments: 3,
                     value: 100.0,
                     status: true,
+                    nature: String::from("Investimentos"),
                 },
                 structs::Info {
                     id: 2,
@@ -39,6 +40,7 @@ mod test_export_csv {
                     installments: 5,
                     value: 200.0,
                     status: false,
+                    nature: String::from("Investimentos"),
                 },
             ],
         };
@@ -68,6 +70,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -95,6 +98,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -119,6 +123,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -143,6 +148,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -272,6 +278,7 @@ mod test_export_pdf {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Casa")
             });
         }
 
@@ -306,6 +313,7 @@ mod test_export_pdf {
             installments: 3,
             value: 100.0,
             status: true,
+            nature: String::from("Alimentação")
         } );
 
         let result = export::export_pdf(path, &data);
