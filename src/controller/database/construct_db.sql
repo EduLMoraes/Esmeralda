@@ -1,8 +1,7 @@
--- Active: 1703697893287@@127.0.0.1@5432@esmeralda
-CREATE DATABASE esmeralda;
+-- Active: 1703730527497@@127.0.0.1@5432@esmeralda
+CREATE DATABASE IF NOT EXISTS esmeralda;
 
 \c esmeralda
-
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -24,5 +23,7 @@ CREATE TABLE IF NOT EXISTS counts (
     date_out DATE NOT NULL,
 	status BOOLEAN NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users
-);
+); 
+
+ALTER TABLE counts ADD COLUMN nature VARCHAR(15);
 
