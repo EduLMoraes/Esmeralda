@@ -191,7 +191,7 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     data_file.push_str("<html><head></head><body><table>");
     data_file.push_str("<tr>");
-    data_file.push_str("<td>ID</td><td>Nome</td><td>Titulo</td><td>Descricao</td><td>Data Inicial</td><td>Data Final</td><td>Parcelas</td><td>Valor</td><td>Status</td>");
+    data_file.push_str("<td>ID</td><td>Nome</td><td>Natureza do gasto</td><td>Titulo</td><td>Descricao</td><td>Data Inicial</td><td>Data Final</td><td>Parcelas</td><td>Valor</td><td>Status</td>");
     data_file.push_str("</tr>");
 
     for info in &data.list {
@@ -199,9 +199,10 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
         data_file.push_str(
             format!(
-                "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}/{}</td><td>{:.2}</td><td>{}</td>",
+                "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}/{}</td><td>{:.2}</td><td>{}</td>",
                 info.id,
                 info.debtor,
+                info.nature,
                 info.title,
                 info.description,
                 info.date_in.to_string(),
@@ -253,6 +254,7 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
     let header: Vec<&str> = vec![
         "ID",
         "|Nome",
+        "|Natureza",
         "|Titulo",
         "|Descricao",
         "|Data Inicial",
@@ -292,6 +294,7 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
             let line = vec![
                 format!("{}", data.list[i].id),
                 format!("| {:.18}", data.list[i].debtor),
+                format!("| {}", data.list[i].nature),
                 format!("| {:.30}", data.list[i].title),
                 format!("| {:.38}", data.list[i].description),
                 format!("| {}", data.list[i].date_in.to_string()),
