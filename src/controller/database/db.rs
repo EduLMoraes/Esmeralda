@@ -311,7 +311,8 @@ impl DataBase {
                             installments = $8, 
                             date_in = TO_DATE($9, 'YYYY-MM-DD'), 
                             date_out = TO_DATE($10, 'YYYY-MM-DD'), 
-                            status = $11 
+                            status = $11, 
+                            nature = $12
                             WHERE count_id = $1 AND user_id = $2",
                         )
                         .await
@@ -340,6 +341,7 @@ impl DataBase {
                             &counts.list[i].date_in.to_string(),
                             &counts.list[i].date_out.to_string(),
                             &counts.list[i].status,
+                            &counts.list[i].nature,
                         ],
                     )
                     .await

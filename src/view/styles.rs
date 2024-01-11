@@ -201,57 +201,44 @@ pub fn style_home() -> String {
         text-decoration: underline;
     }
     
+    table{
+        border-collapse: collapse;
+    }
     
     #table_counts{
-        border-color: greenyellow;
-        border-style: solid;
-        border-radius: 20px;
-        border-width: 2px;
         height: 600px;
         display: block;
     }
     
     td{
-        border-color: rgb(0, 0, 0);
-        border-width: 1px;
-        border-style: solid;
         padding-left: 10px;
         padding-right: 10px;
-        border-top: 0;
-        border-bottom: 1px;
         text-align: center;
         align-items: center;
     }
     
     #with-button{
         padding: 0;
-        max-width: 150px;
+        max-width: 100px;
     }
     
     tr{
         background-color: rgb(224, 224, 224);
         color: rgb(0, 0, 0);
+        border-top: 1px solid black;
     }
     
     #head-table{
         background-color: whitesmoke;
-        border-color: green;
-        border-width: 1px;
-        border-style: solid;
-        border-top: 0;
-        border-bottom: 0;
+        font-size: 14px;
+        text-align: left;
         color: black;
     }
     
     #stt-neg, #stt-pos{
         border-radius: 100px;
-        width: 2vw;
-        height: 2vw;
-        
-        /* min-height: 1.2vh;
-        min-width: 1.2vh;
-        max-width: 1.2vh;
-        max-height: 1.2vh; */
+        width: 10px;
+        height: 10px;
         animation: blinks infinite;
     }
     #stt-neg{
@@ -261,12 +248,12 @@ pub fn style_home() -> String {
         animation-duration: 0.5s;
     }
     #stt-pos{
-        background-color: greenyellow;
-        border-color: greenyellow;
+        background-color: green;
+        border-color: green;
         border-style: solid;
         animation-duration: 0.6s;
     }
-    
+
     @keyframes blinks{
         0%{
         }
@@ -275,7 +262,7 @@ pub fn style_home() -> String {
         }
     }
     #name{
-        color: greenyellow;
+        color: green;
         width: 100%;
         margin-left: 10px;
     }
@@ -384,6 +371,13 @@ pub fn style_home() -> String {
 
     #col-debtor-value{
         max-width: 70px;
+    }
+
+    #col-nature{
+        text-align: left;
+    }
+
+    #col-value-head{
     }
 
     #table-debtors{
