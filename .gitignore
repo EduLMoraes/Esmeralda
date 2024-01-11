@@ -31,3 +31,5 @@ Cargo.lock
 
 # Genereted by tests
 ./test.pdf
+./test.html
+./test.csv
