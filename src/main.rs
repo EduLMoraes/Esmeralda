@@ -13,7 +13,7 @@ fn main() {
         Ok(_) => {
             let mut path = match std::env::consts::OS {
                 "windows" => env::var("HOMEPATH").unwrap(),
-                _ => env::var("HOME").unwrap()
+                _ => env::var("HOME").unwrap(),
             };
             path.push_str("/esmeralda/log.log");
 
@@ -25,9 +25,9 @@ fn main() {
         Err(_) => {
             let mut path = match std::env::consts::OS {
                 "windows" => env::var("HOMEPATH").unwrap(),
-                _ => env::var("HOME").unwrap()
+                _ => env::var("HOME").unwrap(),
             };
-            
+
             path.push_str("/.key");
 
             let mut file = match File::open(&path) {

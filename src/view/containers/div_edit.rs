@@ -258,7 +258,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                             new_value.set( value.to_string() )
                         }
                     }, new_value.get().clone() }
-                    
+
                     select{  hidden: **type_input != "select",
                         onchange: move |nature|{
                             msg.write().hidden = true;

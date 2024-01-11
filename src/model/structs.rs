@@ -304,7 +304,7 @@ impl InterfaceInfo {
                     .sort_by_cached_key(|a| Reverse(a.nature.to_string().to_lowercase()));
             }
         }
-        
+
         list
     }
 }

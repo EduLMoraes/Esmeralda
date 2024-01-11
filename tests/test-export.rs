@@ -278,7 +278,7 @@ mod test_export_pdf {
                 installments: 3,
                 value: 100.0,
                 status: true,
-                nature: String::from("Casa")
+                nature: String::from("Casa"),
             });
         }
 

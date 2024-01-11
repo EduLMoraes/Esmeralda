@@ -11,7 +11,6 @@ use crate::prelude::structs::Message;
 use crate::prelude::tokio::runtime;
 use diacritics::remove_diacritics;
 
-
 /// Adds a new item to a list by generating a form.
 ///
 /// This function generates a form for adding a new item to a list. The form includes input fields for the name, title, value, date, and number of installments of the item. It also includes a checkbox for indicating whether the item has been paid. The function performs validation on the input fields and updates the state accordingly. When the form is submitted, the function checks if the input is valid and adds the item to the list if it is.
@@ -98,16 +97,16 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                         select{
                             onchange: move |column|{
                                 msg.write().hidden = true;
-    
+
                                 let column = &column.value.to_lowercase();
                                 let column: String = remove_diacritics(column.trim());
-    
+
                                 match column.trim(){
                                     "c" => {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Casa");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -117,7 +116,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Transporte");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -127,7 +126,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Investimentos");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -137,7 +136,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Saúde");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -147,7 +146,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Lazer");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -157,7 +156,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Alimentação");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -167,7 +166,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                         let mut tmp_info = info.get().clone();
 
                                         tmp_info.nature = String::from("Outros");
-                                        
+
                                         is_new.set(true);
                                         info.set(tmp_info);
 
@@ -176,7 +175,7 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                                     _ => {}
                                 }
                             },
-    
+
                             option{ value: "a", "Alimentação"}
                             option{ value: "c", "Casa"}
                             option{ value: "i", "Investimentos"}

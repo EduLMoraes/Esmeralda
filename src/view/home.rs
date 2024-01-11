@@ -123,7 +123,10 @@ pub fn Home(cx: Scope) -> Element {
         let recovered = run.block_on(control::recover()).unwrap();
         let _ = log(
             path.read().clone(),
-            &format!("[HOME] Recover InterfaceInfo in...[{:.3?}]\n", now.elapsed()),
+            &format!(
+                "[HOME] Recover InterfaceInfo in...[{:.3?}]\n",
+                now.elapsed()
+            ),
         );
 
         recovered.order_by_status(true)
