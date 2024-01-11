@@ -30,6 +30,6 @@ Cargo.lock
 /target
 
 # Genereted by tests
-./test.pdf
-./test.html
-./test.csv
+test.pdf
+test.html
+test.csv

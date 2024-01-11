@@ -128,15 +128,16 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
     let mut data_file = String::new();
 
     data_file.push_str(
-        "ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n",
+        "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
     );
 
     for info in &data.list {
         data_file.push_str(
             format!(
-                "{},{},{},{},{},{},{},{},{:.2},{}",
+                "{};{};{};{};{};{};{};{};{};{:.2};{}",
                 info.id,
                 info.debtor,
+                info.nature,
                 info.title,
                 info.description,
                 info.date_in.to_string(),
