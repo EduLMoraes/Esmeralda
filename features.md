@@ -4,26 +4,24 @@
     <td> Versão </td>
     <td> Descrição </td>
   </tr>
-   <tr> 
+  <tr> 
    <td> v0.1.5 </td>
     <td>
         Adicionado novo campo na tabela de pagamentos para melhor controle financeiro.
         <br>
-    </td>
-    <td>
-        Design das tabelas tornaram-se mais limpa.
+        Design das tabelas tornaram-se mais limpas e dinamicas.
         <br>
     </td>
+  </tr>
+  <tr>
     <td> v0.1.4 </td>
     <td>
         Ordenação pelas colunas Nome, Título, ID, Data inicial/final, status ficaram mais rápidas.
         <br>
-    </td>
-    <td>
         Corrigido bug dos IDs colapsarem uns com os outros.
         <br>
     </td>
-  <tr>
+  </tr>
   <tr> 
     <td> v0.1.3 </td>
     <td>
