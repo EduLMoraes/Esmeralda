@@ -145,6 +145,12 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                                     type_input.set("number");
                                     col_search.set( String::from("value") )
                                 },
+                                "nt" => {
+                                    has_column.set(true);
+                                    is_column.set(true);
+                                    type_input.set("select");
+                                    col_search.set( String::from("nature") )
+                                },
                                 _ => is_column.set(false)
                             }
                         },
@@ -152,6 +158,7 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                         option{ value: "n", "Nome"}
                         option{ value: "t", "Título"}
                         option{ value: "d", "Descrição"}
+                        option{ value: "nt", "Natureza" }
                         option{ value: "di", "Data Inicial"}
                         option{ value: "df", "Data Final"}
                         option{ value: "pp", "Parcelas Pagas"}
@@ -164,7 +171,8 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                     br{}
 
                     label{ "Novo valor:"} br{}
-                    input{ r#type: *type_input.get(), placeholder: "Ex.: Frango do Peruzzo", r#required: true, oninput: move |inp| {
+
+                    input{ hidden: **type_input == "select", r#type: *type_input.get(), placeholder: "Ex.: Frango do Peruzzo", r#required: true, oninput: move |inp| {
                         let value = &inp.value;
                         let column = col_search.get();
 
@@ -251,6 +259,62 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                         }
                     }, new_value.get().clone() }
 
+                    select{  hidden: **type_input != "select",
+                        onchange: move |nature|{
+                            msg.write().hidden = true;
+
+                            let nature = &nature.value.to_lowercase();
+                            let nature: String = remove_diacritics(nature.trim());
+
+                            match nature.trim(){
+                                "c" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Casa") );
+                                },
+                                "t" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Transporte") );
+                                },
+                                "i" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Investimentos") );
+                                },
+                                "s" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Saúde") );
+                                },
+                                "l" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Lazer") );
+                                },
+                                "a" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Alimentação") );
+                                },
+                                "o" => {
+                                    has_new_value.set(true);
+
+                                    new_value.set( String::from("Outros") );
+                                },
+                                _ => {}
+                            }
+                        },
+
+                        option{ value: "a", "Alimentação"}
+                        option{ value: "c", "Casa"}
+                        option{ value: "i", "Investimentos"}
+                        option{ value: "l", "Lazer"}
+                        option{ value: "t", "Transporte"}
+                        option{ value: "s", "Saúde"}
+                        option{ value: "o", "Outros" }
+                    }
+
                     p{ id: "data-invalid", hidden: **is_compatible, "Valor inválido!" }
                 }
 
@@ -272,7 +336,8 @@ pub fn edit(cx: Scope, hidden_edit: bool) -> Element {
                                         "date_out"          => { counts.write().list[r].date_out = new_value.get().clone().parse::<NaiveDate>().unwrap() },
                                         "value"             => { counts.write().list[r].value = new_value.get().clone().parse::<f32>().unwrap() },
                                         "paid_installments" => { counts.write().list[r].paid_installments = new_value.get().clone().parse::<u32>().unwrap() },
-                                        "installments"      => { counts.write().list[r].installments = new_value.get().clone().parse::<u32>().unwrap()} ,
+                                        "installments"      => { counts.write().list[r].installments = new_value.get().clone().parse::<u32>().unwrap()},
+                                        "nature"      => { counts.write().list[r].nature = new_value.get().clone() },
                                         _ => { let _ = log(path.read().clone(), &format!("[CONTAINER EDIT] Column invalid\n")); }
 
                                     }

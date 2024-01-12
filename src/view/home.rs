@@ -48,6 +48,7 @@ struct Columns {
     installments: bool,
     value: bool,
     status: bool,
+    nature: bool,
 }
 
 impl Columns {
@@ -71,6 +72,7 @@ impl Columns {
             installments: false,
             value: true,
             status: true,
+            nature: false,
         }
     }
 }
@@ -121,10 +123,13 @@ pub fn Home(cx: Scope) -> Element {
         let recovered = run.block_on(control::recover()).unwrap();
         let _ = log(
             path.read().clone(),
-            &format!("[HOME] Recover user in...[{:.3?}]\n", now.elapsed()),
+            &format!(
+                "[HOME] Recover InterfaceInfo in...[{:.3?}]\n",
+                now.elapsed()
+            ),
         );
 
-        recovered
+        recovered.order_by_status(true)
     });
 
     use_shared_state_provider(cx, || Contabilized::No);
@@ -226,6 +231,22 @@ pub fn Home(cx: Scope) -> Element {
                             }
                         },
                         td{ id: "with-button",
+                            hidden: !columns.nature,
+                            button{
+                                id: "button-order",
+                                hidden: !columns.nature, onclick: move |_| {
+                                    let ci =  counts.read().clone();
+
+                                    let now = Instant::now();
+                                    counts.write().list = ci.order_alphabetical("nature", **crescent).list;
+                                    crescent.set(!**crescent);
+
+                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by nature in...[{:.3?}]\n", now.elapsed()));
+
+                                }, "Natureza do gasto"
+                            }
+                        },
+                        td{ id: "with-button",
                             hidden: !columns.title,
                             button{
                                 id: "button-order",
@@ -290,7 +311,6 @@ pub fn Home(cx: Scope) -> Element {
                                 }, "Data Final"
                             }
                         },
-
                         td{ id: "with-button",
                             hidden: !columns.installments,
                             button{
@@ -345,13 +365,14 @@ pub fn Home(cx: Scope) -> Element {
                         tr{
                             td{ id: "col-id", format!("{}", counts_info.list[i].id) },
                             td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
+                            td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
                             td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
                             td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
                             td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
                             td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
                             td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
                             td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
-                            td{ hidden: !columns.status, id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } },
+                            td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
                         }
 
                     }

@@ -54,6 +54,7 @@ pub struct Info {
     pub paid_installments: u32,
     pub installments: u32,
     pub status: bool,
+    pub nature: String,
 }
 
 impl Info {
@@ -85,6 +86,7 @@ impl Info {
             paid_installments: 0,
             installments: 1,
             status: false,
+            nature: String::new(),
         }
     }
 
@@ -293,7 +295,16 @@ impl InterfaceInfo {
                 list.list
                     .sort_by_cached_key(|a| Reverse(a.description.to_string().to_lowercase()));
             }
+        } else if column == "nature" {
+            if crescent {
+                list.list
+                    .sort_by_cached_key(|a| a.nature.to_string().to_lowercase());
+            } else {
+                list.list
+                    .sort_by_cached_key(|a| Reverse(a.nature.to_string().to_lowercase()));
+            }
         }
+
         list
     }
 }

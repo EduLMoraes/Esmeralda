@@ -29,6 +29,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -54,6 +55,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -79,6 +81,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -103,6 +106,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -127,6 +131,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -170,6 +175,7 @@ mod test_save_in_file {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: "Casa".to_string(),
             }],
         };
 
@@ -197,6 +203,7 @@ mod test_is_complete {
             installments: 3,
             value: 100.0,
             status: true,
+            nature: String::from("Casa"),
         };
 
         let result = control::is_complete(&info).await;
@@ -217,6 +224,7 @@ mod test_is_complete {
             installments: 3,
             value: 100.0,
             status: true,
+            nature: String::from("Casa"),
         };
 
         let result = control::is_complete(&info).await;
@@ -237,6 +245,7 @@ mod test_is_complete {
             installments: 1,
             value: 100.0,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -257,6 +266,7 @@ mod test_is_complete {
             installments: 1,
             value: 0.0,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -277,6 +287,7 @@ mod test_is_complete {
             installments: 0,
             value: 100.0,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -297,6 +308,7 @@ mod test_is_complete {
             value: 100.0,
             installments: 2,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -317,6 +329,7 @@ mod test_is_complete {
             value: 100.0,
             installments: 2,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -337,6 +350,7 @@ mod test_is_complete {
             value: 100.0,
             installments: 2,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -357,6 +371,7 @@ mod test_is_complete {
             value: 100.0,
             installments: 2,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -377,6 +392,7 @@ mod test_is_complete {
             value: 100.0,
             installments: 2,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -397,6 +413,7 @@ mod test_is_complete {
             value: 0.0,
             installments: 0,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;
@@ -417,6 +434,7 @@ mod test_is_complete {
             value: 0.0,
             installments: 0,
             status: false,
+            nature: String::from("Investimentos"),
         };
 
         let result = control::is_complete(&info).await;

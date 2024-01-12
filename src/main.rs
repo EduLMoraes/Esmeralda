@@ -11,7 +11,10 @@ use std::io::Write;
 fn main() {
     match var("KEYESMERALD") {
         Ok(_) => {
-            let mut path = env::var("HOMEPATH").unwrap();
+            let mut path = match std::env::consts::OS {
+                "windows" => env::var("HOMEPATH").unwrap(),
+                _ => env::var("HOME").unwrap(),
+            };
             path.push_str("/esmeralda/log.log");
 
             let _ = log(
@@ -22,9 +25,9 @@ fn main() {
         Err(_) => {
             let mut path = match std::env::consts::OS {
                 "windows" => env::var("HOMEPATH").unwrap(),
-                _ => env::var("HOME").unwrap()
+                _ => env::var("HOME").unwrap(),
             };
-            
+
             path.push_str("/.key");
 
             let mut file = match File::open(&path) {

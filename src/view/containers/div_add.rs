@@ -9,6 +9,7 @@ use crate::prelude::control::save;
 use crate::prelude::structs::Info;
 use crate::prelude::structs::Message;
 use crate::prelude::tokio::runtime;
+use diacritics::remove_diacritics;
 
 /// Adds a new item to a list by generating a form.
 ///
@@ -87,6 +88,102 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                             msg.write().hidden  = true;
 
                         }, info.get().title.to_string() }
+                    }
+
+                    br{}
+
+                    label{
+                        "Natureza:" br{}
+                        select{
+                            onchange: move |column|{
+                                msg.write().hidden = true;
+
+                                let column = &column.value.to_lowercase();
+                                let column: String = remove_diacritics(column.trim());
+
+                                match column.trim(){
+                                    "c" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Casa");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "t" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Transporte");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "i" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Investimentos");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "s" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Saúde");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "l" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Lazer");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "a" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Alimentação");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    "o" => {
+                                        let mut tmp_info = info.get().clone();
+
+                                        tmp_info.nature = String::from("Outros");
+
+                                        is_new.set(true);
+                                        info.set(tmp_info);
+
+                                        msg.write().hidden  = true;
+                                    },
+                                    _ => {}
+                                }
+                            },
+
+                            option{ value: "a", "Alimentação"}
+                            option{ value: "c", "Casa"}
+                            option{ value: "i", "Investimentos"}
+                            option{ value: "l", "Lazer"}
+                            option{ value: "t", "Transporte"}
+                            option{ value: "s", "Saúde"}
+                            option{ value: "o", "Outros" }
+                        }
                     }
 
                     br{}
@@ -258,6 +355,10 @@ pub fn add(cx: Scope, hidden_add: bool) -> Element {
                             let exists_counts = counts.read().clone();
                             let mut tmp_info = info.get().clone();
                             let mut has_count: bool = true;
+
+                            if tmp_info.nature.is_empty(){
+                                tmp_info.nature = String::from("Alimentação");
+                            }
 
                             while has_count{
                                 has_count = false;

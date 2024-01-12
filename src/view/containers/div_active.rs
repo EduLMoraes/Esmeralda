@@ -50,6 +50,17 @@ pub fn div_most(cx: Scope) -> Element {
                 }
 
                 tr{
+                    td{id: "td-most", "Natureza do gasto" },
+                    td{ onclick: move |_| columns.write().nature = !col_now.nature,
+                        input{
+                            r#type: "checkbox",
+                            id: "most",
+                            checked: col_now.nature,
+                        }
+                    }
+                }
+
+                tr{
                     td{id: "td-most", "Título" },
                     td{ onclick: move |_| columns.write().title = !col_now.title,
                         input{
@@ -143,7 +154,7 @@ pub fn div_most(cx: Scope) -> Element {
                         td { id: "col-name", debtor.get_name().clone() }
                         td { id: "col-value", format!("{:.2}", debtor.get_debt()) }
                         td { id: "col-value", format!("{:.2}", debtor.get_value()) }
-                        td { id: if debtor.get_status() { "stt-pos" } else { "stt-neg" } }
+                        td { div{ id: if debtor.get_status() { "stt-pos" } else { "stt-neg" } } }
                     }
                 }
             }

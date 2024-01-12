@@ -27,6 +27,7 @@ mod test_export_csv {
                     installments: 3,
                     value: 100.0,
                     status: true,
+                    nature: String::from("Investimentos"),
                 },
                 structs::Info {
                     id: 2,
@@ -39,6 +40,7 @@ mod test_export_csv {
                     installments: 5,
                     value: 200.0,
                     status: false,
+                    nature: String::from("Investimentos"),
                 },
             ],
         };
@@ -48,7 +50,9 @@ mod test_export_csv {
         assert!(result.is_ok());
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n1,John Doe,Invoice,Payment for services,2022-01-01,2022-01-31,1,3,100.00,true\n2,Jane Smith,Invoice,Payment for goods,2022-02-01,2022-02-28,2,5,200.00,false\n";
+        let expected_content = "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                        1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;3;100.00;true\n\
+                                        2;Jane Smith;Investimentos;Invoice;Payment for goods;2022-02-01;2022-02-28;2;5;200.00;false\n";
         assert_eq!(file_content, expected_content);
     }
 
@@ -68,6 +72,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -95,6 +100,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -119,6 +125,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -143,6 +150,7 @@ mod test_export_csv {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Investimentos"),
             }],
         };
 
@@ -152,8 +160,8 @@ mod test_export_csv {
 
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID,Nome,Titulo,Descricao,Data Inicial,Data Final,Parcelas Pagas,Parcelas,Valor,Status\n\
-                                1,John Doe,Invoice,Payment for services,2022-01-01,2022-01-31,1,3,100.00,true\n";
+        let expected_content = "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;3;100.00;true\n";
         assert_eq!(file_content, expected_content);
     }
 }
@@ -272,6 +280,7 @@ mod test_export_pdf {
                 installments: 3,
                 value: 100.0,
                 status: true,
+                nature: String::from("Casa"),
             });
         }
 
@@ -306,6 +315,7 @@ mod test_export_pdf {
             installments: 3,
             value: 100.0,
             status: true,
+            nature: String::from("Alimentação")
         } );
 
         let result = export::export_pdf(path, &data);

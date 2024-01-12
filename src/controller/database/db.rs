@@ -117,9 +117,10 @@ impl DataBase {
                             installments, 
                             date_in, 
                             date_out, 
-                            status
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11) ").await.map_err(|_| {
-                        DataBaseError::AddUserError(ErrorLog {
+                            status,
+                            nature
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11, $12) ").await.map_err(|_| {
+                        DataBaseError::AddCountError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
                             file: "db.rs",
@@ -143,6 +144,7 @@ impl DataBase {
                             &counts.list[i].date_in.to_string(),
                             &counts.list[i].date_out.to_string(),
                             &counts.list[i].status,
+                            &counts.list[i].nature,
                         ],
                     )
                     .await
@@ -237,7 +239,7 @@ impl DataBase {
                     })?;
 
                 let rows = conn.query(&stmt, &[&user.id]).await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
+                    DataBaseError::GetUserError(ErrorLog {
                         title: "User not found!",
                         code: 804,
                         file: "db.rs",
@@ -270,6 +272,7 @@ impl DataBase {
                             .parse::<u32>()
                             .unwrap(),
                         status: row.get::<_, bool>("status"),
+                        nature: row.get::<_, String>("nature"),
                     };
 
                     i_info.put(info)
@@ -308,7 +311,8 @@ impl DataBase {
                             installments = $8, 
                             date_in = TO_DATE($9, 'YYYY-MM-DD'), 
                             date_out = TO_DATE($10, 'YYYY-MM-DD'), 
-                            status = $11 
+                            status = $11, 
+                            nature = $12
                             WHERE count_id = $1 AND user_id = $2",
                         )
                         .await
@@ -337,6 +341,7 @@ impl DataBase {
                             &counts.list[i].date_in.to_string(),
                             &counts.list[i].date_out.to_string(),
                             &counts.list[i].status,
+                            &counts.list[i].nature,
                         ],
                     )
                     .await
