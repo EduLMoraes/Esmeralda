@@ -11,7 +11,7 @@
         <br>
     </td>
     <td>
-        Design das tabelas tornaram-se mais limpa.
+        Design das tabelas tornaram-se mais limpas e dinamicas.
         <br>
     </td>
     <td> v0.1.4 </td>
