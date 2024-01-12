@@ -66,7 +66,7 @@ como deve.
 #### 1 - Dependencias: <br>
   1.1 - O Esmeralda depende que você tenha o banco de dados **PostgreSQL**
   instalado e com algumas configurações específicas como nome de usuário
-  e senha serem "postgre" (o padrão).
+  e senha serem "postgres" (o padrão).
 
   1.2 - Rode o código SQL encontrado  [-> aqui <-](./src/controller/database/construct_db.sql), com a conexão ativa.
  
