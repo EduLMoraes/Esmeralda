@@ -205,11 +205,15 @@ pub fn style_home() -> String {
         border-collapse: collapse;
     }
     
-    #table_counts{
-        height: 600px;
-        display: block;
-    }
     
+    th{
+        border-top: 0px solid black;
+        color: black;
+        text-align: center;
+        text-align: center;
+        background-color: whitesmoke;
+    }
+
     td{
         padding-left: 10px;
         padding-right: 10px;
@@ -359,11 +363,6 @@ pub fn style_home() -> String {
         max-width: 70px;
     }
 
-    #col-name{
-        text-align: left;
-        max-width: 120px;
-    }
-
     #col-title, #col-description{
         text-align: left;
         max-width: 150px;
@@ -378,6 +377,51 @@ pub fn style_home() -> String {
     }
 
     #col-value-head{
+    }
+    
+    #col-title, #col-description, #col-nature, #col-name, #col-value, #col-id {
+        color: black;
+        background-color: transparent;
+        table-layout: fixed;
+        height: 40px;
+        transition: height 0.4s;
+        
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: all ease 0.7s;
+    }
+
+    #col-title:hover, #col-description:hover, #col-nature:hover, #col-debtor-value:hover, #col-name:hover, #col-value:hover, #col-id:hover {
+        height: auto;
+        overflow: auto;
+        text-justify: justify;
+        text-overflow: ellipsis;
+        white-space: initial;
+    }
+
+    #col-name{
+        color: black;
+        background-color: transparent;
+        table-layout: fixed;
+        height: 40px;
+        transition: height 0.4s;
+        text-align: left;
+
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: all ease 0.7s;
+    }
+
+    #col-name:hover{
+        height: auto;
+        overflow: auto;
+        text-justify: justify;
+        text-overflow: ellipsis;
+        white-space: initial;
     }
 
     #table-debtors{
