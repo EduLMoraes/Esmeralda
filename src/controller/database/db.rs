@@ -231,7 +231,7 @@ impl DataBase {
                     )
                     .await
                     .map_err(|_| {
-                        DataBaseError::GetUserError(ErrorLog {
+                        DataBaseError::GetCountsError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,
                             file: "db.rs",
@@ -239,7 +239,7 @@ impl DataBase {
                     })?;
 
                 let rows = conn.query(&stmt, &[&user.id]).await.map_err(|_| {
-                    DataBaseError::GetUserError(ErrorLog {
+                    DataBaseError::GetCountsError(ErrorLog {
                         title: "User not found!",
                         code: 804,
                         file: "db.rs",

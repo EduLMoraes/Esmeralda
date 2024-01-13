@@ -72,7 +72,10 @@ como deve.
  
  ---
 #### 2 - Download do executável
-  2.1 - Na versão *(v0.1.2)* em diante, encontradas [aqui](https://github.com/EduLMoraes/Esmeralda/releases) você encontra o executável do *Esmeralda*, para distro Unix é o sem extensão de arquivo, para **windows** é o que contém extensão **.exe**, baixe-o de acordo com seu sistema operacional.
+  2.1 - Baixe o executável do esmeralda de acordo com o seu sistema operacional.
+   
+   - Download para [Windows-x86_64](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda.exe)
+   - Download para [Linux]( )
 
 ---
 #### 3 - Usando
