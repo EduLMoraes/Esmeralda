@@ -25,5 +25,6 @@ CREATE TABLE IF NOT EXISTS counts (
 	FOREIGN KEY (user_id) REFERENCES users
 ); 
 
-ALTER TABLE counts ADD COLUMN nature VARCHAR(15);
+ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT " ";
 
+UPDATE counts SET nature = ' ' WHERE nature IS NULL;
