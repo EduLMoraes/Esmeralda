@@ -67,9 +67,13 @@ pub enum DataBaseError {
     #[error("Error to add user")]
     AddCountError(ErrorLog<'static>),
 
-    /// Config error
+    /// Get user not working
     #[error("Error to get user from db")]
     GetUserError(ErrorLog<'static>),
+
+    /// Get count not working
+    #[error("Error to get user from db")]
+    GetCountsError(ErrorLog<'static>),
 
     /// DataType not Accept
     #[error("Error in data type receive")]
