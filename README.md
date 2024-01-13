@@ -75,7 +75,7 @@ como deve.
   2.1 - Baixe o executável do esmeralda de acordo com o seu sistema operacional.
    
    - Download para [Windows-x86_64](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda.exe)
-   - Download para [Linux]( )
+   - Download para [Linux - Manjaro](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda)
 
 ---
 #### 3 - Usando
