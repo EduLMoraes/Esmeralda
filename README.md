@@ -90,6 +90,6 @@ como deve.
 ### *Contribuidores*: <section id="credits"/>
 <table>
   <tr>
-     <td align="center"><a href="https://github.com/EduardoMoreaes"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/88555769?v=4" width="100px;" alt=""/><br /><sub><b>Eduardo Moraes</b></sub></a><br /><a href="https://github.com/EduardoMoreaes" title="Desenvolvedor">👨‍🚀</a></td>
+     <td align="center"><a href="https://github.com/EduardoMoreaes"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/88555769?v=4" width="100px;" alt=""/><br /><sub><b>Eduardo Lopes de Moraes</b></sub></a><br /><a href="https://github.com/EduardoMoreaes" title="Desenvolvedor">👨‍🚀</a></td>
   </tr>
 <table>
