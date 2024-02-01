@@ -1,7 +1,3 @@
-::::::::::::::::::::::::::::::::::::::::::::
-:: Elevate.cmd - Version 4
-:: Automatically check & get admin rights
-::::::::::::::::::::::::::::::::::::::::::::
 @echo off
 CLS
 ECHO.
@@ -32,7 +28,7 @@ ECHO **************************************
 ECHO Set UAC = CreateObject^("Shell.Application"^) > "%vbsGetPrivileges%"
 ECHO args = "ELEV " >> "%vbsGetPrivileges%"
 ECHO For Each strArg in WScript.Arguments >> "%vbsGetPrivileges%"
-ECHO args = args ^& strArg ^& " "  >> "%vbsGetPrivileges%"
+ECHO args = args ^& strArg ^& " " >> "%vbsGetPrivileges%"
 ECHO Next >> "%vbsGetPrivileges%"
 
 if '%cmdInvoke%'=='1' goto InvokeCmd 
@@ -50,59 +46,39 @@ exit /B
 
 :gotPrivileges
 setlocal & cd /d %~dp0
-if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
+if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 
 ::::::::::::::::::::::::::::
 ::START
 ::::::::::::::::::::::::::::
 REM Run shell as admin (my) 
 
-
-
 ECHO =============================
-ECHO acessando diretorio pgsql
+ECHO acessando diretorio postgresql
 ECHO =============================
-     cd Documents\Esmeralda\pgsql\bin     
-
-ECHO =============================
-ECHO verifica servico
-ECHO =============================
-    net stop pgsql
-    pgsqld -remove pgsql
-
-
-ECHO =============================
-ECHO Definindo o pgsql como um serviÃ§o
-ECHO =============================
-     pgsqld --install pgsql
+cd\     
+cd\pgsql
+cd bin
 
 ECHO =============================
 ECHO iniciando servico
 ECHO =============================
-      sc start pgsql
+sc start postgresql-x64-9.5
 
 ECHO =============================
-ECHO ALTERA USUARIO ROOT
+ECHO ALTERA USUARIO POSTGRES
 ECHO =============================
-    pgsql -uroot   -e  UPDATE   pgsql.user   SET    Password = PASSWORD('postgres')    WHERE    User = 'postgres';    FLUSH PRIVILEGES;
+psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'beto';"
 
 ECHO =============================
-ECHO  carregando o banco de dados ...
+ECHO criando o banco de dados ...
 ECHO =============================
-   pgsql -uroot   -e "CREATE DATABASE esmeralda;"
-   pgsql -uroot   use esmeralda;
+psql -U postgres -c "CREATE DATABASE esmeralda;"
 
 ECHO =============================
-ECHO  Reiniciando servico.
-ECHO =============================
-    net stop pgsql
-    sc start pgsql
-
-ECHO =============================
-ECHO  Carregando as Tabelas... 
+ECHO Carregando as Tabelas... 
 ECHO =============================   
-     pgsql -uroot  esmeralda < construct_db.sql
-
+psql -U postgres -d esmeralda -f construct_db.sql
 
 echo
 echo banco carregado com sucesso !
