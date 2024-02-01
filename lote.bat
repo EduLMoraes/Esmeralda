@@ -56,7 +56,7 @@ REM Run shell as admin (my)
 ECHO =============================
 ECHO acessando diretorio postgresql
 ECHO =============================
-cd\     
+cd\Esmeralda     
 cd\pgsql
 cd bin
 
@@ -80,8 +80,4 @@ ECHO Carregando as Tabelas...
 ECHO =============================   
 psql -U postgres -d esmeralda -f construct_db.sql
 
-echo
 echo banco carregado com sucesso !
-echo
-echo
-echo
