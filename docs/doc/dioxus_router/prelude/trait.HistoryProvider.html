@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="An integration with some kind of navigation history."><title>HistoryProvider in dioxus_router::prelude - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="dioxus_router" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc trait"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../dioxus_router/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../dioxus_router/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><h2 class="location"><a href="#">HistoryProvider</a></h2><div class="sidebar-elems"><section><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.current_route">current_route</a></li><li><a href="#tymethod.go_back">go_back</a></li><li><a href="#tymethod.go_forward">go_forward</a></li><li><a href="#tymethod.push">push</a></li><li><a href="#tymethod.replace">replace</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.can_go_back">can_go_back</a></li><li><a href="#method.can_go_forward">can_go_forward</a></li><li><a href="#method.current_prefix">current_prefix</a></li><li><a href="#method.external">external</a></li><li><a href="#method.updater">updater</a></li></ul><h3><a href="#implementors">Implementors</a></h3></section><h2><a href="index.html">In dioxus_router::prelude</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Trait <a href="../index.html">dioxus_router</a>::<wbr><a href="index.html">prelude</a>::<wbr><a class="trait" href="#">HistoryProvider</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/dioxus_router/history/mod.rs.html#48-287">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub trait HistoryProvider&lt;R: <a class="trait" href="../routable/trait.Routable.html" title="trait dioxus_router::routable::Routable">Routable</a>&gt; {
+    // Required methods
+    fn <a href="#tymethod.current_route" class="fn">current_route</a>(&amp;self) -&gt; R;
+<span class="item-spacer"></span>    fn <a href="#tymethod.go_back" class="fn">go_back</a>(&amp;mut self);
+<span class="item-spacer"></span>    fn <a href="#tymethod.go_forward" class="fn">go_forward</a>(&amp;mut self);
+<span class="item-spacer"></span>    fn <a href="#tymethod.push" class="fn">push</a>(&amp;mut self, route: R);
+<span class="item-spacer"></span>    fn <a href="#tymethod.replace" class="fn">replace</a>(&amp;mut self, path: R);
+
+    // Provided methods
+    fn <a href="#method.current_prefix" class="fn">current_prefix</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.74.1/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.can_go_back" class="fn">can_go_back</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.can_go_forward" class="fn">can_go_forward</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.external" class="fn">external</a>(&amp;mut self, url: <a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.updater" class="fn">updater</a>(&amp;mut self, callback: <a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>() + <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>&gt;) { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>An integration with some kind of navigation history.</p>
+<p>Depending on your use case, your implementation may deviate from the described procedure. This
+is fine, as long as both <code>current_route</code> and <code>current_query</code> match the described format.</p>
+<p>However, you should document all deviations. Also, make sure the navigation is user-friendly.
+The described behaviors are designed to mimic a web browser, which most users should already
+know. Deviations might confuse them.</p>
+</div></details><h2 id="required-methods" class="small-section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.current_route" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#74">source</a><h4 class="code-header">fn <a href="#tymethod.current_route" class="fn">current_route</a>(&amp;self) -&gt; R</h4></section></summary><div class="docblock"><p>Get the path of the current URL.</p>
+<p><strong>Must start</strong> with <code>/</code>. <strong>Must <em>not</em> contain</strong> the prefix.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/&quot;</span>);
+
+history.push(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/some-other-page&quot;</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.go_back" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#146">source</a><h4 class="code-header">fn <a href="#tymethod.go_back" class="fn">go_back</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Go back to a previous page.</p>
+<p>If a <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> cannot go to a previous page, it should do nothing. This method
+might be called, even if <code>can_go_back</code> returns <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>false</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/&quot;</span>);
+
+history.go_back();
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/&quot;</span>);
+
+history.push(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/some-other-page&quot;</span>);
+
+history.go_back();
+<span class="macro">assert_eq!</span>(history.current_route().to_string(), <span class="string">&quot;/&quot;</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.go_forward" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#209">source</a><h4 class="code-header">fn <a href="#tymethod.go_forward" class="fn">go_forward</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Go forward to a future page.</p>
+<p>If a <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> cannot go to a previous page, it should do nothing. This method
+might be called, even if <code>can_go_forward</code> returns <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>false</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+history.push(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.current_route(), Route::OtherPage {});
+
+history.go_back();
+<span class="macro">assert_eq!</span>(history.current_route(), Route::Index {});
+
+history.go_forward();
+<span class="macro">assert_eq!</span>(history.current_route(), Route::OtherPage {});</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.push" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#239">source</a><h4 class="code-header">fn <a href="#tymethod.push" class="fn">push</a>(&amp;mut self, route: R)</h4></section></summary><div class="docblock"><p>Go to another page.</p>
+<p>This should do three things:</p>
+<ol>
+<li>Merge the current URL with the <code>path</code> parameter (which may also include a query part).</li>
+<li>Remove the previous URL to the navigation history.</li>
+<li>Clear the navigation future.</li>
+</ol>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.current_route(), Route::Index {});
+
+history.push(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.current_route(), Route::OtherPage {});
+<span class="macro">assert!</span>(history.can_go_back());</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.replace" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#268">source</a><h4 class="code-header">fn <a href="#tymethod.replace" class="fn">replace</a>(&amp;mut self, path: R)</h4></section></summary><div class="docblock"><p>Replace the current page with another one.</p>
+<p>This should merge the current URL with the <code>path</code> parameter (which may also include a query
+part). In contrast to the <code>push</code> function, the navigation history and future should stay
+untouched.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.current_route(), Route::Index {});
+
+history.replace(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.current_route(), Route::OtherPage {});
+<span class="macro">assert!</span>(!history.can_go_back());</code></pre></div>
+</div></details></div><h2 id="provided-methods" class="small-section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.current_prefix" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#83-85">source</a><h4 class="code-header">fn <a href="#method.current_prefix" class="fn">current_prefix</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.74.1/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</h4></section></summary><div class="docblock"><p>Get the current path prefix of the URL.</p>
+<p>Not all <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a>s need a prefix feature. It is meant for environments where a
+dioxus-router-core-routed application is not running on <code>/</code>. The <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> is responsible
+for removing the prefix from the dioxus-router-core-internal path, and also for adding it back in
+during navigation. This functions value is only used for creating <code>href</code>s (e.g. for SSR or
+display (but not navigation) in a web app).</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.can_go_back" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#111-113">source</a><h4 class="code-header">fn <a href="#method.can_go_back" class="fn">can_go_back</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Check whether there is a previous page to navigate back to.</p>
+<p>If a <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> cannot know this, it should return <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>true</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/other&quot;</span>)]
+    </span>Other {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.can_go_back(), <span class="bool-val">false</span>);
+
+history.push(Route::Other {});
+<span class="macro">assert_eq!</span>(history.can_go_back(), <span class="bool-val">true</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.can_go_forward" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#176-178">source</a><h4 class="code-header">fn <a href="#method.can_go_forward" class="fn">can_go_forward</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Check whether there is a future page to navigate forward to.</p>
+<p>If a <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> cannot know this, it should return <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>true</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Routable, Debug, PartialEq)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+    <span class="attr">#[route(<span class="string">&quot;/some-other-page&quot;</span>)]
+    </span>OtherPage {},
+}
+<span class="kw">let </span><span class="kw-2">mut </span>history = MemoryHistory::&lt;Route&gt;::default();
+<span class="macro">assert_eq!</span>(history.can_go_forward(), <span class="bool-val">false</span>);
+
+history.push(Route::OtherPage {});
+<span class="macro">assert_eq!</span>(history.can_go_forward(), <span class="bool-val">false</span>);
+
+history.go_back();
+<span class="macro">assert_eq!</span>(history.can_go_forward(), <span class="bool-val">true</span>);</code></pre></div>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.external" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#277-279">source</a><h4 class="code-header">fn <a href="#method.external" class="fn">external</a>(&amp;mut self, url: <a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Navigate to an external URL.</p>
+<p>This should navigate to an external URL, which isn’t controlled by the router. If a
+<a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> cannot do that, it should return <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>false</code></a>, otherwise <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>true</code></a>.</p>
+<p>Returning <a href="https://doc.rust-lang.org/1.74.1/std/primitive.bool.html" title="primitive bool"><code>false</code></a> will cause the router to handle the external navigation failure.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.updater" class="method"><a class="src rightside" href="../../src/dioxus_router/history/mod.rs.html#286">source</a><h4 class="code-header">fn <a href="#method.updater" class="fn">updater</a>(&amp;mut self, callback: <a class="struct" href="https://doc.rust-lang.org/1.74.1/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;dyn <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>() + <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> + <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>&gt;)</h4></section></summary><div class="docblock"><p>Provide the <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a> with an update callback.</p>
+<p>Some <a href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider"><code>HistoryProvider</code></a>s may receive URL updates from outside the router. When such
+updates are received, they should call <code>callback</code>, which will cause the router to update.</p>
+</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"><section id="impl-HistoryProvider%3CR%3E-for-MemoryHistory%3CR%3E" class="impl"><a class="src rightside" href="../../src/dioxus_router/history/memory.rs.html#63-103">source</a><a href="#impl-HistoryProvider%3CR%3E-for-MemoryHistory%3CR%3E" class="anchor">§</a><h3 class="code-header">impl&lt;R: <a class="trait" href="../routable/trait.Routable.html" title="trait dioxus_router::routable::Routable">Routable</a>&gt; <a class="trait" href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider">HistoryProvider</a>&lt;R&gt; for <a class="struct" href="struct.MemoryHistory.html" title="struct dioxus_router::prelude::MemoryHistory">MemoryHistory</a>&lt;R&gt;</h3></section><section id="impl-HistoryProvider%3CR%3E-for-WebHistory%3CR%3E" class="impl"><a class="src rightside" href="../../src/dioxus_router/history/web.rs.html#318-390">source</a><a href="#impl-HistoryProvider%3CR%3E-for-WebHistory%3CR%3E" class="anchor">§</a><h3 class="code-header">impl&lt;R: <a class="trait" href="../routable/trait.Routable.html" title="trait dioxus_router::routable::Routable">Routable</a>&gt; <a class="trait" href="trait.HistoryProvider.html" title="trait dioxus_router::prelude::HistoryProvider">HistoryProvider</a>&lt;R&gt; for <a class="struct" href="struct.WebHistory.html" title="struct dioxus_router::prelude::WebHistory">WebHistory</a>&lt;R&gt;<span class="where fmt-newline">where
+    &lt;R as <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/str/traits/trait.FromStr.html" title="trait core::str::traits::FromStr">FromStr</a>&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/1.74.1/core/str/traits/trait.FromStr.html#associatedtype.Err" title="type core::str::traits::FromStr::Err">Err</a>: <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/fmt/trait.Display.html" title="trait core::fmt::Display">Display</a>,</span></h3></section></div><script src="../../implementors/dioxus_router/history/trait.HistoryProvider.js" async></script></section></div></main></body></html>

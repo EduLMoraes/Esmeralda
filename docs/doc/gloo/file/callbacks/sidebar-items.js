@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["read_as_array_buffer","read_as_bytes","read_as_data_url","read_as_text"],"struct":["FileReader"]};

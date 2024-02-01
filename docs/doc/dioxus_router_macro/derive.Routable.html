@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Derives the Routable trait for an enum of routes"><title>Routable in dioxus_router_macro - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="dioxus_router_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc derive"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../dioxus_router_macro/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../dioxus_router_macro/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In dioxus_router_macro</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Derive Macro <a href="index.html">dioxus_router_macro</a>::<wbr><a class="derive" href="#">Routable</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/dioxus_router_macro/lib.rs.html#204-227">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>#[derive(Routable)]
+{
+    // Attributes available to this derive:
+    #[route]
+    #[nest]
+    #[end_nest]
+    #[layout]
+    #[end_layout]
+    #[redirect]
+    #[child]
+}
+</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Derives the Routable trait for an enum of routes</p>
+<p>Each variant must:</p>
+<ol>
+<li>Be struct-like with {}’s</li>
+<li>Contain all of the dynamic parameters of the current and nested routes</li>
+<li>Have a <code>#[route(&quot;route&quot;)]</code> attribute</li>
+</ol>
+<p>Route Segments:</p>
+<ol>
+<li>Static Segments: “/static”</li>
+<li>Dynamic Segments: “/:dynamic” (where dynamic has a type that is FromStr in all child Variants)</li>
+<li>Catch all Segments: “/:..segments” (where segments has a type that is FromSegments in all child Variants)</li>
+<li>Query Segments: “/?:query” (where query has a type that is FromQuery in all child Variants)</li>
+</ol>
+<p>Routes are matched:</p>
+<ol>
+<li>By there specificity this order: Query Routes (“/?:query”), Static Routes (“/route”), Dynamic Routes (“/:route”), Catch All Routes (“/:..route”)</li>
+<li>By the order they are defined in the enum</li>
+</ol>
+<p>All features:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[rustfmt::skip]
+#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="comment">// Define routes with the route macro. If the name of the component is not the same as the variant, you can specify it as the second parameter
+    </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, IndexComponent)]
+    </span>Index {},
+    <span class="comment">// Nests with parameters have types taken from child routes
+    // Everything inside the nest has the added parameter `user_id: usize`
+    </span><span class="attr">#[nest(<span class="string">&quot;/user/:user_id&quot;</span>)]
+        </span><span class="comment">// All children of layouts will be rendered inside the Outlet in the layout component
+        // Creates a Layout UserFrame that has the parameter `user_id: usize`
+        </span><span class="attr">#[layout(UserFrame)]
+            </span><span class="comment">// If there is a component with the name Route1, you do not need to pass in the component name
+            </span><span class="attr">#[route(<span class="string">&quot;/:dynamic?:query&quot;</span>)]
+            </span>Route1 {
+                <span class="comment">// The type is taken from the first instance of the dynamic parameter
+                </span>user_id: usize,
+                dynamic: usize,
+                query: String,
+                extra: String,
+            },
+            <span class="attr">#[route(<span class="string">&quot;/hello_world&quot;</span>)]
+            </span><span class="comment">// You can opt out of the layout by using the `!` prefix
+            </span><span class="attr">#[layout(!UserFrame)]
+            </span>Route2 { user_id: usize },
+        <span class="comment">// End layouts with #[end_layout]
+        </span><span class="attr">#[end_layout]
+    </span><span class="comment">// End nests with #[end_nest]
+    </span><span class="attr">#[end_nest]
+    </span><span class="comment">// Redirects take a path and a function that takes the parameters from the path and returns a new route
+    </span><span class="attr">#[redirect(<span class="string">&quot;/:id/user&quot;</span>, |id: usize| Route::Route3 { dynamic: id.to_string()})]
+    #[route(<span class="string">&quot;/:dynamic&quot;</span>)]
+    </span>Route3 { dynamic: String },
+    <span class="attr">#[child]
+    </span>NestedRoute(NestedRoute),
+}</code></pre></div>
+<h2 id="routepath-component"><a href="#routepath-component"><code>#[route(&quot;path&quot;, component)]</code></a></h2>
+<p>The <code>#[route]</code> attribute is used to define a route. It takes up to 3 parameters:</p>
+<ul>
+<li><code>path</code>: The path to the enum variant (relative to the parent nest)</li>
+<li>(optional) <code>component</code>: The component to render when the route is matched. If not specified, the name of the variant is used</li>
+</ul>
+<p>Routes are the most basic attribute. They allow you to define a route and the component to render when the route is matched. The component must take all dynamic parameters of the route and all parent nests.
+The next variant will be tied to the component. If you link to that variant, the component will be rendered.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="comment">// Define routes that renders the IndexComponent
+    // The Index component will be rendered when the route is matched (e.g. when the user navigates to /)
+    </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, Index)]
+    </span>Index {},
+}</code></pre></div>
+<h2 id="redirectpath-function"><a href="#redirectpath-function"><code>#[redirect(&quot;path&quot;, function)]</code></a></h2>
+<p>The <code>#[redirect]</code> attribute is used to define a redirect. It takes 2 parameters:</p>
+<ul>
+<li><code>path</code>: The path to the enum variant (relative to the parent nest)</li>
+<li><code>function</code>: A function that takes the parameters from the path and returns a new route</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="comment">// Redirects the /:id route to the Index route
+    </span><span class="attr">#[redirect(<span class="string">&quot;/:id&quot;</span>, |<span class="kw">_</span>: usize| Route::Index {})]
+    #[route(<span class="string">&quot;/&quot;</span>, Index)]
+    </span>Index {},
+}</code></pre></div>
+<p>Redirects allow you to redirect a route to another route. The function must take all dynamic parameters of the route and all parent nests.</p>
+<h2 id="nestpath"><a href="#nestpath"><code>#[nest(&quot;path&quot;)]</code></a></h2>
+<p>The <code>#[nest]</code> attribute is used to define a nest. It takes 1 parameter:</p>
+<ul>
+<li><code>path</code>: The path to the nest (relative to the parent nest)</li>
+</ul>
+<p>Nests effect all nests, routes and redirects defined until the next <code>#[end_nest]</code> attribute. All children of nests are relative to the nest route and must include all dynamic parameters of the nest.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="comment">// Nests all child routes in the /blog route
+    </span><span class="attr">#[nest(<span class="string">&quot;/blog&quot;</span>)]
+        </span><span class="comment">// This is at /blog/:id
+        </span><span class="attr">#[redirect(<span class="string">&quot;/:id&quot;</span>, |<span class="kw">_</span>: usize| Route::Index {})]
+        </span><span class="comment">// This is at /blog
+        </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, Index)]
+        </span>Index {},
+}</code></pre></div>
+<h2 id="end_nest"><a href="#end_nest"><code>#[end_nest]</code></a></h2>
+<p>The <code>#[end_nest]</code> attribute is used to end a nest. It takes no parameters.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[nest(<span class="string">&quot;/blog&quot;</span>)]
+        </span><span class="comment">// This is at /blog/:id
+        </span><span class="attr">#[redirect(<span class="string">&quot;/:id&quot;</span>, |<span class="kw">_</span>: usize| Route::Index {})]
+        </span><span class="comment">// This is at /blog
+        </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, Index)]
+        </span>Index {},
+    <span class="comment">// Ends the nest
+    </span><span class="attr">#[end_nest]
+    </span><span class="comment">// This is at /
+    </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Home {},
+}</code></pre></div>
+<h2 id="layoutcomponent"><a href="#layoutcomponent"><code>#[layout(component)]</code></a></h2>
+<p>The <code>#[layout]</code> attribute is used to define a layout. It takes 2 parameters:</p>
+<ul>
+<li><code>component</code>: The component to render when the route is matched. If not specified, the name of the variant is used</li>
+</ul>
+<p>The layout component allows you to wrap all children of the layout in a component. The child routes are rendered in the Outlet of the layout component. The layout component must take all dynamic parameters of the nests it is nested in.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[layout(BlogFrame)]
+        #[redirect(<span class="string">&quot;/:id&quot;</span>, |<span class="kw">_</span>: usize| Route::Index {})]
+        </span><span class="comment">// Index will be rendered in the Outlet of the BlogFrame component
+        </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, Index)]
+        </span>Index {},
+}</code></pre></div>
+<h2 id="end_layout"><a href="#end_layout"><code>#[end_layout]</code></a></h2>
+<p>The <code>#[end_layout]</code> attribute is used to end a layout. It takes no parameters.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Clone, Debug, PartialEq, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[layout(BlogFrame)]
+        #[redirect(<span class="string">&quot;/:id&quot;</span>, |<span class="kw">_</span>: usize| Route::Index {})]
+        </span><span class="comment">// Index will be rendered in the Outlet of the BlogFrame component
+        </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>, Index)]
+        </span>Index {},
+    <span class="comment">// Ends the layout
+    </span><span class="attr">#[end_layout]
+    </span><span class="comment">// This will be rendered standalone
+    </span><span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Home {},
+}</code></pre></div>
+</div></details></section></div></main></body></html>

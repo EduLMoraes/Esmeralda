@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Process a block with the SHA-1 algorithm. (See more…)"><title>sha1_digest_block in crypto::sha1 - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="crypto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../crypto/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../crypto/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In crypto::sha1</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">crypto</a>::<wbr><a href="index.html">sha1</a>::<wbr><a class="fn" href="#">sha1_digest_block</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/crypto/sha1.rs.html#348-353">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub fn sha1_digest_block(state: &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.u32.html">u32</a>; <a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.array.html">5</a>], block: &amp;[<a class="primitive" href="https://doc.rust-lang.org/1.74.1/std/primitive.u8.html">u8</a>])</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Process a block with the SHA-1 algorithm. (See more…)</p>
+<p>SHA-1 is a cryptographic hash function, and as such, it operates
+on an arbitrary number of bytes. This function operates on a fixed
+number of bytes. If you call this function with anything other than
+64 bytes, then it will panic! This function takes two arguments:</p>
+<ul>
+<li><code>state</code> is reference to an <strong>array</strong> of 5 words.</li>
+<li><code>block</code> is reference to a <strong>slice</strong> of 64 bytes.</li>
+</ul>
+<p>If you want the function that performs a message digest on an arbitrary
+number of bytes, then see also the <code>Sha1</code> struct above.</p>
+<h2 id="implementation"><a href="#implementation">Implementation</a></h2>
+<p>First, some background. Both ARM and Intel are releasing documentation
+that they plan to include instruction set extensions for SHA1 and SHA256
+sometime in the near future. Second, LLVM won’t lower these intrinsics yet,
+so these functions were written emulate these instructions. Finally,
+the block function implemented with these emulated intrinsics turned out
+to be quite fast! What follows is a discussion of this CPU-level view
+of the SHA-1 algorithm and how it relates to the mathematical definition.</p>
+<p>The SHA instruction set extensions can be divided up into two categories:</p>
+<ul>
+<li>message work schedule update calculation (“schedule” v., “work” n.)</li>
+<li>message block 80-round digest calculation (“digest” v., “block” n.)</li>
+</ul>
+<p>The schedule-related functions can be used to easily perform 4 rounds
+of the message work schedule update calculation, as shown below:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">macro_rules! </span>schedule_x4 {
+    (<span class="macro-nonterminal">$v0</span>:expr, <span class="macro-nonterminal">$v1</span>:expr, <span class="macro-nonterminal">$v2</span>:expr, <span class="macro-nonterminal">$v3</span>:expr) =&gt; (
+        sha1msg2(sha1msg1(<span class="macro-nonterminal">$v0</span>, <span class="macro-nonterminal">$v1</span>) ^ <span class="macro-nonterminal">$v2</span>, <span class="macro-nonterminal">$v3</span>)
+    )
+}
+
+<span class="macro">macro_rules! </span>round_x4 {
+    (<span class="macro-nonterminal">$h0</span>:ident, <span class="macro-nonterminal">$h1</span>:ident, <span class="macro-nonterminal">$wk</span>:expr, <span class="macro-nonterminal">$i</span>:expr) =&gt; (
+        sha1rnds4(<span class="macro-nonterminal">$h0</span>, sha1_first_half(<span class="macro-nonterminal">$h1</span>, <span class="macro-nonterminal">$wk</span>), <span class="macro-nonterminal">$i</span>)
+    )
+}</code></pre></div>
+<p>and also shown above is how the digest-related functions can be used to
+perform 4 rounds of the message block digest calculation.</p>
+</div></details></section></div></main></body></html>

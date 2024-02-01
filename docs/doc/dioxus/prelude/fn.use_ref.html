@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`use_ref` is a key foundational hook for storing state in Dioxus."><title>use_ref in dioxus::prelude - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="dioxus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../dioxus/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../dioxus/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In dioxus::prelude</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">dioxus</a>::<wbr><a href="index.html">prelude</a>::<wbr><a class="fn" href="#">use_ref</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/dioxus_hooks/use_ref.rs.html#114">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub fn use_ref&lt;T&gt;(
+    cx: &amp;<a class="struct" href="struct.ScopeState.html" title="struct dioxus::prelude::ScopeState">ScopeState</a>,
+    initialize_refcell: impl <a class="trait" href="https://doc.rust-lang.org/1.74.1/core/ops/function/trait.FnOnce.html" title="trait core::ops::function::FnOnce">FnOnce</a>() -&gt; T
+) -&gt; &amp;<a class="struct" href="struct.UseRef.html" title="struct dioxus::prelude::UseRef">UseRef</a>&lt;T&gt;<span class="where fmt-newline">where
+    T: 'static,</span></code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><code>use_ref</code> is a key foundational hook for storing state in Dioxus.</p>
+<p>It is different that <code>use_state</code> in that the value stored is not “immutable”.
+Instead, UseRef is designed to store larger values that will be mutated at will.</p>
+<h3 id="writing-values"><a href="#writing-values">Writing Values</a></h3>
+<p>Generally, <code>use_ref</code> is just a wrapper around a RefCell that tracks mutable
+writes through the <code>write</code> method. Whenever <code>write</code> is called, the component
+that initialized the hook will be marked as “dirty”.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>val = use_ref(|| HashMap::&lt;u32, String&gt;::new());
+
+<span class="comment">// using `write` will give us a `RefMut` to the inner value, which we can call methods on
+// This marks the component as &quot;dirty&quot;
+</span>val.write().insert(<span class="number">1</span>, <span class="string">&quot;hello&quot;</span>.to_string());</code></pre></div>
+<p>You can avoid this default behavior with <code>write_silent</code></p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// with `write_silent`, the component will not be re-rendered
+</span>val.write_silent().insert(<span class="number">2</span>, <span class="string">&quot;goodbye&quot;</span>.to_string());</code></pre></div>
+<h3 id="reading-values"><a href="#reading-values">Reading Values</a></h3>
+<p>To read values out of the refcell, you can use the <code>read</code> method which will retrun a <code>Ref</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>map: Ref&lt;<span class="kw">_</span>&gt; = val.read();
+
+<span class="kw">let </span>item = map.get(<span class="kw-2">&amp;</span><span class="number">1</span>);</code></pre></div>
+<p>To get an &amp;T out of the RefCell, you need to “reborrow” through the Ref:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>read = val.read();
+<span class="kw">let </span>map = <span class="kw-2">&amp;*</span>read;</code></pre></div>
+<h3 id="collections-and-iteration"><a href="#collections-and-iteration">Collections and iteration</a></h3>
+<p>A common usecase for <code>use_ref</code> is to store a large amount of data in a component.
+Typically this will be a collection like a HashMap or a Vec. To create new
+elements from the collection, we can use <code>read()</code> directly in our rsx!.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">rsx!</span>{
+    val.read().iter().map(|(k, v)| {
+        <span class="macro">rsx!</span>{ key: <span class="string">&quot;{k}&quot;</span>, <span class="string">&quot;{v}&quot; </span>}
+    })
+}</code></pre></div>
+<p>If you are generating elements outside of <code>rsx!</code> then you might need to call
+“render” inside the iterator. For some cases you might need to collect into
+a temporary Vec.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>items = val.read().iter().map(|(k, v)| {
+    cx.render(<span class="macro">rsx!</span>{ key: <span class="string">&quot;{k}&quot;</span>, <span class="string">&quot;{v}&quot; </span>})
+});
+
+<span class="comment">// collect into a Vec
+
+</span><span class="kw">let </span>items: Vec&lt;Element&gt; = items.collect();</code></pre></div>
+<h3 id="use-in-async"><a href="#use-in-async">Use in Async</a></h3>
+<p>To access values from a <code>UseRef</code> in an async context, you need to detach it
+from the current scope’s lifetime, making it a <code>'static</code> value. This is done
+by simply calling <code>to_owned</code> or <code>clone</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>val = use_ref(|| HashMap::&lt;u32, String&gt;::new());
+
+cx.spawn({
+    <span class="kw">let </span>val = val.clone();
+    <span class="kw">async move </span>{
+        some_work().<span class="kw">await</span>;
+        val.write().insert(<span class="number">1</span>, <span class="string">&quot;hello&quot;</span>.to_string());
+    }
+})</code></pre></div>
+<p>If you’re working with lots of values like UseState and UseRef, you can use the
+<code>to_owned!</code> macro to make it easier to write the above code.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>val1 = use_ref(|| HashMap::&lt;u32, String&gt;::new());
+<span class="kw">let </span>val2 = use_ref(|| HashMap::&lt;u32, String&gt;::new());
+<span class="kw">let </span>val3 = use_ref(|| HashMap::&lt;u32, String&gt;::new());
+
+cx.spawn({
+    <span class="macro">to_owned!</span>[val1, val2, val3];
+    <span class="kw">async move </span>{
+        some_work().<span class="kw">await</span>;
+        val.write().insert(<span class="number">1</span>, <span class="string">&quot;hello&quot;</span>.to_string());
+    }
+})</code></pre></div>
+</div></details></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["RawMods","SysMods"],"struct":["Accelerator","AcceleratorId","AcceleratorParseError"]};

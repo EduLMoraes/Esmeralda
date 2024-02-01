@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A link to navigate to another route."><title>Link in dioxus_router::components - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="dioxus_router" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../dioxus_router/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../dioxus_router/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In dioxus_router::components</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">dioxus_router</a>::<wbr><a href="index.html">components</a>::<wbr><a class="fn" href="#">Link</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/dioxus_router/components/link.rs.html#185-256">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub fn Link&lt;'a&gt;(cx: <a class="type" href="../../dioxus_core/scopes/type.Scope.html" title="type dioxus_core::scopes::Scope">Scope</a>&lt;'a, <a class="struct" href="struct.LinkProps.html" title="struct dioxus_router::components::LinkProps">LinkProps</a>&lt;'a&gt;&gt;) -&gt; <a class="type" href="../../dioxus_core/innerlude/type.Element.html" title="type dioxus_core::innerlude::Element">Element</a>&lt;'_&gt;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A link to navigate to another route.</p>
+<p>Only works as descendant of a [<code>Router</code>] component, otherwise it will be inactive.</p>
+<p>Unlike a regular HTML anchor, a <a href="fn.Link.html" title="fn dioxus_router::components::Link"><code>Link</code></a> allows the router to handle the navigation and doesn’t
+cause the browser to load a new page.</p>
+<p>However, in the background a <a href="fn.Link.html" title="fn dioxus_router::components::Link"><code>Link</code></a> still generates an anchor, which you can use for styling
+as normal.</p>
+<h2 id="external-targets"><a href="#external-targets">External targets</a></h2>
+<p>When the <a href="fn.Link.html" title="fn dioxus_router::components::Link"><code>Link</code></a>s target is an <a href="../navigation/enum.NavigationTarget.html#variant.External" title="variant dioxus_router::navigation::NavigationTarget::External"><code>NavigationTarget::External</code></a> target, that is used as the <code>href</code> directly. This
+means that a <a href="fn.Link.html" title="fn dioxus_router::components::Link"><code>Link</code></a> can always navigate to an <a href="../navigation/enum.NavigationTarget.html#variant.External" title="variant dioxus_router::navigation::NavigationTarget::External"><code>NavigationTarget::External</code></a> target, even if the [<code>HistoryProvider</code>] does not support it.</p>
+<h2 id="panic"><a href="#panic">Panic</a></h2>
+<ul>
+<li>When the <a href="fn.Link.html" title="fn dioxus_router::components::Link"><code>Link</code></a> is not nested within a [<code>Router</code>], but
+only in debug builds.</li>
+</ul>
+<h2 id="example"><a href="#example">Example</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>
+<span class="attr">#[derive(Clone, Routable)]
+</span><span class="kw">enum </span>Route {
+    <span class="attr">#[route(<span class="string">&quot;/&quot;</span>)]
+    </span>Index {},
+}
+
+<span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    <span class="macro">render! </span>{
+        Router::&lt;Route&gt; {}
+    }
+}
+
+<span class="attr">#[component]
+</span><span class="kw">fn </span>Index(cx: Scope) -&gt; Element {
+    <span class="macro">render! </span>{
+        <span class="macro">render! </span>{
+            Link {
+                active_class: <span class="string">&quot;active&quot;</span>,
+                class: <span class="string">&quot;link_class&quot;</span>,
+                id: <span class="string">&quot;link_id&quot;</span>,
+                new_tab: <span class="bool-val">true</span>,
+                rel: <span class="string">&quot;link_rel&quot;</span>,
+                to: Route::Index {},
+    
+                <span class="string">&quot;A fully configured link&quot;
+            </span>}
+        }
+    }
+}</code></pre></div>
+</div></details></section></div></main></body></html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="lopdf"><title>lopdf - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="lopdf" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../lopdf/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../lopdf/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate lopdf</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.31.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#types">Type Aliases</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">lopdf</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/lopdf/lib.rs.html#1-49">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="lopdf"><a href="#lopdf">lopdf</a></h2>
+<p><a href="https://crates.io/crates/lopdf"><img src="https://img.shields.io/crates/v/lopdf.svg" alt="Crates.io" /></a>
+<a href="https://travis-ci.org/J-F-Liu/lopdf"><img src="https://travis-ci.org/J-F-Liu/lopdf.png" alt="Build Status" /></a>
+<a href="https://docs.rs/lopdf"><img src="https://docs.rs/lopdf/badge.svg" alt="Docs" /></a></p>
+<p>A Rust library for PDF document manipulation.</p>
+<p>A useful reference for understanding the PDF file format and the
+eventual usage of this libary is the
+<a href="https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf">PDF 1.7 Reference Document</a>.
+The PDF 2.0 specification is availabe <a href="https://www.pdfa.org/announcing-no-cost-access-to-iso-32000-2-pdf-2-0/">here</a>.</p>
+<h3 id="example-code"><a href="#example-code">Example Code</a></h3>
+<ul>
+<li>Create PDF document</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>lopdf::dictionary;
+<span class="kw">use </span>lopdf::{Document, Object, Stream};
+<span class="kw">use </span>lopdf::content::{Content, Operation};
+
+<span class="comment">// with_version specifes the PDF version this document complies with.
+</span><span class="kw">let </span><span class="kw-2">mut </span>doc = Document::with_version(<span class="string">&quot;1.5&quot;</span>);
+<span class="comment">// Object IDs are used for cross referencing in PDF documents. `lopdf` helps keep track of them
+// for us. They are simple integers.
+// Calls to `doc.new_object_id` and `doc.add_object` return an object id
+
+// pages is the root node of the page tree
+</span><span class="kw">let </span>pages_id = doc.new_object_id();
+
+<span class="comment">// fonts are dictionaries. The type, subtype and basefont tags
+// are straight out of the PDF reference manual
+//
+// The dictionary macro is a helper that allows complex
+// key, value relationships to be represented in a simpler
+// visual manner, similar to a match statement.
+// Dictionary is linkedHashMap of byte vector, and object
+</span><span class="kw">let </span>font_id = doc.add_object(<span class="macro">dictionary! </span>{
+    <span class="comment">// type of dictionary
+    </span><span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Font&quot;</span>,
+    <span class="comment">// type of font, type1 is simple postscript font
+    </span><span class="string">&quot;Subtype&quot; </span>=&gt; <span class="string">&quot;Type1&quot;</span>,
+    <span class="comment">// basefont is postscript name of font for type1 font.
+    // See PDF reference document for more details
+    </span><span class="string">&quot;BaseFont&quot; </span>=&gt; <span class="string">&quot;Courier&quot;</span>,
+});
+
+<span class="comment">// font dictionaries need to be added into resource dictionaries
+// in order to be used.
+// Resource dictionaries can contain more than just fonts,
+// but normally just contains fonts
+// Only one resource dictionary is allowed per page tree root
+</span><span class="kw">let </span>resources_id = doc.add_object(<span class="macro">dictionary! </span>{
+    <span class="comment">// fonts are actually triplely nested dictionaries. Fun!
+    </span><span class="string">&quot;Font&quot; </span>=&gt; <span class="macro">dictionary! </span>{
+        <span class="comment">// F1 is the font name used when writing text.
+        // It must be unique in the document. It does not
+        // have to be F1
+        </span><span class="string">&quot;F1&quot; </span>=&gt; font_id,
+    },
+});
+
+<span class="comment">// Content is a wrapper struct around an operations struct that contains a vector of operations
+// The operations struct contains a vector of operations that match up with a particular PDF
+// operator and operands.
+// Reference the PDF reference for more details on these operators and operands.
+// Note, the operators and operands are specified in a reverse order than they
+// actually appear in the PDF file itself.
+</span><span class="kw">let </span>content = Content {
+    operations: <span class="macro">vec!</span>[
+        <span class="comment">// BT begins a text element. it takes no operands
+        </span>Operation::new(<span class="string">&quot;BT&quot;</span>, <span class="macro">vec!</span>[]),
+        <span class="comment">// Tf specifies the font and font size. Font scaling is complicated in PDFs. Reference
+        // the reference for more info.
+        // The info() methods are defined based on their paired .from() methods (this
+        // functionality is built into rust), and are converting the provided values into
+        // An enum that represents the basic object types in PDF documents.
+        </span>Operation::new(<span class="string">&quot;Tf&quot;</span>, <span class="macro">vec!</span>[<span class="string">&quot;F1&quot;</span>.into(), <span class="number">48</span>.into()]),
+        <span class="comment">// Td adjusts the translation components of the text matrix. When used for the first
+        // time after BT, it sets the initial text position on the page.
+        // Note: PDF documents have Y=0 at the bottom. Thus 600 to print text near the top.
+        </span>Operation::new(<span class="string">&quot;Td&quot;</span>, <span class="macro">vec!</span>[<span class="number">100</span>.into(), <span class="number">600</span>.into()]),
+        <span class="comment">// Tj prints a string literal to the page. By default, this is black text that is
+        // filled in. There are other operators that can produce various textual effects and
+        // colors
+        </span>Operation::new(<span class="string">&quot;Tj&quot;</span>, <span class="macro">vec!</span>[Object::string_literal(<span class="string">&quot;Hello World!&quot;</span>)]),
+        <span class="comment">// ET ends the text element
+        </span>Operation::new(<span class="string">&quot;ET&quot;</span>, <span class="macro">vec!</span>[]),
+    ],
+};
+
+<span class="comment">// Streams are a dictionary followed by a sequence of bytes. What that sequence of bytes
+// represents depends on context
+// The stream dictionary is set internally to lopdf and normally doesn&#39;t
+// need to be manually manipulated. It contains keys such as
+// Length, Filter, DecodeParams, etc
+//
+// content is a stream of encoded content data.
+</span><span class="kw">let </span>content_id = doc.add_object(Stream::new(<span class="macro">dictionary! </span>{}, content.encode().unwrap()));
+
+<span class="comment">// Page is a dictionary that represents one page of a PDF file.
+// It has a type, parent and contents
+</span><span class="kw">let </span>page_id = doc.add_object(<span class="macro">dictionary! </span>{
+    <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Page&quot;</span>,
+    <span class="string">&quot;Parent&quot; </span>=&gt; pages_id,
+    <span class="string">&quot;Contents&quot; </span>=&gt; content_id,
+});
+
+<span class="comment">// Again, pages is the root of the page tree. The ID was already created
+// at the top of the page, since we needed it to assign to the parent element of the page
+// dictionary
+//
+// This is just the basic requirements for a page tree root object. There are also many
+// additional entries that can be added to the dictionary if needed. Some of these can also be
+// defined on the page dictionary itself, and not inherited from the page tree root.
+</span><span class="kw">let </span>pages = <span class="macro">dictionary! </span>{
+    <span class="comment">// Type of dictionary
+    </span><span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Pages&quot;</span>,
+    <span class="comment">// Vector of page IDs in document. Normally would contain more than one ID and be produced
+    // using a loop of some kind
+    </span><span class="string">&quot;Kids&quot; </span>=&gt; <span class="macro">vec!</span>[page_id.into()],
+    <span class="comment">// Page count
+    </span><span class="string">&quot;Count&quot; </span>=&gt; <span class="number">1</span>,
+    <span class="comment">// ID of resources dictionary, defined earlier
+    </span><span class="string">&quot;Resources&quot; </span>=&gt; resources_id,
+    <span class="comment">// a rectangle that defines the boundaries of the physical or digital media. This is the
+    // &quot;Page Size&quot;
+    </span><span class="string">&quot;MediaBox&quot; </span>=&gt; <span class="macro">vec!</span>[<span class="number">0</span>.into(), <span class="number">0</span>.into(), <span class="number">595</span>.into(), <span class="number">842</span>.into()],
+};
+
+<span class="comment">// using insert() here, instead of add_object() since the id is already known.
+</span>doc.objects.insert(pages_id, Object::Dictionary(pages));
+
+<span class="comment">// Creating document catalog.
+// There are many more entries allowed in the catalog dictionary.
+</span><span class="kw">let </span>catalog_id = doc.add_object(<span class="macro">dictionary! </span>{
+    <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Catalog&quot;</span>,
+    <span class="string">&quot;Pages&quot; </span>=&gt; pages_id,
+});
+
+<span class="comment">// Root key in trailer is set here to ID of document catalog,
+// remainder of trailer is set during doc.save().
+</span>doc.trailer.set(<span class="string">&quot;Root&quot;</span>, catalog_id);
+doc.compress();
+
+<span class="comment">// Store file in current working directory.
+// Note: Line is excluded when running tests
+</span><span class="kw">if </span><span class="bool-val">false </span>{
+    doc.save(<span class="string">&quot;example.pdf&quot;</span>).unwrap();
+}</code></pre></div>
+<ul>
+<li>Merge PDF documents</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>lopdf::dictionary;
+
+<span class="kw">use </span>std::collections::BTreeMap;
+
+<span class="kw">use </span>lopdf::content::{Content, Operation};
+<span class="kw">use </span>lopdf::{Document, Object, ObjectId, Stream, Bookmark};
+
+<span class="kw">pub fn </span>generate_fake_document() -&gt; Document {
+    <span class="kw">let </span><span class="kw-2">mut </span>doc = Document::with_version(<span class="string">&quot;1.5&quot;</span>);
+    <span class="kw">let </span>pages_id = doc.new_object_id();
+    <span class="kw">let </span>font_id = doc.add_object(<span class="macro">dictionary! </span>{
+        <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Font&quot;</span>,
+        <span class="string">&quot;Subtype&quot; </span>=&gt; <span class="string">&quot;Type1&quot;</span>,
+        <span class="string">&quot;BaseFont&quot; </span>=&gt; <span class="string">&quot;Courier&quot;</span>,
+    });
+    <span class="kw">let </span>resources_id = doc.add_object(<span class="macro">dictionary! </span>{
+        <span class="string">&quot;Font&quot; </span>=&gt; <span class="macro">dictionary! </span>{
+            <span class="string">&quot;F1&quot; </span>=&gt; font_id,
+        },
+    });
+    <span class="kw">let </span>content = Content {
+        operations: <span class="macro">vec!</span>[
+            Operation::new(<span class="string">&quot;BT&quot;</span>, <span class="macro">vec!</span>[]),
+            Operation::new(<span class="string">&quot;Tf&quot;</span>, <span class="macro">vec!</span>[<span class="string">&quot;F1&quot;</span>.into(), <span class="number">48</span>.into()]),
+            Operation::new(<span class="string">&quot;Td&quot;</span>, <span class="macro">vec!</span>[<span class="number">100</span>.into(), <span class="number">600</span>.into()]),
+            Operation::new(<span class="string">&quot;Tj&quot;</span>, <span class="macro">vec!</span>[Object::string_literal(<span class="string">&quot;Hello World!&quot;</span>)]),
+            Operation::new(<span class="string">&quot;ET&quot;</span>, <span class="macro">vec!</span>[]),
+        ],
+    };
+    <span class="kw">let </span>content_id = doc.add_object(Stream::new(<span class="macro">dictionary! </span>{}, content.encode().unwrap()));
+    <span class="kw">let </span>page_id = doc.add_object(<span class="macro">dictionary! </span>{
+        <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Page&quot;</span>,
+        <span class="string">&quot;Parent&quot; </span>=&gt; pages_id,
+        <span class="string">&quot;Contents&quot; </span>=&gt; content_id,
+        <span class="string">&quot;Resources&quot; </span>=&gt; resources_id,
+        <span class="string">&quot;MediaBox&quot; </span>=&gt; <span class="macro">vec!</span>[<span class="number">0</span>.into(), <span class="number">0</span>.into(), <span class="number">595</span>.into(), <span class="number">842</span>.into()],
+    });
+    <span class="kw">let </span>pages = <span class="macro">dictionary! </span>{
+        <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Pages&quot;</span>,
+        <span class="string">&quot;Kids&quot; </span>=&gt; <span class="macro">vec!</span>[page_id.into()],
+        <span class="string">&quot;Count&quot; </span>=&gt; <span class="number">1</span>,
+    };
+    doc.objects.insert(pages_id, Object::Dictionary(pages));
+    <span class="kw">let </span>catalog_id = doc.add_object(<span class="macro">dictionary! </span>{
+        <span class="string">&quot;Type&quot; </span>=&gt; <span class="string">&quot;Catalog&quot;</span>,
+        <span class="string">&quot;Pages&quot; </span>=&gt; pages_id,
+    });
+    doc.trailer.set(<span class="string">&quot;Root&quot;</span>, catalog_id);
+
+    doc
+}
+
+<span class="kw">fn </span>main() -&gt; std::io::Result&lt;()&gt; {
+    <span class="comment">// Generate a stack of Documents to merge
+    </span><span class="kw">let </span>documents = <span class="macro">vec!</span>[
+        generate_fake_document(),
+        generate_fake_document(),
+        generate_fake_document(),
+        generate_fake_document(),
+    ];
+
+    <span class="comment">// Define a starting max_id (will be used as start index for object_ids)
+    </span><span class="kw">let </span><span class="kw-2">mut </span>max_id = <span class="number">1</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>pagenum = <span class="number">1</span>;
+    <span class="comment">// Collect all Documents Objects grouped by a map
+    </span><span class="kw">let </span><span class="kw-2">mut </span>documents_pages = BTreeMap::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>documents_objects = BTreeMap::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>document = Document::with_version(<span class="string">&quot;1.5&quot;</span>);
+
+    <span class="kw">for </span><span class="kw-2">mut </span>doc <span class="kw">in </span>documents {
+        <span class="kw">let </span><span class="kw-2">mut </span>first = <span class="bool-val">false</span>;
+        doc.renumber_objects_with(max_id);
+
+        max_id = doc.max_id + <span class="number">1</span>;
+
+        documents_pages.extend(
+            doc
+                    .get_pages()
+                    .into_iter()
+                    .map(|(<span class="kw">_</span>, object_id)| {
+                        <span class="kw">if </span>!first {
+                            <span class="kw">let </span>bookmark = Bookmark::new(String::from(<span class="macro">format!</span>(<span class="string">&quot;Page_{}&quot;</span>, pagenum)), [<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>], <span class="number">0</span>, object_id);
+                            document.add_bookmark(bookmark, <span class="prelude-val">None</span>);
+                            first = <span class="bool-val">true</span>;
+                            pagenum += <span class="number">1</span>;
+                        }
+
+                        (
+                            object_id,
+                            doc.get_object(object_id).unwrap().to_owned(),
+                        )
+                    })
+                    .collect::&lt;BTreeMap&lt;ObjectId, Object&gt;&gt;(),
+        );
+        documents_objects.extend(doc.objects);
+    }
+
+    <span class="comment">// Catalog and Pages are mandatory
+    </span><span class="kw">let </span><span class="kw-2">mut </span>catalog_object: <span class="prelude-ty">Option</span>&lt;(ObjectId, Object)&gt; = <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>pages_object: <span class="prelude-ty">Option</span>&lt;(ObjectId, Object)&gt; = <span class="prelude-val">None</span>;
+
+    <span class="comment">// Process all objects except &quot;Page&quot; type
+    </span><span class="kw">for </span>(object_id, object) <span class="kw">in </span>documents_objects.iter() {
+        <span class="comment">// We have to ignore &quot;Page&quot; (as are processed later), &quot;Outlines&quot; and &quot;Outline&quot; objects
+        // All other objects should be collected and inserted into the main Document
+        </span><span class="kw">match </span>object.type_name().unwrap_or(<span class="string">&quot;&quot;</span>) {
+            <span class="string">&quot;Catalog&quot; </span>=&gt; {
+                <span class="comment">// Collect a first &quot;Catalog&quot; object and use it for the future &quot;Pages&quot;
+                </span>catalog_object = <span class="prelude-val">Some</span>((
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>((id, <span class="kw">_</span>)) = catalog_object {
+                        id
+                    } <span class="kw">else </span>{
+                        <span class="kw-2">*</span>object_id
+                    },
+                    object.clone(),
+                ));
+            }
+            <span class="string">&quot;Pages&quot; </span>=&gt; {
+                <span class="comment">// Collect and update a first &quot;Pages&quot; object and use it for the future &quot;Catalog&quot;
+                // We have also to merge all dictionaries of the old and the new &quot;Pages&quot; object
+                </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(dictionary) = object.as_dict() {
+                    <span class="kw">let </span><span class="kw-2">mut </span>dictionary = dictionary.clone();
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="kw-2">ref </span>object)) = pages_object {
+                        <span class="kw">if let </span><span class="prelude-val">Ok</span>(old_dictionary) = object.as_dict() {
+                            dictionary.extend(old_dictionary);
+                        }
+                    }
+
+                    pages_object = <span class="prelude-val">Some</span>((
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>((id, <span class="kw">_</span>)) = pages_object {
+                            id
+                        } <span class="kw">else </span>{
+                            <span class="kw-2">*</span>object_id
+                        },
+                        Object::Dictionary(dictionary),
+                    ));
+                }
+            }
+            <span class="string">&quot;Page&quot; </span>=&gt; {}     <span class="comment">// Ignored, processed later and separately
+            </span><span class="string">&quot;Outlines&quot; </span>=&gt; {} <span class="comment">// Ignored, not supported yet
+            </span><span class="string">&quot;Outline&quot; </span>=&gt; {}  <span class="comment">// Ignored, not supported yet
+            </span><span class="kw">_ </span>=&gt; {
+                document.objects.insert(<span class="kw-2">*</span>object_id, object.clone());
+            }
+        }
+    }
+
+    <span class="comment">// If no &quot;Pages&quot; object found abort
+    </span><span class="kw">if </span>pages_object.is_none() {
+        <span class="macro">println!</span>(<span class="string">&quot;Pages root not found.&quot;</span>);
+
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+    }
+
+    <span class="comment">// Iterate over all &quot;Page&quot; objects and collect into the parent &quot;Pages&quot; created before
+    </span><span class="kw">for </span>(object_id, object) <span class="kw">in </span>documents_pages.iter() {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(dictionary) = object.as_dict() {
+            <span class="kw">let </span><span class="kw-2">mut </span>dictionary = dictionary.clone();
+            dictionary.set(<span class="string">&quot;Parent&quot;</span>, pages_object.as_ref().unwrap().<span class="number">0</span>);
+
+            document
+                    .objects
+                    .insert(<span class="kw-2">*</span>object_id, Object::Dictionary(dictionary));
+        }
+    }
+
+    <span class="comment">// If no &quot;Catalog&quot; found abort
+    </span><span class="kw">if </span>catalog_object.is_none() {
+        <span class="macro">println!</span>(<span class="string">&quot;Catalog root not found.&quot;</span>);
+
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+    }
+
+    <span class="kw">let </span>catalog_object = catalog_object.unwrap();
+    <span class="kw">let </span>pages_object = pages_object.unwrap();
+
+    <span class="comment">// Build a new &quot;Pages&quot; with updated fields
+    </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(dictionary) = pages_object.<span class="number">1</span>.as_dict() {
+        <span class="kw">let </span><span class="kw-2">mut </span>dictionary = dictionary.clone();
+
+        <span class="comment">// Set new pages count
+        </span>dictionary.set(<span class="string">&quot;Count&quot;</span>, documents_pages.len() <span class="kw">as </span>u32);
+
+        <span class="comment">// Set new &quot;Kids&quot; list (collected from documents pages) for &quot;Pages&quot;
+        </span>dictionary.set(
+            <span class="string">&quot;Kids&quot;</span>,
+            documents_pages
+                    .into_iter()
+                    .map(|(object_id, <span class="kw">_</span>)| Object::Reference(object_id))
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+        );
+
+        document
+                .objects
+                .insert(pages_object.<span class="number">0</span>, Object::Dictionary(dictionary));
+    }
+
+    <span class="comment">// Build a new &quot;Catalog&quot; with updated fields
+    </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(dictionary) = catalog_object.<span class="number">1</span>.as_dict() {
+        <span class="kw">let </span><span class="kw-2">mut </span>dictionary = dictionary.clone();
+        dictionary.set(<span class="string">&quot;Pages&quot;</span>, pages_object.<span class="number">0</span>);
+        dictionary.remove(<span class="string">b&quot;Outlines&quot;</span>); <span class="comment">// Outlines not supported in merged PDFs
+
+        </span>document
+                .objects
+                .insert(catalog_object.<span class="number">0</span>, Object::Dictionary(dictionary));
+    }
+
+    document.trailer.set(<span class="string">&quot;Root&quot;</span>, catalog_object.<span class="number">0</span>);
+
+    <span class="comment">// Update the max internal ID as wasn&#39;t updated before due to direct objects insertion
+    </span>document.max_id = document.objects.len() <span class="kw">as </span>u32;
+
+    <span class="comment">// Reorder all new Document objects
+    </span>document.renumber_objects();
+
+     <span class="comment">//Set any Bookmarks to the First child if they are not set to a page
+    </span>document.adjust_zero_pages();
+
+    <span class="comment">//Set all bookmarks to the PDF Object tree then set the Outlines to the Bookmark content map.
+    </span><span class="kw">if let </span><span class="prelude-val">Some</span>(n) = document.build_outline() {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(x) = document.get_object_mut(catalog_object.<span class="number">0</span>) {
+            <span class="kw">if let </span>Object::Dictionary(<span class="kw-2">ref mut </span>dict) = x {
+                dict.set(<span class="string">&quot;Outlines&quot;</span>, Object::Reference(n));
+            }
+        }
+    }
+
+    document.compress();
+
+    <span class="comment">// Save the merged PDF
+    // Store file in current working directory.
+    // Note: Line is excluded when running tests
+    </span><span class="kw">if </span><span class="bool-val">false </span>{
+        document.save(<span class="string">&quot;merged.pdf&quot;</span>).unwrap();
+    }
+
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<ul>
+<li>Modify PDF document</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>lopdf::Document;
+
+<span class="comment">// For this example to work a parser feature needs to be enabled
+</span><span class="attr">#[cfg(any(feature = <span class="string">&quot;pom_parser&quot;</span>, feature = <span class="string">&quot;nom_parser&quot;</span>))]
+</span>{
+    <span class="kw">let </span><span class="kw-2">mut </span>doc = Document::load(<span class="string">&quot;assets/example.pdf&quot;</span>).unwrap();
+
+    doc.version = <span class="string">&quot;1.4&quot;</span>.to_string();
+    doc.replace_text(<span class="number">1</span>, <span class="string">&quot;Hello World!&quot;</span>, <span class="string">&quot;Modified text!&quot;</span>);
+    <span class="comment">// Store file in current working directory.
+    // Note: Line is excluded when running tests
+    </span><span class="kw">if </span><span class="bool-val">false </span>{
+        doc.save(<span class="string">&quot;modified.pdf&quot;</span>).unwrap();
+    }
+}</code></pre></div>
+<h3 id="faq"><a href="#faq">FAQ</a></h3>
+<ul>
+<li>
+<p>Why does the library keep everything in memory as high-level objects until finally serializing the entire document?</p>
+<p>Normally a PDF document won’t be very large, ranging from tens of KB to hundreds of MB. Memory size is not a bottle neck for today’s computer.
+By keeping the whole document in memory, stream length can be pre-calculated, no need to use a reference object for the Length entry,
+the resulting PDF file is smaller for distribution and faster for PDF consumers to process.</p>
+<p>Producing is a one-time effort, while consuming is many more.</p>
+</li>
+</ul>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="content/index.html" title="mod lopdf::content">content</a></div></li><li><div class="item-name"><a class="mod" href="encryption/index.html" title="mod lopdf::encryption">encryption</a></div></li><li><div class="item-name"><a class="mod" href="filters/index.html" title="mod lopdf::filters">filters</a></div></li><li><div class="item-name"><a class="mod" href="xobject/index.html" title="mod lopdf::xobject">xobject</a></div></li><li><div class="item-name"><a class="mod" href="xref/index.html" title="mod lopdf::xref">xref</a></div></li></ul><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2><ul class="item-table"><li><div class="item-name"><a class="macro" href="macro.dictionary.html" title="macro lopdf::dictionary">dictionary</a></div></li></ul><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Bookmark.html" title="struct lopdf::Bookmark">Bookmark</a></div></li><li><div class="item-name"><a class="struct" href="struct.Destination.html" title="struct lopdf::Destination">Destination</a></div></li><li><div class="item-name"><a class="struct" href="struct.Dictionary.html" title="struct lopdf::Dictionary">Dictionary</a></div><div class="desc docblock-short">Dictionary object.</div></li><li><div class="item-name"><a class="struct" href="struct.Document.html" title="struct lopdf::Document">Document</a></div><div class="desc docblock-short">A PDF document.</div></li><li><div class="item-name"><a class="struct" href="struct.IncrementalDocument.html" title="struct lopdf::IncrementalDocument">IncrementalDocument</a></div></li><li><div class="item-name"><a class="struct" href="struct.ObjectStream.html" title="struct lopdf::ObjectStream">ObjectStream</a></div></li><li><div class="item-name"><a class="struct" href="struct.Reader.html" title="struct lopdf::Reader">Reader</a></div></li><li><div class="item-name"><a class="struct" href="struct.Stream.html" title="struct lopdf::Stream">Stream</a></div><div class="desc docblock-short">Stream object
+Warning - all streams must be indirect objects, while
+the stream dictionary may be a direct object</div></li><li><div class="item-name"><a class="struct" href="struct.Toc.html" title="struct lopdf::Toc">Toc</a></div></li></ul><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.Error.html" title="enum lopdf::Error">Error</a></div></li><li><div class="item-name"><a class="enum" href="enum.Object.html" title="enum lopdf::Object">Object</a></div><div class="desc docblock-short">Basic PDF object types defined in an enum.</div></li><li><div class="item-name"><a class="enum" href="enum.Outline.html" title="enum lopdf::Outline">Outline</a></div></li><li><div class="item-name"><a class="enum" href="enum.StringFormat.html" title="enum lopdf::StringFormat">StringFormat</a></div><div class="desc docblock-short">String objects can be written in two formats.</div></li><li><div class="item-name"><a class="enum" href="enum.XrefError.html" title="enum lopdf::XrefError">XrefError</a></div></li></ul><h2 id="types" class="small-section-header"><a href="#types">Type Aliases</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.ObjectId.html" title="type lopdf::ObjectId">ObjectId</a></div><div class="desc docblock-short">Object identifier consists of two parts: object number and generation number.</div></li><li><div class="item-name"><a class="type" href="type.Result.html" title="type lopdf::Result">Result</a></div></li></ul></section></div></main></body></html>

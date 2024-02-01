@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["EventListenerPhase"],"struct":["EventListener","EventListenerOptions"]};

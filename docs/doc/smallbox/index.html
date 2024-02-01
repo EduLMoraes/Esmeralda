@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`Small Box` optimization: store small item on stack and fallback to heap for large item."><title>smallbox - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="smallbox" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../smallbox/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../smallbox/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate smallbox</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.8.2</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">smallbox</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/smallbox/lib.rs.html#1-161">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><code>Small Box</code> optimization: store small item on stack and fallback to heap for large item.</p>
+<h2 id="usage"><a href="#usage">Usage</a></h2>
+<p>First, add the following to your <code>Cargo.toml</code>:</p>
+<div class="example-wrap"><pre class="language-toml"><code>[dependencies]
+smallbox = &quot;0.8&quot;
+</code></pre></div>
+<p>Next, add this to your crate root:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern crate </span>smallbox;</code></pre></div>
+<p>If you want this crate to work with dynamic-sized type, you can request it via:</p>
+<div class="example-wrap"><pre class="language-toml"><code>[dependencies]
+smallbox = { version = &quot;0.8&quot;, features = [&quot;coerce&quot;] }
+</code></pre></div>
+<p>Currently <code>smallbox</code> by default links to the standard library, but if you would
+instead like to use this crate in a <code>#![no_std]</code> situation or crate, you can request this via:</p>
+<div class="example-wrap"><pre class="language-toml"><code>[dependencies.smallbox]
+version = &quot;0.8&quot;
+features = [&quot;coerce&quot;]
+default-features = false
+</code></pre></div><h2 id="feature-flags"><a href="#feature-flags">Feature Flags</a></h2>
+<p>This crate has the following cargo feature flags:</p>
+<ul>
+<li>
+<p><code>std</code></p>
+<ul>
+<li>Optional, enabled by default</li>
+<li>Use libstd</li>
+<li>If <code>std</code> feature flag is opted out, <code>alloc</code> crate
+will be linked, which requires nightly rust.</li>
+</ul>
+</li>
+<li>
+<p><code>coerce</code></p>
+<ul>
+<li>Optional</li>
+<li>Require nightly rust</li>
+<li>Allow automatic coersion from sized <code>SmallBox</code> to unsized <code>SmallBox</code>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="unsized-type"><a href="#unsized-type">Unsized Type</a></h2>
+<p>There are two ways to have an unsized <code>SmallBox</code>: Using <code>smallbox!()</code> macro or coercing from a sized <code>SmallBox</code> instance.</p>
+<p>Using the <code>smallbox!()</code> macro is the only option on stable rust. This macro will check the types of the expression and
+the expected type <code>T</code>. For any invalid type coersions, this macro invokes a compiler error.</p>
+<p>Once the feature <code>coerce</code> is enabled, sized <code>SmallBox&lt;T&gt;</code> can be coerced into <code>SmallBox&lt;T: ?Sized&gt;</code> if necessary.</p>
+<h2 id="example"><a href="#example">Example</a></h2>
+<p>Eliminate heap alloction for small items by <code>SmallBox</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>smallbox::space::S4;
+<span class="kw">use </span>smallbox::SmallBox;
+
+<span class="kw">let </span>small: SmallBox&lt;<span class="kw">_</span>, S4&gt; = SmallBox::new([<span class="number">0</span>; <span class="number">2</span>]);
+<span class="kw">let </span>large: SmallBox&lt;<span class="kw">_</span>, S4&gt; = SmallBox::new([<span class="number">0</span>; <span class="number">32</span>]);
+
+<span class="macro">assert_eq!</span>(small.len(), <span class="number">2</span>);
+<span class="macro">assert_eq!</span>(large.len(), <span class="number">32</span>);
+
+<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>small, [<span class="number">0</span>; <span class="number">2</span>]);
+<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>large, [<span class="number">0</span>; <span class="number">32</span>]);
+
+<span class="macro">assert!</span>(small.is_heap() == <span class="bool-val">false</span>);
+<span class="macro">assert!</span>(large.is_heap() == <span class="bool-val">true</span>);</code></pre></div>
+<h3 id="unsized-type-1"><a href="#unsized-type-1">Unsized type</a></h3>
+<p>Construct with <code>smallbox!()</code> macro:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[macro_use]
+</span><span class="kw">extern crate </span>smallbox;
+
+<span class="kw">use </span>smallbox::space::<span class="kw-2">*</span>;
+<span class="kw">use </span>smallbox::SmallBox;
+
+<span class="kw">let </span>array: SmallBox&lt;[usize], S2&gt; = <span class="macro">smallbox!</span>([<span class="number">0usize</span>, <span class="number">1</span>]);
+
+<span class="macro">assert_eq!</span>(array.len(), <span class="number">2</span>);
+<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>array, [<span class="number">0</span>, <span class="number">1</span>]);</code></pre></div>
+<p>With <code>coerce</code> feature:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>smallbox::space::<span class="kw-2">*</span>;
+<span class="kw">use </span>smallbox::SmallBox;
+
+<span class="kw">let </span>array: SmallBox&lt;[usize], S2&gt; = SmallBox::new([<span class="number">0usize</span>, <span class="number">1</span>]);
+
+<span class="macro">assert_eq!</span>(array.len(), <span class="number">2</span>);
+<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>array, [<span class="number">0</span>, <span class="number">1</span>]);</code></pre></div>
+<p><code>Any</code> downcasting:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[macro_use]
+</span><span class="kw">extern crate </span>smallbox;
+
+<span class="kw">use </span>std::any::Any;
+
+<span class="kw">use </span>smallbox::space::S2;
+<span class="kw">use </span>smallbox::SmallBox;
+
+<span class="kw">let </span>num: SmallBox&lt;<span class="kw">dyn </span>Any, S2&gt; = <span class="macro">smallbox!</span>(<span class="number">1234u32</span>);
+
+<span class="kw">if let </span><span class="prelude-val">Some</span>(num) = num.downcast_ref::&lt;u32&gt;() {
+    <span class="macro">assert_eq!</span>(<span class="kw-2">*</span>num, <span class="number">1234</span>);
+} <span class="kw">else </span>{
+    <span class="macro">unreachable!</span>();
+}</code></pre></div>
+<h2 id="capacity"><a href="#capacity">Capacity</a></h2>
+<p>The capacity is expressed by the size of type parameter <code>Space</code>,
+regardless of what actually the <code>Space</code> is.</p>
+<p>The crate provides some spaces in module <code>smallbox::space</code>,
+from <code>S1</code>, <code>S2</code>, <code>S4</code> to <code>S64</code>, representing <code>&quot;n * usize&quot;</code> spaces.</p>
+<p>Anyway, you can defind your own space type
+such as byte array <code>[u8; 64]</code>.
+Please note that the space alignment is also important. If the alignment
+of the space is smaller than the alignment of the value, the value
+will be stored in the heap.</p>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="space/index.html" title="mod smallbox::space">space</a></div><div class="desc docblock-short">Space types that is used to define capacity</div></li></ul><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2><ul class="item-table"><li><div class="item-name"><a class="macro" href="macro.smallbox.html" title="macro smallbox::smallbox">smallbox</a></div><div class="desc docblock-short">Box value on stack or on heap depending on its size</div></li></ul><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.SmallBox.html" title="struct smallbox::SmallBox">SmallBox</a></div><div class="desc docblock-short">An optimized box that store value on stack or on heap depending on its size</div></li></ul></section></div></main></body></html>
