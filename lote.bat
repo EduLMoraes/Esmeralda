@@ -68,7 +68,7 @@ sc start postgresql-x64-9.5
 ECHO =============================
 ECHO ALTERA USUARIO POSTGRES
 ECHO =============================
-psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'beto';"
+psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
 
 ECHO =============================
 ECHO criando o banco de dados ...
