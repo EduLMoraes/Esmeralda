@@ -57,7 +57,7 @@ ECHO =============================
 ECHO acessando diretorio postgresql
 ECHO =============================
 cd\Esmeralda     
-cd\pgsql
+cd pgsql
 cd bin
 
 ECHO =============================
