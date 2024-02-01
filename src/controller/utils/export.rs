@@ -76,7 +76,6 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
-                    println!("{path}");
                 } else if count_files > 0 {
                     if is_alterated {
                         path.replace_range(limit..limit + 4, format!("({count_files})").trim());
@@ -84,7 +83,6 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
-                    println!("{path}");
                 }
 
                 match fs::metadata(path.clone()) {
