@@ -61,9 +61,14 @@ cd pgsql
 cd bin
 
 ECHO =============================
+ECHO Tornando pgsql um servico
+ECHO =============================
+pg_ctl register -N "PostgreSQL" -D "C:\Esmeralda\pgsql\data" start
+
+ECHO =============================
 ECHO iniciando servico
 ECHO =============================
-sc start postgresql-x64-9.5
+sc start PostgreSQL
 
 ECHO =============================
 ECHO ALTERA USUARIO POSTGRES
