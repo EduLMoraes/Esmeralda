@@ -214,7 +214,34 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     let mut data_file = String::new();
 
+    let debtors = filter_debtors(data.list.clone());
+
     data_file.push_str("<html><head></head><body><table>");
+    data_file.push_str("<tr>");
+    data_file.push_str("<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>");
+    data_file.push_str("</tr>");
+
+    for debtor in debtors{
+        data_file.push_str("<tr>");
+
+        data_file.push_str(
+            format!(
+                "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>",
+                debtor.get_id(),
+                debtor.get_name(),
+                debtor.get_debt(),
+                debtor.get_value(),
+                debtor.get_status()
+            )
+        .trim()
+        );
+
+        data_file.push_str("</tr>");
+    }
+
+    data_file.push_str("</table>");
+
+    data_file.push_str("<table>");
     data_file.push_str("<tr>");
     data_file.push_str("<td>ID</td><td>Nome</td><td>Natureza do gasto</td><td>Titulo</td><td>Descricao</td><td>Data Inicial</td><td>Data Final</td><td>Parcelas</td><td>Valor</td><td>Status</td>");
     data_file.push_str("</tr>");

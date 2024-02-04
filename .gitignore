@@ -30,7 +30,7 @@ Cargo.lock
 /target
 
 # Genereted by tests
-test.pdf
-test.html
-test.csv
-lote.bat
+/test.pdf
+/test.html
+/test.csv
+/lote.bat
