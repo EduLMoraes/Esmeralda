@@ -122,8 +122,6 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
 ///
 /// ## Returns
 /// A `Result` object that contains either the path of the created file or an error message.
-///
-/// # Code Snippet
 #[allow(dead_code)]
 pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
