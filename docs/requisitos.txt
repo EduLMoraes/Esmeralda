@@ -19,10 +19,10 @@ Requisitos Funcionais:
     · Para compras parceladas, o sistema deve mostrar o número da parcela atual e quantas foram pagas. ✅
     · Mostrar o valor pago até o momento das compras parceladas. ✅
 
-⏳ 4 - Exportação de Dados:
+✅ 4 - Exportação de Dados:
 
     · Permitir a exportação de dados em formato .csv. ✅
-    · Os dados exportados devem incluir informações sobre gastos individuais, status da dívida, total gasto, e detalhes das compras parceladas. ❌
+    · Os dados exportados devem incluir informações sobre gastos individuais, status da dívida, total gasto, e detalhes das compras parceladas. ✅
 
 ❌ 5 - Conexão à Internet:
 
