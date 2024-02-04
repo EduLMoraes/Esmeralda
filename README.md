@@ -68,13 +68,17 @@ como deve.
   instalado e com algumas configurações específicas como nome de usuário
   e senha serem "postgres" (o padrão).
 
+  1.1.1 - [Download postgreSQL linux](https://www.postgresql.org/download/)
+  
+  1.1.2 - [Download postgreSQL Windows 10 x86_64](https://sbp.enterprisedb.com/getfile.jsp?fileid=1258792)
+
   1.2 - Rode o código SQL encontrado  [-> aqui <-](./src/controller/database/construct_db.sql), com a conexão ativa.
  
  ---
 #### 2 - Download do executável
   2.1 - Baixe o executável do esmeralda de acordo com o seu sistema operacional.
    
-   - Download para [Windows-x86_64](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda.exe)
+   - Download para [Windows 10 x86_64](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda.exe)
    - Download para [Linux - Manjaro](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda)
 
 ---
@@ -86,6 +90,6 @@ como deve.
 ### *Contribuidores*: <section id="credits"/>
 <table>
   <tr>
-     <td align="center"><a href="https://github.com/EduardoMoreaes"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/88555769?v=4" width="100px;" alt=""/><br /><sub><b>Eduardo Moraes</b></sub></a><br /><a href="https://github.com/EduardoMoreaes" title="Desenvolvedor">👨‍🚀</a></td>
+     <td align="center"><a href="https://github.com/EduardoMoreaes"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/88555769?v=4" width="100px;" alt=""/><br /><sub><b>Eduardo Lopes de Moraes</b></sub></a><br /><a href="https://github.com/EduardoMoreaes" title="Desenvolvedor">👨‍🚀</a></td>
   </tr>
 <table>
