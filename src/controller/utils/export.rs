@@ -6,6 +6,11 @@ use std::io::BufWriter;
 use std::io::Write;
 
 pub use crate::prelude::structs::InterfaceInfo;
+pub use crate::prelude::structs::Debtor;
+
+#[path = "./filter.rs"]
+mod filter;
+use filter::filter_debtors;
 
 /// Creates a directory structure and returns a file and its path. If the directory already exists, it appends a number to the file name to avoid overwriting existing files.
 ///
@@ -125,11 +130,32 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
 
     let mut data_file = String::new();
 
+    let debtors = filter_debtors(data.list.clone());
+
+    data_file.push_str("ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n");
+
+    for debtor in debtors{
+        data_file.push_str(
+            format!(
+                "{};{};{};{};{}",
+                debtor.get_id(),
+                debtor.get_name(),
+                debtor.get_debt(),
+                debtor.get_value(),
+                debtor.get_status()
+            )
+        .trim()
+        );
+
+        data_file.push('\n');
+    }
+
     data_file.push_str(
-        "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
+        "\nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
     );
 
     for info in &data.list {
+
         data_file.push_str(
             format!(
                 "{};{};{};{};{};{};{};{};{};{:.2};{}",
@@ -147,6 +173,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
             )
             .trim(),
         );
+
         data_file.push('\n');
     }
 
