@@ -301,6 +301,76 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
         .add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap())
         .unwrap();
 
+    // ===============
+    // PART OF DEBTORS
+    // ===============
+
+    y = Mm(205.0);
+    let pos_x: Vec<f32> = vec![5.0, 40.0, 80.0, 100.0, 140.0];
+    let header: Vec<&str> = vec![
+        "ID_Devedor",
+        "|Nome",
+        "|Dívida",
+        "|Total Gasto",
+        "|Status",
+    ];
+
+    for col in 0..5 {
+        current_layer.use_text(header[col], 12.0, Mm(pos_x[col]), y, &font);
+    }
+    
+    x = Mm(0.2);
+    y -= Mm(2.0);
+    for _ in 0..300 {
+        current_layer.use_text("____", 12.0, x, y, &font);
+        x += Mm(2.0);
+    }
+
+    let debtors = filter_debtors(data.list.clone());
+
+    for debtor in debtors {
+        x = Mm(0.2);
+        y -= Mm(5.0);
+        if y <= Mm(0.0) {
+            x = Mm(297.0);
+            y = Mm(210.0);
+
+            page_count += 1;
+            let (page, layer) = doc.add_page(x, y, format!("Página {}", page_count));
+            current_layer = doc.get_page(page).get_layer(layer);
+
+            x = Mm(0.2);
+            y -= Mm(5.0);
+        }
+
+        for col in 0..5 {
+            let line = vec![
+                format!("{}", debtor.get_id()),
+                format!("| {:.18}", debtor.get_name()),
+                format!("| {:.2}", debtor.get_debt()),
+                format!("| {:.2}", debtor.get_value()),
+                format!("| {}", debtor.get_status()),
+            ];
+
+            current_layer.use_text(&line[col], 12.0, Mm(pos_x[col]), y, &font);
+        }
+
+        for _ in 0..300 {
+            current_layer.use_text("____", 12.0, x, y, &font);
+            x += Mm(2.0);
+        }
+    }
+    
+    // ==============
+    // PART OF COUNTS
+    // ==============
+    
+    x = Mm(297.0);
+    y = Mm(210.0);
+    page_count += 1;
+    let (page, layer) = doc.add_page(x, y, format!("Página {}", page_count));
+    current_layer = doc.get_page(page).get_layer(layer);
+
     y = Mm(205.0);
     let pos_x: Vec<f32> = vec![5.0, 20.0, 60.0, 100.0, 170.0, 200.0, 230.0, 255.0, 280.0];
     let header: Vec<&str> = vec![
