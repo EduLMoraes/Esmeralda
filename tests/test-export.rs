@@ -24,7 +24,7 @@ mod test_export_csv {
                     date_in: "2022-01-01".parse::<NaiveDate>().unwrap(),
                     date_out: "2022-01-31".parse::<NaiveDate>().unwrap(),
                     paid_installments: 1,
-                    installments: 3,
+                    installments: 1,
                     value: 100.0,
                     status: true,
                     nature: String::from("Investimentos"),
@@ -50,9 +50,12 @@ mod test_export_csv {
         assert!(result.is_ok());
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
-                                        1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;3;100.00;true\n\
-                                        2;Jane Smith;Investimentos;Invoice;Payment for goods;2022-02-01;2022-02-28;2;5;200.00;false\n";
+        let expected_content = "ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n\
+                                1;John Doe;0.00;100.00;true\n\
+                                2;Jane Smith;600.00;400.00;false\n\
+                                \nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n\
+                                2;Jane Smith;Investimentos;Invoice;Payment for goods;2022-02-01;2022-02-28;2;5;200.00;false\n";
         assert_eq!(file_content, expected_content);
     }
 
@@ -81,7 +84,6 @@ mod test_export_csv {
         assert!(result.is_ok());
         assert!(path.exists());
     }
-
     #[tokio::test]
     async fn test_export_csv_appends_number_to_file_name_if_file_exists() {
         let temp_dir = env::temp_dir();
@@ -147,7 +149,7 @@ mod test_export_csv {
                 date_in: "2022-01-01".parse::<NaiveDate>().unwrap(),
                 date_out: "2022-01-31".parse::<NaiveDate>().unwrap(),
                 paid_installments: 1,
-                installments: 3,
+                installments: 1,
                 value: 100.0,
                 status: true,
                 nature: String::from("Investimentos"),
@@ -160,9 +162,12 @@ mod test_export_csv {
 
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
-                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;3;100.00;true\n";
+        let expected_content = "ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n\
+                                1;John Doe;0.00;100.00;true\n\
+                                \nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n";
         assert_eq!(file_content, expected_content);
+
     }
 }
 

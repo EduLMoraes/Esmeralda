@@ -137,7 +137,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
     for debtor in debtors{
         data_file.push_str(
             format!(
-                "{};{};{};{};{}",
+                "{};{};{:.2};{:.2};{}",
                 debtor.get_id(),
                 debtor.get_name(),
                 debtor.get_debt(),
