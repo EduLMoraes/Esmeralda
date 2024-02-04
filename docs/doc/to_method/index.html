@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A utility micro-crate for using `Into` and `TryInto` more ergonomically."><title>to_method - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="to_method" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../to_method/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../to_method/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate to_method</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 1.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#traits">Traits</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">to_method</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/to_method/lib.rs.html#1-117">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A utility micro-crate for using <a href="https://doc.rust-lang.org/1.74.1/core/convert/trait.Into.html" title="trait core::convert::Into"><code>Into</code></a> and
+<a href="https://doc.rust-lang.org/1.74.1/core/convert/trait.TryInto.html" title="trait core::convert::TryInto"><code>TryInto</code></a> more ergonomically.</p>
+<p>It exposes a <a href="trait.To.html" title="trait to_method::To"><code>To</code></a> extension trait with a <a href="trait.To.html#method.to" title="method to_method::To::to"><code>.to()</code></a>
+method and <a href="trait.To.html#method.try_to" title="method to_method::To::try_to"><code>.try_to()</code></a> method which you can use to invoke
+<a href="https://doc.rust-lang.org/1.74.1/core/convert/trait.Into.html#tymethod.into" title="method core::convert::Into::into"><code>Into::into</code></a> and
+<a href="https://doc.rust-lang.org/1.74.1/core/convert/trait.TryInto.html#tymethod.try_into" title="method core::convert::TryInto::try_into"><code>TryInto</code></a> while specifying the target
+type and without having to abandon method-call syntax.</p>
+<p>Being a micro-crate, it tries to be as nice of a dependency as possible and has:</p>
+<ul>
+<li>No dependencies of its own</li>
+<li>No feature flags</li>
+<li>No <code>build.rs</code></li>
+<li><code>#![no_std]</code></li>
+<li><code>#![forbid(unsafe_code)]</code></li>
+</ul>
+<h2 id="regular-into-usage"><a href="#regular-into-usage">Regular <code>Into</code> usage</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>x : u8 = <span class="number">5</span>;
+
+<span class="comment">// The type parameter is on `Into`, not on `Into::into`,
+// so we need to do it like this:
+</span><span class="kw">let </span>y = Into::&lt;u16&gt;::into(x);
+
+<span class="comment">// Depending on context, inference can make this work though:
+</span><span class="kw">let </span>z : u32 = y.into();</code></pre></div>
+<h2 id="with-to"><a href="#with-to">With <code>To</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>to_method::To <span class="kw">as _</span>;
+
+<span class="kw">let </span>x : u8 = <span class="number">5</span>;
+
+<span class="comment">// The type parameter is on the `to` method, so this works:
+</span><span class="kw">let </span>y = x.to::&lt;u16&gt;();
+
+<span class="comment">// And you can still rely on inference as well:
+</span><span class="kw">let </span>z : u32 = y.to();</code></pre></div>
+<h2 id="tryinto"><a href="#tryinto"><code>TryInto</code></a></h2>
+<p>The same mechanism works for the <code>TryInto</code> trait via the <code>try_to</code> method:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>core::convert::TryInto;
+
+
+<span class="kw">let </span>x : u16 = <span class="number">5</span>;
+
+<span class="comment">// The type parameter is on `Into`, not on `Into::into`,
+// so we need to do it like this:
+</span><span class="kw">let </span>y = TryInto::&lt;u8&gt;::try_into(x)<span class="question-mark">?</span>;
+
+<span class="comment">// Depending on context, inference can make this work though:
+</span><span class="kw">let </span>z : u8 = y.try_into()<span class="question-mark">?</span>;
+</code></pre></div>
+<p>compared to:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>core::convert::TryInto;
+
+
+<span class="kw">use </span>to_method::To <span class="kw">as _</span>;
+
+<span class="kw">let </span>x : u16 = <span class="number">5</span>;
+
+<span class="comment">// The type parameter is on the `to` method, so this works:
+</span><span class="kw">let </span>y = x.try_to::&lt;u8&gt;()<span class="question-mark">?</span>;
+
+<span class="comment">// And you can still rely on inference as well:
+</span><span class="kw">let </span>z : u8 = y.try_to()<span class="question-mark">?</span>;
+</code></pre></div>
+</div></details><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.To.html" title="trait to_method::To">To</a></div><div class="desc docblock-short">Extension trait providing the <a href="trait.To.html#method.to" title="method to_method::To::to"><code>to</code></a> and <a href="trait.To.html#method.try_to" title="method to_method::To::try_to"><code>try_to</code></a> methods.</div></li></ul></section></div></main></body></html>

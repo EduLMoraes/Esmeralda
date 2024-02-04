@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BufferResult"],"struct":["BorrowedWriteBuffer","OwnedReadBuffer","OwnedWriteBuffer","RefReadBuffer","RefWriteBuffer"],"trait":["ReadBuffer","WriteBuffer"]};

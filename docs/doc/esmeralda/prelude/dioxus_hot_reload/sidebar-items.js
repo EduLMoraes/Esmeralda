@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["HotReloadMsg"],"fn":["connect"],"macro":["hot_reload_init"]};

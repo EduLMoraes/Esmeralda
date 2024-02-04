@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Rusty File Dialogs is a cross platform library for using native file open/save dialogs. It provides both asynchronous and synchronous APIs. Supported platforms:"><title>rfd - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="rfd" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../rfd/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../rfd/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate rfd</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.11.4</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">rfd</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/rfd/lib.rs.html#1-140">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Rusty File Dialogs is a cross platform library for using native file open/save dialogs.
+It provides both asynchronous and synchronous APIs. Supported platforms:</p>
+<ul>
+<li>Windows</li>
+<li>macOS</li>
+<li>Linux &amp; BSDs (GTK3 or XDG Desktop Portal)</li>
+<li>WASM32 (async only)</li>
+</ul>
+<h2 id="examples"><a href="#examples">Examples</a></h2><h3 id="synchronous"><a href="#synchronous">Synchronous</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rfd::FileDialog;
+
+<span class="kw">let </span>files = FileDialog::new()
+    .add_filter(<span class="string">&quot;text&quot;</span>, <span class="kw-2">&amp;</span>[<span class="string">&quot;txt&quot;</span>, <span class="string">&quot;rs&quot;</span>])
+    .add_filter(<span class="string">&quot;rust&quot;</span>, <span class="kw-2">&amp;</span>[<span class="string">&quot;rs&quot;</span>, <span class="string">&quot;toml&quot;</span>])
+    .set_directory(<span class="string">&quot;/&quot;</span>)
+    .pick_file();</code></pre></div>
+<h3 id="asynchronous"><a href="#asynchronous">Asynchronous</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rfd::AsyncFileDialog;
+
+<span class="kw">let </span>future = <span class="kw">async </span>{
+    <span class="kw">let </span>file = AsyncFileDialog::new()
+        .add_filter(<span class="string">&quot;text&quot;</span>, <span class="kw-2">&amp;</span>[<span class="string">&quot;txt&quot;</span>, <span class="string">&quot;rs&quot;</span>])
+        .add_filter(<span class="string">&quot;rust&quot;</span>, <span class="kw-2">&amp;</span>[<span class="string">&quot;rs&quot;</span>, <span class="string">&quot;toml&quot;</span>])
+        .set_directory(<span class="string">&quot;/&quot;</span>)
+        .pick_file()
+        .<span class="kw">await</span>;
+
+    <span class="kw">let </span>data = file.unwrap().read().<span class="kw">await</span>;
+};</code></pre></div>
+<h2 id="linux--bsd-backends"><a href="#linux--bsd-backends">Linux &amp; BSD backends</a></h2>
+<p>On Linux &amp; BSDs, two backends are available, one using the <a href="https://gtk-rs.org/">GTK3 Rust bindings</a>
+and the other using the <a href="https://github.com/flatpak/xdg-desktop-portal">XDG Desktop Portal</a>
+D-Bus API through <a href="https://github.com/bilelmoussaoui/ashpd">ashpd</a> &amp;
+<a href="https://gitlab.freedesktop.org/dbus/zbus/">zbus</a>.</p>
+<h3 id="gtk-backend"><a href="#gtk-backend">GTK backend</a></h3>
+<p>The GTK backend is used with the <code>gtk3</code> Cargo feature which is enabled by default. The GTK3
+backend requires the C library and development headers to be installed to build RFD. The package
+names on various distributions are:</p>
+<div><table><thead><tr><th>Distribution</th><th>Installation Command</th></tr></thead><tbody>
+<tr><td>Fedora</td><td>dnf install gtk3-devel</td></tr>
+<tr><td>Arch</td><td>pacman -S gtk3</td></tr>
+<tr><td>Debian &amp; Ubuntu</td><td>apt install libgtk-3-dev</td></tr>
+</tbody></table>
+</div><h3 id="xdg-desktop-portal-backend"><a href="#xdg-desktop-portal-backend">XDG Desktop Portal backend</a></h3>
+<p>The XDG Desktop Portal backend is used when the <code>gtk3</code> feature is disabled with
+<a href="https://doc.rust-lang.org/cargo/reference/features.html#dependency-features"><code>default-features = false</code></a>, and <code>xdg-portal</code> is enabled instead. This backend will use either the GTK or KDE file dialog depending on the desktop environment
+in use at runtime. It does not have any non-Rust
+build dependencies, however it requires the user to have either the
+<a href="https://github.com/flatpak/xdg-desktop-portal-gtk">GTK</a>,
+<a href="https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome">GNOME</a>, or
+<a href="https://invent.kde.org/plasma/xdg-desktop-portal-kde/">KDE</a> XDG Desktop Portal backend installed
+at runtime. These are typically installed by the distribution together with the desktop environment.
+If you are packaging an application that uses RFD, ensure either one of these is installed
+with the package. The
+<a href="https://github.com/emersion/xdg-desktop-portal-wlr">wlroots portal backend</a> does not implement the
+D-Bus API that RFD requires (it does not interfere with the other portal implementations;
+they can all be installed simultaneously).</p>
+<p>The XDG Desktop Portal has no API for message dialogs, so the <a href="struct.MessageDialog.html" title="struct rfd::MessageDialog">MessageDialog</a> and
+<a href="struct.AsyncMessageDialog.html" title="struct rfd::AsyncMessageDialog">AsyncMessageDialog</a> structs will not build with this backend.</p>
+<h2 id="macos-non-windowed-applications-async-and-threading"><a href="#macos-non-windowed-applications-async-and-threading">macOS non-windowed applications, async, and threading</a></h2>
+<p>macOS async dialogs require an <code>NSApplication</code> instance, so the dialog is only truly async when
+opened in windowed environment like <code>winit</code> or <code>SDL2</code>. Otherwise, it will fallback to sync dialog.
+It is also recommended to spawn dialogs on your main thread. RFD can run dialogs from any thread
+but it is only possible in a windowed app and it adds a little bit of overhead. So it is recommended
+to <a href="https://github.com/PolyMeilex/rfd/blob/master/examples/async.rs">spawn on main and await in other thread</a>.
+Non-windowed apps will never be able to spawn async dialogs or from threads other than the main thread.</p>
+<h2 id="customize-button-texts-of-message-dialog-in-windows"><a href="#customize-button-texts-of-message-dialog-in-windows">Customize button texts of message dialog in Windows</a></h2>
+<p><code>TaskDialogIndirect</code> API is used for showing message dialog which can have customized button texts.
+It is only provided by ComCtl32.dll v6 but Windows use v5 by default.
+If you want to customize button texts or just need a modern dialog style (aka <em>visual styles</em>), you will need to:</p>
+<ol>
+<li>Enable cargo feature <code>common-controls-v6</code>.</li>
+<li>Add an application manifest to use ComCtl32.dll v5. See <a href="https://docs.microsoft.com/en-us/windows/win32/controls/cookbook-overview">Windows Controls / Enabling Visual Styles</a></li>
+</ol>
+<p>Here is an <a href="https://github.com/PolyMeilex/rfd/tree/master/examples/message-custom-buttons">example</a> using <a href="https://docs.rs/embed-resource/latest/embed_resource/">embed-resource</a>.</p>
+<h2 id="cargo-features"><a href="#cargo-features">Cargo features</a></h2>
+<ul>
+<li><code>gtk3</code>: Uses GTK for dialogs on Linux &amp; BSDs; has no effect on Windows and macOS</li>
+<li><code>xdg-portal</code>: Uses XDG Desktop Portal instead of GTK on Linux &amp; BSDs</li>
+<li><code>common-controls-v6</code>: Use <code>TaskDialogIndirect</code> API from ComCtl32.dll v6 for showing message dialog. This is necessary if you need to customize dialog button texts.</li>
+</ul>
+<h2 id="state"><a href="#state">State</a></h2><div><table><thead><tr><th>API Stability</th></tr></thead><tbody>
+<tr><td>🚧</td></tr>
+</tbody></table>
+</div><div><table><thead><tr><th>Feature</th><th>Linux</th><th>Windows</th><th>MacOS</th><th>Wasm32</th></tr></thead><tbody>
+<tr><td>SingleFile</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>MultipleFile</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>PickFolder</td><td>✔</td><td>✔</td><td>✔</td><td>✖</td></tr>
+<tr><td>SaveFile</td><td>✔</td><td>✔</td><td>✔</td><td>✖</td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Filters</td><td>✔ (<a href="https://github.com/PolyMeilex/rfd/issues/42">GTK only</a>)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>StartingPath</td><td>✔</td><td>✔</td><td>✔</td><td>✖</td></tr>
+<tr><td>Async</td><td>✔</td><td>✔</td><td>✔</td><td>✔</td></tr>
+</tbody></table>
+</div><h2 id="rfd-extras"><a href="#rfd-extras">rfd-extras</a></h2>
+<p>AKA features that are not file related</p>
+<div><table><thead><tr><th>Feature</th><th>Linux</th><th>Windows</th><th>MacOS</th><th>Wasm32</th></tr></thead><tbody>
+<tr><td>MessageDialog</td><td>✔ (GTK only)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td>PromptDialog</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>ColorPicker</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+</div></div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.AsyncFileDialog.html" title="struct rfd::AsyncFileDialog">AsyncFileDialog</a></div><div class="desc docblock-short">Asynchronous File Dialog. Supported platforms:</div></li><li><div class="item-name"><a class="struct" href="struct.AsyncMessageDialog.html" title="struct rfd::AsyncMessageDialog">AsyncMessageDialog</a></div><div class="desc docblock-short">Asynchronous Message Dialog. Supported platforms:</div></li><li><div class="item-name"><a class="struct" href="struct.FileDialog.html" title="struct rfd::FileDialog">FileDialog</a></div><div class="desc docblock-short">Synchronous File Dialog. Supported platforms:</div></li><li><div class="item-name"><a class="struct" href="struct.FileHandle.html" title="struct rfd::FileHandle">FileHandle</a></div><div class="desc docblock-short">FileHandle is a way of abstracting over a file returned by a dialog</div></li><li><div class="item-name"><a class="struct" href="struct.MessageDialog.html" title="struct rfd::MessageDialog">MessageDialog</a></div><div class="desc docblock-short">Synchronous Message Dialog. Supported platforms:</div></li></ul><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.MessageButtons.html" title="enum rfd::MessageButtons">MessageButtons</a></div></li><li><div class="item-name"><a class="enum" href="enum.MessageLevel.html" title="enum rfd::MessageLevel">MessageLevel</a></div></li></ul></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["FileDropEvent","Theme"],"fn":["webview_version"],"struct":["Url","WebContext","WebView","WebViewAttributes","WebViewBuilder"],"trait":["WebviewExtUnix"],"type":["RGBA"]};

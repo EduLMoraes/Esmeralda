@@ -5,6 +5,15 @@
     <td> Descrição </td>
   </tr>
   <tr> 
+   <td> v0.1.6 </td>
+    <td>
+        Removido terminal que abria ao abrir o programa
+        <br>
+        -- aumento na segurança
+        <br>
+    </td>
+  </tr>
+  <tr> 
    <td> v0.1.5 </td>
     <td>
         Adicionado novo campo na tabela de pagamentos para melhor controle financeiro.

@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="An implementation of the SHA-1 cryptographic hash algorithm."><title>crypto::sha1 - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="crypto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../crypto/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../crypto/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Module sha1</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">crypto</a>::<wbr><a class="mod" href="#">sha1</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/crypto/sha1.rs.html#11-581">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>An implementation of the SHA-1 cryptographic hash algorithm.</p>
+<p>To use this module, first create a <code>Sha1</code> object using the <code>Sha1</code> constructor,
+then feed it an input message using the <code>input</code> or <code>input_str</code> methods,
+which may be called any number of times; they will buffer the input until
+there is enough to call the block algorithm.</p>
+<p>After the entire input has been fed to the hash read the result using
+the <code>result</code> or <code>result_str</code> methods. The first will return bytes, and
+the second will return a <code>String</code> object of the same bytes represented
+in hexadecimal form.</p>
+<p>The <code>Sha1</code> object may be reused to create multiple hashes by calling
+the <code>reset()</code> method. These traits are implemented by all hash digest
+algorithms that implement the <code>Digest</code> trait. An example of use is:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span><span class="self">self</span>::crypto::digest::Digest;
+<span class="kw">use </span><span class="self">self</span>::crypto::sha1::Sha1;
+
+<span class="comment">// create a Sha1 object
+</span><span class="kw">let </span><span class="kw-2">mut </span>hasher = Sha1::new();
+
+<span class="comment">// write input message
+</span>hasher.input_str(<span class="string">&quot;hello world&quot;</span>);
+
+<span class="comment">// read hash digest
+</span><span class="kw">let </span>hex = hasher.result_str();
+
+<span class="macro">assert_eq!</span>(hex, <span class="string">&quot;2aae6c35c94fcfb415dbe95f408b9ce91ee846ed&quot;</span>);</code></pre></div>
+<h2 id="mathematics"><a href="#mathematics">Mathematics</a></h2>
+<p>The mathematics of the SHA-1 algorithm are quite interesting. In its
+definition, The SHA-1 algorithm uses:</p>
+<ul>
+<li>1 binary operation on bit-arrays:
+<ul>
+<li>“exclusive or” (XOR)</li>
+</ul>
+</li>
+<li>2 binary operations on integers:
+<ul>
+<li>“addition” (ADD)</li>
+<li>“rotate left” (ROL)</li>
+</ul>
+</li>
+<li>3 ternary operations on bit-arrays:
+<ul>
+<li>“choose” (CH)</li>
+<li>“parity” (PAR)</li>
+<li>“majority” (MAJ)</li>
+</ul>
+</li>
+</ul>
+<p>Some of these functions are commonly found in all hash digest
+algorithms, but some, like “parity” is only found in SHA-1.</p>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Sha1.html" title="struct crypto::sha1::Sha1">Sha1</a></div><div class="desc docblock-short">Structure representing the state of a Sha1 computation</div></li></ul><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.sha1_digest_block.html" title="fn crypto::sha1::sha1_digest_block">sha1_digest_block</a></div><div class="desc docblock-short">Process a block with the SHA-1 algorithm. (See more…)</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_digest_block_u32.html" title="fn crypto::sha1::sha1_digest_block_u32">sha1_digest_block_u32</a></div><div class="desc docblock-short">Process a block with the SHA-1 algorithm.</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_digest_round_x4.html" title="fn crypto::sha1::sha1_digest_round_x4">sha1_digest_round_x4</a></div><div class="desc docblock-short">Emulates <code>llvm.x86.sha1rnds4</code> intrinsic.
+Performs 4 rounds of the message block digest.</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_first.html" title="fn crypto::sha1::sha1_first">sha1_first</a></div><div class="desc docblock-short">Not an intrinsic, but gets the first element of a vector.</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_first_add.html" title="fn crypto::sha1::sha1_first_add">sha1_first_add</a></div><div class="desc docblock-short">Not an intrinsic, but adds a word to the first element of a vector.</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_first_half.html" title="fn crypto::sha1::sha1_first_half">sha1_first_half</a></div><div class="desc docblock-short">Emulates <code>llvm.x86.sha1nexte</code> intrinsic.</div></li><li><div class="item-name"><a class="fn" href="fn.sha1_schedule_x4.html" title="fn crypto::sha1::sha1_schedule_x4">sha1_schedule_x4</a></div><div class="desc docblock-short">Performs 4 rounds of the message schedule update.</div></li></ul></section></div></main></body></html>

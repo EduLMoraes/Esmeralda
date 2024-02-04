@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`dioxus-html`: Html (and SVG) Namespace for Dioxus"><title>dioxus_html - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="dioxus_html" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../dioxus_html/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../dioxus_html/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><h2 class="location"><a href="#">Crate dioxus_html</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.4.3</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Aliases</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">dioxus_html</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/dioxus_html/lib.rs.html#1-48">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="dioxus-html-html-and-svg-namespace-for-dioxus"><a href="#dioxus-html-html-and-svg-namespace-for-dioxus"><code>dioxus-html</code>: Html (and SVG) Namespace for Dioxus</a></h2>
+<p><a href="https://crates.io/crates/dioxus-html"><img src="https://img.shields.io/crates/v/dioxus-html.svg" alt="Crates.io" /></a>
+<a href="https://github.com/dioxuslabs/dioxus/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT licensed" /></a>
+<a href="https://github.com/dioxuslabs/dioxus/actions?query=workflow%3ACI+branch%3Amaster"><img src="https://github.com/dioxuslabs/dioxus/actions/workflows/main.yml/badge.svg" alt="Build Status" /></a>
+<a href="https://discord.gg/XgGxMSkvUM"><img src="https://img.shields.io/discord/899851952891002890.svg?logo=discord&amp;style=flat-square" alt="Discord chat" /></a></p>
+<p><a href="https://dioxuslabs.com">Website</a> |
+<a href="https://dioxuslabs.com/learn/0.4/">Guides</a> |
+<a href="https://docs.rs/dioxus-html/latest/dioxus_html">API Docs</a> |
+<a href="https://discord.gg/XgGxMSkvUM">Chat</a></p>
+<h3 id="overview"><a href="#overview">Overview</a></h3>
+<p>The Dioxus <code>rsx!</code> and <code>html!</code> macros can accept any compile-time correct namespace on top of NodeFactory. This crate provides the HTML (and SVG) namespaces which get imported in the Dioxus prelude.</p>
+<p>However, this abstraction enables you to add any namespace of elements, provided they’re in scope when rsx! is called. For an example, a UI that is designed for Augmented Reality might use different primitives than HTML:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>ar_namespace::<span class="kw-2">*</span>;
+
+<span class="macro">rsx! </span>{
+    magic_div {
+        magic_header {}
+        magic_paragraph {
+            on_magic_click: <span class="kw">move </span>|event| {
+                <span class="comment">//
+            </span>}
+        }
+    }
+}</code></pre></div>
+<p>This is currently a not-very-explored part of Dioxus. However, the namespacing system does make it possible to provide syntax highlighting, documentation, “go to definition” and compile-time correctness, so it’s worth having it abstracted.</p>
+<h3 id="how-it-works"><a href="#how-it-works">How it works:</a></h3>
+<p>Elements for dioxus must implement the (simple) DioxusElement trait to be used in the rsx! macro.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>div;
+<span class="kw">impl </span>DioxusElement <span class="kw">for </span>div {
+    <span class="kw">const </span>TAG_NAME: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;div&quot;</span>;
+    <span class="kw">const </span>NAME_SPACE: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; = <span class="prelude-val">None</span>;
+}</code></pre></div>
+<p>All elements should be defined as a zero-sized-struct (also known as unit struct). These structs are zero-cost and just provide the type-level trickery to Rust for compile-time correct templates.</p>
+<p>Attributes would then be implemented as constants on these unit structs.</p>
+<p>The HTML namespace is defined mostly with macros. However, the expanded form would look something like this:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>base;
+<span class="kw">impl </span>DioxusElement <span class="kw">for </span>base {
+    <span class="kw">const </span>TAG_NAME: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;base&quot;</span>;
+    <span class="kw">const </span>NAME_SPACE: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; = <span class="prelude-val">None</span>;
+}
+<span class="kw">impl </span>base {
+    <span class="kw">const </span>href: (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, <span class="prelude-ty">Option</span>&lt;<span class="lifetime">&#39;static </span>str&gt;, bool) = (<span class="string">&quot;href&quot;</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>);
+    <span class="kw">const </span>target: (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, <span class="prelude-ty">Option</span>&lt;<span class="lifetime">&#39;static </span>str&gt;, bool) = (<span class="string">&quot;target&quot;</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>);
+}</code></pre></div>
+<p>Because attributes are defined as methods on the unit struct, they guard the attribute creation behind a compile-time correct interface.</p>
+<h3 id="how-to-extend-it"><a href="#how-to-extend-it">How to extend it:</a></h3>
+<p>Whenever the rsx! macro is called, it relies on a module <code>dioxus_elements</code> to be in scope. When you enable the <code>html</code> feature in dioxus, this module gets imported in the prelude. However, you can extend this with your own set of custom elements by making your own <code>dioxus_elements</code> module and re-exporting the html namespace.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">mod </span>dioxus_elements {
+    <span class="kw">use </span>dioxus::prelude::dioxus_elements::<span class="kw-2">*</span>;
+    <span class="kw">struct </span>my_element;
+    <span class="kw">impl </span>DioxusElement <span class="kw">for </span>my_element {
+        <span class="kw">const </span>TAG_NAME: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="string">&quot;base&quot;</span>;
+        <span class="kw">const </span>NAME_SPACE: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; = <span class="prelude-val">None</span>;
+    }
+}</code></pre></div>
+<h3 id="contributing"><a href="#contributing">Contributing</a></h3>
+<ul>
+<li>Report issues on our <a href="https://github.com/dioxuslabs/dioxus/issues">issue tracker</a>.</li>
+<li>Join the discord and ask questions!</li>
+</ul>
+<h3 id="license"><a href="#license">License</a></h3>
+<p>This project is licensed under the <a href="https://github.com/DioxusLabs/dioxus/blob/master/LICENSE-MIT">MIT license</a>.</p>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in Dioxus by you shall be licensed as MIT without any additional
+terms or conditions.</p>
+<h2 id="dioxus-namespace-for-html"><a href="#dioxus-namespace-for-html">Dioxus Namespace for HTML</a></h2>
+<p>This crate provides a set of compile-time correct HTML elements that can be used with the Rsx and Html macros.
+This system allows users to easily build new tags, new types, and customize the output of the Rsx and Html macros.</p>
+<p>An added benefit of this approach is the ability to lend comprehensive documentation on how to use these elements inside
+of the Rsx and Html macros. Each element comes with a substantial amount of documentation on how to best use it, hopefully
+making the development cycle quick.</p>
+<p>All elements are used as zero-sized unit structs with trait impls.</p>
+<p>Currently, we don’t validate for structures, but do validate attributes.</p>
+</div></details><h2 id="reexports" class="small-section-header"><a href="#reexports">Re-exports</a></h2><ul class="item-table"><li><div class="item-name"><code>pub use <a class="mod" href="events/index.html" title="mod dioxus_html::events">events</a>::*;</code></div></li></ul><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="events/index.html" title="mod dioxus_html::events">events</a></div></li><li><div class="item-name"><a class="mod" href="geometry/index.html" title="mod dioxus_html::geometry">geometry</a></div><div class="desc docblock-short">Geometry primitives for representing e.g. mouse events</div></li><li><div class="item-name"><a class="mod" href="input_data/index.html" title="mod dioxus_html::input_data">input_data</a></div><div class="desc docblock-short">Data structures representing user input, such as modifier keys and mouse buttons</div></li><li><div class="item-name"><a class="mod" href="native_bind/index.html" title="mod dioxus_html::native_bind">native_bind</a></div></li><li><div class="item-name"><a class="mod" href="prelude/index.html" title="mod dioxus_html::prelude">prelude</a></div></li></ul><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.HtmlEvent.html" title="struct dioxus_html::HtmlEvent">HtmlEvent</a></div></li><li><div class="item-name"><a class="struct" href="struct.a.html" title="struct dioxus_html::a">a</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a"><code>&lt;a&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.abbr.html" title="struct dioxus_html::abbr">abbr</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr"><code>&lt;abbr&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.address.html" title="struct dioxus_html::address">address</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address"><code>&lt;address&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.animate.html" title="struct dioxus_html::animate">animate</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate"><code>&lt;animate&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.animateMotion.html" title="struct dioxus_html::animateMotion">animateMotion</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion"><code>&lt;animateMotion&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.animateTransform.html" title="struct dioxus_html::animateTransform">animateTransform</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateTransform"><code>&lt;animateTransform&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.area.html" title="struct dioxus_html::area">area</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area"><code>&lt;area&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.article.html" title="struct dioxus_html::article">article</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article"><code>&lt;article&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.aside.html" title="struct dioxus_html::aside">aside</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside"><code>&lt;aside&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.audio.html" title="struct dioxus_html::audio">audio</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio"><code>&lt;audio&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.b.html" title="struct dioxus_html::b">b</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b"><code>&lt;b&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.base.html" title="struct dioxus_html::base">base</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base"><code>&lt;base&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.bdi.html" title="struct dioxus_html::bdi">bdi</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdi"><code>&lt;bdi&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.bdo.html" title="struct dioxus_html::bdo">bdo</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo"><code>&lt;bdo&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.blockquote.html" title="struct dioxus_html::blockquote">blockquote</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote"><code>&lt;blockquote&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.body.html" title="struct dioxus_html::body">body</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body"><code>&lt;body&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.br.html" title="struct dioxus_html::br">br</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br"><code>&lt;br&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.button.html" title="struct dioxus_html::button">button</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button"><code>&lt;button&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.canvas.html" title="struct dioxus_html::canvas">canvas</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas"><code>&lt;canvas&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.caption.html" title="struct dioxus_html::caption">caption</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption"><code>&lt;caption&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.circle.html" title="struct dioxus_html::circle">circle</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle"><code>&lt;circle&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.cite.html" title="struct dioxus_html::cite">cite</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite"><code>&lt;cite&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.clipPath.html" title="struct dioxus_html::clipPath">clipPath</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath"><code>&lt;clipPath&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.code.html" title="struct dioxus_html::code">code</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code"><code>&lt;code&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.col.html" title="struct dioxus_html::col">col</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col"><code>&lt;col&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.colgroup.html" title="struct dioxus_html::colgroup">colgroup</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup"><code>&lt;colgroup&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.data.html" title="struct dioxus_html::data">data</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data"><code>&lt;data&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.datalist.html" title="struct dioxus_html::datalist">datalist</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist"><code>&lt;datalist&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.dd.html" title="struct dioxus_html::dd">dd</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd"><code>&lt;dd&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.defs.html" title="struct dioxus_html::defs">defs</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs"><code>&lt;defs&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.del.html" title="struct dioxus_html::del">del</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del"><code>&lt;del&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.desc.html" title="struct dioxus_html::desc">desc</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc"><code>&lt;desc&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.details.html" title="struct dioxus_html::details">details</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details"><code>&lt;details&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.dfn.html" title="struct dioxus_html::dfn">dfn</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn"><code>&lt;dfn&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.dialog.html" title="struct dioxus_html::dialog">dialog</a></div><div class="desc docblock-short">Build dialog
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog"><code>&lt;dialog&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.discard.html" title="struct dioxus_html::discard">discard</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/discard"><code>&lt;discard&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.div.html" title="struct dioxus_html::div">div</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div"><code>&lt;div&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.dl.html" title="struct dioxus_html::dl">dl</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl"><code>&lt;dl&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.dt.html" title="struct dioxus_html::dt">dt</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt"><code>&lt;dt&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.ellipse.html" title="struct dioxus_html::ellipse">ellipse</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse"><code>&lt;ellipse&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.em.html" title="struct dioxus_html::em">em</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em"><code>&lt;em&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.embed.html" title="struct dioxus_html::embed">embed</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed"><code>&lt;embed&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feBlend.html" title="struct dioxus_html::feBlend">feBlend</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feBlend"><code>&lt;feBlend&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feColorMatrix.html" title="struct dioxus_html::feColorMatrix">feColorMatrix</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix"><code>&lt;feColorMatrix&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feComponentTransfer.html" title="struct dioxus_html::feComponentTransfer">feComponentTransfer</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComponentTransfer"><code>&lt;feComponentTransfer&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feComposite.html" title="struct dioxus_html::feComposite">feComposite</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite"><code>&lt;feComposite&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feConvolveMatrix.html" title="struct dioxus_html::feConvolveMatrix">feConvolveMatrix</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feConvolveMatrix"><code>&lt;feConvolveMatrix&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feDiffuseLighting.html" title="struct dioxus_html::feDiffuseLighting">feDiffuseLighting</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDiffuseLighting"><code>&lt;feDiffuseLighting&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feDisplacementMap.html" title="struct dioxus_html::feDisplacementMap">feDisplacementMap</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap"><code>&lt;feDisplacementMap&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feDistantLight.html" title="struct dioxus_html::feDistantLight">feDistantLight</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDistantLight"><code>&lt;feDistantLight&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feDropShadow.html" title="struct dioxus_html::feDropShadow">feDropShadow</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow"><code>&lt;feDropShadow&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feFlood.html" title="struct dioxus_html::feFlood">feFlood</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFlood"><code>&lt;feFlood&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feFuncA.html" title="struct dioxus_html::feFuncA">feFuncA</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncA"><code>&lt;feFuncA&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feFuncB.html" title="struct dioxus_html::feFuncB">feFuncB</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncB"><code>&lt;feFuncB&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feFuncG.html" title="struct dioxus_html::feFuncG">feFuncG</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncG"><code>&lt;feFuncG&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feFuncR.html" title="struct dioxus_html::feFuncR">feFuncR</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncR"><code>&lt;feFuncR&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feGaussianBlur.html" title="struct dioxus_html::feGaussianBlur">feGaussianBlur</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur"><code>&lt;feGaussianBlur&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feImage.html" title="struct dioxus_html::feImage">feImage</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feImage"><code>&lt;feImage&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feMerge.html" title="struct dioxus_html::feMerge">feMerge</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMerge"><code>&lt;feMerge&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feMergeNode.html" title="struct dioxus_html::feMergeNode">feMergeNode</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMergeNode"><code>&lt;feMergeNode&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feMorphology.html" title="struct dioxus_html::feMorphology">feMorphology</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMorphology"><code>&lt;feMorphology&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feOffset.html" title="struct dioxus_html::feOffset">feOffset</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset"><code>&lt;feOffset&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.fePointLight.html" title="struct dioxus_html::fePointLight">fePointLight</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/fePointLight"><code>&lt;fePointLight&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feSpecularLighting.html" title="struct dioxus_html::feSpecularLighting">feSpecularLighting</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpecularLighting"><code>&lt;feSpecularLighting&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feSpotLight.html" title="struct dioxus_html::feSpotLight">feSpotLight</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpotLight"><code>&lt;feSpotLight&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feTile.html" title="struct dioxus_html::feTile">feTile</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTile"><code>&lt;feTile&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.feTurbulence.html" title="struct dioxus_html::feTurbulence">feTurbulence</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence"><code>&lt;feTurbulence&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.fieldset.html" title="struct dioxus_html::fieldset">fieldset</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset"><code>&lt;fieldset&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.figcaption.html" title="struct dioxus_html::figcaption">figcaption</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption"><code>&lt;figcaption&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.figure.html" title="struct dioxus_html::figure">figure</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure"><code>&lt;figure&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.filter.html" title="struct dioxus_html::filter">filter</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter"><code>&lt;filter&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.footer.html" title="struct dioxus_html::footer">footer</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer"><code>&lt;footer&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.foreignObject.html" title="struct dioxus_html::foreignObject">foreignObject</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject"><code>&lt;foreignObject&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.form.html" title="struct dioxus_html::form">form</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form"><code>&lt;form&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.g.html" title="struct dioxus_html::g">g</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g"><code>&lt;g&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h1.html" title="struct dioxus_html::h1">h1</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1"><code>&lt;h1&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h2.html" title="struct dioxus_html::h2">h2</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h2"><code>&lt;h2&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h3.html" title="struct dioxus_html::h3">h3</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3"><code>&lt;h3&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h4.html" title="struct dioxus_html::h4">h4</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4"><code>&lt;h4&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h5.html" title="struct dioxus_html::h5">h5</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h5"><code>&lt;h5&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.h6.html" title="struct dioxus_html::h6">h6</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6"><code>&lt;h6&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.hatch.html" title="struct dioxus_html::hatch">hatch</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/hatch"><code>&lt;hatch&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.hatchpath.html" title="struct dioxus_html::hatchpath">hatchpath</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/hatchpath"><code>&lt;hatchpath&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.head.html" title="struct dioxus_html::head">head</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head"><code>&lt;head&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.header.html" title="struct dioxus_html::header">header</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header"><code>&lt;header&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.hgroup.html" title="struct dioxus_html::hgroup">hgroup</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup"><code>&lt;hgroup&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.hr.html" title="struct dioxus_html::hr">hr</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr"><code>&lt;hr&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.i.html" title="struct dioxus_html::i">i</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i"><code>&lt;i&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.iframe.html" title="struct dioxus_html::iframe">iframe</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe"><code>&lt;iframe&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.img.html" title="struct dioxus_html::img">img</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img"><code>&lt;img&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.input.html" title="struct dioxus_html::input">input</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input"><code>&lt;input&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.ins.html" title="struct dioxus_html::ins">ins</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins"><code>&lt;ins&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.kbd.html" title="struct dioxus_html::kbd">kbd</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd"><code>&lt;kbd&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.label.html" title="struct dioxus_html::label">label</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label"><code>&lt;label&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.legend.html" title="struct dioxus_html::legend">legend</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend"><code>&lt;legend&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.li.html" title="struct dioxus_html::li">li</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li"><code>&lt;li&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.line.html" title="struct dioxus_html::line">line</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line"><code>&lt;line&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.linearGradient.html" title="struct dioxus_html::linearGradient">linearGradient</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient"><code>&lt;linearGradient&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.link.html" title="struct dioxus_html::link">link</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link"><code>&lt;link&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.main.html" title="struct dioxus_html::main">main</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main"><code>&lt;main&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.map.html" title="struct dioxus_html::map">map</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map"><code>&lt;map&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.mark.html" title="struct dioxus_html::mark">mark</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark"><code>&lt;mark&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.marker.html" title="struct dioxus_html::marker">marker</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker"><code>&lt;marker&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.mask.html" title="struct dioxus_html::mask">mask</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask"><code>&lt;mask&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.menu.html" title="struct dioxus_html::menu">menu</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu"><code>&lt;menu&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.meta.html" title="struct dioxus_html::meta">meta</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta"><code>&lt;meta&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.metadata.html" title="struct dioxus_html::metadata">metadata</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/metadata"><code>&lt;metadata&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.meter.html" title="struct dioxus_html::meter">meter</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter"><code>&lt;meter&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.mpath.html" title="struct dioxus_html::mpath">mpath</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mpath"><code>&lt;mpath&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.nav.html" title="struct dioxus_html::nav">nav</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav"><code>&lt;nav&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.noscript.html" title="struct dioxus_html::noscript">noscript</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript"><code>&lt;noscript&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.object.html" title="struct dioxus_html::object">object</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object"><code>&lt;object&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.ol.html" title="struct dioxus_html::ol">ol</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol"><code>&lt;ol&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.optgroup.html" title="struct dioxus_html::optgroup">optgroup</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup"><code>&lt;optgroup&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.option.html" title="struct dioxus_html::option">option</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option"><code>&lt;option&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.output.html" title="struct dioxus_html::output">output</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output"><code>&lt;output&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.p.html" title="struct dioxus_html::p">p</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p"><code>&lt;p&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.param.html" title="struct dioxus_html::param">param</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/param"><code>&lt;param&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.path.html" title="struct dioxus_html::path">path</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path"><code>&lt;path&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.pattern.html" title="struct dioxus_html::pattern">pattern</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern"><code>&lt;pattern&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.picture.html" title="struct dioxus_html::picture">picture</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture"><code>&lt;picture&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.polygon.html" title="struct dioxus_html::polygon">polygon</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon"><code>&lt;polygon&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.polyline.html" title="struct dioxus_html::polyline">polyline</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline"><code>&lt;polyline&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.pre.html" title="struct dioxus_html::pre">pre</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre"><code>&lt;pre&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.progress.html" title="struct dioxus_html::progress">progress</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress"><code>&lt;progress&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.q.html" title="struct dioxus_html::q">q</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q"><code>&lt;q&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.radialGradient.html" title="struct dioxus_html::radialGradient">radialGradient</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient"><code>&lt;radialGradient&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.rect.html" title="struct dioxus_html::rect">rect</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect"><code>&lt;rect&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.rp.html" title="struct dioxus_html::rp">rp</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rp"><code>&lt;rp&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.rt.html" title="struct dioxus_html::rt">rt</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt"><code>&lt;rt&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.ruby.html" title="struct dioxus_html::ruby">ruby</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby"><code>&lt;ruby&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.s.html" title="struct dioxus_html::s">s</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s"><code>&lt;s&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.samp.html" title="struct dioxus_html::samp">samp</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp"><code>&lt;samp&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.script.html" title="struct dioxus_html::script">script</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script"><code>&lt;script&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.section.html" title="struct dioxus_html::section">section</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section"><code>&lt;section&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.select.html" title="struct dioxus_html::select">select</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select"><code>&lt;select&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.set.html" title="struct dioxus_html::set">set</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/set"><code>&lt;set&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.slot.html" title="struct dioxus_html::slot">slot</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot"><code>&lt;slot&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.small.html" title="struct dioxus_html::small">small</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/small"><code>&lt;small&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.source.html" title="struct dioxus_html::source">source</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source"><code>&lt;source&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.span.html" title="struct dioxus_html::span">span</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span"><code>&lt;span&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.stop.html" title="struct dioxus_html::stop">stop</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop"><code>&lt;stop&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.strong.html" title="struct dioxus_html::strong">strong</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong"><code>&lt;strong&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.style.html" title="struct dioxus_html::style">style</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style"><code>&lt;style&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.sub.html" title="struct dioxus_html::sub">sub</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub"><code>&lt;sub&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.summary.html" title="struct dioxus_html::summary">summary</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary"><code>&lt;summary&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.sup.html" title="struct dioxus_html::sup">sup</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup"><code>&lt;sup&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.svg.html" title="struct dioxus_html::svg">svg</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg"><code>&lt;svg&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.switch.html" title="struct dioxus_html::switch">switch</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/switch"><code>&lt;switch&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.symbol.html" title="struct dioxus_html::symbol">symbol</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol"><code>&lt;symbol&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.table.html" title="struct dioxus_html::table">table</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table"><code>&lt;table&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.tbody.html" title="struct dioxus_html::tbody">tbody</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody"><code>&lt;tbody&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.td.html" title="struct dioxus_html::td">td</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td"><code>&lt;td&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.template.html" title="struct dioxus_html::template">template</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template"><code>&lt;template&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.text.html" title="struct dioxus_html::text">text</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text"><code>&lt;text&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.textPath.html" title="struct dioxus_html::textPath">textPath</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath"><code>&lt;textPath&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.textarea.html" title="struct dioxus_html::textarea">textarea</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea"><code>&lt;textarea&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.tfoot.html" title="struct dioxus_html::tfoot">tfoot</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot"><code>&lt;tfoot&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.th.html" title="struct dioxus_html::th">th</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th"><code>&lt;th&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.thead.html" title="struct dioxus_html::thead">thead</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead"><code>&lt;thead&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.time.html" title="struct dioxus_html::time">time</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time"><code>&lt;time&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.title.html" title="struct dioxus_html::title">title</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title"><code>&lt;title&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.tr.html" title="struct dioxus_html::tr">tr</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr"><code>&lt;tr&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.track.html" title="struct dioxus_html::track">track</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track"><code>&lt;track&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.tspan.html" title="struct dioxus_html::tspan">tspan</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/tspan"><code>&lt;tspan&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.u.html" title="struct dioxus_html::u">u</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u"><code>&lt;u&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.ul.html" title="struct dioxus_html::ul">ul</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul"><code>&lt;ul&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.use.html" title="struct dioxus_html::use">use</a></div></li><li><div class="item-name"><a class="struct" href="struct.var.html" title="struct dioxus_html::var">var</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/var"><code>&lt;var&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.video.html" title="struct dioxus_html::video">video</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video"><code>&lt;video&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.view.html" title="struct dioxus_html::view">view</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/view"><code>&lt;view&gt;</code></a>
+element.</div></li><li><div class="item-name"><a class="struct" href="struct.wbr.html" title="struct dioxus_html::wbr">wbr</a></div><div class="desc docblock-short">Build a
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr"><code>&lt;wbr&gt;</code></a>
+element.</div></li></ul><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.EventData.html" title="enum dioxus_html::EventData">EventData</a></div></li></ul><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.GlobalAttributes.html" title="trait dioxus_html::GlobalAttributes">GlobalAttributes</a></div></li><li><div class="item-name"><a class="trait" href="trait.SvgAttributes.html" title="trait dioxus_html::SvgAttributes">SvgAttributes</a></div></li></ul><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.render_template_to_html.html" title="fn dioxus_html::render_template_to_html">render_template_to_html</a></div><div class="desc docblock-short">Render a template to an HTML string</div></li></ul><h2 id="types" class="small-section-header"><a href="#types">Type Aliases</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.AttributeDiscription.html" title="type dioxus_html::AttributeDiscription">AttributeDiscription</a></div></li></ul></section></div></main></body></html>

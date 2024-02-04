@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BorderArray","ColorArray","HighlightingMode"],"struct":["Actions","DashPhase","LinkAnnotation","LinkAnnotationList","LinkAnnotationRef"]};

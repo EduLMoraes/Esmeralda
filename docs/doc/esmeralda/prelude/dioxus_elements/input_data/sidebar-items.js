@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["MouseButton"],"fn":["decode_key_location","decode_mouse_button_set","encode_key_location","encode_mouse_button_set"],"mod":["keyboard_types"],"type":["MouseButtonSet"]};

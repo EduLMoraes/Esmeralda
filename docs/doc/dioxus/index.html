@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Resources"><title>dioxus - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="dioxus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="icon" href="https://avatars.githubusercontent.com/u/79236386"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../dioxus/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../dioxus/index.html"><img src="https://avatars.githubusercontent.com/u/79236386" alt="logo"></a><h2 class="location"><a href="#">Crate dioxus</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.4.3</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">dioxus</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/dioxus/lib.rs.html#1-42">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><div style="text-align: center">
+  <h1>🌗🚀 Dioxus</h1>
+  <p>
+    <strong>A concurrent, functional, virtual DOM for Rust</strong>
+  </p>
+</div>
+<h2 id="resources"><a href="#resources">Resources</a></h2>
+<p>This overview provides a brief introduction to Dioxus. For a more in-depth guide, make sure to check out:</p>
+<ul>
+<li><a href="https://dioxuslabs.com/learn/0.4/getting_started">Getting Started</a></li>
+<li><a href="https://dioxuslabs.com/learn/0.4/">Book (0.4)</a></li>
+<li><a href="https://github.com/DioxusLabs/example-projects">Examples</a></li>
+</ul>
+<h2 id="overview-and-goals"><a href="#overview-and-goals">Overview and Goals</a></h2>
+<p>Dioxus makes it easy to quickly build complex user interfaces with Rust. Any Dioxus app can run in the web browser,
+as a desktop app, as a mobile app, or anywhere else provided you build the right renderer.</p>
+<p>Dioxus is heavily inspired by React, supporting many of the same concepts:</p>
+<ul>
+<li>Hooks for state</li>
+<li>VirtualDom &amp; diffing</li>
+<li>Concurrency, fibers, and asynchronous rendering</li>
+<li>JSX-like templating syntax</li>
+</ul>
+<p>If you know React, then you know Dioxus.</p>
+<p>Dioxus is <em>substantially</em> more performant than many of the other Rust UI libraries (Yew/Percy) and is <em>significantly</em> more performant
+than React—roughly competitive with InfernoJS.</p>
+<p>Remember: Dioxus is a library for declaring interactive user interfaces—it is not a dedicated renderer. Most 1st party renderers for Dioxus currently only support web technologies.</p>
+<h3 id="brief-overview"><a href="#brief-overview">Brief Overview</a></h3>
+<p>All Dioxus apps are built by composing functions that take in a <code>Scope</code> which is generic over some <code>Properties</code> and return an <code>Element</code>.
+A <code>Scope</code> holds relevant state data for the currently rendered component.</p>
+<p>To launch an app, we use the <code>launch</code> method for the specific renderer we want to use. In the launch function, we pass the app’s <code>Component</code>.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dioxus::prelude::<span class="kw-2">*</span>;
+
+<span class="kw">fn </span>main() {
+    dioxus_desktop::launch(App);
+}
+
+<span class="comment">// The #[component] attribute streamlines component creation.
+// It&#39;s not required, but highly recommended. For example, UpperCamelCase components will not generate a warning.
+</span><span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    cx.render(<span class="macro">rsx!</span>(<span class="string">&quot;hello world!&quot;</span>))
+}</code></pre></div>
+<h3 id="elements--your-first-component"><a href="#elements--your-first-component">Elements &amp; your first component</a></h3>
+<p>To assemble UI trees with Dioxus, you need to use the <code>render</code> function on
+something called <code>LazyNodes</code>. To produce <code>LazyNodes</code>, you can use the <code>rsx!</code>
+macro or the NodeFactory API. For the most part, you want to use the <code>rsx!</code>
+macro.</p>
+<p>Any element in <code>rsx!</code> can have attributes, listeners, and children. For
+consistency, we force all attributes and listeners to be listed <em>before</em>
+children.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">let </span>value = <span class="string">&quot;123&quot;</span>;
+
+<span class="macro">rsx!</span>(
+    div {
+        class: <span class="string">&quot;my-class {value}&quot;</span>,                  <span class="comment">// &lt;--- attribute
+        </span>onclick: <span class="kw">move </span>|<span class="kw">_</span>| <span class="macro">log::info!</span>(<span class="string">&quot;clicked!&quot;</span>),   <span class="comment">// &lt;--- listener
+        </span>h1 { <span class="string">&quot;hello world&quot; </span>},                       <span class="comment">// &lt;--- child
+    </span>}
+)</code></pre></div>
+<p>The <code>rsx!</code> macro accepts attributes in “struct form” and will parse the rest
+of the body as child elements and rust expressions. Any rust expression that
+implements <code>IntoIterator&lt;Item = impl IntoVNode&gt;</code> will be parsed as a child.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">rsx!</span>(
+    div {
+        (<span class="number">0</span>..<span class="number">10</span>).map(|<span class="kw">_</span>| <span class="macro">rsx!</span>(span { <span class="string">&quot;hello world&quot; </span>}))
+    }
+)</code></pre></div>
+<p>Used within components, the <code>rsx!</code> macro must be rendered into an <code>Element</code> with
+the <code>render</code> function on Scope.</p>
+<p>If we want to omit the boilerplate of <code>cx.render</code>, we can simply pass in
+<code>cx</code> as the first argument of rsx. This is sometimes useful when we need to
+render nodes in match statements.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[component[
+<span class="kw">fn </span>Example(cx: Scope) -&gt; Element {
+
+    <span class="comment">// both of these are equivalent
+    </span>cx.render(<span class="macro">rsx!</span>(<span class="string">&quot;hello world&quot;</span>))
+
+    <span class="macro">render!</span>(<span class="string">&quot;hello world!&quot;</span>)
+}</code></pre></div>
+<p>Putting everything together, we can write a simple component that renders a list of
+elements:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    <span class="kw">let </span>name = <span class="string">&quot;dave&quot;</span>;
+    cx.render(<span class="macro">rsx!</span>(
+        h1 { <span class="string">&quot;Hello, {name}!&quot; </span>}
+        div {
+            class: <span class="string">&quot;my-class&quot;</span>,
+            id: <span class="string">&quot;my-id&quot;</span>,
+
+            (<span class="number">0</span>..<span class="number">5</span>).map(|i| <span class="macro">rsx!</span>(
+                div { key: <span class="string">&quot;{i}&quot;
+                    &quot;FizzBuzz: {i}&quot;
+                </span>}
+            ))
+
+        }
+    ))
+}</code></pre></div>
+<h3 id="components"><a href="#components">Components</a></h3>
+<p>We can compose these function components to build a complex app. Each new
+component we design must take some Properties. For components with no explicit
+properties, we can use the <code>()</code> type or simply omit the type altogether.</p>
+<p>In Dioxus, all properties are memoized by default!</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    cx.render(<span class="macro">rsx!</span>(
+        Header {
+            title: <span class="string">&quot;My App&quot;</span>,
+            color: <span class="string">&quot;red&quot;</span>,
+        }
+    ))
+}</code></pre></div>
+<p>Our <code>Header</code> component takes a <code>title</code> and a <code>color</code> property, which we
+declare on an explicit <code>HeaderProps</code> struct.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// The `Props` derive macro lets us add additional functionality to how props are interpreted.
+</span><span class="attr">#[derive(Props, PartialEq)]
+</span><span class="kw">struct </span>HeaderProps {
+    title: String,
+    color: String,
+}
+
+<span class="attr">#[component]
+</span><span class="kw">fn </span>Header(cx: Scope&lt;HeaderProps&gt;) -&gt; Element {
+    cx.render(<span class="macro">rsx!</span>(
+        div {
+            background_color: <span class="string">&quot;{cx.props.color}&quot;
+            </span>h1 { <span class="string">&quot;{cx.props.title}&quot; </span>}
+        }
+    ))
+}</code></pre></div>
+<p>The <code>#[component]</code> macro also allows you to derive the props
+struct from function arguments:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[component]
+</span><span class="kw">fn </span>Header(cx: Scope, title: String, color: String) -&gt; Element {
+    cx.render(<span class="macro">rsx!</span>(
+        div {
+            background_color: <span class="string">&quot;{color}&quot;
+            </span>h1 { <span class="string">&quot;{title}&quot; </span>}
+        }
+    ))
+}</code></pre></div>
+<p>Components may also borrow data from their parent component. We just need to
+attach some lifetimes to the props struct.</p>
+<blockquote>
+<p>Note: we don’t need to derive <code>PartialEq</code> for borrowed props since they cannot be memoized.</p>
+</blockquote>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(Props)]
+</span><span class="kw">struct </span>HeaderProps&lt;<span class="lifetime">&#39;a</span>&gt; {
+    title: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    color: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+}
+
+<span class="attr">#[component]
+</span><span class="kw">fn </span>Header&lt;<span class="lifetime">&#39;a</span>&gt;(cx: Scope&lt;<span class="lifetime">&#39;a</span>, HeaderProps&lt;<span class="lifetime">&#39;a</span>&gt;&gt;) -&gt; Element {
+    cx.render(<span class="macro">rsx!</span>(
+        div {
+            background_color: <span class="string">&quot;{cx.props.color}&quot;
+            </span>h1 { <span class="string">&quot;{cx.props.title}&quot; </span>}
+        }
+    ))
+}</code></pre></div>
+<p>Components that begin with an uppercase letter may be called with
+the traditional (for React) curly-brace syntax like so:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">rsx!</span>(
+    Header { title: <span class="string">&quot;My App&quot; </span>}
+)</code></pre></div>
+<p>Alternatively, if your components begin with a lowercase letter, you can use
+the function call syntax:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">rsx!</span>(
+    header( title: <span class="string">&quot;My App&quot; </span>)
+)</code></pre></div>
+<p>However, the convention is to use UpperCamelCase. The <code>#[component]</code> attribute will enforce this,
+but you can turn it off if you wish.</p>
+<h3 id="hooks"><a href="#hooks">Hooks</a></h3>
+<p>While components are reusable forms of UI elements, hooks are reusable forms
+of logic. Hooks provide us a way of retrieving state from the <code>Scope</code> and using
+it to render UI elements.</p>
+<p>By convention, all hooks are functions that should start with <code>use_</code>. We can
+use hooks to define the state and modify it from within listeners.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    <span class="kw">let </span>name = use_state(cx, || <span class="string">&quot;world&quot;</span>);
+
+    <span class="macro">render!</span>(<span class="string">&quot;hello {name}!&quot;</span>)
+}</code></pre></div>
+<p>Hooks are sensitive to how they are used. To use hooks, you must abide by the
+<a href="https://reactjs.org/docs/hooks-rules.html">“rules of hooks” (borrowed from React)</a>:</p>
+<ul>
+<li>Functions with “use_” should not be called in callbacks</li>
+<li>Functions with “use_” should not be called out of order</li>
+<li>Functions with “use_” should not be called in loops or conditionals</li>
+</ul>
+<p>In a sense, hooks let us add a field of state to our component without declaring
+an explicit state struct. However, this means we need to “load” the struct in the right
+order. If that order is wrong, then the hook will pick the wrong state and panic.</p>
+<p>Most hooks you’ll write are simply compositions of other hooks:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>use_username(cx: <span class="kw-2">&amp;</span>ScopeState, id: Uuid) -&gt; bool {
+    <span class="kw">let </span>users = use_context::&lt;Users&gt;(cx);
+    users.get(<span class="kw-2">&amp;</span>id).map(|user| user.logged_in).ok_or(<span class="bool-val">false</span>)
+}</code></pre></div>
+<p>To create entirely new foundational hooks, we can use the <code>use_hook</code> method on <code>ScopeState</code>.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>use_mut_string(cx: <span class="kw-2">&amp;</span>ScopeState) -&gt; <span class="kw-2">&amp;mut </span>String {
+    cx.use_hook(|<span class="kw">_</span>| <span class="string">&quot;Hello&quot;</span>.to_string())
+}</code></pre></div>
+<p>If you want to extend Dioxus with some new functionality, you’ll probably want to implement a new hook from scratch.</p>
+<h3 id="putting-it-all-together"><a href="#putting-it-all-together">Putting it all together</a></h3>
+<p>Using components, templates, and hooks, we can build a simple app.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dioxus::prelude::<span class="kw-2">*</span>;
+
+<span class="kw">fn </span>main() {
+    dioxus_desktop::launch(App);
+}
+
+<span class="attr">#[component]
+</span><span class="kw">fn </span>App(cx: Scope) -&gt; Element {
+    <span class="kw">let </span>count = use_state(cx, || <span class="number">0</span>);
+
+    cx.render(<span class="macro">rsx!</span>(
+        div { <span class="string">&quot;Count: {count}&quot; </span>}
+        button { onclick: <span class="kw">move </span>|<span class="kw">_</span>| count.set(count + <span class="number">1</span>), <span class="string">&quot;Increment&quot; </span>}
+        button { onclick: <span class="kw">move </span>|<span class="kw">_</span>| count.set(count - <span class="number">1</span>), <span class="string">&quot;Decrement&quot; </span>}
+    ))
+}</code></pre></div>
+<h3 id="features"><a href="#features">Features</a></h3>
+<p>This overview doesn’t cover everything. Make sure to check out the tutorial and reference guide on the official
+website for more details.</p>
+<p>Beyond this overview, Dioxus supports:</p>
+<ul>
+<li>Server-side rendering</li>
+<li>Concurrent rendering (with async support)</li>
+<li>Web/Desktop/Mobile support</li>
+<li>Pre-rendering and rehydration</li>
+<li>Fragments, Portals, and Suspense</li>
+<li>Inline-styles</li>
+<li>Custom event handlers</li>
+<li>Custom elements</li>
+<li>Basic fine-grained reactivity (IE SolidJS/Svelte)</li>
+<li>and more!</li>
+</ul>
+<p>Good luck!</p>
+<h3 id="inspiration-resources-alternatives-and-credits"><a href="#inspiration-resources-alternatives-and-credits">Inspiration, Resources, Alternatives, and Credits</a></h3>
+<p>Dioxus is inspired by:</p>
+<ul>
+<li>React: for its hooks, concurrency, suspense</li>
+<li>Dodrio: for its research in bump allocation, double buffering, and diffing architecture</li>
+</ul>
+<p>Alternatives to Dioxus include:</p>
+<ul>
+<li>Yew: supports function components and web, but no SSR, borrowed data, or bump allocation. Rather slow at times.</li>
+<li>Percy: supports function components, web, ssr, but lacks state management</li>
+<li>Sycamore: supports function components, web, ssr, but is closer to SolidJS than React</li>
+<li>MoonZoom/Seed: opinionated frameworks based on the Elm model (message, update)—no hooks</li>
+</ul>
+<p>We’ve put a lot of work into making Dioxus ergonomic and <em>familiar</em>.
+Our target audience is TypeScript developers looking to switch to Rust for the web—so we need to be comparable to React.</p>
+</div></details><h2 id="reexports" class="small-section-header"><a href="#reexports">Re-exports</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.core"><code>pub use <a class="mod" href="../dioxus_core/index.html" title="mod dioxus_core">dioxus_core</a> as core;</code></div></li><li><div class="item-name" id="reexport.hooks"><code>pub use <a class="mod" href="../dioxus_hooks/index.html" title="mod dioxus_hooks">dioxus_hooks</a> as hooks;</code></div></li><li><div class="item-name" id="reexport.html"><code>pub use <a class="mod" href="../dioxus_html/index.html" title="mod dioxus_html">dioxus_html</a> as html;</code></div></li><li><div class="item-name" id="reexport.rsx"><code>pub use <a class="mod" href="../dioxus_rsx/index.html" title="mod dioxus_rsx">dioxus_rsx</a> as rsx;</code></div></li><li><div class="item-name" id="reexport.core_macro"><code>pub use <a class="mod" href="../dioxus_core_macro/index.html" title="mod dioxus_core_macro">dioxus_core_macro</a> as core_macro;</code></div></li></ul><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="events/index.html" title="mod dioxus::events">events</a></div></li><li><div class="item-name"><a class="mod" href="prelude/index.html" title="mod dioxus::prelude">prelude</a></div></li></ul></section></div></main></body></html>

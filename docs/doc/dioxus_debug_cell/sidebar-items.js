@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BorrowState"],"mod":["error"],"struct":["Ref","RefCell","RefMut"]};

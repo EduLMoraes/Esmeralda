@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["flags","object_interface","object_subclass"],"derive":["Boxed","Downgrade","Enum","ErrorDomain","SharedBoxed","Variant"],"macro":["clone","closure","closure_local","cstr_bytes"]};

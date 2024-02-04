@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ShortcutRegistryError","WindowCloseBehaviour"],"fn":["launch","launch_cfg","launch_with_props","use_global_shortcut","use_window","use_wry_event_handler"],"mod":["tao"],"struct":["Config","DesktopService","LogicalSize","PhysicalSize","ShortcutHandle","ShortcutId","WindowBuilder","WryEventHandler","WryEventHandlerId"],"type":["DesktopContext"]};

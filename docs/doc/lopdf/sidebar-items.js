@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error","Object","Outline","StringFormat","XrefError"],"macro":["dictionary"],"mod":["content","encryption","filters","xobject","xref"],"struct":["Bookmark","Destination","Dictionary","Document","IncrementalDocument","ObjectStream","Reader","Stream","Toc"],"type":["ObjectId","Result"]};

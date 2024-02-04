@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A contiguous growable array type with heap-allocated contents, written `Vec&lt;&#x27;bump, T&gt;`."><title>bumpalo::collections::vec - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="bumpalo" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../../bumpalo/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../../bumpalo/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Module vec</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#structs">Structs</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../../index.html">bumpalo</a>::<wbr><a href="../index.html">collections</a>::<wbr><a class="mod" href="#">vec</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../../src/bumpalo/collections/vec.rs.html#11-2636">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A contiguous growable array type with heap-allocated contents, written
+<a href="struct.Vec.html"><code>Vec&lt;'bump, T&gt;</code></a>.</p>
+<p>Vectors have <code>O(1)</code> indexing, amortized <code>O(1)</code> push (to the end) and
+<code>O(1)</code> pop (from the end).</p>
+<p>This module is a fork of the <a href="https://doc.rust-lang.org/std/vec/index.html"><code>std::vec</code></a> module, that uses a bump allocator.</p>
+<h2 id="examples"><a href="#examples">Examples</a></h2>
+<p>You can explicitly create a <a href="struct.Vec.html"><code>Vec&lt;'bump, T&gt;</code></a> with <a href="struct.Vec.html#method.new_in"><code>new_in</code></a>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>bumpalo::{Bump, collections::Vec};
+
+<span class="kw">let </span>b = Bump::new();
+<span class="kw">let </span>v: Vec&lt;i32&gt; = Vec::new_in(<span class="kw-2">&amp;</span>b);</code></pre></div>
+<p>… or by using the <a href="../../macro.vec.html"><code>vec!</code></a> macro:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>bumpalo::{Bump, collections::Vec};
+
+<span class="kw">let </span>b = Bump::new();
+
+<span class="kw">let </span>v: Vec&lt;i32&gt; = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b];
+
+<span class="kw">let </span>v = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+
+<span class="kw">let </span>v = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b; <span class="number">0</span>; <span class="number">10</span>]; <span class="comment">// ten zeroes</span></code></pre></div>
+<p>You can <a href="struct.Vec.html#method.push"><code>push</code></a> values onto the end of a vector (which will grow the vector
+as needed):</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>bumpalo::{Bump, collections::Vec};
+
+<span class="kw">let </span>b = Bump::new();
+
+<span class="kw">let </span><span class="kw-2">mut </span>v = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b; <span class="number">1</span>, <span class="number">2</span>];
+
+v.push(<span class="number">3</span>);</code></pre></div>
+<p>Popping values works in much the same way:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>bumpalo::{Bump, collections::Vec};
+
+<span class="kw">let </span>b = Bump::new();
+
+<span class="kw">let </span><span class="kw-2">mut </span>v = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b; <span class="number">1</span>, <span class="number">2</span>];
+
+<span class="macro">assert_eq!</span>(v.pop(), <span class="prelude-val">Some</span>(<span class="number">2</span>));</code></pre></div>
+<p>Vectors also support indexing (through the <a href="https://doc.rust-lang.org/std/ops/trait.Index.html"><code>Index</code></a> and <a href="https://doc.rust-lang.org/std/ops/trait.IndexMut.html"><code>IndexMut</code></a> traits):</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>bumpalo::{Bump, collections::Vec};
+
+<span class="kw">let </span>b = Bump::new();
+
+<span class="kw">let </span><span class="kw-2">mut </span>v = <span class="macro">bumpalo::vec!</span>[<span class="kw">in </span><span class="kw-2">&amp;</span>b; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="macro">assert_eq!</span>(v[<span class="number">2</span>], <span class="number">3</span>);
+v[<span class="number">1</span>] += <span class="number">5</span>;
+<span class="macro">assert_eq!</span>(v, [<span class="number">1</span>, <span class="number">7</span>, <span class="number">3</span>]);</code></pre></div>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Drain.html" title="struct bumpalo::collections::vec::Drain">Drain</a></div><div class="desc docblock-short">A draining iterator for <code>Vec&lt;'bump, T&gt;</code>.</div></li><li><div class="item-name"><a class="struct" href="struct.DrainFilter.html" title="struct bumpalo::collections::vec::DrainFilter">DrainFilter</a></div><div class="desc docblock-short">An iterator produced by calling <a href="struct.Vec.html#method.drain_filter" title="method bumpalo::collections::vec::Vec::drain_filter"><code>Vec::drain_filter</code></a>.</div></li><li><div class="item-name"><a class="struct" href="struct.IntoIter.html" title="struct bumpalo::collections::vec::IntoIter">IntoIter</a></div><div class="desc docblock-short">An iterator that moves out of a vector.</div></li><li><div class="item-name"><a class="struct" href="struct.Splice.html" title="struct bumpalo::collections::vec::Splice">Splice</a></div><div class="desc docblock-short">A splicing iterator for <code>Vec</code>.</div></li><li><div class="item-name"><a class="struct" href="struct.Vec.html" title="struct bumpalo::collections::vec::Vec">Vec</a></div><div class="desc docblock-short">A contiguous growable array type, written <code>Vec&lt;'bump, T&gt;</code> but pronounced ‘vector’.</div></li></ul></section></div></main></body></html>

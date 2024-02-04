@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Data"],"fn":["get_database_instance"],"mod":["to_db"],"struct":["DataBase","GLOBAL_DATABASE"]};

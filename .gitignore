@@ -24,12 +24,13 @@ Cargo.lock
 # Generate by Esmeralda
 ./esmeralda_Exportados
 ./esmeralda_Exportados/
-./docs
+
 
 # Added by cargo
 /target
 
 # Genereted by tests
-test.pdf
-test.html
-test.csv
+/test.pdf
+/test.html
+/test.csv
+/lote.bat

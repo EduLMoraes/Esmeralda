@@ -6,6 +6,11 @@ use std::io::BufWriter;
 use std::io::Write;
 
 pub use crate::prelude::structs::InterfaceInfo;
+pub use crate::prelude::structs::Debtor;
+
+#[path = "./filter.rs"]
+mod filter;
+use filter::filter_debtors;
 
 /// Creates a directory structure and returns a file and its path. If the directory already exists, it appends a number to the file name to avoid overwriting existing files.
 ///
@@ -76,7 +81,6 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
-                    println!("{path}");
                 } else if count_files > 0 {
                     if is_alterated {
                         path.replace_range(limit..limit + 4, format!("({count_files})").trim());
@@ -84,7 +88,6 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
                         path.insert_str(limit, format!("({count_files})").trim());
                         is_alterated = true;
                     }
-                    println!("{path}");
                 }
 
                 match fs::metadata(path.clone()) {
@@ -119,19 +122,38 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
 ///
 /// ## Returns
 /// A `Result` object that contains either the path of the created file or an error message.
-///
-/// # Code Snippet
 #[allow(dead_code)]
 pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();
 
+    let debtors = filter_debtors(data.list.clone());
+
+    data_file.push_str("ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n");
+
+    for debtor in debtors{
+        data_file.push_str(
+            format!(
+                "{};{};{:.2};{:.2};{}",
+                debtor.get_id(),
+                debtor.get_name(),
+                debtor.get_debt(),
+                debtor.get_value(),
+                debtor.get_status()
+            )
+        .trim()
+        );
+
+        data_file.push('\n');
+    }
+
     data_file.push_str(
-        "ID;Nome;Natureza do gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
+        "\nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
     );
 
     for info in &data.list {
+
         data_file.push_str(
             format!(
                 "{};{};{};{};{};{};{};{};{};{:.2};{}",
@@ -149,6 +171,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
             )
             .trim(),
         );
+
         data_file.push('\n');
     }
 
@@ -189,7 +212,34 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     let mut data_file = String::new();
 
+    let debtors = filter_debtors(data.list.clone());
+
     data_file.push_str("<html><head></head><body><table>");
+    data_file.push_str("<tr>");
+    data_file.push_str("<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>");
+    data_file.push_str("</tr>");
+
+    for debtor in debtors{
+        data_file.push_str("<tr>");
+
+        data_file.push_str(
+            format!(
+                "<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>",
+                debtor.get_id(),
+                debtor.get_name(),
+                debtor.get_debt(),
+                debtor.get_value(),
+                debtor.get_status()
+            )
+        .trim()
+        );
+
+        data_file.push_str("</tr>");
+    }
+
+    data_file.push_str("</table>");
+
+    data_file.push_str("<table>");
     data_file.push_str("<tr>");
     data_file.push_str("<td>ID</td><td>Nome</td><td>Natureza do gasto</td><td>Titulo</td><td>Descricao</td><td>Data Inicial</td><td>Data Final</td><td>Parcelas</td><td>Valor</td><td>Status</td>");
     data_file.push_str("</tr>");
@@ -248,6 +298,76 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
     let font = doc
         .add_external_font(File::open("./assets/fonts/Roboto-Medium.ttf").unwrap())
         .unwrap();
+
+    // ===============
+    // PART OF DEBTORS
+    // ===============
+
+    y = Mm(205.0);
+    let pos_x: Vec<f32> = vec![5.0, 40.0, 80.0, 100.0, 140.0];
+    let header: Vec<&str> = vec![
+        "ID_Devedor",
+        "|Nome",
+        "|Dívida",
+        "|Total Gasto",
+        "|Status",
+    ];
+
+    for col in 0..5 {
+        current_layer.use_text(header[col], 12.0, Mm(pos_x[col]), y, &font);
+    }
+    
+    x = Mm(0.2);
+    y -= Mm(2.0);
+    for _ in 0..300 {
+        current_layer.use_text("____", 12.0, x, y, &font);
+        x += Mm(2.0);
+    }
+
+    let debtors = filter_debtors(data.list.clone());
+
+    for debtor in debtors {
+        x = Mm(0.2);
+        y -= Mm(5.0);
+        if y <= Mm(0.0) {
+            x = Mm(297.0);
+            y = Mm(210.0);
+
+            page_count += 1;
+            let (page, layer) = doc.add_page(x, y, format!("Página {}", page_count));
+            current_layer = doc.get_page(page).get_layer(layer);
+
+            x = Mm(0.2);
+            y -= Mm(5.0);
+        }
+
+        for col in 0..5 {
+            let line = vec![
+                format!("{}", debtor.get_id()),
+                format!("| {:.18}", debtor.get_name()),
+                format!("| {:.2}", debtor.get_debt()),
+                format!("| {:.2}", debtor.get_value()),
+                format!("| {}", debtor.get_status()),
+            ];
+
+            current_layer.use_text(&line[col], 12.0, Mm(pos_x[col]), y, &font);
+        }
+
+        for _ in 0..300 {
+            current_layer.use_text("____", 12.0, x, y, &font);
+            x += Mm(2.0);
+        }
+    }
+    
+    // ==============
+    // PART OF COUNTS
+    // ==============
+    
+    x = Mm(297.0);
+    y = Mm(210.0);
+    page_count += 1;
+    let (page, layer) = doc.add_page(x, y, format!("Página {}", page_count));
+    current_layer = doc.get_page(page).get_layer(layer);
 
     y = Mm(205.0);
     let pos_x: Vec<f32> = vec![5.0, 20.0, 60.0, 100.0, 170.0, 200.0, 230.0, 255.0, 280.0];

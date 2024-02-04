@@ -1,0 +1,1135 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/eduardo/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rust-crypto-0.2.36/src/blowfish.rs`."><title>blowfish.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="crypto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../crypto/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<a href="#2" id="2">2</a>
+<a href="#3" id="3">3</a>
+<a href="#4" id="4">4</a>
+<a href="#5" id="5">5</a>
+<a href="#6" id="6">6</a>
+<a href="#7" id="7">7</a>
+<a href="#8" id="8">8</a>
+<a href="#9" id="9">9</a>
+<a href="#10" id="10">10</a>
+<a href="#11" id="11">11</a>
+<a href="#12" id="12">12</a>
+<a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
+<a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
+<a href="#48" id="48">48</a>
+<a href="#49" id="49">49</a>
+<a href="#50" id="50">50</a>
+<a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+</pre></div><pre class="rust"><code><span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license
+// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
+</span><span class="kw">use </span>cryptoutil::{read_u32v_be, write_u32_be};
+<span class="kw">use </span>symmetriccipher::{BlockEncryptor, BlockDecryptor};
+<span class="kw">use </span>step_by::RangeExt;
+
+<span class="attr">#[derive(Clone,Copy)]
+</span><span class="kw">pub struct </span>Blowfish {
+    s: [[u32; <span class="number">256</span>]; <span class="number">4</span>],
+    p: [u32; <span class="number">18</span>]
+}
+
+<span class="kw">fn </span>next_u32_wrap(buf: <span class="kw-2">&amp;</span>[u8], offset: <span class="kw-2">&amp;mut </span>usize) -&gt; u32 {
+    <span class="kw">let </span><span class="kw-2">mut </span>v = <span class="number">0</span>;
+    <span class="kw">for _ in </span><span class="number">0</span>..<span class="number">4 </span>{
+        <span class="kw">if </span><span class="kw-2">*</span>offset &gt;= buf.len() {
+            <span class="kw-2">*</span>offset = <span class="number">0</span>;
+        }
+        v = (v &lt;&lt; <span class="number">8</span>) | buf[<span class="kw-2">*</span>offset] <span class="kw">as </span>u32;
+        <span class="kw-2">*</span>offset += <span class="number">1</span>;
+    }
+    v
+}
+
+<span class="kw">impl </span>Blowfish {
+    <span class="kw">pub fn </span>new(key: <span class="kw-2">&amp;</span>[u8]) -&gt; Blowfish {
+        <span class="macro">assert!</span>(<span class="number">4 </span>&lt;= key.len() &amp;&amp; key.len() &lt;= <span class="number">56</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>blowfish = Blowfish::init_state();
+        blowfish.expand_key(key);
+        blowfish
+    }
+
+    <span class="comment">// For bcrypt. Use Blowfish::new instead.
+    </span><span class="kw">pub fn </span>init_state() -&gt; Blowfish {
+        Blowfish {
+            p: [<span class="number">0x243f6a88</span>, <span class="number">0x85a308d3</span>, <span class="number">0x13198a2e</span>, <span class="number">0x03707344</span>, <span class="number">0xa4093822</span>, <span class="number">0x299f31d0</span>,
+                <span class="number">0x082efa98</span>, <span class="number">0xec4e6c89</span>, <span class="number">0x452821e6</span>, <span class="number">0x38d01377</span>, <span class="number">0xbe5466cf</span>, <span class="number">0x34e90c6c</span>,
+                <span class="number">0xc0ac29b7</span>, <span class="number">0xc97c50dd</span>, <span class="number">0x3f84d5b5</span>, <span class="number">0xb5470917</span>, <span class="number">0x9216d5d9</span>, <span class="number">0x8979fb1b</span>],
+            s: [[<span class="number">0xd1310ba6</span>, <span class="number">0x98dfb5ac</span>, <span class="number">0x2ffd72db</span>, <span class="number">0xd01adfb7</span>, <span class="number">0xb8e1afed</span>, <span class="number">0x6a267e96</span>,
+                 <span class="number">0xba7c9045</span>, <span class="number">0xf12c7f99</span>, <span class="number">0x24a19947</span>, <span class="number">0xb3916cf7</span>, <span class="number">0x0801f2e2</span>, <span class="number">0x858efc16</span>,
+                 <span class="number">0x636920d8</span>, <span class="number">0x71574e69</span>, <span class="number">0xa458fea3</span>, <span class="number">0xf4933d7e</span>, <span class="number">0x0d95748f</span>, <span class="number">0x728eb658</span>,
+                 <span class="number">0x718bcd58</span>, <span class="number">0x82154aee</span>, <span class="number">0x7b54a41d</span>, <span class="number">0xc25a59b5</span>, <span class="number">0x9c30d539</span>, <span class="number">0x2af26013</span>,
+                 <span class="number">0xc5d1b023</span>, <span class="number">0x286085f0</span>, <span class="number">0xca417918</span>, <span class="number">0xb8db38ef</span>, <span class="number">0x8e79dcb0</span>, <span class="number">0x603a180e</span>,
+                 <span class="number">0x6c9e0e8b</span>, <span class="number">0xb01e8a3e</span>, <span class="number">0xd71577c1</span>, <span class="number">0xbd314b27</span>, <span class="number">0x78af2fda</span>, <span class="number">0x55605c60</span>,
+                 <span class="number">0xe65525f3</span>, <span class="number">0xaa55ab94</span>, <span class="number">0x57489862</span>, <span class="number">0x63e81440</span>, <span class="number">0x55ca396a</span>, <span class="number">0x2aab10b6</span>,
+                 <span class="number">0xb4cc5c34</span>, <span class="number">0x1141e8ce</span>, <span class="number">0xa15486af</span>, <span class="number">0x7c72e993</span>, <span class="number">0xb3ee1411</span>, <span class="number">0x636fbc2a</span>,
+                 <span class="number">0x2ba9c55d</span>, <span class="number">0x741831f6</span>, <span class="number">0xce5c3e16</span>, <span class="number">0x9b87931e</span>, <span class="number">0xafd6ba33</span>, <span class="number">0x6c24cf5c</span>,
+                 <span class="number">0x7a325381</span>, <span class="number">0x28958677</span>, <span class="number">0x3b8f4898</span>, <span class="number">0x6b4bb9af</span>, <span class="number">0xc4bfe81b</span>, <span class="number">0x66282193</span>,
+                 <span class="number">0x61d809cc</span>, <span class="number">0xfb21a991</span>, <span class="number">0x487cac60</span>, <span class="number">0x5dec8032</span>, <span class="number">0xef845d5d</span>, <span class="number">0xe98575b1</span>,
+                 <span class="number">0xdc262302</span>, <span class="number">0xeb651b88</span>, <span class="number">0x23893e81</span>, <span class="number">0xd396acc5</span>, <span class="number">0x0f6d6ff3</span>, <span class="number">0x83f44239</span>,
+                 <span class="number">0x2e0b4482</span>, <span class="number">0xa4842004</span>, <span class="number">0x69c8f04a</span>, <span class="number">0x9e1f9b5e</span>, <span class="number">0x21c66842</span>, <span class="number">0xf6e96c9a</span>,
+                 <span class="number">0x670c9c61</span>, <span class="number">0xabd388f0</span>, <span class="number">0x6a51a0d2</span>, <span class="number">0xd8542f68</span>, <span class="number">0x960fa728</span>, <span class="number">0xab5133a3</span>,
+                 <span class="number">0x6eef0b6c</span>, <span class="number">0x137a3be4</span>, <span class="number">0xba3bf050</span>, <span class="number">0x7efb2a98</span>, <span class="number">0xa1f1651d</span>, <span class="number">0x39af0176</span>,
+                 <span class="number">0x66ca593e</span>, <span class="number">0x82430e88</span>, <span class="number">0x8cee8619</span>, <span class="number">0x456f9fb4</span>, <span class="number">0x7d84a5c3</span>, <span class="number">0x3b8b5ebe</span>,
+                 <span class="number">0xe06f75d8</span>, <span class="number">0x85c12073</span>, <span class="number">0x401a449f</span>, <span class="number">0x56c16aa6</span>, <span class="number">0x4ed3aa62</span>, <span class="number">0x363f7706</span>,
+                 <span class="number">0x1bfedf72</span>, <span class="number">0x429b023d</span>, <span class="number">0x37d0d724</span>, <span class="number">0xd00a1248</span>, <span class="number">0xdb0fead3</span>, <span class="number">0x49f1c09b</span>,
+                 <span class="number">0x075372c9</span>, <span class="number">0x80991b7b</span>, <span class="number">0x25d479d8</span>, <span class="number">0xf6e8def7</span>, <span class="number">0xe3fe501a</span>, <span class="number">0xb6794c3b</span>,
+                 <span class="number">0x976ce0bd</span>, <span class="number">0x04c006ba</span>, <span class="number">0xc1a94fb6</span>, <span class="number">0x409f60c4</span>, <span class="number">0x5e5c9ec2</span>, <span class="number">0x196a2463</span>,
+                 <span class="number">0x68fb6faf</span>, <span class="number">0x3e6c53b5</span>, <span class="number">0x1339b2eb</span>, <span class="number">0x3b52ec6f</span>, <span class="number">0x6dfc511f</span>, <span class="number">0x9b30952c</span>,
+                 <span class="number">0xcc814544</span>, <span class="number">0xaf5ebd09</span>, <span class="number">0xbee3d004</span>, <span class="number">0xde334afd</span>, <span class="number">0x660f2807</span>, <span class="number">0x192e4bb3</span>,
+                 <span class="number">0xc0cba857</span>, <span class="number">0x45c8740f</span>, <span class="number">0xd20b5f39</span>, <span class="number">0xb9d3fbdb</span>, <span class="number">0x5579c0bd</span>, <span class="number">0x1a60320a</span>,
+                 <span class="number">0xd6a100c6</span>, <span class="number">0x402c7279</span>, <span class="number">0x679f25fe</span>, <span class="number">0xfb1fa3cc</span>, <span class="number">0x8ea5e9f8</span>, <span class="number">0xdb3222f8</span>,
+                 <span class="number">0x3c7516df</span>, <span class="number">0xfd616b15</span>, <span class="number">0x2f501ec8</span>, <span class="number">0xad0552ab</span>, <span class="number">0x323db5fa</span>, <span class="number">0xfd238760</span>,
+                 <span class="number">0x53317b48</span>, <span class="number">0x3e00df82</span>, <span class="number">0x9e5c57bb</span>, <span class="number">0xca6f8ca0</span>, <span class="number">0x1a87562e</span>, <span class="number">0xdf1769db</span>,
+                 <span class="number">0xd542a8f6</span>, <span class="number">0x287effc3</span>, <span class="number">0xac6732c6</span>, <span class="number">0x8c4f5573</span>, <span class="number">0x695b27b0</span>, <span class="number">0xbbca58c8</span>,
+                 <span class="number">0xe1ffa35d</span>, <span class="number">0xb8f011a0</span>, <span class="number">0x10fa3d98</span>, <span class="number">0xfd2183b8</span>, <span class="number">0x4afcb56c</span>, <span class="number">0x2dd1d35b</span>,
+                 <span class="number">0x9a53e479</span>, <span class="number">0xb6f84565</span>, <span class="number">0xd28e49bc</span>, <span class="number">0x4bfb9790</span>, <span class="number">0xe1ddf2da</span>, <span class="number">0xa4cb7e33</span>,
+                 <span class="number">0x62fb1341</span>, <span class="number">0xcee4c6e8</span>, <span class="number">0xef20cada</span>, <span class="number">0x36774c01</span>, <span class="number">0xd07e9efe</span>, <span class="number">0x2bf11fb4</span>,
+                 <span class="number">0x95dbda4d</span>, <span class="number">0xae909198</span>, <span class="number">0xeaad8e71</span>, <span class="number">0x6b93d5a0</span>, <span class="number">0xd08ed1d0</span>, <span class="number">0xafc725e0</span>,
+                 <span class="number">0x8e3c5b2f</span>, <span class="number">0x8e7594b7</span>, <span class="number">0x8ff6e2fb</span>, <span class="number">0xf2122b64</span>, <span class="number">0x8888b812</span>, <span class="number">0x900df01c</span>,
+                 <span class="number">0x4fad5ea0</span>, <span class="number">0x688fc31c</span>, <span class="number">0xd1cff191</span>, <span class="number">0xb3a8c1ad</span>, <span class="number">0x2f2f2218</span>, <span class="number">0xbe0e1777</span>,
+                 <span class="number">0xea752dfe</span>, <span class="number">0x8b021fa1</span>, <span class="number">0xe5a0cc0f</span>, <span class="number">0xb56f74e8</span>, <span class="number">0x18acf3d6</span>, <span class="number">0xce89e299</span>,
+                 <span class="number">0xb4a84fe0</span>, <span class="number">0xfd13e0b7</span>, <span class="number">0x7cc43b81</span>, <span class="number">0xd2ada8d9</span>, <span class="number">0x165fa266</span>, <span class="number">0x80957705</span>,
+                 <span class="number">0x93cc7314</span>, <span class="number">0x211a1477</span>, <span class="number">0xe6ad2065</span>, <span class="number">0x77b5fa86</span>, <span class="number">0xc75442f5</span>, <span class="number">0xfb9d35cf</span>,
+                 <span class="number">0xebcdaf0c</span>, <span class="number">0x7b3e89a0</span>, <span class="number">0xd6411bd3</span>, <span class="number">0xae1e7e49</span>, <span class="number">0x00250e2d</span>, <span class="number">0x2071b35e</span>,
+                 <span class="number">0x226800bb</span>, <span class="number">0x57b8e0af</span>, <span class="number">0x2464369b</span>, <span class="number">0xf009b91e</span>, <span class="number">0x5563911d</span>, <span class="number">0x59dfa6aa</span>,
+                 <span class="number">0x78c14389</span>, <span class="number">0xd95a537f</span>, <span class="number">0x207d5ba2</span>, <span class="number">0x02e5b9c5</span>, <span class="number">0x83260376</span>, <span class="number">0x6295cfa9</span>,
+                 <span class="number">0x11c81968</span>, <span class="number">0x4e734a41</span>, <span class="number">0xb3472dca</span>, <span class="number">0x7b14a94a</span>, <span class="number">0x1b510052</span>, <span class="number">0x9a532915</span>,
+                 <span class="number">0xd60f573f</span>, <span class="number">0xbc9bc6e4</span>, <span class="number">0x2b60a476</span>, <span class="number">0x81e67400</span>, <span class="number">0x08ba6fb5</span>, <span class="number">0x571be91f</span>,
+                 <span class="number">0xf296ec6b</span>, <span class="number">0x2a0dd915</span>, <span class="number">0xb6636521</span>, <span class="number">0xe7b9f9b6</span>, <span class="number">0xff34052e</span>, <span class="number">0xc5855664</span>,
+                 <span class="number">0x53b02d5d</span>, <span class="number">0xa99f8fa1</span>, <span class="number">0x08ba4799</span>, <span class="number">0x6e85076a</span>],
+                [<span class="number">0x4b7a70e9</span>, <span class="number">0xb5b32944</span>, <span class="number">0xdb75092e</span>, <span class="number">0xc4192623</span>, <span class="number">0xad6ea6b0</span>, <span class="number">0x49a7df7d</span>,
+                 <span class="number">0x9cee60b8</span>, <span class="number">0x8fedb266</span>, <span class="number">0xecaa8c71</span>, <span class="number">0x699a17ff</span>, <span class="number">0x5664526c</span>, <span class="number">0xc2b19ee1</span>,
+                 <span class="number">0x193602a5</span>, <span class="number">0x75094c29</span>, <span class="number">0xa0591340</span>, <span class="number">0xe4183a3e</span>, <span class="number">0x3f54989a</span>, <span class="number">0x5b429d65</span>,
+                 <span class="number">0x6b8fe4d6</span>, <span class="number">0x99f73fd6</span>, <span class="number">0xa1d29c07</span>, <span class="number">0xefe830f5</span>, <span class="number">0x4d2d38e6</span>, <span class="number">0xf0255dc1</span>,
+                 <span class="number">0x4cdd2086</span>, <span class="number">0x8470eb26</span>, <span class="number">0x6382e9c6</span>, <span class="number">0x021ecc5e</span>, <span class="number">0x09686b3f</span>, <span class="number">0x3ebaefc9</span>,
+                 <span class="number">0x3c971814</span>, <span class="number">0x6b6a70a1</span>, <span class="number">0x687f3584</span>, <span class="number">0x52a0e286</span>, <span class="number">0xb79c5305</span>, <span class="number">0xaa500737</span>,
+                 <span class="number">0x3e07841c</span>, <span class="number">0x7fdeae5c</span>, <span class="number">0x8e7d44ec</span>, <span class="number">0x5716f2b8</span>, <span class="number">0xb03ada37</span>, <span class="number">0xf0500c0d</span>,
+                 <span class="number">0xf01c1f04</span>, <span class="number">0x0200b3ff</span>, <span class="number">0xae0cf51a</span>, <span class="number">0x3cb574b2</span>, <span class="number">0x25837a58</span>, <span class="number">0xdc0921bd</span>,
+                 <span class="number">0xd19113f9</span>, <span class="number">0x7ca92ff6</span>, <span class="number">0x94324773</span>, <span class="number">0x22f54701</span>, <span class="number">0x3ae5e581</span>, <span class="number">0x37c2dadc</span>,
+                 <span class="number">0xc8b57634</span>, <span class="number">0x9af3dda7</span>, <span class="number">0xa9446146</span>, <span class="number">0x0fd0030e</span>, <span class="number">0xecc8c73e</span>, <span class="number">0xa4751e41</span>,
+                 <span class="number">0xe238cd99</span>, <span class="number">0x3bea0e2f</span>, <span class="number">0x3280bba1</span>, <span class="number">0x183eb331</span>, <span class="number">0x4e548b38</span>, <span class="number">0x4f6db908</span>,
+                 <span class="number">0x6f420d03</span>, <span class="number">0xf60a04bf</span>, <span class="number">0x2cb81290</span>, <span class="number">0x24977c79</span>, <span class="number">0x5679b072</span>, <span class="number">0xbcaf89af</span>,
+                 <span class="number">0xde9a771f</span>, <span class="number">0xd9930810</span>, <span class="number">0xb38bae12</span>, <span class="number">0xdccf3f2e</span>, <span class="number">0x5512721f</span>, <span class="number">0x2e6b7124</span>,
+                 <span class="number">0x501adde6</span>, <span class="number">0x9f84cd87</span>, <span class="number">0x7a584718</span>, <span class="number">0x7408da17</span>, <span class="number">0xbc9f9abc</span>, <span class="number">0xe94b7d8c</span>,
+                 <span class="number">0xec7aec3a</span>, <span class="number">0xdb851dfa</span>, <span class="number">0x63094366</span>, <span class="number">0xc464c3d2</span>, <span class="number">0xef1c1847</span>, <span class="number">0x3215d908</span>,
+                 <span class="number">0xdd433b37</span>, <span class="number">0x24c2ba16</span>, <span class="number">0x12a14d43</span>, <span class="number">0x2a65c451</span>, <span class="number">0x50940002</span>, <span class="number">0x133ae4dd</span>,
+                 <span class="number">0x71dff89e</span>, <span class="number">0x10314e55</span>, <span class="number">0x81ac77d6</span>, <span class="number">0x5f11199b</span>, <span class="number">0x043556f1</span>, <span class="number">0xd7a3c76b</span>,
+                 <span class="number">0x3c11183b</span>, <span class="number">0x5924a509</span>, <span class="number">0xf28fe6ed</span>, <span class="number">0x97f1fbfa</span>, <span class="number">0x9ebabf2c</span>, <span class="number">0x1e153c6e</span>,
+                 <span class="number">0x86e34570</span>, <span class="number">0xeae96fb1</span>, <span class="number">0x860e5e0a</span>, <span class="number">0x5a3e2ab3</span>, <span class="number">0x771fe71c</span>, <span class="number">0x4e3d06fa</span>,
+                 <span class="number">0x2965dcb9</span>, <span class="number">0x99e71d0f</span>, <span class="number">0x803e89d6</span>, <span class="number">0x5266c825</span>, <span class="number">0x2e4cc978</span>, <span class="number">0x9c10b36a</span>,
+                 <span class="number">0xc6150eba</span>, <span class="number">0x94e2ea78</span>, <span class="number">0xa5fc3c53</span>, <span class="number">0x1e0a2df4</span>, <span class="number">0xf2f74ea7</span>, <span class="number">0x361d2b3d</span>,
+                 <span class="number">0x1939260f</span>, <span class="number">0x19c27960</span>, <span class="number">0x5223a708</span>, <span class="number">0xf71312b6</span>, <span class="number">0xebadfe6e</span>, <span class="number">0xeac31f66</span>,
+                 <span class="number">0xe3bc4595</span>, <span class="number">0xa67bc883</span>, <span class="number">0xb17f37d1</span>, <span class="number">0x018cff28</span>, <span class="number">0xc332ddef</span>, <span class="number">0xbe6c5aa5</span>,
+                 <span class="number">0x65582185</span>, <span class="number">0x68ab9802</span>, <span class="number">0xeecea50f</span>, <span class="number">0xdb2f953b</span>, <span class="number">0x2aef7dad</span>, <span class="number">0x5b6e2f84</span>,
+                 <span class="number">0x1521b628</span>, <span class="number">0x29076170</span>, <span class="number">0xecdd4775</span>, <span class="number">0x619f1510</span>, <span class="number">0x13cca830</span>, <span class="number">0xeb61bd96</span>,
+                 <span class="number">0x0334fe1e</span>, <span class="number">0xaa0363cf</span>, <span class="number">0xb5735c90</span>, <span class="number">0x4c70a239</span>, <span class="number">0xd59e9e0b</span>, <span class="number">0xcbaade14</span>,
+                 <span class="number">0xeecc86bc</span>, <span class="number">0x60622ca7</span>, <span class="number">0x9cab5cab</span>, <span class="number">0xb2f3846e</span>, <span class="number">0x648b1eaf</span>, <span class="number">0x19bdf0ca</span>,
+                 <span class="number">0xa02369b9</span>, <span class="number">0x655abb50</span>, <span class="number">0x40685a32</span>, <span class="number">0x3c2ab4b3</span>, <span class="number">0x319ee9d5</span>, <span class="number">0xc021b8f7</span>,
+                 <span class="number">0x9b540b19</span>, <span class="number">0x875fa099</span>, <span class="number">0x95f7997e</span>, <span class="number">0x623d7da8</span>, <span class="number">0xf837889a</span>, <span class="number">0x97e32d77</span>,
+                 <span class="number">0x11ed935f</span>, <span class="number">0x16681281</span>, <span class="number">0x0e358829</span>, <span class="number">0xc7e61fd6</span>, <span class="number">0x96dedfa1</span>, <span class="number">0x7858ba99</span>,
+                 <span class="number">0x57f584a5</span>, <span class="number">0x1b227263</span>, <span class="number">0x9b83c3ff</span>, <span class="number">0x1ac24696</span>, <span class="number">0xcdb30aeb</span>, <span class="number">0x532e3054</span>,
+                 <span class="number">0x8fd948e4</span>, <span class="number">0x6dbc3128</span>, <span class="number">0x58ebf2ef</span>, <span class="number">0x34c6ffea</span>, <span class="number">0xfe28ed61</span>, <span class="number">0xee7c3c73</span>,
+                 <span class="number">0x5d4a14d9</span>, <span class="number">0xe864b7e3</span>, <span class="number">0x42105d14</span>, <span class="number">0x203e13e0</span>, <span class="number">0x45eee2b6</span>, <span class="number">0xa3aaabea</span>,
+                 <span class="number">0xdb6c4f15</span>, <span class="number">0xfacb4fd0</span>, <span class="number">0xc742f442</span>, <span class="number">0xef6abbb5</span>, <span class="number">0x654f3b1d</span>, <span class="number">0x41cd2105</span>,
+                 <span class="number">0xd81e799e</span>, <span class="number">0x86854dc7</span>, <span class="number">0xe44b476a</span>, <span class="number">0x3d816250</span>, <span class="number">0xcf62a1f2</span>, <span class="number">0x5b8d2646</span>,
+                 <span class="number">0xfc8883a0</span>, <span class="number">0xc1c7b6a3</span>, <span class="number">0x7f1524c3</span>, <span class="number">0x69cb7492</span>, <span class="number">0x47848a0b</span>, <span class="number">0x5692b285</span>,
+                 <span class="number">0x095bbf00</span>, <span class="number">0xad19489d</span>, <span class="number">0x1462b174</span>, <span class="number">0x23820e00</span>, <span class="number">0x58428d2a</span>, <span class="number">0x0c55f5ea</span>,
+                 <span class="number">0x1dadf43e</span>, <span class="number">0x233f7061</span>, <span class="number">0x3372f092</span>, <span class="number">0x8d937e41</span>, <span class="number">0xd65fecf1</span>, <span class="number">0x6c223bdb</span>,
+                 <span class="number">0x7cde3759</span>, <span class="number">0xcbee7460</span>, <span class="number">0x4085f2a7</span>, <span class="number">0xce77326e</span>, <span class="number">0xa6078084</span>, <span class="number">0x19f8509e</span>,
+                 <span class="number">0xe8efd855</span>, <span class="number">0x61d99735</span>, <span class="number">0xa969a7aa</span>, <span class="number">0xc50c06c2</span>, <span class="number">0x5a04abfc</span>, <span class="number">0x800bcadc</span>,
+                 <span class="number">0x9e447a2e</span>, <span class="number">0xc3453484</span>, <span class="number">0xfdd56705</span>, <span class="number">0x0e1e9ec9</span>, <span class="number">0xdb73dbd3</span>, <span class="number">0x105588cd</span>,
+                 <span class="number">0x675fda79</span>, <span class="number">0xe3674340</span>, <span class="number">0xc5c43465</span>, <span class="number">0x713e38d8</span>, <span class="number">0x3d28f89e</span>, <span class="number">0xf16dff20</span>,
+                 <span class="number">0x153e21e7</span>, <span class="number">0x8fb03d4a</span>, <span class="number">0xe6e39f2b</span>, <span class="number">0xdb83adf7</span>],
+                [<span class="number">0xe93d5a68</span>, <span class="number">0x948140f7</span>, <span class="number">0xf64c261c</span>, <span class="number">0x94692934</span>, <span class="number">0x411520f7</span>, <span class="number">0x7602d4f7</span>,
+                 <span class="number">0xbcf46b2e</span>, <span class="number">0xd4a20068</span>, <span class="number">0xd4082471</span>, <span class="number">0x3320f46a</span>, <span class="number">0x43b7d4b7</span>, <span class="number">0x500061af</span>,
+                 <span class="number">0x1e39f62e</span>, <span class="number">0x97244546</span>, <span class="number">0x14214f74</span>, <span class="number">0xbf8b8840</span>, <span class="number">0x4d95fc1d</span>, <span class="number">0x96b591af</span>,
+                 <span class="number">0x70f4ddd3</span>, <span class="number">0x66a02f45</span>, <span class="number">0xbfbc09ec</span>, <span class="number">0x03bd9785</span>, <span class="number">0x7fac6dd0</span>, <span class="number">0x31cb8504</span>,
+                 <span class="number">0x96eb27b3</span>, <span class="number">0x55fd3941</span>, <span class="number">0xda2547e6</span>, <span class="number">0xabca0a9a</span>, <span class="number">0x28507825</span>, <span class="number">0x530429f4</span>,
+                 <span class="number">0x0a2c86da</span>, <span class="number">0xe9b66dfb</span>, <span class="number">0x68dc1462</span>, <span class="number">0xd7486900</span>, <span class="number">0x680ec0a4</span>, <span class="number">0x27a18dee</span>,
+                 <span class="number">0x4f3ffea2</span>, <span class="number">0xe887ad8c</span>, <span class="number">0xb58ce006</span>, <span class="number">0x7af4d6b6</span>, <span class="number">0xaace1e7c</span>, <span class="number">0xd3375fec</span>,
+                 <span class="number">0xce78a399</span>, <span class="number">0x406b2a42</span>, <span class="number">0x20fe9e35</span>, <span class="number">0xd9f385b9</span>, <span class="number">0xee39d7ab</span>, <span class="number">0x3b124e8b</span>,
+                 <span class="number">0x1dc9faf7</span>, <span class="number">0x4b6d1856</span>, <span class="number">0x26a36631</span>, <span class="number">0xeae397b2</span>, <span class="number">0x3a6efa74</span>, <span class="number">0xdd5b4332</span>,
+                 <span class="number">0x6841e7f7</span>, <span class="number">0xca7820fb</span>, <span class="number">0xfb0af54e</span>, <span class="number">0xd8feb397</span>, <span class="number">0x454056ac</span>, <span class="number">0xba489527</span>,
+                 <span class="number">0x55533a3a</span>, <span class="number">0x20838d87</span>, <span class="number">0xfe6ba9b7</span>, <span class="number">0xd096954b</span>, <span class="number">0x55a867bc</span>, <span class="number">0xa1159a58</span>,
+                 <span class="number">0xcca92963</span>, <span class="number">0x99e1db33</span>, <span class="number">0xa62a4a56</span>, <span class="number">0x3f3125f9</span>, <span class="number">0x5ef47e1c</span>, <span class="number">0x9029317c</span>,
+                 <span class="number">0xfdf8e802</span>, <span class="number">0x04272f70</span>, <span class="number">0x80bb155c</span>, <span class="number">0x05282ce3</span>, <span class="number">0x95c11548</span>, <span class="number">0xe4c66d22</span>,
+                 <span class="number">0x48c1133f</span>, <span class="number">0xc70f86dc</span>, <span class="number">0x07f9c9ee</span>, <span class="number">0x41041f0f</span>, <span class="number">0x404779a4</span>, <span class="number">0x5d886e17</span>,
+                 <span class="number">0x325f51eb</span>, <span class="number">0xd59bc0d1</span>, <span class="number">0xf2bcc18f</span>, <span class="number">0x41113564</span>, <span class="number">0x257b7834</span>, <span class="number">0x602a9c60</span>,
+                 <span class="number">0xdff8e8a3</span>, <span class="number">0x1f636c1b</span>, <span class="number">0x0e12b4c2</span>, <span class="number">0x02e1329e</span>, <span class="number">0xaf664fd1</span>, <span class="number">0xcad18115</span>,
+                 <span class="number">0x6b2395e0</span>, <span class="number">0x333e92e1</span>, <span class="number">0x3b240b62</span>, <span class="number">0xeebeb922</span>, <span class="number">0x85b2a20e</span>, <span class="number">0xe6ba0d99</span>,
+                 <span class="number">0xde720c8c</span>, <span class="number">0x2da2f728</span>, <span class="number">0xd0127845</span>, <span class="number">0x95b794fd</span>, <span class="number">0x647d0862</span>, <span class="number">0xe7ccf5f0</span>,
+                 <span class="number">0x5449a36f</span>, <span class="number">0x877d48fa</span>, <span class="number">0xc39dfd27</span>, <span class="number">0xf33e8d1e</span>, <span class="number">0x0a476341</span>, <span class="number">0x992eff74</span>,
+                 <span class="number">0x3a6f6eab</span>, <span class="number">0xf4f8fd37</span>, <span class="number">0xa812dc60</span>, <span class="number">0xa1ebddf8</span>, <span class="number">0x991be14c</span>, <span class="number">0xdb6e6b0d</span>,
+                 <span class="number">0xc67b5510</span>, <span class="number">0x6d672c37</span>, <span class="number">0x2765d43b</span>, <span class="number">0xdcd0e804</span>, <span class="number">0xf1290dc7</span>, <span class="number">0xcc00ffa3</span>,
+                 <span class="number">0xb5390f92</span>, <span class="number">0x690fed0b</span>, <span class="number">0x667b9ffb</span>, <span class="number">0xcedb7d9c</span>, <span class="number">0xa091cf0b</span>, <span class="number">0xd9155ea3</span>,
+                 <span class="number">0xbb132f88</span>, <span class="number">0x515bad24</span>, <span class="number">0x7b9479bf</span>, <span class="number">0x763bd6eb</span>, <span class="number">0x37392eb3</span>, <span class="number">0xcc115979</span>,
+                 <span class="number">0x8026e297</span>, <span class="number">0xf42e312d</span>, <span class="number">0x6842ada7</span>, <span class="number">0xc66a2b3b</span>, <span class="number">0x12754ccc</span>, <span class="number">0x782ef11c</span>,
+                 <span class="number">0x6a124237</span>, <span class="number">0xb79251e7</span>, <span class="number">0x06a1bbe6</span>, <span class="number">0x4bfb6350</span>, <span class="number">0x1a6b1018</span>, <span class="number">0x11caedfa</span>,
+                 <span class="number">0x3d25bdd8</span>, <span class="number">0xe2e1c3c9</span>, <span class="number">0x44421659</span>, <span class="number">0x0a121386</span>, <span class="number">0xd90cec6e</span>, <span class="number">0xd5abea2a</span>,
+                 <span class="number">0x64af674e</span>, <span class="number">0xda86a85f</span>, <span class="number">0xbebfe988</span>, <span class="number">0x64e4c3fe</span>, <span class="number">0x9dbc8057</span>, <span class="number">0xf0f7c086</span>,
+                 <span class="number">0x60787bf8</span>, <span class="number">0x6003604d</span>, <span class="number">0xd1fd8346</span>, <span class="number">0xf6381fb0</span>, <span class="number">0x7745ae04</span>, <span class="number">0xd736fccc</span>,
+                 <span class="number">0x83426b33</span>, <span class="number">0xf01eab71</span>, <span class="number">0xb0804187</span>, <span class="number">0x3c005e5f</span>, <span class="number">0x77a057be</span>, <span class="number">0xbde8ae24</span>,
+                 <span class="number">0x55464299</span>, <span class="number">0xbf582e61</span>, <span class="number">0x4e58f48f</span>, <span class="number">0xf2ddfda2</span>, <span class="number">0xf474ef38</span>, <span class="number">0x8789bdc2</span>,
+                 <span class="number">0x5366f9c3</span>, <span class="number">0xc8b38e74</span>, <span class="number">0xb475f255</span>, <span class="number">0x46fcd9b9</span>, <span class="number">0x7aeb2661</span>, <span class="number">0x8b1ddf84</span>,
+                 <span class="number">0x846a0e79</span>, <span class="number">0x915f95e2</span>, <span class="number">0x466e598e</span>, <span class="number">0x20b45770</span>, <span class="number">0x8cd55591</span>, <span class="number">0xc902de4c</span>,
+                 <span class="number">0xb90bace1</span>, <span class="number">0xbb8205d0</span>, <span class="number">0x11a86248</span>, <span class="number">0x7574a99e</span>, <span class="number">0xb77f19b6</span>, <span class="number">0xe0a9dc09</span>,
+                 <span class="number">0x662d09a1</span>, <span class="number">0xc4324633</span>, <span class="number">0xe85a1f02</span>, <span class="number">0x09f0be8c</span>, <span class="number">0x4a99a025</span>, <span class="number">0x1d6efe10</span>,
+                 <span class="number">0x1ab93d1d</span>, <span class="number">0x0ba5a4df</span>, <span class="number">0xa186f20f</span>, <span class="number">0x2868f169</span>, <span class="number">0xdcb7da83</span>, <span class="number">0x573906fe</span>,
+                 <span class="number">0xa1e2ce9b</span>, <span class="number">0x4fcd7f52</span>, <span class="number">0x50115e01</span>, <span class="number">0xa70683fa</span>, <span class="number">0xa002b5c4</span>, <span class="number">0x0de6d027</span>,
+                 <span class="number">0x9af88c27</span>, <span class="number">0x773f8641</span>, <span class="number">0xc3604c06</span>, <span class="number">0x61a806b5</span>, <span class="number">0xf0177a28</span>, <span class="number">0xc0f586e0</span>,
+                 <span class="number">0x006058aa</span>, <span class="number">0x30dc7d62</span>, <span class="number">0x11e69ed7</span>, <span class="number">0x2338ea63</span>, <span class="number">0x53c2dd94</span>, <span class="number">0xc2c21634</span>,
+                 <span class="number">0xbbcbee56</span>, <span class="number">0x90bcb6de</span>, <span class="number">0xebfc7da1</span>, <span class="number">0xce591d76</span>, <span class="number">0x6f05e409</span>, <span class="number">0x4b7c0188</span>,
+                 <span class="number">0x39720a3d</span>, <span class="number">0x7c927c24</span>, <span class="number">0x86e3725f</span>, <span class="number">0x724d9db9</span>, <span class="number">0x1ac15bb4</span>, <span class="number">0xd39eb8fc</span>,
+                 <span class="number">0xed545578</span>, <span class="number">0x08fca5b5</span>, <span class="number">0xd83d7cd3</span>, <span class="number">0x4dad0fc4</span>, <span class="number">0x1e50ef5e</span>, <span class="number">0xb161e6f8</span>,
+                 <span class="number">0xa28514d9</span>, <span class="number">0x6c51133c</span>, <span class="number">0x6fd5c7e7</span>, <span class="number">0x56e14ec4</span>, <span class="number">0x362abfce</span>, <span class="number">0xddc6c837</span>,
+                 <span class="number">0xd79a3234</span>, <span class="number">0x92638212</span>, <span class="number">0x670efa8e</span>, <span class="number">0x406000e0</span>],
+                [<span class="number">0x3a39ce37</span>, <span class="number">0xd3faf5cf</span>, <span class="number">0xabc27737</span>, <span class="number">0x5ac52d1b</span>, <span class="number">0x5cb0679e</span>, <span class="number">0x4fa33742</span>,
+                 <span class="number">0xd3822740</span>, <span class="number">0x99bc9bbe</span>, <span class="number">0xd5118e9d</span>, <span class="number">0xbf0f7315</span>, <span class="number">0xd62d1c7e</span>, <span class="number">0xc700c47b</span>,
+                 <span class="number">0xb78c1b6b</span>, <span class="number">0x21a19045</span>, <span class="number">0xb26eb1be</span>, <span class="number">0x6a366eb4</span>, <span class="number">0x5748ab2f</span>, <span class="number">0xbc946e79</span>,
+                 <span class="number">0xc6a376d2</span>, <span class="number">0x6549c2c8</span>, <span class="number">0x530ff8ee</span>, <span class="number">0x468dde7d</span>, <span class="number">0xd5730a1d</span>, <span class="number">0x4cd04dc6</span>,
+                 <span class="number">0x2939bbdb</span>, <span class="number">0xa9ba4650</span>, <span class="number">0xac9526e8</span>, <span class="number">0xbe5ee304</span>, <span class="number">0xa1fad5f0</span>, <span class="number">0x6a2d519a</span>,
+                 <span class="number">0x63ef8ce2</span>, <span class="number">0x9a86ee22</span>, <span class="number">0xc089c2b8</span>, <span class="number">0x43242ef6</span>, <span class="number">0xa51e03aa</span>, <span class="number">0x9cf2d0a4</span>,
+                 <span class="number">0x83c061ba</span>, <span class="number">0x9be96a4d</span>, <span class="number">0x8fe51550</span>, <span class="number">0xba645bd6</span>, <span class="number">0x2826a2f9</span>, <span class="number">0xa73a3ae1</span>,
+                 <span class="number">0x4ba99586</span>, <span class="number">0xef5562e9</span>, <span class="number">0xc72fefd3</span>, <span class="number">0xf752f7da</span>, <span class="number">0x3f046f69</span>, <span class="number">0x77fa0a59</span>,
+                 <span class="number">0x80e4a915</span>, <span class="number">0x87b08601</span>, <span class="number">0x9b09e6ad</span>, <span class="number">0x3b3ee593</span>, <span class="number">0xe990fd5a</span>, <span class="number">0x9e34d797</span>,
+                 <span class="number">0x2cf0b7d9</span>, <span class="number">0x022b8b51</span>, <span class="number">0x96d5ac3a</span>, <span class="number">0x017da67d</span>, <span class="number">0xd1cf3ed6</span>, <span class="number">0x7c7d2d28</span>,
+                 <span class="number">0x1f9f25cf</span>, <span class="number">0xadf2b89b</span>, <span class="number">0x5ad6b472</span>, <span class="number">0x5a88f54c</span>, <span class="number">0xe029ac71</span>, <span class="number">0xe019a5e6</span>,
+                 <span class="number">0x47b0acfd</span>, <span class="number">0xed93fa9b</span>, <span class="number">0xe8d3c48d</span>, <span class="number">0x283b57cc</span>, <span class="number">0xf8d56629</span>, <span class="number">0x79132e28</span>,
+                 <span class="number">0x785f0191</span>, <span class="number">0xed756055</span>, <span class="number">0xf7960e44</span>, <span class="number">0xe3d35e8c</span>, <span class="number">0x15056dd4</span>, <span class="number">0x88f46dba</span>,
+                 <span class="number">0x03a16125</span>, <span class="number">0x0564f0bd</span>, <span class="number">0xc3eb9e15</span>, <span class="number">0x3c9057a2</span>, <span class="number">0x97271aec</span>, <span class="number">0xa93a072a</span>,
+                 <span class="number">0x1b3f6d9b</span>, <span class="number">0x1e6321f5</span>, <span class="number">0xf59c66fb</span>, <span class="number">0x26dcf319</span>, <span class="number">0x7533d928</span>, <span class="number">0xb155fdf5</span>,
+                 <span class="number">0x03563482</span>, <span class="number">0x8aba3cbb</span>, <span class="number">0x28517711</span>, <span class="number">0xc20ad9f8</span>, <span class="number">0xabcc5167</span>, <span class="number">0xccad925f</span>,
+                 <span class="number">0x4de81751</span>, <span class="number">0x3830dc8e</span>, <span class="number">0x379d5862</span>, <span class="number">0x9320f991</span>, <span class="number">0xea7a90c2</span>, <span class="number">0xfb3e7bce</span>,
+                 <span class="number">0x5121ce64</span>, <span class="number">0x774fbe32</span>, <span class="number">0xa8b6e37e</span>, <span class="number">0xc3293d46</span>, <span class="number">0x48de5369</span>, <span class="number">0x6413e680</span>,
+                 <span class="number">0xa2ae0810</span>, <span class="number">0xdd6db224</span>, <span class="number">0x69852dfd</span>, <span class="number">0x09072166</span>, <span class="number">0xb39a460a</span>, <span class="number">0x6445c0dd</span>,
+                 <span class="number">0x586cdecf</span>, <span class="number">0x1c20c8ae</span>, <span class="number">0x5bbef7dd</span>, <span class="number">0x1b588d40</span>, <span class="number">0xccd2017f</span>, <span class="number">0x6bb4e3bb</span>,
+                 <span class="number">0xdda26a7e</span>, <span class="number">0x3a59ff45</span>, <span class="number">0x3e350a44</span>, <span class="number">0xbcb4cdd5</span>, <span class="number">0x72eacea8</span>, <span class="number">0xfa6484bb</span>,
+                 <span class="number">0x8d6612ae</span>, <span class="number">0xbf3c6f47</span>, <span class="number">0xd29be463</span>, <span class="number">0x542f5d9e</span>, <span class="number">0xaec2771b</span>, <span class="number">0xf64e6370</span>,
+                 <span class="number">0x740e0d8d</span>, <span class="number">0xe75b1357</span>, <span class="number">0xf8721671</span>, <span class="number">0xaf537d5d</span>, <span class="number">0x4040cb08</span>, <span class="number">0x4eb4e2cc</span>,
+                 <span class="number">0x34d2466a</span>, <span class="number">0x0115af84</span>, <span class="number">0xe1b00428</span>, <span class="number">0x95983a1d</span>, <span class="number">0x06b89fb4</span>, <span class="number">0xce6ea048</span>,
+                 <span class="number">0x6f3f3b82</span>, <span class="number">0x3520ab82</span>, <span class="number">0x011a1d4b</span>, <span class="number">0x277227f8</span>, <span class="number">0x611560b1</span>, <span class="number">0xe7933fdc</span>,
+                 <span class="number">0xbb3a792b</span>, <span class="number">0x344525bd</span>, <span class="number">0xa08839e1</span>, <span class="number">0x51ce794b</span>, <span class="number">0x2f32c9b7</span>, <span class="number">0xa01fbac9</span>,
+                 <span class="number">0xe01cc87e</span>, <span class="number">0xbcc7d1f6</span>, <span class="number">0xcf0111c3</span>, <span class="number">0xa1e8aac7</span>, <span class="number">0x1a908749</span>, <span class="number">0xd44fbd9a</span>,
+                 <span class="number">0xd0dadecb</span>, <span class="number">0xd50ada38</span>, <span class="number">0x0339c32a</span>, <span class="number">0xc6913667</span>, <span class="number">0x8df9317c</span>, <span class="number">0xe0b12b4f</span>,
+                 <span class="number">0xf79e59b7</span>, <span class="number">0x43f5bb3a</span>, <span class="number">0xf2d519ff</span>, <span class="number">0x27d9459c</span>, <span class="number">0xbf97222c</span>, <span class="number">0x15e6fc2a</span>,
+                 <span class="number">0x0f91fc71</span>, <span class="number">0x9b941525</span>, <span class="number">0xfae59361</span>, <span class="number">0xceb69ceb</span>, <span class="number">0xc2a86459</span>, <span class="number">0x12baa8d1</span>,
+                 <span class="number">0xb6c1075e</span>, <span class="number">0xe3056a0c</span>, <span class="number">0x10d25065</span>, <span class="number">0xcb03a442</span>, <span class="number">0xe0ec6e0e</span>, <span class="number">0x1698db3b</span>,
+                 <span class="number">0x4c98a0be</span>, <span class="number">0x3278e964</span>, <span class="number">0x9f1f9532</span>, <span class="number">0xe0d392df</span>, <span class="number">0xd3a0342b</span>, <span class="number">0x8971f21e</span>,
+                 <span class="number">0x1b0a7441</span>, <span class="number">0x4ba3348c</span>, <span class="number">0xc5be7120</span>, <span class="number">0xc37632d8</span>, <span class="number">0xdf359f8d</span>, <span class="number">0x9b992f2e</span>,
+                 <span class="number">0xe60b6f47</span>, <span class="number">0x0fe3f11d</span>, <span class="number">0xe54cda54</span>, <span class="number">0x1edad891</span>, <span class="number">0xce6279cf</span>, <span class="number">0xcd3e7e6f</span>,
+                 <span class="number">0x1618b166</span>, <span class="number">0xfd2c1d05</span>, <span class="number">0x848fd2c5</span>, <span class="number">0xf6fb2299</span>, <span class="number">0xf523f357</span>, <span class="number">0xa6327623</span>,
+                 <span class="number">0x93a83531</span>, <span class="number">0x56cccd02</span>, <span class="number">0xacf08162</span>, <span class="number">0x5a75ebb5</span>, <span class="number">0x6e163697</span>, <span class="number">0x88d273cc</span>,
+                 <span class="number">0xde966292</span>, <span class="number">0x81b949d0</span>, <span class="number">0x4c50901b</span>, <span class="number">0x71c65614</span>, <span class="number">0xe6c6c7bd</span>, <span class="number">0x327a140a</span>,
+                 <span class="number">0x45e1d006</span>, <span class="number">0xc3f27b9a</span>, <span class="number">0xc9aa53fd</span>, <span class="number">0x62a80f00</span>, <span class="number">0xbb25bfe2</span>, <span class="number">0x35bdd2f6</span>,
+                 <span class="number">0x71126905</span>, <span class="number">0xb2040222</span>, <span class="number">0xb6cbcf7c</span>, <span class="number">0xcd769c2b</span>, <span class="number">0x53113ec0</span>, <span class="number">0x1640e3d3</span>,
+                 <span class="number">0x38abbd60</span>, <span class="number">0x2547adf0</span>, <span class="number">0xba38209c</span>, <span class="number">0xf746ce76</span>, <span class="number">0x77afa1c5</span>, <span class="number">0x20756060</span>,
+                 <span class="number">0x85cbfe4e</span>, <span class="number">0x8ae88dd8</span>, <span class="number">0x7aaaf9b0</span>, <span class="number">0x4cf9aa7e</span>, <span class="number">0x1948c25c</span>, <span class="number">0x02fb8a8c</span>,
+                 <span class="number">0x01c36ae4</span>, <span class="number">0xd6ebe1f9</span>, <span class="number">0x90d4f869</span>, <span class="number">0xa65cdea0</span>, <span class="number">0x3f09252d</span>, <span class="number">0xc208e69f</span>,
+                 <span class="number">0xb74e6132</span>, <span class="number">0xce77e25b</span>, <span class="number">0x578fdfe3</span>, <span class="number">0x3ac372e6</span>]]
+        }
+    }
+
+    <span class="comment">// For bcrypt. Use Blowfish::new instead.
+    </span><span class="kw">pub fn </span>expand_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>[u8]) {
+        <span class="kw">let </span><span class="kw-2">mut </span>key_pos = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">18 </span>{
+            <span class="self">self</span>.p[i] ^= next_u32_wrap(key, <span class="kw-2">&amp;mut </span>key_pos);
+        }
+        <span class="kw">let </span><span class="kw-2">mut </span>l = <span class="number">0u32</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>r = <span class="number">0u32</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="number">18</span>).step_up(<span class="number">2</span>) {
+            <span class="kw">let </span>(new_l, new_r) = <span class="self">self</span>.encrypt(l, r);
+            l = new_l;
+            r = new_r;
+            <span class="self">self</span>.p[i] = l;
+            <span class="self">self</span>.p[i+<span class="number">1</span>] = r;
+        }
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
+            <span class="kw">for </span>j <span class="kw">in </span>(<span class="number">0</span>..<span class="number">256</span>).step_up(<span class="number">2</span>) {
+                <span class="kw">let </span>(new_l, new_r) = <span class="self">self</span>.encrypt(l, r);
+                l = new_l;
+                r = new_r;
+                <span class="self">self</span>.s[i][j] = l;
+                <span class="self">self</span>.s[i][j+<span class="number">1</span>] = r;
+            }
+        }
+    }
+
+    <span class="comment">// Bcrypt key schedule.
+    </span><span class="kw">pub fn </span>salted_expand_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, salt: <span class="kw-2">&amp;</span>[u8], key: <span class="kw-2">&amp;</span>[u8]) {
+        <span class="kw">let </span><span class="kw-2">mut </span>key_pos = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">18 </span>{
+            <span class="self">self</span>.p[i] ^= next_u32_wrap(key, <span class="kw-2">&amp;mut </span>key_pos);
+        }
+        <span class="kw">let </span><span class="kw-2">mut </span>l = <span class="number">0u32</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>r = <span class="number">0u32</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>salt_pos = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="number">18</span>).step_up(<span class="number">2</span>) {
+            <span class="kw">let </span>(new_l, new_r) = <span class="self">self</span>.encrypt(l ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos), r ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos));
+            l = new_l;
+            r = new_r;
+            <span class="self">self</span>.p[i] = l;
+            <span class="self">self</span>.p[i+<span class="number">1</span>] = r;
+        }
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
+            <span class="kw">for </span>j <span class="kw">in </span>(<span class="number">0</span>..<span class="number">256</span>).step_up(<span class="number">4</span>) {
+                <span class="kw">let </span>(new_l, new_r) = <span class="self">self</span>.encrypt(l ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos), r ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos));
+                l = new_l;
+                r = new_r;
+                <span class="self">self</span>.s[i][j] = l;
+                <span class="self">self</span>.s[i][j+<span class="number">1</span>] = r;
+
+                <span class="kw">let </span>(new_l, new_r) = <span class="self">self</span>.encrypt(l ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos), r ^ next_u32_wrap(salt, <span class="kw-2">&amp;mut </span>salt_pos));
+                l = new_l;
+                r = new_r;
+                <span class="self">self</span>.s[i][j+<span class="number">2</span>] = l;
+                <span class="self">self</span>.s[i][j+<span class="number">3</span>] = r;
+            }
+        }
+    }
+
+    <span class="kw">fn </span>round_function(<span class="kw-2">&amp;</span><span class="self">self</span>, x: u32) -&gt; u32 {
+        ((<span class="self">self</span>.s[<span class="number">0</span>][(x &gt;&gt; <span class="number">24</span>) <span class="kw">as </span>usize].wrapping_add(<span class="self">self</span>.s[<span class="number">1</span>][((x &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xff</span>) <span class="kw">as </span>usize])) ^ <span class="self">self</span>.s[<span class="number">2</span>][((x &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span>) <span class="kw">as </span>usize]).wrapping_add(<span class="self">self</span>.s[<span class="number">3</span>][(x &amp; <span class="number">0xff</span>) <span class="kw">as </span>usize])
+    }
+
+    <span class="comment">// Public for bcrypt.
+    </span><span class="kw">pub fn </span>encrypt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>l: u32, <span class="kw-2">mut </span>r: u32) -&gt; (u32, u32) {
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="number">16</span>).step_up(<span class="number">2</span>) {
+            l ^= <span class="self">self</span>.p[i];
+            r ^= <span class="self">self</span>.round_function(l);
+            r ^= <span class="self">self</span>.p[i+<span class="number">1</span>];
+            l ^= <span class="self">self</span>.round_function(r);
+        }
+        l ^= <span class="self">self</span>.p[<span class="number">16</span>];
+        r ^= <span class="self">self</span>.p[<span class="number">17</span>];
+        (r, l)
+    }
+
+    <span class="kw">fn </span>decrypt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>l: u32, <span class="kw-2">mut </span>r: u32) -&gt; (u32, u32) {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">16</span>;
+        <span class="kw">while </span>i &gt; <span class="number">0 </span>{
+            l ^= <span class="self">self</span>.p[i+<span class="number">1</span>];
+            r ^= <span class="self">self</span>.round_function(l);
+            r ^= <span class="self">self</span>.p[i];
+            l ^= <span class="self">self</span>.round_function(r);
+            i -= <span class="number">2</span>;
+        }
+        l ^= <span class="self">self</span>.p[<span class="number">1</span>];
+        r ^= <span class="self">self</span>.p[<span class="number">0</span>];
+        (r, l)
+    }
+}
+
+<span class="kw">impl </span>BlockEncryptor <span class="kw">for </span>Blowfish {
+    <span class="kw">fn </span>block_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="number">8
+    </span>}
+
+    <span class="kw">fn </span>encrypt_block(<span class="kw-2">&amp;</span><span class="self">self</span>, input: <span class="kw-2">&amp;</span>[u8], output: <span class="kw-2">&amp;mut </span>[u8]) {
+        <span class="macro">assert!</span>(input.len() == <span class="number">8</span>);
+        <span class="macro">assert!</span>(output.len() == <span class="number">8</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>block = [<span class="number">0u32</span>, <span class="number">0u32</span>];
+        read_u32v_be(<span class="kw-2">&amp;mut </span>block, input);
+        <span class="kw">let </span>(l, r) = <span class="self">self</span>.encrypt(block[<span class="number">0</span>], block[<span class="number">1</span>]);
+        write_u32_be(<span class="kw-2">&amp;mut </span>output[<span class="number">0</span>..<span class="number">4</span>], l);
+        write_u32_be(<span class="kw-2">&amp;mut </span>output[<span class="number">4</span>..<span class="number">8</span>], r);
+    }
+}
+
+<span class="kw">impl </span>BlockDecryptor <span class="kw">for </span>Blowfish {
+    <span class="kw">fn </span>block_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="number">8
+    </span>}
+
+    <span class="kw">fn </span>decrypt_block(<span class="kw-2">&amp;</span><span class="self">self</span>, input: <span class="kw-2">&amp;</span>[u8], output: <span class="kw-2">&amp;mut </span>[u8]) {
+        <span class="macro">assert!</span>(input.len() == <span class="number">8</span>);
+        <span class="macro">assert!</span>(output.len() == <span class="number">8</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>block = [<span class="number">0u32</span>, <span class="number">0u32</span>];
+        read_u32v_be(<span class="kw-2">&amp;mut </span>block, input);
+        <span class="kw">let </span>(l, r) = <span class="self">self</span>.decrypt(block[<span class="number">0</span>], block[<span class="number">1</span>]);
+        write_u32_be(<span class="kw-2">&amp;mut </span>output[<span class="number">0</span>..<span class="number">4</span>], l);
+        write_u32_be(<span class="kw-2">&amp;mut </span>output[<span class="number">4</span>..<span class="number">8</span>], r);
+    }
+}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>test {
+    <span class="kw">use </span>blowfish::Blowfish;
+    <span class="kw">use </span>symmetriccipher::{BlockEncryptor, BlockDecryptor};
+    <span class="kw">struct </span>Test {
+        key: Vec&lt;u8&gt;,
+        plaintext: Vec&lt;u8&gt;,
+        ciphertext: Vec&lt;u8&gt;
+    }
+
+    <span class="kw">fn </span>eay_test_vectors() -&gt; Vec&lt;Test&gt; {
+        <span class="macro">vec!</span>[
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x4Eu8</span>, <span class="number">0xF9u8</span>, <span class="number">0x97u8</span>, <span class="number">0x45u8</span>, <span class="number">0x61u8</span>, <span class="number">0x98u8</span>, <span class="number">0xDDu8</span>, <span class="number">0x78u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x51u8</span>, <span class="number">0x86u8</span>, <span class="number">0x6Fu8</span>, <span class="number">0xD5u8</span>, <span class="number">0xB8u8</span>, <span class="number">0x5Eu8</span>, <span class="number">0xCBu8</span>, <span class="number">0x8Au8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x30u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x10u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x01u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x7Du8</span>, <span class="number">0x85u8</span>, <span class="number">0x6Fu8</span>, <span class="number">0x9Au8</span>, <span class="number">0x61u8</span>, <span class="number">0x30u8</span>, <span class="number">0x63u8</span>, <span class="number">0xF2u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x24u8</span>, <span class="number">0x66u8</span>, <span class="number">0xDDu8</span>, <span class="number">0x87u8</span>, <span class="number">0x8Bu8</span>, <span class="number">0x96u8</span>, <span class="number">0x3Cu8</span>, <span class="number">0x9Du8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x61u8</span>, <span class="number">0xF9u8</span>, <span class="number">0xC3u8</span>, <span class="number">0x80u8</span>, <span class="number">0x22u8</span>, <span class="number">0x81u8</span>, <span class="number">0xB0u8</span>, <span class="number">0x96u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>, <span class="number">0x11u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x7Du8</span>, <span class="number">0x0Cu8</span>, <span class="number">0xC6u8</span>, <span class="number">0x30u8</span>, <span class="number">0xAFu8</span>, <span class="number">0xDAu8</span>, <span class="number">0x1Eu8</span>, <span class="number">0xC7u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x4Eu8</span>, <span class="number">0xF9u8</span>, <span class="number">0x97u8</span>, <span class="number">0x45u8</span>, <span class="number">0x61u8</span>, <span class="number">0x98u8</span>, <span class="number">0xDDu8</span>, <span class="number">0x78u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0xFEu8</span>, <span class="number">0xDCu8</span>, <span class="number">0xBAu8</span>, <span class="number">0x98u8</span>, <span class="number">0x76u8</span>, <span class="number">0x54u8</span>, <span class="number">0x32u8</span>, <span class="number">0x10u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x0Au8</span>, <span class="number">0xCEu8</span>, <span class="number">0xABu8</span>, <span class="number">0x0Fu8</span>, <span class="number">0xC6u8</span>, <span class="number">0xA0u8</span>, <span class="number">0xA2u8</span>, <span class="number">0x8Du8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x7Cu8</span>, <span class="number">0xA1u8</span>, <span class="number">0x10u8</span>, <span class="number">0x45u8</span>, <span class="number">0x4Au8</span>, <span class="number">0x1Au8</span>, <span class="number">0x6Eu8</span>, <span class="number">0x57u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0xA1u8</span>, <span class="number">0xD6u8</span>, <span class="number">0xD0u8</span>, <span class="number">0x39u8</span>, <span class="number">0x77u8</span>, <span class="number">0x67u8</span>, <span class="number">0x42u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x59u8</span>, <span class="number">0xC6u8</span>, <span class="number">0x82u8</span>, <span class="number">0x45u8</span>, <span class="number">0xEBu8</span>, <span class="number">0x05u8</span>, <span class="number">0x28u8</span>, <span class="number">0x2Bu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x31u8</span>, <span class="number">0xD9u8</span>, <span class="number">0x61u8</span>, <span class="number">0x9Du8</span>, <span class="number">0xC1u8</span>, <span class="number">0x37u8</span>, <span class="number">0x6Eu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x5Cu8</span>, <span class="number">0xD5u8</span>, <span class="number">0x4Cu8</span>, <span class="number">0xA8u8</span>, <span class="number">0x3Du8</span>, <span class="number">0xEFu8</span>, <span class="number">0x57u8</span>, <span class="number">0xDAu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xB1u8</span>, <span class="number">0xB8u8</span>, <span class="number">0xCCu8</span>, <span class="number">0x0Bu8</span>, <span class="number">0x25u8</span>, <span class="number">0x0Fu8</span>, <span class="number">0x09u8</span>, <span class="number">0xA0u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x07u8</span>, <span class="number">0xA1u8</span>, <span class="number">0x13u8</span>, <span class="number">0x3Eu8</span>, <span class="number">0x4Au8</span>, <span class="number">0x0Bu8</span>, <span class="number">0x26u8</span>, <span class="number">0x86u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x02u8</span>, <span class="number">0x48u8</span>, <span class="number">0xD4u8</span>, <span class="number">0x38u8</span>, <span class="number">0x06u8</span>, <span class="number">0xF6u8</span>, <span class="number">0x71u8</span>, <span class="number">0x72u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x17u8</span>, <span class="number">0x30u8</span>, <span class="number">0xE5u8</span>, <span class="number">0x77u8</span>, <span class="number">0x8Bu8</span>, <span class="number">0xEAu8</span>, <span class="number">0x1Du8</span>, <span class="number">0xA4u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x38u8</span>, <span class="number">0x49u8</span>, <span class="number">0x67u8</span>, <span class="number">0x4Cu8</span>, <span class="number">0x26u8</span>, <span class="number">0x02u8</span>, <span class="number">0x31u8</span>, <span class="number">0x9Eu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x51u8</span>, <span class="number">0x45u8</span>, <span class="number">0x4Bu8</span>, <span class="number">0x58u8</span>, <span class="number">0x2Du8</span>, <span class="number">0xDFu8</span>, <span class="number">0x44u8</span>, <span class="number">0x0Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xA2u8</span>, <span class="number">0x5Eu8</span>, <span class="number">0x78u8</span>, <span class="number">0x56u8</span>, <span class="number">0xCFu8</span>, <span class="number">0x26u8</span>, <span class="number">0x51u8</span>, <span class="number">0xEBu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x04u8</span>, <span class="number">0xB9u8</span>, <span class="number">0x15u8</span>, <span class="number">0xBAu8</span>, <span class="number">0x43u8</span>, <span class="number">0xFEu8</span>, <span class="number">0xB5u8</span>, <span class="number">0xB6u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x42u8</span>, <span class="number">0xFDu8</span>, <span class="number">0x44u8</span>, <span class="number">0x30u8</span>, <span class="number">0x59u8</span>, <span class="number">0x57u8</span>, <span class="number">0x7Fu8</span>, <span class="number">0xA2u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x35u8</span>, <span class="number">0x38u8</span>, <span class="number">0x82u8</span>, <span class="number">0xB1u8</span>, <span class="number">0x09u8</span>, <span class="number">0xCEu8</span>, <span class="number">0x8Fu8</span>, <span class="number">0x1Au8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x13u8</span>, <span class="number">0xB9u8</span>, <span class="number">0x70u8</span>, <span class="number">0xFDu8</span>, <span class="number">0x34u8</span>, <span class="number">0xF2u8</span>, <span class="number">0xCEu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x05u8</span>, <span class="number">0x9Bu8</span>, <span class="number">0x5Eu8</span>, <span class="number">0x08u8</span>, <span class="number">0x51u8</span>, <span class="number">0xCFu8</span>, <span class="number">0x14u8</span>, <span class="number">0x3Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x48u8</span>, <span class="number">0xF4u8</span>, <span class="number">0xD0u8</span>, <span class="number">0x88u8</span>, <span class="number">0x4Cu8</span>, <span class="number">0x37u8</span>, <span class="number">0x99u8</span>, <span class="number">0x18u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x70u8</span>, <span class="number">0xF1u8</span>, <span class="number">0x75u8</span>, <span class="number">0x46u8</span>, <span class="number">0x8Fu8</span>, <span class="number">0xB5u8</span>, <span class="number">0xE6u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x07u8</span>, <span class="number">0x56u8</span>, <span class="number">0xD8u8</span>, <span class="number">0xE0u8</span>, <span class="number">0x77u8</span>, <span class="number">0x47u8</span>, <span class="number">0x61u8</span>, <span class="number">0xD2u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x43u8</span>, <span class="number">0x21u8</span>, <span class="number">0x93u8</span>, <span class="number">0xB7u8</span>, <span class="number">0x89u8</span>, <span class="number">0x51u8</span>, <span class="number">0xFCu8</span>, <span class="number">0x98u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x43u8</span>, <span class="number">0x29u8</span>, <span class="number">0x7Fu8</span>, <span class="number">0xADu8</span>, <span class="number">0x38u8</span>, <span class="number">0xE3u8</span>, <span class="number">0x73u8</span>, <span class="number">0xFEu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x76u8</span>, <span class="number">0x25u8</span>, <span class="number">0x14u8</span>, <span class="number">0xB8u8</span>, <span class="number">0x29u8</span>, <span class="number">0xBFu8</span>, <span class="number">0x48u8</span>, <span class="number">0x6Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x13u8</span>, <span class="number">0xF0u8</span>, <span class="number">0x41u8</span>, <span class="number">0x54u8</span>, <span class="number">0xD6u8</span>, <span class="number">0x9Du8</span>, <span class="number">0x1Au8</span>, <span class="number">0xE5u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x07u8</span>, <span class="number">0xA7u8</span>, <span class="number">0x13u8</span>, <span class="number">0x70u8</span>, <span class="number">0x45u8</span>, <span class="number">0xDAu8</span>, <span class="number">0x2Au8</span>, <span class="number">0x16u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x3Bu8</span>, <span class="number">0xDDu8</span>, <span class="number">0x11u8</span>, <span class="number">0x90u8</span>, <span class="number">0x49u8</span>, <span class="number">0x37u8</span>, <span class="number">0x28u8</span>, <span class="number">0x02u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x2Eu8</span>, <span class="number">0xEDu8</span>, <span class="number">0xDAu8</span>, <span class="number">0x93u8</span>, <span class="number">0xFFu8</span>, <span class="number">0xD3u8</span>, <span class="number">0x9Cu8</span>, <span class="number">0x79u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x04u8</span>, <span class="number">0x68u8</span>, <span class="number">0x91u8</span>, <span class="number">0x04u8</span>, <span class="number">0xC2u8</span>, <span class="number">0xFDu8</span>, <span class="number">0x3Bu8</span>, <span class="number">0x2Fu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x26u8</span>, <span class="number">0x95u8</span>, <span class="number">0x5Fu8</span>, <span class="number">0x68u8</span>, <span class="number">0x35u8</span>, <span class="number">0xAFu8</span>, <span class="number">0x60u8</span>, <span class="number">0x9Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xD8u8</span>, <span class="number">0x87u8</span>, <span class="number">0xE0u8</span>, <span class="number">0x39u8</span>, <span class="number">0x3Cu8</span>, <span class="number">0x2Du8</span>, <span class="number">0xA6u8</span>, <span class="number">0xE3u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x37u8</span>, <span class="number">0xD0u8</span>, <span class="number">0x6Bu8</span>, <span class="number">0xB5u8</span>, <span class="number">0x16u8</span>, <span class="number">0xCBu8</span>, <span class="number">0x75u8</span>, <span class="number">0x46u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x16u8</span>, <span class="number">0x4Du8</span>, <span class="number">0x5Eu8</span>, <span class="number">0x40u8</span>, <span class="number">0x4Fu8</span>, <span class="number">0x27u8</span>, <span class="number">0x52u8</span>, <span class="number">0x32u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x5Fu8</span>, <span class="number">0x99u8</span>, <span class="number">0xD0u8</span>, <span class="number">0x4Fu8</span>, <span class="number">0x5Bu8</span>, <span class="number">0x16u8</span>, <span class="number">0x39u8</span>, <span class="number">0x69u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x1Fu8</span>, <span class="number">0x08u8</span>, <span class="number">0x26u8</span>, <span class="number">0x0Du8</span>, <span class="number">0x1Au8</span>, <span class="number">0xC2u8</span>, <span class="number">0x46u8</span>, <span class="number">0x5Eu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x6Bu8</span>, <span class="number">0x05u8</span>, <span class="number">0x6Eu8</span>, <span class="number">0x18u8</span>, <span class="number">0x75u8</span>, <span class="number">0x9Fu8</span>, <span class="number">0x5Cu8</span>, <span class="number">0xCAu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x4Au8</span>, <span class="number">0x05u8</span>, <span class="number">0x7Au8</span>, <span class="number">0x3Bu8</span>, <span class="number">0x24u8</span>, <span class="number">0xD3u8</span>, <span class="number">0x97u8</span>, <span class="number">0x7Bu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x58u8</span>, <span class="number">0x40u8</span>, <span class="number">0x23u8</span>, <span class="number">0x64u8</span>, <span class="number">0x1Au8</span>, <span class="number">0xBAu8</span>, <span class="number">0x61u8</span>, <span class="number">0x76u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x4Bu8</span>, <span class="number">0xD6u8</span>, <span class="number">0xEFu8</span>, <span class="number">0x09u8</span>, <span class="number">0x17u8</span>, <span class="number">0x60u8</span>, <span class="number">0x62u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x45u8</span>, <span class="number">0x20u8</span>, <span class="number">0x31u8</span>, <span class="number">0xC1u8</span>, <span class="number">0xE4u8</span>, <span class="number">0xFAu8</span>, <span class="number">0xDAu8</span>, <span class="number">0x8Eu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x02u8</span>, <span class="number">0x58u8</span>, <span class="number">0x16u8</span>, <span class="number">0x16u8</span>, <span class="number">0x46u8</span>, <span class="number">0x29u8</span>, <span class="number">0xB0u8</span>, <span class="number">0x07u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x48u8</span>, <span class="number">0x0Du8</span>, <span class="number">0x39u8</span>, <span class="number">0x00u8</span>, <span class="number">0x6Eu8</span>, <span class="number">0xE7u8</span>, <span class="number">0x62u8</span>, <span class="number">0xF2u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x75u8</span>, <span class="number">0x55u8</span>, <span class="number">0xAEu8</span>, <span class="number">0x39u8</span>, <span class="number">0xF5u8</span>, <span class="number">0x9Bu8</span>, <span class="number">0x87u8</span>, <span class="number">0xBDu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x49u8</span>, <span class="number">0x79u8</span>, <span class="number">0x3Eu8</span>, <span class="number">0xBCu8</span>, <span class="number">0x79u8</span>, <span class="number">0xB3u8</span>, <span class="number">0x25u8</span>, <span class="number">0x8Fu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x43u8</span>, <span class="number">0x75u8</span>, <span class="number">0x40u8</span>, <span class="number">0xC8u8</span>, <span class="number">0x69u8</span>, <span class="number">0x8Fu8</span>, <span class="number">0x3Cu8</span>, <span class="number">0xFAu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x53u8</span>, <span class="number">0xC5u8</span>, <span class="number">0x5Fu8</span>, <span class="number">0x9Cu8</span>, <span class="number">0xB4u8</span>, <span class="number">0x9Fu8</span>, <span class="number">0xC0u8</span>, <span class="number">0x19u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x4Fu8</span>, <span class="number">0xB0u8</span>, <span class="number">0x5Eu8</span>, <span class="number">0x15u8</span>, <span class="number">0x15u8</span>, <span class="number">0xABu8</span>, <span class="number">0x73u8</span>, <span class="number">0xA7u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x07u8</span>, <span class="number">0x2Du8</span>, <span class="number">0x43u8</span>, <span class="number">0xA0u8</span>, <span class="number">0x77u8</span>, <span class="number">0x07u8</span>, <span class="number">0x52u8</span>, <span class="number">0x92u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x7Au8</span>, <span class="number">0x8Eu8</span>, <span class="number">0x7Bu8</span>, <span class="number">0xFAu8</span>, <span class="number">0x93u8</span>, <span class="number">0x7Eu8</span>, <span class="number">0x89u8</span>, <span class="number">0xA3u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x49u8</span>, <span class="number">0xE9u8</span>, <span class="number">0x5Du8</span>, <span class="number">0x6Du8</span>, <span class="number">0x4Cu8</span>, <span class="number">0xA2u8</span>, <span class="number">0x29u8</span>, <span class="number">0xBFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x02u8</span>, <span class="number">0xFEu8</span>, <span class="number">0x55u8</span>, <span class="number">0x77u8</span>, <span class="number">0x81u8</span>, <span class="number">0x17u8</span>, <span class="number">0xF1u8</span>, <span class="number">0x2Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xCFu8</span>, <span class="number">0x9Cu8</span>, <span class="number">0x5Du8</span>, <span class="number">0x7Au8</span>, <span class="number">0x49u8</span>, <span class="number">0x86u8</span>, <span class="number">0xADu8</span>, <span class="number">0xB5u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x83u8</span>, <span class="number">0x10u8</span>, <span class="number">0xDCu8</span>, <span class="number">0x40u8</span>, <span class="number">0x9Bu8</span>, <span class="number">0x26u8</span>, <span class="number">0xD6u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x1Du8</span>, <span class="number">0x9Du8</span>, <span class="number">0x5Cu8</span>, <span class="number">0x50u8</span>, <span class="number">0x18u8</span>, <span class="number">0xF7u8</span>, <span class="number">0x28u8</span>, <span class="number">0xC2u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xD1u8</span>, <span class="number">0xABu8</span>, <span class="number">0xB2u8</span>, <span class="number">0x90u8</span>, <span class="number">0x65u8</span>, <span class="number">0x8Bu8</span>, <span class="number">0xC7u8</span>, <span class="number">0x78u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x1Cu8</span>, <span class="number">0x58u8</span>, <span class="number">0x7Fu8</span>, <span class="number">0x1Cu8</span>, <span class="number">0x13u8</span>, <span class="number">0x92u8</span>, <span class="number">0x4Fu8</span>, <span class="number">0xEFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x30u8</span>, <span class="number">0x55u8</span>, <span class="number">0x32u8</span>, <span class="number">0x28u8</span>, <span class="number">0x6Du8</span>, <span class="number">0x6Fu8</span>, <span class="number">0x29u8</span>, <span class="number">0x5Au8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x55u8</span>, <span class="number">0xCBu8</span>, <span class="number">0x37u8</span>, <span class="number">0x74u8</span>, <span class="number">0xD1u8</span>, <span class="number">0x3Eu8</span>, <span class="number">0xF2u8</span>, <span class="number">0x01u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>, <span class="number">0x01u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xFAu8</span>, <span class="number">0x34u8</span>, <span class="number">0xECu8</span>, <span class="number">0x48u8</span>, <span class="number">0x47u8</span>, <span class="number">0xB2u8</span>, <span class="number">0x68u8</span>, <span class="number">0xB2u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x1Fu8</span>, <span class="number">0x1Fu8</span>, <span class="number">0x1Fu8</span>, <span class="number">0x1Fu8</span>, <span class="number">0x0Eu8</span>, <span class="number">0x0Eu8</span>, <span class="number">0x0Eu8</span>, <span class="number">0x0Eu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xA7u8</span>, <span class="number">0x90u8</span>, <span class="number">0x79u8</span>, <span class="number">0x51u8</span>, <span class="number">0x08u8</span>, <span class="number">0xEAu8</span>, <span class="number">0x3Cu8</span>, <span class="number">0xAEu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0xE0u8</span>, <span class="number">0xFEu8</span>, <span class="number">0xE0u8</span>, <span class="number">0xFEu8</span>, <span class="number">0xF1u8</span>, <span class="number">0xFEu8</span>, <span class="number">0xF1u8</span>, <span class="number">0xFEu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xC3u8</span>, <span class="number">0x9Eu8</span>, <span class="number">0x07u8</span>, <span class="number">0x2Du8</span>, <span class="number">0x9Fu8</span>, <span class="number">0xACu8</span>, <span class="number">0x63u8</span>, <span class="number">0x1Du8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x49u8</span>, <span class="number">0x33u8</span>, <span class="number">0xE0u8</span>, <span class="number">0xCDu8</span>, <span class="number">0xAFu8</span>, <span class="number">0xF6u8</span>, <span class="number">0xE4u8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0xF2u8</span>, <span class="number">0x1Eu8</span>, <span class="number">0x9Au8</span>, <span class="number">0x77u8</span>, <span class="number">0xB7u8</span>, <span class="number">0x1Cu8</span>, <span class="number">0x49u8</span>, <span class="number">0xBCu8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0x01u8</span>, <span class="number">0x23u8</span>, <span class="number">0x45u8</span>, <span class="number">0x67u8</span>, <span class="number">0x89u8</span>, <span class="number">0xABu8</span>, <span class="number">0xCDu8</span>, <span class="number">0xEFu8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>, <span class="number">0x00u8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x24u8</span>, <span class="number">0x59u8</span>, <span class="number">0x46u8</span>, <span class="number">0x88u8</span>, <span class="number">0x57u8</span>, <span class="number">0x54u8</span>, <span class="number">0x36u8</span>, <span class="number">0x9Au8</span>]
+            },
+            Test {
+                    key: <span class="macro">vec!</span>[<span class="number">0xFEu8</span>, <span class="number">0xDCu8</span>, <span class="number">0xBAu8</span>, <span class="number">0x98u8</span>, <span class="number">0x76u8</span>, <span class="number">0x54u8</span>, <span class="number">0x32u8</span>, <span class="number">0x10u8</span>],
+                    plaintext: <span class="macro">vec!</span>[<span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>, <span class="number">0xFFu8</span>],
+                    ciphertext: <span class="macro">vec!</span>[<span class="number">0x6Bu8</span>, <span class="number">0x5Cu8</span>, <span class="number">0x5Au8</span>, <span class="number">0x9Cu8</span>, <span class="number">0x5Du8</span>, <span class="number">0x9Eu8</span>, <span class="number">0x0Au8</span>, <span class="number">0x5Au8</span>]
+            }
+        ]
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>encrypt_eay_test_vectors() {
+        <span class="kw">let </span>tests = eay_test_vectors();
+        <span class="kw">let </span><span class="kw-2">mut </span>output = [<span class="number">0u8</span>; <span class="number">8</span>];
+        <span class="kw">for </span>test <span class="kw">in </span>tests.iter() {
+            <span class="kw">let </span>state = Blowfish::new(<span class="kw-2">&amp;</span>test.key[..]);
+            state.encrypt_block(<span class="kw-2">&amp;</span>test.plaintext[..], <span class="kw-2">&amp;mut </span>output[..]);
+            <span class="macro">assert!</span>(test.ciphertext[..] == output[..]);
+        }
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>decrypt_eay_test_vectors() {
+        <span class="kw">let </span>tests = eay_test_vectors();
+        <span class="kw">let </span><span class="kw-2">mut </span>output = [<span class="number">0u8</span>; <span class="number">8</span>];
+        <span class="kw">for </span>test <span class="kw">in </span>tests.iter() {
+            <span class="kw">let </span>state = Blowfish::new(<span class="kw-2">&amp;</span>test.key[..]);
+            state.decrypt_block(<span class="kw-2">&amp;</span>test.ciphertext[..], <span class="kw-2">&amp;mut </span>output[..]);
+            <span class="macro">assert!</span>(test.plaintext[..] == output[..]);
+        }
+    }
+}
+
+<span class="attr">#[cfg(all(test, feature = <span class="string">&quot;with-bench&quot;</span>))]
+</span><span class="kw">mod </span>bench {
+    <span class="kw">use </span>blowfish::Blowfish;
+    <span class="kw">use </span>symmetriccipher::BlockEncryptor;
+    <span class="kw">use </span>test::Bencher;
+
+    <span class="attr">#[bench]
+    </span><span class="kw">fn </span>blowfish(bh: <span class="kw-2">&amp;mut </span>Bencher) {
+        <span class="kw">let </span>key = [<span class="number">0u8</span>; <span class="number">16</span>];
+        <span class="kw">let </span>plaintext = [<span class="number">1u8</span>; <span class="number">8</span>];
+        <span class="kw">let </span>state = Blowfish::new(<span class="kw-2">&amp;</span>key);
+        <span class="kw">let </span><span class="kw-2">mut </span>ciphertext = [<span class="number">0u8</span>; <span class="number">8</span>];
+
+        bh.iter(|| {
+            state.encrypt_block(<span class="kw-2">&amp;</span>plaintext, <span class="kw-2">&amp;mut </span>ciphertext);
+        });
+        bh.bytes = <span class="number">8u64</span>;
+    }
+}
+</code></pre></div></section></main></body></html>

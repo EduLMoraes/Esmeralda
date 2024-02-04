@@ -3,6 +3,8 @@ mod to_db;
 
 use crate::prelude::errors::DataBaseError;
 use crate::prelude::errors::ErrorLog;
+use crate::prelude::logger::log;
+use crate::prelude::var;
 use crate::prelude::structs::*;
 use crate::prelude::structs_db::*;
 use chrono::NaiveDate;
@@ -62,6 +64,13 @@ impl DataBase {
     }
 
     pub async fn add(&self, data: Data) -> Result<(), DataBaseError> {
+        let mut path = match std::env::consts::OS {
+            "windows" => var("HOMEPATH").unwrap(),
+            _ => var("HOME").unwrap(),
+        };
+    
+        path.push_str("/esmeralda/log.log");
+
         match data {
             Data::NewUser(user) => {
                 let conn = self.pool.get().await.map_err(|_| {
@@ -86,7 +95,12 @@ impl DataBase {
                 conn.execute(&stmt, &[&user.username, &user.password, &user.email])
                     .await
                     .map_err(|err| {
-                        println!("{}", err);
+                        
+                        let _ = log(
+                            path.clone().into(),
+                            &format!("[DATABASE] {err:?}"),
+                        );
+
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
@@ -149,7 +163,11 @@ impl DataBase {
                     )
                     .await
                     .map_err(|err| {
-                        println!("{err}");
+                        let _ = log(
+                            path.clone().into(),
+                            &format!("[DATABASE] {err:?}"),
+                        );
+
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
@@ -169,10 +187,21 @@ impl DataBase {
     }
 
     pub async fn get(&self, data: Data) -> Result<Data, DataBaseError> {
+        let mut path = match std::env::consts::OS {
+            "windows" => var("HOMEPATH").unwrap(),
+            _ => var("HOME").unwrap(),
+        };
+    
+        path.push_str("/esmeralda/log.log");
+
         match data {
             Data::User(user) => {
-                let conn = self.pool.get().await.map_err(|e| {
-                    println!("{:?}", e);
+                let conn = self.pool.get().await.map_err(|err| {
+                    let _ = log(
+                        path.clone().into(),
+                        &format!("[DATABASE] {err:?}"),
+                    );
+
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
                         code: 804,
@@ -213,8 +242,12 @@ impl DataBase {
                 Ok(Data::UserDb(user))
             }
             Data::Counts(mut i_info, user) => {
-                let conn = self.pool.get().await.map_err(|e| {
-                    println!("{:?}", e);
+                let conn = self.pool.get().await.map_err(|err| {
+                    let _ = log(
+                        path.clone().into(),
+                        &format!("[DATABASE] {err:?}"),
+                    );
+
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
                         code: 804,
@@ -289,6 +322,13 @@ impl DataBase {
     }
 
     pub async fn edit(&self, data: Data) -> Result<(), DataBaseError> {
+        let mut path = match std::env::consts::OS {
+            "windows" => var("HOMEPATH").unwrap(),
+            _ => var("HOME").unwrap(),
+        };
+    
+        path.push_str("/esmeralda/log.log");
+
         match data {
             Data::Counts(counts, user) => {
                 let conn = self.pool.get().await.map_err(|_| {
@@ -346,7 +386,11 @@ impl DataBase {
                     )
                     .await
                     .map_err(|err| {
-                        println!("{err}");
+                        let _ = log(
+                            path.clone().into(),
+                            &format!("[DATABASE] {err:?}"),
+                        );
+
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
