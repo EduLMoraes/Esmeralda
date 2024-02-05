@@ -51,40 +51,28 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 ::::::::::::::::::::::::::::
 ::START
 ::::::::::::::::::::::::::::
-REM Run shell as admin (my) > log.txt
+REM Run shell as admin (my) 
 
 ECHO =============================
 ECHO acessando diretorio postgresql
 ECHO =============================
-cd %HOMEDRIVE%%HOMEPATH%
-cd .esmeralda     
+cd\Esmeralda     
 cd pgsql
 cd bin
 
 ECHO =============================
 ECHO Tornando pgsql um servico
 ECHO =============================
-set POSTGRES_BIN_PATH="%HOMEDRIVE%%HOMEPATH%\.esmeralda\pgsql\bin"
-set PATH=%PATH%;%POSTGRES_BIN_PATH%
-set SERVICE_NAME=PostgreSQL
-set DATA_DIRECTORY="%HOMEDRIVE%%HOMEPATH%\.esmeralda\pgsql\data"
-
-cd /D %POSTGRES_BIN_PATH%
-pg_ctl register -N "%SERVICE_NAME%" -D %DATA_DIRECTORY%
-
-cacls "%HOMEDRIVE%%HOMEPATH%\.esmeralda\pgsql\data" /E /T /C /G postgres:F
+pg_ctl register -N "PostgreSQL" -D "C:\Esmeralda\pgsql\data" start
 
 ECHO =============================
 ECHO iniciando servico
 ECHO =============================
-sc %DATA_DIRECTORY%
-initdb -D %DATA_DIRECTORY% -U "postgres"
-pg_ctl start -D %DATA_DIRECTORY%
+sc start PostgreSQL
 
 ECHO =============================
 ECHO ALTERA USUARIO POSTGRES
 ECHO =============================
-
 psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
 
 ECHO =============================
@@ -95,10 +83,6 @@ psql -U postgres -c "CREATE DATABASE esmeralda;"
 ECHO =============================
 ECHO Carregando as Tabelas... 
 ECHO =============================   
-psql -U postgres -d esmeralda -f construct_db.sql -q
+psql -U postgres -d esmeralda -f construct_db.sql
 
-
-@echo off
-start /b "" cmd /c net start "%SERVICE_NAME%" >nul  2>&1
-
-exit
+echo banco carregado com sucesso !
