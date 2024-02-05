@@ -15,7 +15,7 @@ fn main() {
                 "windows" => env::var("HOMEPATH").unwrap(),
                 _ => env::var("HOME").unwrap(),
             };
-            path.push_str("/esmeralda/log.log");
+            path.push_str("/.esmeralda/log.log");
 
             let _ = log(
                 path.into(),
@@ -28,7 +28,7 @@ fn main() {
                 _ => env::var("HOME").unwrap(),
             };
 
-            path.push_str("/.key");
+            path.push_str("/.esmeralda/.key");
 
             let mut file = match File::open(&path) {
                 Ok(file) => file,

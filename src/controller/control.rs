@@ -44,7 +44,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
         _ => var("HOME").unwrap(),
     };
 
-    path.push_str("/esmeralda/log.log");
+    path.push_str("/.esmeralda/log.log");
 
     let db = get_database_instance();
 
@@ -317,7 +317,7 @@ pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, Co
                 _ => var("HOME").unwrap(),
             };
             
-            path.push_str("/esmeralda/log.log");
+            path.push_str("/.esmeralda/log.log");
 
             let _ = log(
                 path.clone().into(),

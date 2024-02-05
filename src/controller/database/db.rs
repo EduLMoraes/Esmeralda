@@ -69,7 +69,7 @@ impl DataBase {
             _ => var("HOME").unwrap(),
         };
     
-        path.push_str("/esmeralda/log.log");
+        path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::NewUser(user) => {
@@ -192,7 +192,7 @@ impl DataBase {
             _ => var("HOME").unwrap(),
         };
     
-        path.push_str("/esmeralda/log.log");
+        path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::User(user) => {
@@ -327,7 +327,7 @@ impl DataBase {
             _ => var("HOME").unwrap(),
         };
     
-        path.push_str("/esmeralda/log.log");
+        path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::Counts(counts, user) => {

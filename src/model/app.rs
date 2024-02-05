@@ -37,7 +37,7 @@ pub fn app(cx: Scope) -> Element {
             _ => env::var("HOME").unwrap(),
         };
 
-        path.push_str("/esmeralda/log.log");
+        path.push_str("/.esmeralda/log.log");
         PathBuf::from(path)
     });
 
