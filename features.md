@@ -5,11 +5,13 @@
     <td> Descrição </td>
   </tr>
   <tr> 
-   <td> v0.1.6 </td>
+   <td> v0.1.6 (Building)</td>
     <td>
+        Adicionado resumo de devedores aos arquivos exportados.
+        <br>
         Removido terminal que abria ao abrir o programa
         <br>
-        -- aumento na segurança
+        Aumento na segurança
         <br>
     </td>
   </tr>

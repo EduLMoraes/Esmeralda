@@ -3,6 +3,19 @@ name = "esmeralda"
 version = "0.1.6"
 edition = "2021"
 author = "Eduardo Moraes <17eduardo05@gmail.com>"
+description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
+
+[package.metadata.bundle]
+name = "Esmeralda"
+identifier = "github.com/edulmoraes/esmeralda"
+version = "0.1.6"
+category = "Finance"
+short_description = "More control of your debs"
+long_description = """
+The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
+Its easy use and hight perfomance.
+"""
+
 
 [package.metadata.deb]
 name = "esmeralda"
