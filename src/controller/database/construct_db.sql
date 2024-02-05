@@ -1,5 +1,5 @@
 -- Active: 1703730527497@@127.0.0.1@5432@esmeralda
-CREATE DATABASE IF NOT EXISTS esmeralda;
+CREATE DATABASE esmeralda;
 
 \c esmeralda
 
@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS counts (
 	FOREIGN KEY (user_id) REFERENCES users
 ); 
 
-ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT " ";
+ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT ' ';
 
 UPDATE counts SET nature = ' ' WHERE nature IS NULL;
+\q;
