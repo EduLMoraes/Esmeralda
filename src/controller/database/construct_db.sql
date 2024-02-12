@@ -1,7 +1,4 @@
 -- Active: 1703730527497@@127.0.0.1@5432@esmeralda
-CREATE DATABASE esmeralda;
-
-\c esmeralda
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
@@ -28,4 +25,3 @@ CREATE TABLE IF NOT EXISTS counts (
 ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT ' ';
 
 UPDATE counts SET nature = ' ' WHERE nature IS NULL;
-\q;

@@ -24,7 +24,7 @@ Cargo.lock
 # Generate by Esmeralda
 ./esmeralda_Exportados
 ./esmeralda_Exportados/
-
+/installer-x86_64
 
 # Added by cargo
 /target
