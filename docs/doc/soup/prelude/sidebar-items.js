@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"trait":["AuthDomainExt","AuthExt","CacheExt","CookieJarExt","CookieJarExtManual","HSTSEnforcerExt","LoggerExtManual","ServerExt","ServerExtManual","SessionExt","SessionExtManual","SessionFeatureExt","WebsocketExtensionExt"]};

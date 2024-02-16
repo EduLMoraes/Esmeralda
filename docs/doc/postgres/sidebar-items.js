@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["IsolationLevel","SimpleQueryMessage"],"mod":["binary_copy","config","error","notifications","row","tls","types"],"struct":["CancelToken","Client","Column","CopyInWriter","CopyOutReader","Notification","Notifications","Portal","RowIter","Socket","Statement","Transaction","TransactionBuilder"],"trait":["GenericClient","ToStatement"]};

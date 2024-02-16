@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["LINES"],"enum":["Contabilized"],"fn":["Home"],"mod":["div_active","div_options","filter","styles"],"struct":["Columns"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["SetHandlerError","SignalHandler","SignalType"],"fn":["set_handler","set_unsafe_handler"],"struct":["NoReturnSignalHook","SignalHook","UnknownSignalError"]};

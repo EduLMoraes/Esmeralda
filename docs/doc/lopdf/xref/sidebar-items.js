@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["XrefEntry","XrefType"],"fn":["decode_xref_stream"],"struct":["Xref","XrefSection"]};

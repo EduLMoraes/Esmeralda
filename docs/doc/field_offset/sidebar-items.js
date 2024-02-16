@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["AllowPin","NotPinned"],"macro":["offset_of"],"struct":["FieldOffset"]};

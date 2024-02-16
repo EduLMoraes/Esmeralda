@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["alpha","alphanum","digit","hex_digit","multispace","oct_digit","space"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"attr":["component","inline_props"],"derive":["Props"],"macro":["format_args_f","render","rsx"]};

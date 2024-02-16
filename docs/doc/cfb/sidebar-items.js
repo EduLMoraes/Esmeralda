@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Version"],"fn":["create","open","open_rw"],"struct":["CompoundFile","Entries","Entry","Stream"]};

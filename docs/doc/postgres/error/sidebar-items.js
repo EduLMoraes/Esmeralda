@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ErrorPosition","Severity"],"struct":["DbError","Error","SqlState"]};

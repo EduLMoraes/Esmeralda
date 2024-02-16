@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["request_animation_frame"],"struct":["AnimationFrame"]};

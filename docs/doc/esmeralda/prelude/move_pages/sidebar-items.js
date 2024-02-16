@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["back_page","next_page"]};

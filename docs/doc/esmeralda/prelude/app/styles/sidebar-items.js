@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["style_global","style_home","style_login","style_register"]};

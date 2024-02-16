@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["SegmentType"],"struct":["RouteParseError","SiteMapSegment"],"trait":["FromQuery","FromRouteSegment","FromRouteSegments","Routable","ToRouteSegments"]};

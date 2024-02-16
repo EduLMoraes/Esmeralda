@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["is_html","is_shellscript","is_xml"]};

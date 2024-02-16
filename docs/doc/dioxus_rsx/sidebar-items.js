@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["BodyNode","ContentField","ElementAttr","ElementName","FormattedSegmentType","Segment"],"fn":["format_args_f_impl"],"struct":["CallBody","Component","ComponentField","DynamicContext","Element","ElementAttrNamed","ForLoop","FormattedSegment","IfmtInput","RenderCallBody","TemplateRenderer"]};

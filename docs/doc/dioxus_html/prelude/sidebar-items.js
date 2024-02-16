@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["EvalError"],"fn":["use_eval"],"struct":["UseEval"],"trait":["EvalProvider","Evaluator"]};
