@@ -31,10 +31,10 @@ Requisitos Funcionais:
 
 Requisitos Não Funcionais:
 
-⏳ 1 - Segurança:
+✅ 1 - Segurança:
 
     · Implementar criptografia para o sistema de login e para proteger dados sensíveis. ✅
-    · Implementar instalador para o banco de dados, evitando senha padrão a todos os usuários. ❌
+    · Implementar instalador para o banco de dados, evitando senha padrão a todos os usuários. ✅
 
 ✅ 2 - Plataforma:
 

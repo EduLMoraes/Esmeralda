@@ -7,6 +7,8 @@
   <tr> 
    <td> v0.1.6 (Building)</td>
     <td>
+        Criado um instalador para o Esmeralda.
+        <br>
         Adicionado resumo de devedores aos arquivos exportados.
         <br>
         Removido terminal que abria ao abrir o programa

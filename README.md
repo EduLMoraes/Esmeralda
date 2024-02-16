@@ -63,16 +63,7 @@ Aqui é onde a mágica acontece.
 Para usá-lo é necessário seguir alguns passos antes para que tudo funcione
 como deve.
 
-#### 1 - Dependencias: <br>
-  1.1 - O Esmeralda depende que você tenha o banco de dados **PostgreSQL**
-  instalado e com algumas configurações específicas como nome de usuário
-  e senha serem "postgres" (o padrão).
 
-  1.1.1 - [Download postgreSQL linux](https://www.postgresql.org/download/)
-  
-  1.1.2 - [Download postgreSQL Windows 10 x86_64](https://sbp.enterprisedb.com/getfile.jsp?fileid=1258792)
-
-  1.2 - Rode o código SQL encontrado  [-> aqui <-](./src/controller/database/construct_db.sql), com a conexão ativa.
  
  ---
 #### 2 - Download do executável
