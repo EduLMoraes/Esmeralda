@@ -1,6 +1,6 @@
 # ================================================|
 # Mude o nome de arquivo de "config_example" para |
-# "config" para funcionar.                        |
+# "config.toml" para funcionar.                   |
 # ================================================|
 
 # ================================================|
@@ -8,10 +8,11 @@
 # Do contrário será usado dados genéricos no      |
 # arquivo de configuração para o banco de dados.  |
 # ================================================|
-DB_USER = 
-DB_NAME = esmeralda
-DB_PASSWORD =
-DB_HOSTNAME =
+[env]
+DB_USER = ""
+DB_NAME = "esmeralda"
+DB_PASSWORD = ""
+DB_HOSTNAME = ""
 
 # ===============================================|
 # Descomente e atribua uma chave que queira usar |

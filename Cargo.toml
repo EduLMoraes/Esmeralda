@@ -36,7 +36,7 @@ group = "Utilities"
 
 [dependencies]
 chrono = "0.4.31"
-deadpool-postgres = "0.11.0"
+deadpool-postgres = "0.12.0"
 diacritics = "0.2.0"
 dioxus = "0.4.3"
 dioxus-desktop = "0.4.3"
@@ -45,7 +45,7 @@ dioxus-router = "0.4.3"
 lazy_static = "1.4.0"
 nfd = "0.0.4"
 postgres = "0.19.7"
-printpdf = "0.6.0"
+printpdf = "0.7.0"
 rand = "0.8.5"
 regex = "1.10.2"
 rust-crypto = "0.2.36"
@@ -53,3 +53,4 @@ thiserror = "1.0.50"
 tokio = "1.34.0"
 serde = {version = "1.0.193", features = ["derive"]}
 logger = {git = "https://github.com/EduLMoraes/logger" }
+
