@@ -9,7 +9,7 @@
 # arquivo de configuração para o banco de dados.  |
 # ================================================|
 DB_USER = 
-DB_NAME = 
+DB_NAME = esmeralda
 DB_PASSWORD =
 DB_HOSTNAME =
 

@@ -1,5 +1,5 @@
 .github/
-# .cargo/
+.cargo/
 .vscode
 .vs
 
