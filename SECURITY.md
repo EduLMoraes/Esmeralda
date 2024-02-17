@@ -7,15 +7,17 @@ currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 0.1.6   | [X] |
+| 0.1.5   | [ ] |
+| 0.1.4   | [ ] |
+| 0.1.3   | [ ] |
+| 0.1.2   | [ ] |
+| 0.1.1   | [ ] |
+| 0 1.0   | [ ] |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+To report a vulnerability or bug in Esmeralda, create a new issue at 
+https://github.com/EduLMoraes/Esmeralda/issues
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Is extremely important you describe as repeat the bug or the vulnerability.

@@ -19,7 +19,9 @@ dívida e o total daquela dívida.
 
 ### Features
 [ → Veja as mudanças aqui ←](./features.md) 
-  
+
+### Segurança
+Confira [aqui](./SECURITY.md) quais versões tem suporte e como relatar um problema encontrado.  
 
 ### *Licença* 📜
 O Software está submetido ao licenciamento [GNU Affero General Public License v3.0](./LICENSE).
@@ -59,13 +61,13 @@ Aqui é onde a mágica acontece.
 ![Home](./assets/gif/ordened.gif)
 
 
+<!-- 
 ## Como usar? <section id="how-use"/>
-Para usá-lo é necessário seguir alguns passos antes para que tudo funcione
-como deve.
+-->
 
 
  
- ---
+ <!-- ---
 #### 2 - Download do executável
   2.1 - Baixe o executável do esmeralda de acordo com o seu sistema operacional.
    
@@ -76,7 +78,19 @@ como deve.
 #### 3 - Usando
   3.1 - Agora com tudo baixado e configurado, basta rodar ele, ir na tela de cadastro e criar seu login, logar e seguir usando-o normalmente, como mostrado em [imagens](#images)
 
----
+--- -->
+
+### *Como contribuir com o projeto*
+Para contribuir com o projeto basta clonar o projeto com a seguinte linha
+```git
+git clone "https://github.com/EduLMoraes/Esmeralda.git"
+```
+E usar um repositório em seu github, ao finalizar as mudanças feitas por
+ti, basta criar um pull request *(PR)* descrevendo o que foi modificado,
+porquê foi modificado.
+
+`Em caso de nova funcionalidade, documente-a e crie teste automatizado, se possível.`
+
 
 ### *Contribuidores*: <section id="credits"/>
 <table>

@@ -1,7 +1,7 @@
 .github/
 .cargo/
-.vscode/
-/.vs
+.vscode
+.vs
 
 debug/
 
@@ -20,4 +20,4 @@ Cargo.lock
 
 /test.*
 
-/docs
+/doc
