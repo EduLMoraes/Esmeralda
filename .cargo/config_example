@@ -1,4 +1,9 @@
 # ================================================|
+# Mude o nome de arquivo de "config_example" para |
+# "config" para funcionar.                        |
+# ================================================|
+
+# ================================================|
 # Insira os seus dados pro banco de dados postgres|
 # Do contrário será usado dados genéricos no      |
 # arquivo de configuração para o banco de dados.  |
