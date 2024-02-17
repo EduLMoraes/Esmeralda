@@ -91,6 +91,15 @@ porquê foi modificado.
 
 `Em caso de nova funcionalidade, documente-a e crie teste automatizado, se possível.`
 
+Você pode rodar o projeto (necessário rust instalado) usando:
+```bash
+make run
+```
+ou
+```bash
+cargo run
+```
+
 
 ### *Contribuidores*: <section id="credits"/>
 <table>

@@ -1,5 +1,4 @@
 .github/
-.cargo/
 .vscode
 .vs
 
@@ -21,3 +20,5 @@ Cargo.lock
 /test.*
 
 /doc
+
+log.txt

@@ -1,0 +1,15 @@
+# ================================================|
+# Insira os seus dados pro banco de dados postgres|
+# Do contrário será usado dados genéricos no      |
+# arquivo de configuração para o banco de dados.  |
+# ================================================|
+DB_USER = 
+DB_NAME = 
+DB_PASSWORD =
+DB_HOSTNAME =
+
+# ===============================================|
+# Descomente e atribua uma chave que queira usar |
+# caso não quer que ele crie um arquivo .key     |
+# ===============================================|
+# KEYESMERALD =                                 
