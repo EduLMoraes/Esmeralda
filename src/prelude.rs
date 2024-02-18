@@ -3,55 +3,32 @@ pub use dioxus;
 pub use dioxus::prelude::*;
 pub use dioxus_desktop;
 pub use dioxus_router;
-pub use logger;
+pub use logger::log;
 pub use thiserror::Error;
 pub use tokio;
 
-pub use std::env::var;
+pub use std::env;
 pub use std::error::Error;
 pub use std::time::Instant;
+pub use std::path::PathBuf;
 
-#[path = "./controller/control.rs"]
-pub mod control;
-
-#[path = "./controller/router.rs"]
+/// APIs
+#[path = "./APIs/mod.rs"]
 pub mod router;
 
-#[path = "./controller/utils/cryptography.rs"]
-pub mod cryptography;
+/// Controllers
+#[path = "./Controller/mod.rs"]
+pub mod control;
 
-#[path = "./controller/utils/email_valid.rs"]
-pub mod email_valid;
+/// Models
+#[path = "Model/mod.rs"]
+pub mod model;
 
-#[path = "./controller/utils/compare_dates.rs"]
-pub mod compare_dates;
+/// Segurance
+#[path = "Segurance/mod.rs"]
+pub mod segurance;
 
-#[path = "./controller/utils/export.rs"]
-pub mod export;
+/// Utilities
+#[path = "Utils/mod.rs"]
+pub mod utils;
 
-#[path = "./controller/utils/move_pages.rs"]
-pub mod move_pages;
-
-#[path = "./controller/utils/alphabetic.rs"]
-pub mod alphabetic;
-
-#[path = "./controller/config/to_db.rs"]
-pub mod to_db;
-
-#[path = "./controller/config/to_app.rs"]
-pub mod to_app;
-
-#[path = "./controller/database/db.rs"]
-pub mod db;
-
-#[path = "./model/app.rs"]
-pub mod app;
-
-#[path = "./model/errors.rs"]
-pub mod errors;
-
-#[path = "./model/structs_db.rs"]
-pub mod structs_db;
-
-#[path = "./model/structs.rs"]
-pub mod structs;

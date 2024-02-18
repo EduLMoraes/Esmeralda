@@ -1,15 +1,13 @@
 mod prelude;
-use prelude::cryptography::get_key;
-use prelude::logger::log;
+use prelude::segurance::criptography::key::get_key;
 use prelude::*;
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
 
 fn main() {
-    match var("KEYESMERALD") {
+    match env::var("KEYESMERALD") {
         Ok(_) => {
             let mut path = match std::env::consts::OS {
                 "windows" => env::var("HOMEPATH").unwrap(),
@@ -51,5 +49,5 @@ fn main() {
         }
     }
 
-    dioxus_desktop::launch_cfg(app::app, to_app::get_config());
+    dioxus_desktop::launch_cfg(model::App::app, control::config::app::get_config());
 }
