@@ -81,7 +81,7 @@ Aqui é onde a mágica acontece.
 --- -->
 
 ### *Como contribuir com o projeto*
-Para contribuir com o projeto basta clonar o projeto com a seguinte linha
+Para contribuir com o projeto basta ler a documentação em [/doc](./doc/) e clonar o projeto com a seguinte linha
 ```git
 git clone "https://github.com/EduLMoraes/Esmeralda.git"
 ```
