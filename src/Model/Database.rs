@@ -213,7 +213,7 @@ impl DataBase {
                 })?;
 
                 let stmt = conn
-                    .prepare("SELECT * FROM users WHERE username = $1 ")
+                    .prepare("SELECT * FROM users WHERE username = $1 LIMIT 1")
                     .await
                     .map_err(|_| {
                         DataBaseError::GetUserError(ErrorLog {
@@ -263,7 +263,7 @@ impl DataBase {
                         "SELECT 
                         TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
                         TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
-                        * FROM counts WHERE user_id = $1 ",
+                        * FROM counts WHERE user_id = $1",
                     )
                     .await
                     .map_err(|_| {
@@ -314,7 +314,13 @@ impl DataBase {
                     i_info.put(info)
                 }
 
-                Ok(Data::Counts(i_info, user))
+                Ok(Data::Counts(
+                    i_info
+                    .order_by_id(false)
+                    .order_by_status(true),
+                     user
+                    )
+                )
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",

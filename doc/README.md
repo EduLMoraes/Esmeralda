@@ -41,7 +41,7 @@ Requisitos Funcionais:
 
 ❌ 5 - Conexão à Internet:
 
-    · O sistema deve utilizar a internet para enviar e-mails de confirmação durante o processo de cadastro. ❌
+    · O sistema deve utilizar a internet para enviar e-mail de confirmação durante o processo de cadastro. ❌
     · Enviar dados apenas quando solicitado pelo usuário, utilizando a internet somente para essa finalidade. ❌
 
 Requisitos Não Funcionais:

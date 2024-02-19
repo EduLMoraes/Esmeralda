@@ -244,6 +244,23 @@ impl InterfaceInfo {
     
         debtors
     }
+
+    pub fn search(&self, item: String) -> Vec<Info> {
+        if item.is_empty(){
+            return self.list.clone();
+        }
+
+        let mut itens: Vec<Info> = Vec::new();
+
+        for info in &self.list{
+            if item.to_lowercase() == info.nature.to_lowercase() || item == info.debtor{
+                itens.push(
+                    info.clone()
+                );    
+            }
+        }
+        return itens;
+    }
 }
 
 use std::fmt;

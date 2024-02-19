@@ -121,6 +121,8 @@ pub fn Home(cx: Scope) -> Element {
     let mut more: bool = false;
     let mut less: bool = false;
 
+    let test_search = use_state(cx, || String::new());
+
     render! {
 
         style {{ style_home() }}
@@ -131,6 +133,13 @@ pub fn Home(cx: Scope) -> Element {
             div_active::div_most(cx),
 
             div{ id: "div-table",
+                input{
+                    r#type: "text",
+                    oninput: move |item|{
+                        test_search.set( item.value.clone() )
+                    }
+                }
+                br{}
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st)
                 table{ id: "table-counts",
                     tr{ id: "head-table",
@@ -294,22 +303,39 @@ pub fn Home(cx: Scope) -> Element {
                         }
                     }
 
-                    for i in **init..**end{
+                    for info in counts_info.search(test_search.to_string()){
 
                         tr{
-                            td{ id: "col-id", format!("{}", counts_info.list[i].id) },
-                            td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
-                            td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
-                            td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
-                            td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
-                            td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
-                            td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
-                            td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
-                            td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
-                            td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
+                            td{ id: "col-id", format!("{}", info.id) },
+                            td{ id: "col-name", hidden: !columns.name, format!("{}", info.debtor) },
+                            td{ id: "col-nature", hidden: !columns.nature, format!("{}", info.nature) },
+                            td{ id: "col-title", hidden: !columns.title, format!("{}", info.title) },
+                            td{ id: "col-description", hidden: !columns.description, format!("{}", info.description) },
+                            td{ id: "col-date", hidden: !columns.date_in, format!("{}", info.date_in) },
+                            td{ id: "col-date", hidden: !columns.date_out, format!("{}", info.date_out) },
+                            td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", info.paid_installments, info.installments) },
+                            td{ id: "col-value", hidden: !columns.value, format!("{:.2}", info.value) },
+                            td{ hidden: !columns.status, div{ id: if info.status { "stt-pos" } else { "stt-neg" } } },
                         }
 
                     }
+
+                    // for i in **init..**end{
+
+                    //     tr{
+                    //         td{ id: "col-id", format!("{}", counts_info.list[i].id) },
+                    //         td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
+                    //         td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
+                    //         td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
+                    //         td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
+                    //         td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
+                    //         td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
+                    //         td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
+                    //         td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
+                    //         td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
+                    //     }
+
+                    // }
 
                 }
 
