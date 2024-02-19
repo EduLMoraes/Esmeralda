@@ -253,7 +253,10 @@ impl InterfaceInfo {
         let mut itens: Vec<Info> = Vec::new();
 
         for info in &self.list{
-            if item.to_lowercase() == info.nature.to_lowercase() || item == info.debtor{
+            if item.to_lowercase() == info.nature.to_lowercase() 
+            || item == info.debtor 
+            || item.to_lowercase() == info.title.to_lowercase()
+            || item.to_lowercase() == info.description.to_lowercase(){ 
                 itens.push(
                     info.clone()
                 );    

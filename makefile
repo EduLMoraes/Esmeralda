@@ -1,3 +1,6 @@
+config:
+	sudo apt install gdk3.0
+
 run:
 	clear
 	cargo build
