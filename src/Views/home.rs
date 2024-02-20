@@ -132,8 +132,12 @@ pub fn Home(cx: Scope) -> Element {
         div{ id: "div-body",
             div_active::div_most(cx),
 
-            div{ id: "div-table",
+            div_options::div_options(cx),
+            
+            div{ id: "div-right",
+                
                 input{
+                    id: "search-bar",
                     r#type: "text",
                     oninput: move |item|{
                         test_search.set( item.value.clone() )
@@ -141,248 +145,252 @@ pub fn Home(cx: Scope) -> Element {
                 }
                 br{}
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st)
-                table{ id: "table-counts",
-                    tr{ id: "head-table",
-                        td{ id: "col-id",
-                            button{
-                                id: "button-order",
-                                onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_id(**crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by id in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "ID"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.name,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.name, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_alphabetical("name", **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by name in...[{:.3?}]\n", now.elapsed()));
-                                }, "Nome"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.nature,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.nature, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_alphabetical("nature", **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by nature in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Natureza do gasto"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.title,
-                            button{
-                                id: "button-order",
+                
+                div{ id: "div-table",
+                    table{ id: "table-counts",
+                        tr{ id: "head-table",
+                            td{ id: "col-id",
+                                button{
+                                    id: "button-order",
+                                    onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_id(**crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by id in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "ID"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.name,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.name, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_alphabetical("name", **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by name in...[{:.3?}]\n", now.elapsed()));
+                                    }, "Nome"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.nature,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.nature, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_alphabetical("nature", **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by nature in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Natureza do gasto"
+                                }
+                            },
+                            td{ id: "with-button",
                                 hidden: !columns.title,
-                                onclick: move |_|{
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_alphabetical("title", **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by title in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Título"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.description,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.description, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_alphabetical("description", **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by description in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Descrição"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.date_in,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.date_in, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_date(true, **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_in in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Data Inicial"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.date_out,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.date_out, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_date(false, **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_out in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Data Final"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.installments,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.installments, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_installments(false, **crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by installments in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Parcelas Pago/Total"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.value,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.value, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_value(**crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by value in...[{:.3?}]\n", now.elapsed()));
-
-                                }, "Valor p/ parcela"
-                            }
-                        },
-                        td{ id: "with-button",
-                            hidden: !columns.status,
-                            button{
-                                id: "button-order",
-                                hidden: !columns.status, onclick: move |_| {
-                                    let ci =  counts.read().clone();
-
-                                    let now = Instant::now();
-                                    counts.write().list = ci.order_by_status(**crescent).list;
-                                    crescent.set(!**crescent);
-
-                                    let _ = log(path.read().clone(), &format!("[HOME] Ordened table by status in...[{:.3?}]\n", now.elapsed()));
-                                }, "Status"
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.title,
+                                    onclick: move |_|{
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_alphabetical("title", **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by title in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Título"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.description,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.description, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_alphabetical("description", **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by description in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Descrição"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.date_in,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.date_in, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_date(true, **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_in in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Data Inicial"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.date_out,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.date_out, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_date(false, **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_out in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Data Final"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.installments,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.installments, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_installments(false, **crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by installments in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Parcelas Pago/Total"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.value,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.value, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_value(**crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by value in...[{:.3?}]\n", now.elapsed()));
+    
+                                    }, "Valor p/ parcela"
+                                }
+                            },
+                            td{ id: "with-button",
+                                hidden: !columns.status,
+                                button{
+                                    id: "button-order",
+                                    hidden: !columns.status, onclick: move |_| {
+                                        let ci =  counts.read().clone();
+    
+                                        let now = Instant::now();
+                                        counts.write().list = ci.order_by_status(**crescent).list;
+                                        crescent.set(!**crescent);
+    
+                                        let _ = log(path.read().clone(), &format!("[HOME] Ordened table by status in...[{:.3?}]\n", now.elapsed()));
+                                    }, "Status"
+                                }
                             }
                         }
-                    }
-
-                    for info in counts_info.search(test_search.to_string()){
-
-                        tr{
-                            td{ id: "col-id", format!("{}", info.id) },
-                            td{ id: "col-name", hidden: !columns.name, format!("{}", info.debtor) },
-                            td{ id: "col-nature", hidden: !columns.nature, format!("{}", info.nature) },
-                            td{ id: "col-title", hidden: !columns.title, format!("{}", info.title) },
-                            td{ id: "col-description", hidden: !columns.description, format!("{}", info.description) },
-                            td{ id: "col-date", hidden: !columns.date_in, format!("{}", info.date_in) },
-                            td{ id: "col-date", hidden: !columns.date_out, format!("{}", info.date_out) },
-                            td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", info.paid_installments, info.installments) },
-                            td{ id: "col-value", hidden: !columns.value, format!("{:.2}", info.value) },
-                            td{ hidden: !columns.status, div{ id: if info.status { "stt-pos" } else { "stt-neg" } } },
+    
+                      
+                        for info in counts_info.search(test_search.to_string()){
+    
+                            tr{
+                                td{ id: "col-id", format!("{}", info.id) },
+                                td{ id: "col-name", hidden: !columns.name, format!("{}", info.debtor) },
+                                td{ id: "col-nature", hidden: !columns.nature, format!("{}", info.nature) },
+                                td{ id: "col-title", hidden: !columns.title, format!("{}", info.title) },
+                                td{ id: "col-description", hidden: !columns.description, format!("{}", info.description) },
+                                td{ id: "col-date", hidden: !columns.date_in, format!("{}", info.date_in) },
+                                td{ id: "col-date", hidden: !columns.date_out, format!("{}", info.date_out) },
+                                td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", info.paid_installments, info.installments) },
+                                td{ id: "col-value", hidden: !columns.value, format!("{:.2}", info.value) },
+                                td{ hidden: !columns.status, div{ id: if info.status { "stt-pos" } else { "stt-neg" } } },
+                            }
+    
                         }
-
+    
+    
+                        // for i in **init..**end{
+    
+                        //     tr{
+                        //         td{ id: "col-id", format!("{}", counts_info.list[i].id) },
+                        //         td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
+                        //         td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
+                        //         td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
+                        //         td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
+                        //         td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
+                        //         td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
+                        //         td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
+                        //         td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
+                        //         td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
+                        //     }
+    
+                        // }
+    
                     }
-
-                    // for i in **init..**end{
-
-                    //     tr{
-                    //         td{ id: "col-id", format!("{}", counts_info.list[i].id) },
-                    //         td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
-                    //         td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
-                    //         td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
-                    //         td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
-                    //         td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
-                    //         td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
-                    //         td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
-                    //         td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
-                    //         td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
+    
+                    if **init == 0{
+                        less = true;
+                    }
+    
+                    if **end == size_max{
+                        more = true;
+                    }else if **end < size_max && size_max <= **init + LINES{
+                        end.set(size_max);
+                    }
+    
+                    // div{ id: "move-page",
+                    //     button{ hidden: less,
+                    //         onclick: move |_| {
+                    //             let now = Instant::now();
+    
+                    //             let (i, e) = back_page(**init, **end, LINES);
+                    //             init.set(i);
+                    //             end.set(e);
+                    //             page.set(page - 1);
+    
+                    //             let _ = log(path.read().clone(), &format!("[HOME] Back page in...[{:.3?}]\n", now.elapsed()));
+                    //         },
+                    //         "← Página anterior"
                     //     }
-
+    
+                    //     i{ format!("{page}")}
+    
+                    //     button{ hidden: more,
+                    //         onclick: move |_| {
+                    //             let now = Instant::now();
+    
+                    //             let (i, e) = next_page(**init, **end, LINES, &size_max);
+                    //             init.set(i);
+                    //             end.set(e);
+                    //             page.set(page + 1);
+    
+                    //             let _ = log(path.read().clone(), &format!("[HOME] Next page in...[{:.3?}]\n", now.elapsed()));
+                    //         },
+                    //         "Próxima página →"
+                    //     }
                     // }
-
                 }
-
-                if **init == 0{
-                    less = true;
-                }
-
-                if **end == size_max{
-                    more = true;
-                }else if **end < size_max && size_max <= **init + LINES{
-                    end.set(size_max);
-                }
-
-                div{ id: "move-page",
-                    button{ hidden: less,
-                        onclick: move |_| {
-                            let now = Instant::now();
-
-                            let (i, e) = back_page(**init, **end, LINES);
-                            init.set(i);
-                            end.set(e);
-                            page.set(page - 1);
-
-                            let _ = log(path.read().clone(), &format!("[HOME] Back page in...[{:.3?}]\n", now.elapsed()));
-                        },
-                        "← Página anterior"
-                    }
-
-                    i{ format!("{page}")}
-
-                    button{ hidden: more,
-                        onclick: move |_| {
-                            let now = Instant::now();
-
-                            let (i, e) = next_page(**init, **end, LINES, &size_max);
-                            init.set(i);
-                            end.set(e);
-                            page.set(page + 1);
-
-                            let _ = log(path.read().clone(), &format!("[HOME] Next page in...[{:.3?}]\n", now.elapsed()));
-                        },
-                        "Próxima página →"
-                    }
-                }
+                
             }
-
-            div_options::div_options(cx)
 
         }
     }

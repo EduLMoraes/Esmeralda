@@ -1,5 +1,8 @@
+use chrono::NaiveDate;
+
 use crate::prelude::model::Info::Info;
 use crate::prelude::model::Debtor::Debtor;
+use crate::prelude::utils::validate::date;
 use std::collections::HashMap;
 use std::cmp::Reverse;
 
@@ -253,15 +256,19 @@ impl InterfaceInfo {
         let mut itens: Vec<Info> = Vec::new();
 
         for info in &self.list{
-            if item.to_lowercase() == info.nature.to_lowercase() 
-            || item == info.debtor 
+            if item == info.debtor 
+            || item.to_lowercase() == info.nature.to_lowercase()
             || item.to_lowercase() == info.title.to_lowercase()
-            || item.to_lowercase() == info.description.to_lowercase(){ 
+            || item.to_lowercase() == info.description.to_lowercase()
+            || item == info.date_in.to_string()
+            || item == info.date_out.to_string()
+            || item == info.id.to_string(){ 
                 itens.push(
                     info.clone()
                 );    
             }
         }
+
         return itens;
     }
 }

@@ -15,7 +15,16 @@ pub fn style_home() -> String {
         text-align: left;
     
     }
-    
+
+    #div-right{
+        max-height: 60%;
+    }
+
+    #div-table{
+        height: 90%;
+        overflow: auto;
+    }
+
     #button-order{
         border: 0;
         background-color: transparent;
@@ -59,11 +68,19 @@ pub fn style_home() -> String {
         border-top: 1px solid black;
     }
     
+    #search-bar{
+        width: 100%;
+        height: 3%;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
     #head-table{
         background-color: whitesmoke;
         font-size: 14px;
         text-align: left;
         color: black;
+        width: 100%;
     }
     
     #stt-neg, #stt-pos{
