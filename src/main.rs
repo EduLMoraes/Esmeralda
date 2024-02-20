@@ -13,6 +13,7 @@ fn main() {
                 "windows" => env::var("HOMEPATH").unwrap(),
                 _ => env::var("HOME").unwrap(),
             };
+
             path.push_str("/.esmeralda/log.log");
 
             let _ = log(
@@ -26,16 +27,19 @@ fn main() {
                 _ => env::var("HOME").unwrap(),
             };
 
-            path.push_str("/.esmeralda/.key");
-
-            let mut file = match File::open(&path) {
+            let mut file = match File::open(format!("{}/.key", &path)){
                 Ok(file) => file,
-                Err(_) => File::create(&path).unwrap(),
-            };
+                Err(_) => {
+                    path.push_str("/.esmeralda/.key");
+                    let file = File::create(&path).unwrap();
 
-            let mut perms = fs::metadata(&path).unwrap().permissions();
-            perms.set_readonly(true);
-            let _ = fs::set_permissions(&path, perms);
+                    let mut perms = fs::metadata(&path).unwrap().permissions();
+                    perms.set_readonly(true);
+                    let _ = fs::set_permissions(&path, perms);
+
+                    file
+                }
+            };
 
             let mut key_env: String = String::new();
             let _ = file.read_to_string(&mut key_env);

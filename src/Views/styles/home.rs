@@ -69,10 +69,9 @@ pub fn style_home() -> String {
     }
     
     #search-bar{
-        width: 100%;
-        height: 3%;
-        border-radius: 10px;
-        padding: 10px;
+        width: 60%;
+        border-radius: 50px;
+        padding: 5px;
     }
 
     #head-table{

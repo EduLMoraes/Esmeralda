@@ -5,8 +5,12 @@
     <td> Descrição </td>
   </tr>
   <tr> 
-   <td> v0.1.6 (Building)</td>
+   <td> v0.1.6</td>
     <td>
+        Tabela a direita agora e sem paginação.
+        <br>
+        Adicionado barra de pesquisa.
+        <br>
         Criado um instalador para o Esmeralda.
         <br>
         Adicionado resumo de devedores aos arquivos exportados.

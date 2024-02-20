@@ -120,9 +120,11 @@ pub fn Home(cx: Scope) -> Element {
                 input{
                     id: "search-bar",
                     r#type: "text",
+                    r#placeholder: "Pesquisar...",
                     oninput: move |item|{
                         test_search.set( item.value.clone() )
                     }
+
                 }
                 br{}
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st)
