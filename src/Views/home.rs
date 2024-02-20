@@ -1,6 +1,5 @@
 use templates::{ div_active, div_options, Columns, Contabilized};
 use super::*;
-use scripts::*;
 use crate::prelude::control;
 use crate::prelude::log;
 use crate::prelude::model::list::InterfaceInfo;
@@ -8,10 +7,6 @@ use crate::prelude::tokio;
 use crate::prelude::Instant;
 use std::path::PathBuf;
 use styles::home::*;
-
-
-
-const LINES: usize = 10;
 
 /// Renders a web page for the 'Home' component.
 ///
@@ -71,7 +66,6 @@ pub fn Home(cx: Scope) -> Element {
     let counts = use_shared_state::<InterfaceInfo>(cx).unwrap();
     let counts_info = counts.read().clone();
 
-    let size_max: usize = counts_info.len();
     let contabilized = use_shared_state::<Contabilized>(cx).unwrap();
 
     let mut total_debt: f32 = 0.0;
@@ -82,17 +76,6 @@ pub fn Home(cx: Scope) -> Element {
 
     use_shared_state_provider(cx, || Columns::new());
     let columns: Columns = use_shared_state::<Columns>(cx).unwrap().read().clone();
-
-    let init: &UseState<usize> = use_state(cx, || 0 as usize);
-    let end: &UseState<usize> = use_state(cx, || {
-        if size_max > LINES {
-            LINES as usize
-        } else {
-            size_max
-        }
-    });
-
-    let page: &UseState<i32> = use_state(cx, || 1);
 
     let list_counts = counts.read().order_alphabetical("debtor", true);
     let debtors = list_counts.filter_debtors();
@@ -118,8 +101,6 @@ pub fn Home(cx: Scope) -> Element {
     );
 
     let crescent: &UseState<bool> = use_state(cx, || false);
-    let mut more: bool = false;
-    let mut less: bool = false;
 
     let test_search = use_state(cx, || String::new());
 
@@ -327,67 +308,8 @@ pub fn Home(cx: Scope) -> Element {
     
                         }
     
-    
-                        // for i in **init..**end{
-    
-                        //     tr{
-                        //         td{ id: "col-id", format!("{}", counts_info.list[i].id) },
-                        //         td{ id: "col-name", hidden: !columns.name, format!("{}", counts_info.list[i].debtor) },
-                        //         td{ id: "col-nature", hidden: !columns.nature, format!("{}", counts_info.list[i].nature) },
-                        //         td{ id: "col-title", hidden: !columns.title, format!("{}", counts_info.list[i].title) },
-                        //         td{ id: "col-description", hidden: !columns.description, format!("{}", counts_info.list[i].description) },
-                        //         td{ id: "col-date", hidden: !columns.date_in, format!("{}", counts_info.list[i].date_in) },
-                        //         td{ id: "col-date", hidden: !columns.date_out, format!("{}", counts_info.list[i].date_out) },
-                        //         td{ id: "col-inst", hidden: !columns.installments, format!("{}/{}", counts_info.list[i].paid_installments, counts_info.list[i].installments) },
-                        //         td{ id: "col-value", hidden: !columns.value, format!("{:.2}", counts_info.list[i].value) },
-                        //         td{ hidden: !columns.status, div{ id: if counts_info.list[i].status { "stt-pos" } else { "stt-neg" } } },
-                        //     }
-    
-                        // }
-    
                     }
     
-                    if **init == 0{
-                        less = true;
-                    }
-    
-                    if **end == size_max{
-                        more = true;
-                    }else if **end < size_max && size_max <= **init + LINES{
-                        end.set(size_max);
-                    }
-    
-                    // div{ id: "move-page",
-                    //     button{ hidden: less,
-                    //         onclick: move |_| {
-                    //             let now = Instant::now();
-    
-                    //             let (i, e) = back_page(**init, **end, LINES);
-                    //             init.set(i);
-                    //             end.set(e);
-                    //             page.set(page - 1);
-    
-                    //             let _ = log(path.read().clone(), &format!("[HOME] Back page in...[{:.3?}]\n", now.elapsed()));
-                    //         },
-                    //         "← Página anterior"
-                    //     }
-    
-                    //     i{ format!("{page}")}
-    
-                    //     button{ hidden: more,
-                    //         onclick: move |_| {
-                    //             let now = Instant::now();
-    
-                    //             let (i, e) = next_page(**init, **end, LINES, &size_max);
-                    //             init.set(i);
-                    //             end.set(e);
-                    //             page.set(page + 1);
-    
-                    //             let _ = log(path.read().clone(), &format!("[HOME] Next page in...[{:.3?}]\n", now.elapsed()));
-                    //         },
-                    //         "Próxima página →"
-                    //     }
-                    // }
                 }
                 
             }
