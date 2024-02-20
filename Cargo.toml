@@ -2,7 +2,6 @@
 name = "esmeralda"
 version = "0.1.6"
 edition = "2021"
-author = "Eduardo Moraes <17eduardo05@gmail.com>"
 description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
 
 [package.metadata.bundle]
