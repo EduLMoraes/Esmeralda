@@ -110,7 +110,7 @@ Aqui é onde a mágica acontece.
 <img src="./assets/gif/pay.gif" style="display: flex; margin: auto;">
  
  ___
-
+ 
  ### Selecionando as colunas que deseja exibir.
   Por padrão as colunas exibidas são ID, Nome, Título, Data final, 
   Valor p/ parcela e Status, porém, é possível mudar isto selecionando
