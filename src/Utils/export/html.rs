@@ -1,8 +1,4 @@
-use super::{
-    InterfaceInfo,
-    mkdir::mkdir,
-    Write
-};
+use super::{mkdir::mkdir, InterfaceInfo, Write};
 
 /// Export HTML
 ///
@@ -39,10 +35,12 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     data_file.push_str("<html><head></head><body><table>");
     data_file.push_str("<tr>");
-    data_file.push_str("<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>");
+    data_file.push_str(
+        "<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>",
+    );
     data_file.push_str("</tr>");
 
-    for debtor in debtors{
+    for debtor in debtors {
         data_file.push_str("<tr>");
 
         data_file.push_str(
@@ -54,7 +52,7 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
                 debtor.get_value(),
                 debtor.get_status()
             )
-        .trim()
+            .trim(),
         );
 
         data_file.push_str("</tr>");

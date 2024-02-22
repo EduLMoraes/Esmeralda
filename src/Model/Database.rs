@@ -1,15 +1,12 @@
 use crate::prelude::control::config::database::get_config;
-use crate::prelude::model::{
-    errors::{
-        DataBaseError, 
-        ErrorLog
-    }, 
-    User::*, 
-    list::InterfaceInfo,
-    Info::Info
-};
-use crate::prelude::log;
 use crate::prelude::env::var;
+use crate::prelude::log;
+use crate::prelude::model::{
+    errors::{DataBaseError, ErrorLog},
+    list::InterfaceInfo,
+    Info::Info,
+    User::*,
+};
 use chrono::NaiveDate;
 use deadpool_postgres::{GenericClient, Pool, Runtime};
 use lazy_static::lazy_static;
@@ -71,7 +68,7 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
@@ -98,11 +95,7 @@ impl DataBase {
                 conn.execute(&stmt, &[&user.username, &user.password, &user.email])
                     .await
                     .map_err(|err| {
-                        
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
@@ -166,10 +159,7 @@ impl DataBase {
                     )
                     .await
                     .map_err(|err| {
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
@@ -194,16 +184,13 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::User(user) => {
                 let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(
-                        path.clone().into(),
-                        &format!("[DATABASE] {err:?}"),
-                    );
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
 
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
@@ -246,10 +233,7 @@ impl DataBase {
             }
             Data::Counts(mut i_info, user) => {
                 let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(
-                        path.clone().into(),
-                        &format!("[DATABASE] {err:?}"),
-                    );
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
 
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
@@ -315,12 +299,9 @@ impl DataBase {
                 }
 
                 Ok(Data::Counts(
-                    i_info
-                    .order_by_id(false)
-                    .order_by_status(true),
-                     user
-                    )
-                )
+                    i_info.order_by_id(false).order_by_status(true),
+                    user,
+                ))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -335,7 +316,7 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
@@ -395,10 +376,7 @@ impl DataBase {
                     )
                     .await
                     .map_err(|err| {
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",

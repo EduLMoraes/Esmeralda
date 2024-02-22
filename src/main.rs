@@ -27,7 +27,7 @@ fn main() {
                 _ => env::var("HOME").unwrap(),
             };
 
-            let mut file = match File::open(format!("{}/.key", &path)){
+            let mut file = match File::open(format!("{}/.key", &path)) {
                 Ok(file) => file,
                 Err(_) => {
                     path.push_str("/.esmeralda/.key");

@@ -92,4 +92,3 @@ pub fn encrpt(msg: String) -> String {
 
     msg
 }
-

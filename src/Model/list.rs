@@ -1,8 +1,7 @@
-use crate::prelude::model::Info::Info;
 use crate::prelude::model::Debtor::Debtor;
-use std::collections::HashMap;
+use crate::prelude::model::Info::Info;
 use std::cmp::Reverse;
-
+use std::collections::HashMap;
 
 /// Represents a collection of `Info` objects and provides methods to manipulate and order the list based on different criteria.
 ///
@@ -212,7 +211,7 @@ impl InterfaceInfo {
     #[allow(unused_assignments)]
     pub fn filter_debtors(&self) -> Vec<Debtor> {
         let mut debtors_map: HashMap<String, Debtor> = HashMap::new();
-    
+
         for info in &self.list {
             let name = info.debtor.trim().to_string();
             let debtor = debtors_map.entry(name.clone()).or_insert(Debtor::new(
@@ -225,12 +224,12 @@ impl InterfaceInfo {
 
             if info.installments != info.paid_installments {
                 let remaining_installments = info.installments - info.paid_installments;
-    
+
                 value = info.value * remaining_installments as f32;
             } else {
                 value = info.value * info.paid_installments as f32;
             }
-    
+
             if info.status {
                 debtor.add_value(value);
             } else {
@@ -238,31 +237,30 @@ impl InterfaceInfo {
                 debtor.add_debt(value);
             }
         }
-    
+
         let mut debtors: Vec<Debtor> = debtors_map.into_values().collect();
         debtors.sort_by_key(|debtor| debtor.get_id());
-    
+
         debtors
     }
 
     pub fn search(&self, item: String) -> Vec<Info> {
-        if item.is_empty(){
+        if item.is_empty() {
             return self.list.clone();
         }
 
         let mut itens: Vec<Info> = Vec::new();
 
-        for info in &self.list{
-            if item == info.debtor 
-            || item.to_lowercase() == info.nature.to_lowercase()
-            || item.to_lowercase() == info.title.to_lowercase()
-            || item.to_lowercase() == info.description.to_lowercase()
-            || item == info.date_in.to_string()
-            || item == info.date_out.to_string()
-            || item == info.id.to_string(){ 
-                itens.push(
-                    info.clone()
-                );    
+        for info in &self.list {
+            if item == info.debtor
+                || item.to_lowercase() == info.nature.to_lowercase()
+                || item.to_lowercase() == info.title.to_lowercase()
+                || item.to_lowercase() == info.description.to_lowercase()
+                || item == info.date_in.to_string()
+                || item == info.date_out.to_string()
+                || item == info.id.to_string()
+            {
+                itens.push(info.clone());
             }
         }
 

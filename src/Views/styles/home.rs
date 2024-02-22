@@ -1,4 +1,3 @@
-
 #[allow(dead_code)]
 pub fn style_home() -> String {
     "body{

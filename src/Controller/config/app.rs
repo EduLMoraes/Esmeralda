@@ -28,4 +28,3 @@ pub fn get_config() -> Config {
         .with_disable_context_menu(false)
         .with_resource_directory(PathBuf::from("./src/"))
 }
-

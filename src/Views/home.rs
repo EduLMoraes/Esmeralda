@@ -1,4 +1,3 @@
-use templates::{ div_active, div_options, Columns, Contabilized};
 use super::*;
 use crate::prelude::control;
 use crate::prelude::log;
@@ -7,6 +6,7 @@ use crate::prelude::tokio;
 use crate::prelude::Instant;
 use std::path::PathBuf;
 use styles::home::*;
+use templates::{div_active, div_options, Columns, Contabilized};
 
 /// Renders a web page for the 'Home' component.
 ///
@@ -114,9 +114,9 @@ pub fn Home(cx: Scope) -> Element {
             div_active::div_most(cx),
 
             div_options::div_options(cx),
-            
+
             div{ id: "div-right",
-                
+
                 input{
                     id: "search-bar",
                     r#type: "text",
@@ -128,7 +128,7 @@ pub fn Home(cx: Scope) -> Element {
                 }
                 br{}
                 format!("Contas: total: R${:.2} | a pagar: R${:.2} | pago: R${:.2}", **total_counts, **total_debt_st, **total_paid_st)
-                
+
                 div{ id: "div-table",
                     table{ id: "table-counts",
                         tr{ id: "head-table",
@@ -137,13 +137,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_id(**crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by id in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "ID"
                                 }
                             },
@@ -153,11 +153,11 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.name, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_alphabetical("name", **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by name in...[{:.3?}]\n", now.elapsed()));
                                     }, "Nome"
                                 }
@@ -168,13 +168,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.nature, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_alphabetical("nature", **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by nature in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Natureza do gasto"
                                 }
                             },
@@ -185,13 +185,13 @@ pub fn Home(cx: Scope) -> Element {
                                     hidden: !columns.title,
                                     onclick: move |_|{
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_alphabetical("title", **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by title in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Título"
                                 }
                             },
@@ -201,13 +201,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.description, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_alphabetical("description", **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by description in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Descrição"
                                 }
                             },
@@ -217,13 +217,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.date_in, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_date(true, **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_in in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Data Inicial"
                                 }
                             },
@@ -233,13 +233,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.date_out, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_date(false, **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by date_out in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Data Final"
                                 }
                             },
@@ -249,13 +249,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.installments, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_installments(false, **crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by installments in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Parcelas Pago/Total"
                                 }
                             },
@@ -265,13 +265,13 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.value, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_value(**crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by value in...[{:.3?}]\n", now.elapsed()));
-    
+
                                     }, "Valor p/ parcela"
                                 }
                             },
@@ -281,20 +281,20 @@ pub fn Home(cx: Scope) -> Element {
                                     id: "button-order",
                                     hidden: !columns.status, onclick: move |_| {
                                         let ci =  counts.read().clone();
-    
+
                                         let now = Instant::now();
                                         counts.write().list = ci.order_by_status(**crescent).list;
                                         crescent.set(!**crescent);
-    
+
                                         let _ = log(path.read().clone(), &format!("[HOME] Ordened table by status in...[{:.3?}]\n", now.elapsed()));
                                     }, "Status"
                                 }
                             }
                         }
-    
-                      
+
+
                         for info in counts_info.search(test_search.to_string()){
-    
+
                             tr{
                                 td{ id: "col-id", format!("{}", info.id) },
                                 td{ id: "col-name", hidden: !columns.name, format!("{}", info.debtor) },
@@ -307,13 +307,13 @@ pub fn Home(cx: Scope) -> Element {
                                 td{ id: "col-value", hidden: !columns.value, format!("{:.2}", info.value) },
                                 td{ hidden: !columns.status, div{ id: if info.status { "stt-pos" } else { "stt-neg" } } },
                             }
-    
+
                         }
-    
+
                     }
-    
+
                 }
-                
+
             }
 
         }

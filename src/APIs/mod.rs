@@ -3,9 +3,9 @@ use crate::prelude::dioxus_router::prelude::*;
 
 #[path = "../Views/mod.rs"]
 mod views;
-use views::register::Register;
-use views::login::Login;
 use views::home::Home;
+use views::login::Login;
+use views::register::Register;
 
 /// # Routable Route Enum
 ///

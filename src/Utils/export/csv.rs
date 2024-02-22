@@ -1,8 +1,4 @@
-use super::{
-    InterfaceInfo,
-    mkdir::mkdir,
-    Write
-};
+use super::{mkdir::mkdir, InterfaceInfo, Write};
 
 /// # export_csv
 ///
@@ -29,7 +25,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
 
     data_file.push_str("ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n");
 
-    for debtor in debtors{
+    for debtor in debtors {
         data_file.push_str(
             format!(
                 "{};{};{:.2};{:.2};{}",
@@ -39,7 +35,7 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
                 debtor.get_value(),
                 debtor.get_status()
             )
-        .trim()
+            .trim(),
         );
 
         data_file.push('\n');
@@ -50,7 +46,6 @@ pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, Stri
     );
 
     for info in &data.list {
-
         data_file.push_str(
             format!(
                 "{};{};{};{};{};{};{};{};{};{:.2};{}",

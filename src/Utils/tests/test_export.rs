@@ -13,8 +13,6 @@ use std::path::Path;
 #[allow(unused_imports)]
 use chrono::NaiveDate;
 
-
-
 #[cfg(test)]
 mod test_export_csv {
     use super::*;
@@ -175,7 +173,6 @@ mod test_export_csv {
                                 \nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
                                 1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n";
         assert_eq!(file_content, expected_content);
-
     }
 }
 

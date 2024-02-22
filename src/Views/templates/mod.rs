@@ -1,15 +1,12 @@
-use crate::prelude::model::list::InterfaceInfo;
+use crate::prelude::chrono::{Months, NaiveDate};
 use crate::prelude::dioxus::prelude::*;
-use crate::prelude::chrono::{NaiveDate, Months};
-use crate::prelude::PathBuf;
 use crate::prelude::log;
+use crate::prelude::model::list::InterfaceInfo;
+use crate::prelude::PathBuf;
 
 use crate::prelude::control;
 
-use crate::prelude::model::{
-    Info::Info,
-    Message::Message
-};
+use crate::prelude::model::{Info::Info, Message::Message};
 
 pub mod div_active;
 pub mod div_add;
