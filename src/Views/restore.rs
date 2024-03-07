@@ -18,12 +18,10 @@ use styles::login::style_login;
 /// let cx: Scope = ...; // create a scope object
 /// let login_form: Element = Login(cx); // render the login form
 /// ```
-pub fn Login(cx: Scope) -> Element {
+pub fn Restore(cx: Scope) -> Element {
     let path = use_shared_state::<PathBuf>(cx).unwrap();
 
     let username: &UseState<String> = use_state(cx, || String::new());
-    let password: &UseState<String> = use_state(cx, || String::new());
-    let data_incompatible: &UseState<bool> = use_state(cx, || false);
     let user_not_exists: &UseState<bool> = use_state(cx, || false);
 
     let nav: &Navigator = dioxus_router::prelude::use_navigator(cx);
@@ -35,69 +33,49 @@ pub fn Login(cx: Scope) -> Element {
         div{
             id: "login",
 
-            h1{
-                i{
-                    "Bem-vindo(a) à "
-                    i{
-                        id: "esmeralda",
-                        "Esmeralda"
-                    }
-                }
-            }
             h3{
-                "Dívidas? Nunca mais!"
+                "Bora recuperar essa senha?"
             }
 
             form {
                 onsubmit: move |_| {
                     let user: User = User{
                         username: username.to_string(),
-                        password: password.to_string()
+                        password: String::from("")
                     };
 
                     let now = Instant::now();
-                    let result = rt.block_on(control::login(user));
 
-                    let _ = log(path.read().clone(), &format!("[LOGIN] Login user in...[{:.3?}]\n", now.elapsed()));
+                    let result = rt.block_on(control::restore_password(user));
 
                     if result.is_ok(){
-                        nav.push(Route::Home{});
+                        nav.push(Route::Login{});
                     }
                     else{
                         let _ = result.map_err(move |err| {
                             match err{
-                                ControlError::ErrorAuthenticate(err) => {
-                                    let _ = log(path.read().clone(), &format!("[LOGIN] {err}\n"));
-                                    data_incompatible.set( true );
+                                ControlError::UserNotExists(err) => {
+                                    let _ = log(path.read().clone(), &format!("[RESTORE] {err}\n"));
                                 },
                                 ControlError::ErrorExternDB(err) => {
-                                    let _ = log(path.read().clone(), &format!("[LOGIN] {err}\n"));
+                                    let _ = log(path.read().clone(), &format!("[RESTORE] {err}\n"));
                                     user_not_exists.set(true);
                                 },
                                 _ => { }
                             };
                         });
                     }
+
+                    let _ = log(path.read().clone(), &format!("[RESTORE] Restore password in...[{:.3?}]\n", now.elapsed()));
                 },
 
                 p{ hidden: !**user_not_exists, id: "data-invalid", "Usuário não cadastrado!" }
-                p{ hidden: !**data_incompatible, id: "data-invalid", "Nome de usuário ou senha incorreto!" }
 
                 input {
                     id: "username",
-                    placeholder: "Username",
+                    placeholder: "username",
                     value: "{username}",
                     oninput: move |evt| username.set(evt.value.clone()),
-                },
-
-                br{}
-
-                input {
-                    id: "passowrd",
-                    r#type: "password",
-                    placeholder: "Senha",
-                    value: "{password}",
-                    oninput: move |evt| password.set(evt.value.clone()),
                 },
 
                 br{}
@@ -119,11 +97,11 @@ pub fn Login(cx: Scope) -> Element {
                     }
                 }
                 p{
-                    "Esqueceu a senha? "
+                    "Não esqueceu a senha? "
                     dioxus_router::prelude::Link {
                         id: "register",
-                        to: Route::Restore {},
-                        "Recuperar senha"
+                        to: Route::Login {},
+                        "Voltar para login"
                     }
                 }
 

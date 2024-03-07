@@ -227,6 +227,7 @@ impl DataBase {
                     id: id,
                     username: row.get("username"),
                     password: row.get("password"),
+                    email: row.get("email"),
                 };
 
                 Ok(Data::UserDb(user))

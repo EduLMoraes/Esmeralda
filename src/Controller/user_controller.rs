@@ -25,6 +25,7 @@ pub fn gen_user_instance(usr: UserDb) {
         id: usr.id,
         username: usr.username,
         password: usr.password,
+        email: usr.email,
     });
 }
 
@@ -225,4 +226,38 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
             file: "controller.rs",
         }))
     }
+}
+
+pub async fn restore_password(user: User) -> Result<(), ControlError> {
+    let db = get_database_instance();
+
+    let db_user = db
+        .get(Data::User(user))
+        .await
+        .map_err(|err| ControlError::ErrorExternDB(err))?;
+
+    match db_user {
+        Data::UserDb(mut user_data) => {
+            let new_pass = "teste123";
+            user_data.password = criptography::encrpt(String::from(new_pass));
+
+            let _ = tokio::task::spawn(async move {
+                let _ = send_email(
+                    "esmeralda.restorepass@gmail.com",
+                    &user_data.email,
+                    "Recuperação de senha Esmeralda",
+                    String::from(format!("Caso não tenha sido você, apenas ignore este e-mail.\n Sua senha agora é: {}", new_pass)),
+                    String::from("Foi solicitada uma recuperação de senha com seu e-mail")
+                    ).await;
+            });
+        }
+        _ => {
+            return Err(ControlError::UserNotExists(ErrorLog {
+                title: "User with this email not exists",
+                code: 305,
+                file: "user_controller.rs",
+            }))
+        }
+    }
+    Ok(())
 }

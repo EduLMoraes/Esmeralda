@@ -15,7 +15,7 @@ pub use std::time::Instant;
 
 /// APIs
 #[path = "./APIs/mod.rs"]
-pub mod router;
+pub mod apis;
 
 /// Controllers
 #[path = "./Controller/mod.rs"]

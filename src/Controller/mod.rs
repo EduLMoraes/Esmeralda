@@ -15,6 +15,7 @@ pub use file_controller::*;
 
 use crate::prelude::chrono::{Datelike, NaiveDate};
 
+use crate::apis::send_email;
 use crate::prelude::env::var;
 use crate::prelude::log;
 use crate::prelude::model::{errors::*, list::InterfaceInfo, Database::*, Info::Info, User::*};

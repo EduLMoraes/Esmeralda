@@ -5,8 +5,8 @@ use crate::prelude::dioxus_router::prelude::*;
 mod styles;
 use styles::global;
 
+use crate::prelude::apis::Route;
 use crate::prelude::env;
-use crate::prelude::router::Route;
 use crate::prelude::PathBuf;
 
 /// Renders a web application using the Dioxus framework.
