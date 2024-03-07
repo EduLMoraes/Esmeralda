@@ -238,8 +238,11 @@ pub async fn restore_password(user: User) -> Result<(), ControlError> {
 
     match db_user {
         Data::UserDb(mut user_data) => {
-            let new_pass = "teste123";
-            user_data.password = criptography::encrpt(String::from(new_pass));
+            let new_pass = criptography::gen_string(8, &[65, 122]);
+            user_data.password = criptography::encrpt(String::from(&new_pass));
+            db.edit(Data::UserDb(user_data.clone()))
+                .await
+                .map_err(|err| ControlError::ErrorExternDB(err))?;
 
             let _ = tokio::task::spawn(async move {
                 let _ = send_email(

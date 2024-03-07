@@ -75,6 +75,14 @@ pub enum DataBaseError {
     #[error("Error to get user from db")]
     GetCountsError(ErrorLog<'static>),
 
+    /// Get user not working
+    #[error("Error to get user from db")]
+    EditCountsError(ErrorLog<'static>),
+
+    /// Get user not working
+    #[error("Error to get user from db")]
+    EditUserError(ErrorLog<'static>),
+
     /// DataType not Accept
     #[error("Error in data type receive")]
     DataTypeInvalid(ErrorLog<'static>),

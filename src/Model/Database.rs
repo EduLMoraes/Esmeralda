@@ -47,7 +47,7 @@ impl DataBase {
                     DataBaseError::GetConfigError(ErrorLog {
                         title: "Config no error",
                         code: 802,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?
                 .create_pool(Some(Runtime::Tokio1), NoTls)
@@ -55,7 +55,7 @@ impl DataBase {
                     DataBaseError::CreatePoolError(ErrorLog {
                         title: "Pool not found",
                         code: 802,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?,
         };
@@ -77,7 +77,7 @@ impl DataBase {
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to get pool",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -88,7 +88,7 @@ impl DataBase {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -100,7 +100,7 @@ impl DataBase {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -111,7 +111,7 @@ impl DataBase {
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to get pool",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -133,7 +133,7 @@ impl DataBase {
                         DataBaseError::AddCountError(ErrorLog {
                             title: "Error to prepare query",
                             code: 808,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -164,7 +164,7 @@ impl DataBase {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
                 }
@@ -174,7 +174,7 @@ impl DataBase {
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }
@@ -195,7 +195,7 @@ impl DataBase {
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -206,7 +206,7 @@ impl DataBase {
                         DataBaseError::GetUserError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -217,7 +217,7 @@ impl DataBase {
                         DataBaseError::GetUserError(ErrorLog {
                             title: "User not found!",
                             code: 804,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -239,7 +239,7 @@ impl DataBase {
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -255,7 +255,7 @@ impl DataBase {
                         DataBaseError::GetCountsError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
@@ -263,7 +263,7 @@ impl DataBase {
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "User not found!",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -307,7 +307,7 @@ impl DataBase {
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }
@@ -323,10 +323,10 @@ impl DataBase {
         match data {
             Data::Counts(counts, user) => {
                 let conn = self.pool.get().await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
+                    DataBaseError::EditCountsError(ErrorLog {
                         title: "Error to get pool",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
@@ -348,10 +348,10 @@ impl DataBase {
                         )
                         .await
                         .map_err(|_| {
-                            DataBaseError::AddUserError(ErrorLog {
+                            DataBaseError::EditCountsError(ErrorLog {
                                 title: "Error to prepare query",
                                 code: 808,
-                                file: "db.rs",
+                                file: "Database.rs",
                             })
                         })?;
 
@@ -382,17 +382,55 @@ impl DataBase {
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
                 }
 
                 Ok(())
             }
+            Data::UserDb(user) => {
+                let conn = self.pool.get().await.map_err(|_| {
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "Error to get pool",
+                        code: 804,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                let query: Statement = conn
+                    .prepare(
+                        "UPDATE users SET
+                            password = $1
+                            WHERE user_id = $2",
+                    )
+                    .await
+                    .map_err(|_| {
+                        DataBaseError::EditUserError(ErrorLog {
+                            title: "Error to prepare query",
+                            code: 808,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                conn.execute(&query, &[&user.password, &user.id])
+                    .await
+                    .map_err(|err| {
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+
+                        DataBaseError::EditUserError(ErrorLog {
+                            title: "Error to execute query",
+                            code: 808,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                Ok(())
+            }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }

@@ -36,13 +36,13 @@ use views::Restore;
 /// - `Home`: Represents the home route. It is annotated with the route path `"/static"`.
 #[derive(Clone, Debug, PartialEq, Routable)]
 pub enum Route {
-    #[route("/login")]
+    #[route("/")]
     Login {},
 
     #[route("/register")]
     Register {},
 
-    #[route("/")]
+    #[route("/restore")]
     Restore {},
 
     #[route("/static")]

@@ -1,5 +1,5 @@
 mod prelude;
-use prelude::segurance::criptography::key::get_key;
+use prelude::segurance::criptography::gen_string;
 use prelude::*;
 use std::fs;
 use std::fs::File;
@@ -45,7 +45,7 @@ fn main() {
             let _ = file.read_to_string(&mut key_env);
 
             if key_env.is_empty() {
-                key_env = get_key();
+                key_env = gen_string(32, &[33, 126]);
                 let _ = file.write(key_env.as_bytes());
             }
 
