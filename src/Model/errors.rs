@@ -119,3 +119,13 @@ pub enum ControlError {
     #[error("Error to save")]
     ErrorNotSave(ErrorLog<'static>),
 }
+
+#[allow(dead_code)]
+#[derive(Error, Debug, PartialEq)]
+pub enum ApiError{
+    #[error("Error to send email")]
+    ErrorMailjet(ErrorLog<'static>),
+
+    #[error("Error on router")]
+    ErrorRouter(ErrorLog<'static>),
+}

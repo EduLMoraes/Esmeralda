@@ -5,8 +5,32 @@ use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
+use libc;
+use std::io::stdout;
+use std::os::unix::io::AsRawFd;
 
 fn main() {
+
+    match std::env::consts::OS {
+        "windows" => {
+            let null_stdout = File::create("NUL").unwrap();
+            let stdout_fd = stdout().as_raw_fd();
+            let null_stdout_fd = null_stdout.as_raw_fd();
+            unsafe {
+                libc::dup2(null_stdout_fd, stdout_fd);
+            }
+        },
+        _ => {
+            let null_stdout = File::create("/dev/null").unwrap();
+            let stdout_fd = stdout().as_raw_fd();
+            let null_stdout_fd = null_stdout.as_raw_fd();
+            unsafe {
+                libc::dup2(null_stdout_fd, stdout_fd);
+            }
+        },
+    };
+    
+
     match env::var("KEYESMERALD") {
         Ok(_) => {
             let mut path = match std::env::consts::OS {
