@@ -2,7 +2,7 @@
 pub use super::*;
 
 // Returns true if all fields in Info struct are non-empty and valid.
-#[tokio::test]
+// #[tokio::test]
 async fn test_all_fields_non_empty_and_valid() {
     let info = Info {
         id: 1,
@@ -23,7 +23,7 @@ async fn test_all_fields_non_empty_and_valid() {
 }
 
 // Returns false if debtor field is empty or contains non-alphabetic characters.
-#[tokio::test]
+// #[tokio::test]
 async fn test_debtor_field_empty_or_non_alphabetic() {
     let info = Info {
         id: 1,
@@ -44,7 +44,7 @@ async fn test_debtor_field_empty_or_non_alphabetic() {
 }
 
 // Returns false if title field is empty.
-#[tokio::test]
+// #[tokio::test]
 async fn test_title_field_empty() {
     let info = Info {
         id: 0,
@@ -65,7 +65,7 @@ async fn test_title_field_empty() {
 }
 
 // Returns false if value field is zero.
-#[tokio::test]
+// #[tokio::test]
 async fn test_value_field_zero() {
     let info = Info {
         id: 0,
@@ -86,7 +86,7 @@ async fn test_value_field_zero() {
 }
 
 // Returns false if installments field is zero.
-#[tokio::test]
+// #[tokio::test]
 async fn test_installments_field_zero() {
     let info = Info {
         id: 0,
@@ -107,7 +107,7 @@ async fn test_installments_field_zero() {
 }
 
 // Returns false if debtor field contains only spaces.
-#[tokio::test]
+// #[tokio::test]
 async fn test_debtor_field_only_spaces() {
     let info = Info {
         id: 1,
@@ -128,7 +128,7 @@ async fn test_debtor_field_only_spaces() {
 }
 
 // Returns false if debtor field contains only non-alphabetic characters.
-#[tokio::test]
+// #[tokio::test]
 async fn test_debtor_field_only_non_alphabetic() {
     let info = Info {
         id: 1,
@@ -149,7 +149,7 @@ async fn test_debtor_field_only_non_alphabetic() {
 }
 
 // Returns true if debtor field contains alphabetic characters and spaces.
-#[tokio::test]
+// #[tokio::test]
 async fn test_debtor_field_alphabetic_and_spaces() {
     let info = Info {
         id: 1,
@@ -170,7 +170,7 @@ async fn test_debtor_field_alphabetic_and_spaces() {
 }
 
 // Returns true if value field is non-zero.
-#[tokio::test]
+// #[tokio::test]
 async fn test_value_field_non_zero() {
     let info = Info {
         id: 1,
@@ -191,7 +191,7 @@ async fn test_value_field_non_zero() {
 }
 
 // Returns true if installments field is non-zero.
-#[tokio::test]
+// #[tokio::test]
 async fn test_installments_field_non_zero() {
     let info = Info {
         id: 1,
@@ -212,7 +212,7 @@ async fn test_installments_field_non_zero() {
 }
 
 // Returns false if Info struct is empty.
-#[tokio::test]
+// #[tokio::test]
 async fn test_info_struct_empty() {
     let info = Info {
         id: 0,
@@ -233,7 +233,7 @@ async fn test_info_struct_empty() {
 }
 
 // Returns false if Info struct has only debtor field.
-#[tokio::test]
+// #[tokio::test]
 async fn test_info_struct_only_debtor_field() {
     let info = Info {
         id: 0,

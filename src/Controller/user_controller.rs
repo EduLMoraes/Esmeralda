@@ -78,7 +78,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
         let _ = log(
             path.clone().into(),
             &format!(
-                "[CONTROL] {err:?}\n[CONTROL] Time to login --- {:.3?}",
+                "\n[CONTROL] {err:?}\n[CONTROL] Time to login --- {:.3?}\n",
                 start.elapsed()
             ),
         );
@@ -91,7 +91,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             if data.username.is_empty() {
                 let _ = log(
                     path.clone().into(),
-                    &format!("[CONTROL] Error to find user in system"),
+                    &format!("[CONTROL] Error to find user in system\n"),
                 );
 
                 Err(ControlError::UserNotExists(ErrorLog {
@@ -104,14 +104,14 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
 
                 let _ = log(
                     path.clone().into(),
-                    &format!("[CONTROL] Login successful in {:.3?}", start.elapsed()),
+                    &format!("[CONTROL] Login successful in {:.3?}\n", start.elapsed()),
                 );
                 Ok(())
             } else {
                 let _ = log(
                     path.clone().into(),
                     &format!(
-                        "[CONTROL] Password incorrect --- time of end: {:.3?}",
+                        "[CONTROL] Password incorrect --- time of end: {:.3?}\n",
                         start.elapsed()
                     ),
                 );
@@ -127,7 +127,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             let _ = log(
                 path.clone().into(),
                 &format!(
-                    "[CONTROL] Database not accept this format of data --- time of end: {:.3?}",
+                    "[CONTROL] Database not accept this format of data --- time of end: {:.3?}\n",
                     start.elapsed()
                 ),
             );

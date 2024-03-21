@@ -1,4 +1,9 @@
 use super::*;
+use crate::model::list::InterfaceInfo;
+use crate::std::sync::Mutex;
+use crate::std::sync::OnceLock;
+
+pub static mut GLOBAL_COUNTS: OnceLock<InterfaceInfo> = OnceLock::new();
 
 /// Saves the provided `InterfaceInfo` data to the global database.
 ///
@@ -162,6 +167,14 @@ pub async fn recover() -> Result<InterfaceInfo, ControlError> {
                 .collect();
 
             data.list = list;
+
+            unsafe {
+                let teste = GLOBAL_COUNTS.get_mut();
+                match teste {
+                    Some(_) => {}
+                    None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
+                }
+            }
 
             Ok(data)
         }

@@ -9,25 +9,28 @@ use std::io::Read;
 use std::io::Write;
 use std::os::unix::io::AsRawFd;
 
+use prelude::sty::load_style;
+use prelude::views::esmeralda;
+
 fn main() {
-    match std::env::consts::OS {
-        "windows" => {
-            let null_stdout = File::create("NUL").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
-            }
-        }
-        _ => {
-            let null_stdout = File::create("/dev/null").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
-            }
-        }
-    };
+    // match std::env::consts::OS {
+    //     "windows" => {
+    //         let null_stdout = File::create("NUL").unwrap();
+    //         let stdout_fd = stdout().as_raw_fd();
+    //         let null_stdout_fd = null_stdout.as_raw_fd();
+    //         unsafe {
+    //             libc::dup2(null_stdout_fd, stdout_fd);
+    //         }
+    //     }
+    //     _ => {
+    //         let null_stdout = File::create("/dev/null").unwrap();
+    //         let stdout_fd = stdout().as_raw_fd();
+    //         let null_stdout_fd = null_stdout.as_raw_fd();
+    //         unsafe {
+    //             libc::dup2(null_stdout_fd, stdout_fd);
+    //         }
+    //     }
+    // };
 
     match env::var("KEYESMERALD") {
         Ok(_) => {
@@ -75,5 +78,10 @@ fn main() {
         }
     }
 
-    dioxus_desktop::launch_cfg(model::App::app, control::config::app::get_config());
+    let application = Application::new(Some("myapp.Esmeralda.com"), Default::default());
+
+    application.connect_startup(|_| load_style());
+    application.connect_activate(esmeralda);
+
+    application.run();
 }

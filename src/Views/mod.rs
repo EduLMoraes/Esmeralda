@@ -1,22 +1,12 @@
-use crate::prelude::apis::Navigator;
-use crate::prelude::apis::Route;
+use crate::env::var;
 use crate::prelude::control;
-use crate::prelude::dioxus::prelude::*;
 use crate::prelude::log;
 use crate::prelude::model::errors::*;
+pub use gtk::prelude::*;
+pub use gtk::{
+    gdk::Display, Application, ApplicationWindow, Box, Button, Entry, Label, Orientation, Stack,
+    StackSwitcher,
+};
 
-/// Screens
-mod home;
-mod login;
-mod register;
-mod restore;
-
-pub use home::*;
-pub use login::*;
-pub use register::*;
-pub use restore::*;
-
-pub mod scripts;
-pub mod styles;
-pub mod templates;
-pub mod tests;
+mod app;
+pub use app::esmeralda;

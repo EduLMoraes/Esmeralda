@@ -1,30 +1,18 @@
-use crate::prelude::dioxus_desktop::{Config, WindowBuilder};
-use std::path::PathBuf;
+use crate::env::var;
+use crate::gtk::prelude::*;
+use crate::gtk::{Application, ApplicationWindow};
 
-/// Returns a `Config` object with specified properties set.
-///
-/// # Example
-///
-/// ```
-/// let config = get_config();
-/// ```
-///
-/// # Arguments
-///
-/// None
-///
-/// # Returns
-///
-/// A `Config` object with the specified properties set.
-#[allow(dead_code)]
-pub fn get_config() -> Config {
-    let window = WindowBuilder::new();
-    let window = window.with_title("Esmeralda");
-    let window = window.with_transparent(false);
-    let window = window.with_maximized(true);
+pub fn get_config(app: &Application) -> ApplicationWindow {
+    let window = ApplicationWindow::new(app);
 
-    Config::new()
-        .with_window(window)
-        .with_disable_context_menu(false)
-        .with_resource_directory(PathBuf::from("./src/"))
+    window.set_hexpand(false);
+    // window.set_fullscreened(true);
+    window.set_default_width(1280);
+    window.set_default_height(720);
+    window.set_resizable(false);
+
+    window.set_title(Some("Esmeralda"));
+    window.set_icon_name(Some(&format!("{}icon.ico", var("ICON_PATH").unwrap())));
+
+    window
 }

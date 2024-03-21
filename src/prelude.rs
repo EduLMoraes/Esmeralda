@@ -1,10 +1,13 @@
 pub use async_trait::async_trait;
 pub use chrono;
-pub use dioxus;
-pub use dioxus::prelude::*;
-pub use dioxus_desktop;
-pub use dioxus_router;
+pub use gtk;
+pub use gtk::prelude::*;
+pub use gtk::{
+    gdk::Display, Application, ApplicationWindow, Box, Button, Entry, Label, Orientation, Stack,
+    StackSwitcher,
+};
 pub use logger::log;
+pub use std;
 pub use thiserror::Error;
 pub use tokio;
 
@@ -32,3 +35,9 @@ pub mod segurance;
 /// Utilities
 #[path = "Utils/mod.rs"]
 pub mod utils;
+
+#[path = "Views/mod.rs"]
+pub mod views;
+
+#[path = "Views/styles/sty.rs"]
+pub mod sty;

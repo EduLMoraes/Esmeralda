@@ -65,7 +65,7 @@ impl Info {
             paid_installments: 0,
             installments: 1,
             status: false,
-            nature: String::new(),
+            nature: String::from("Outros"),
         }
     }
 
