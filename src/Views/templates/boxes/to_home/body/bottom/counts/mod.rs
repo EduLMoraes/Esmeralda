@@ -1,4 +1,6 @@
 use super::*;
+use crate::control::GLOBAL_COUNTS;
+use crate::model::list::*;
 use crate::model::Debtor::Debtor;
 use crate::model::Info::Info;
 use gtk::{DropDown, ScrolledWindow};

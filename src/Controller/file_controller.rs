@@ -5,7 +5,7 @@ use super::*;
 /// # Arguments
 ///
 /// * `path` - A string slice that represents the file path where the data should be saved.
-/// * `data` - A reference to the `InterfaceInfo` data that needs to be saved in the file.
+/// * `data` - A reference to the `ListInfo` data that needs to be saved in the file.
 ///
 /// # Returns
 ///
@@ -14,15 +14,15 @@ use super::*;
 /// # Example
 ///
 /// ```rust
-/// # use crate::InterfaceInfo;
+/// # use crate::ListInfo;
 /// # use crate::ControlError;
 /// # use crate::ErrorLog;
-/// # async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> { Ok(String::from("")) }
-/// # async fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> { Ok(String::from("")) }
-/// # async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> { Ok(String::from("")) }
+/// # async fn export_csv(path: &str, data: &ListInfo) -> Result<String, ControlError> { Ok(String::from("")) }
+/// # async fn export_pdf(path: &str, data: &ListInfo) -> Result<String, ControlError> { Ok(String::from("")) }
+/// # async fn export_html(path: &str, data: &ListInfo) -> Result<String, ControlError> { Ok(String::from("")) }
 /// #
 /// # #[derive(Debug)]
-/// # struct InterfaceInfo;
+/// # struct ListInfo;
 /// #
 /// # #[derive(Debug)]
 /// # enum ControlError {
@@ -37,9 +37,9 @@ use super::*;
 /// #     file: &'static str,
 /// # }
 /// #
-/// # async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> {
+/// # async fn save_in_file(path: &str, data: &ListInfo) -> Result<String, ControlError> {
 /// let path = "data.csv";
-/// let data = InterfaceInfo;
+/// let data = ListInfo;
 ///
 /// let result = save_in_file(path, &data).await;
 ///
@@ -51,7 +51,7 @@ use super::*;
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn save_in_file(path: &str, data: &InterfaceInfo) -> Result<String, ControlError> {
+pub async fn save_in_file(path: &str, data: &ListInfo) -> Result<String, ControlError> {
     let extend: Vec<&str> = path.split('.').collect();
 
     let response = match extend[1] {

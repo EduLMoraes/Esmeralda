@@ -1,6 +1,4 @@
 use super::*;
-use crate::control::recover;
-use crate::tokio;
 
 pub fn get_pay_box(stack: &Stack) -> Box {
     let box_pay = Box::new(Orientation::Vertical, 10);
@@ -22,9 +20,7 @@ pub fn get_pay_box(stack: &Stack) -> Box {
 
     box_pay.append(&box_title);
 
-    let run = tokio::runtime::Runtime::new().unwrap();
-    let infos = run.block_on(recover()).unwrap();
-
+    let infos = unsafe { GLOBAL_COUNTS.get().unwrap() };
     let grid = Grid::new();
     grid.set_halign(gtk::Align::Center);
     grid.set_column_spacing(10);
@@ -34,7 +30,7 @@ pub fn get_pay_box(stack: &Stack) -> Box {
     let mut y = 0;
 
     if !infos.list.is_empty() {
-        for mut info in infos.list {
+        for mut info in &infos.list {
             if !info.status {
                 let group = box_info(&mut info);
                 grid.attach(&group, x, y as i32, 1, 1);

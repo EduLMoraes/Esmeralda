@@ -1,6 +1,6 @@
-use gtk::{DropDown, SearchEntry};
-
 use super::*;
+use crate::control::get_user_instance;
+use gtk::{DropDown, SearchEntry};
 
 pub fn box_top() -> Box {
     let box_top = Box::new(Orientation::Horizontal, 200);
@@ -28,7 +28,8 @@ pub fn box_top() -> Box {
     let button_ext = Button::with_label("Sair");
     button_ext.add_css_class("link_button");
 
-    let username = Label::new(Some("Username"));
+    let username = get_user_instance().clone().unwrap();
+    let username = Label::new(Some(username.username.trim()));
     username.set_halign(gtk::Align::Center);
     username.set_valign(gtk::Align::Center);
     username.set_height_request(20);

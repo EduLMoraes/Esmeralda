@@ -1,4 +1,4 @@
-use super::{mkdir::mkdir, InterfaceInfo, Write};
+use super::{mkdir::mkdir, ListInfo, Write};
 
 /// Export HTML
 ///
@@ -8,7 +8,7 @@ use super::{mkdir::mkdir, InterfaceInfo, Write};
 ///
 /// ```rust
 /// let path = "output.html";
-/// let data = InterfaceInfo { ... };
+/// let data = ListInfo { ... };
 ///
 /// match export_html(path, &data).await {
 ///     Ok(file_path) => println!("HTML file exported successfully: {}", file_path),
@@ -19,14 +19,14 @@ use super::{mkdir::mkdir, InterfaceInfo, Write};
 /// # Arguments
 ///
 /// * `path` - A string representing the file path where the HTML file will be exported.
-/// * `data` - A reference to an `InterfaceInfo` struct containing the data to be included in the HTML table.
+/// * `data` - A reference to an `ListInfo` struct containing the data to be included in the HTML table.
 ///
 /// # Returns
 ///
 /// * If the HTML file is exported successfully, the function returns a `Result` containing the path of the exported file.
 /// * If there is an error during the file export, the function returns a `Result` containing an error message.
 #[allow(dead_code)]
-pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, String> {
+pub async fn export_html(path: &str, data: &ListInfo) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();

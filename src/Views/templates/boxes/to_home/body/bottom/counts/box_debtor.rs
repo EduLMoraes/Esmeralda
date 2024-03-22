@@ -18,7 +18,7 @@ pub fn new_debtor_info(debtor: &Debtor) -> Box {
 
     let debt_label: Label = Label::new(Some("Devendo:"));
     let paid_label: Label = Label::new(Some("Pago:"));
-    let total_label: Label = Label::new(Some("Pago:"));
+    let total_label: Label = Label::new(Some("Total em Gastos:"));
     debt_label.add_css_class("title_i");
     paid_label.add_css_class("title_i");
     total_label.add_css_class("title_i");

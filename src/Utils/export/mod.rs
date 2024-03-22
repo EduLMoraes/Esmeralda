@@ -9,7 +9,7 @@ use std::io::Write;
 use printpdf::*;
 
 /// All
-use crate::prelude::model::list::InterfaceInfo;
+use crate::prelude::model::list::ListInfo;
 
 pub mod csv;
 pub mod html;

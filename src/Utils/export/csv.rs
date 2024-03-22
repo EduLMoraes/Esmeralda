@@ -1,4 +1,4 @@
-use super::{mkdir::mkdir, InterfaceInfo, Write};
+use super::{mkdir::mkdir, ListInfo, Write};
 
 /// # export_csv
 ///
@@ -6,17 +6,17 @@ use super::{mkdir::mkdir, InterfaceInfo, Write};
 ///
 /// ## Example Usage
 /// ```rust
-/// let result = export_csv("path/to/file.csv", &interface_info).await;
+/// let result = export_csv("path/to/file.csv", &List_info).await;
 /// ```
 ///
 /// ## Arguments
 /// - `path` (string): The path to the file that needs to be created.
-/// - `data` (InterfaceInfo): The data that will be written to the file.
+/// - `data` (ListInfo): The data that will be written to the file.
 ///
 /// ## Returns
 /// A `Result` object that contains either the path of the created file or an error message.
 #[allow(dead_code)]
-pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, String> {
+pub async fn export_csv(path: &str, data: &ListInfo) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();

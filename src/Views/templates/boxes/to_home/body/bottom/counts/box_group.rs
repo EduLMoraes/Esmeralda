@@ -1,5 +1,4 @@
 use super::*;
-use crate::model::Info::Info;
 
 pub fn new_group_info(title: &str, nature: &str, infos: &Vec<Info>, stack: &Stack) -> Box {
     let mut soma: f32 = 0.0;

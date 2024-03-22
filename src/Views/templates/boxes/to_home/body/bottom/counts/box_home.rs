@@ -53,7 +53,9 @@ pub fn get_home_box(stack: &Stack) -> Box {
     scrolled.set_child(Some(&box_stack));
     scrolled.set_height_request(500);
 
-    box_home.append(&get_grid_values(6700.90, 128.87, 32.87));
+    let counts = unsafe { GLOBAL_COUNTS.get().unwrap() };
+
+    box_home.append(&get_grid_values(counts.get_total(), 128.87, 32.87));
     box_home.append(&box_button_lb);
     box_home.append(&scrolled);
 

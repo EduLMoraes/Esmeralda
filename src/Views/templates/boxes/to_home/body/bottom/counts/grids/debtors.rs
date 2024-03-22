@@ -7,7 +7,8 @@ pub fn get_grid_debtors() -> Grid {
     grid_debtors.set_column_spacing(10);
     grid_debtors.set_row_spacing(10);
 
-    let debtors: Vec<Debtor> = Vec::new();
+    let counts = unsafe { GLOBAL_COUNTS.get().unwrap() };
+    let debtors: Vec<Debtor> = counts.filter_debtors();
 
     let mut x = 0;
     let mut y = 0;

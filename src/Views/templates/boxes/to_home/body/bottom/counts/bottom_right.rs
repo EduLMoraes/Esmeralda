@@ -1,9 +1,4 @@
-use std::borrow::Borrow;
-
-use gtk::glib::property::PropertyGet;
-
 use super::*;
-use crate::control::GLOBAL_COUNTS;
 
 pub fn right() -> Box {
     let box_right = Box::new(Orientation::Vertical, 20);

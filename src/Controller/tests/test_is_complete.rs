@@ -5,7 +5,7 @@ pub use super::*;
 async fn test_export_csv_success() {
     let temp_dir = temp_dir();
     let path = temp_dir.as_path().join("test-control.csv");
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),
@@ -31,7 +31,7 @@ async fn test_export_csv_success() {
 async fn test_export_pdf_success() {
     let temp_dir = temp_dir();
     let path = temp_dir.as_path().join("test-control.pdf");
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),
@@ -57,7 +57,7 @@ async fn test_export_pdf_success() {
 async fn test_export_html_success() {
     let temp_dir = temp_dir();
     let path = temp_dir.as_path().join("test-control.html");
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),
@@ -82,7 +82,7 @@ async fn test_export_html_success() {
 // #[tokio::test]
 async fn test_export_non_existent_directory() {
     let path = "/path/to/non_existent_directory/test-control.csv";
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),
@@ -107,7 +107,7 @@ async fn test_export_non_existent_directory() {
 async fn test_export_read_only_directory() {
     let temp_dir = temp_dir();
     let path = temp_dir.as_path().join("test-control.csv");
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),
@@ -151,7 +151,7 @@ async fn test_export_non_existent_file() {
     let path = temp_dir
         .as_path()
         .join("non_existent_directory/test-control.csv");
-    let data = InterfaceInfo {
+    let data = ListInfo {
         list: vec![Info {
             id: 1,
             debtor: "John Doe".to_string(),

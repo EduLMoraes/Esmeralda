@@ -3,7 +3,7 @@ use crate::prelude::env::var;
 use crate::prelude::log;
 use crate::prelude::model::{
     errors::{DataBaseError, ErrorLog},
-    list::InterfaceInfo,
+    list::ListInfo,
     Info::Info,
     User::*,
 };
@@ -26,7 +26,7 @@ use std::sync::Mutex;
 /// Inputs:
 /// - `data`: An enum that represents different types of data to be added, retrieved, or edited in the database.
 /// - `user`: An instance of the `User` struct that contains user information.
-/// - `counts`: An instance of the `InterfaceInfo` struct that contains a list of `Info` structs.
+/// - `counts`: An instance of the `ListInfo` struct that contains a list of `Info` structs.
 
 /// Outputs:
 /// - `Result<Self, DataBaseError>`: The `new` method returns a `Result` with either a `DataBase` instance or a `DataBaseError`.
@@ -248,7 +248,8 @@ impl DataBase {
                         "SELECT 
                         TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
                         TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
-                        * FROM counts WHERE user_id = $1",
+                        * FROM counts WHERE user_id = $1
+                        ORDER BY count_id",
                     )
                     .await
                     .map_err(|_| {
@@ -299,10 +300,7 @@ impl DataBase {
                     i_info.put(info)
                 }
 
-                Ok(Data::Counts(
-                    i_info.order_by_id(false).order_by_status(true),
-                    user,
-                ))
+                Ok(Data::Counts(i_info, user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -451,5 +449,5 @@ pub enum Data {
     NewUser(NewUser),
     User(User),
     UserDb(UserDb),
-    Counts(InterfaceInfo, UserDb),
+    Counts(ListInfo, UserDb),
 }

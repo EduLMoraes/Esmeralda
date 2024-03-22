@@ -1,9 +1,13 @@
 use super::*;
-use crate::model::Info::Info;
 
 pub fn new_box_info(info: &Info) -> Box {
-    let box_info = Box::new(Orientation::Horizontal, 0);
+    let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_new_info");
+
+    let box_top = Box::new(Orientation::Horizontal, 0);
+    let box_body = Box::new(Orientation::Horizontal, 0);
+    let box_bottom = Box::new(Orientation::Horizontal, 0);
+    box_bottom.set_halign(gtk::Align::Center);
 
     let box_left_i = Box::new(Orientation::Vertical, 2);
     box_left_i.add_css_class("box_left_i");
@@ -22,7 +26,7 @@ pub fn new_box_info(info: &Info) -> Box {
         icon.add_css_class("negative");
     }
 
-    box_left_i.append(&name);
+    box_top.append(&name);
     box_left_i.append(&icon);
     box_left_i.set_halign(gtk::Align::Start);
 
@@ -34,11 +38,11 @@ pub fn new_box_info(info: &Info) -> Box {
     let label_value = Label::new(Some(&value));
     label_value.add_css_class("label_value_i");
 
-    let title = Label::new(Some(&info.title));
+    let title = Label::new(Some(&format!("{:.40}", info.title)));
     title.add_css_class("title_i");
 
     box_center_i.append(&label_value);
-    box_center_i.append(&title);
+    box_bottom.append(&title);
 
     let box_right_i = Box::new(Orientation::Vertical, 2);
     box_right_i.add_css_class("box_right_i");
@@ -61,19 +65,27 @@ pub fn new_box_info(info: &Info) -> Box {
     box_right_i.append(&date);
     box_right_i.set_valign(gtk::Align::Center);
 
-    box_info.append(&box_left_i);
-    box_info.append(&box_center_i);
-    box_info.append(&box_right_i);
+    box_body.append(&box_left_i);
+    box_body.append(&box_center_i);
+    box_body.append(&box_right_i);
+
+    box_info.append(&box_top);
+    box_info.append(&box_body);
+    box_info.append(&box_bottom);
 
     box_info
 }
 
 pub fn box_info(info: &Info) -> Box {
-    let box_info = Box::new(Orientation::Horizontal, 0);
+    let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
+
+    let box_top = Box::new(Orientation::Horizontal, 0);
+    let box_body = Box::new(Orientation::Horizontal, 0);
 
     let box_left_i = Box::new(Orientation::Vertical, 2);
     box_left_i.add_css_class("box_left_info");
+    box_left_i.set_valign(gtk::Align::Center);
 
     let name = Label::new(Some(&format!("{:.10}", &info.debtor)));
     name.add_css_class("name_i");
@@ -89,7 +101,7 @@ pub fn box_info(info: &Info) -> Box {
         icon.add_css_class("negative");
     }
 
-    box_left_i.append(&name);
+    box_top.append(&name);
     box_left_i.append(&icon);
     box_left_i.set_halign(gtk::Align::Start);
 
@@ -136,9 +148,11 @@ pub fn box_info(info: &Info) -> Box {
         button_status.set_label("pagar");
     }
 
-    box_info.append(&box_left_i);
-    box_info.append(&box_center_i);
-    box_info.append(&box_right_i);
+    box_body.append(&box_left_i);
+    box_body.append(&box_center_i);
+    box_body.append(&box_right_i);
 
+    box_info.append(&box_top);
+    box_info.append(&box_body);
     box_info
 }

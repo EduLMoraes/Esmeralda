@@ -1,15 +1,15 @@
 use super::*;
-use crate::model::list::InterfaceInfo;
+use crate::model::list::ListInfo;
 use crate::std::sync::Mutex;
 use crate::std::sync::OnceLock;
 
-pub static mut GLOBAL_COUNTS: OnceLock<InterfaceInfo> = OnceLock::new();
+pub static mut GLOBAL_COUNTS: OnceLock<ListInfo> = OnceLock::new();
 
-/// Saves the provided `InterfaceInfo` data to the global database.
+/// Saves the provided `ListInfo` data to the global database.
 ///
 /// # Arguments
 ///
-/// * `data` - A reference to an `InterfaceInfo` struct containing the data to be saved.
+/// * `data` - A reference to an `ListInfo` struct containing the data to be saved.
 ///
 /// # Returns
 ///
@@ -18,9 +18,9 @@ pub static mut GLOBAL_COUNTS: OnceLock<InterfaceInfo> = OnceLock::new();
 /// # Example
 ///
 /// ```rust
-/// # use crate::{InterfaceInfo, ControlError, Data, get_database_instance, get_user_instance};
+/// # use crate::{ListInfo, ControlError, Data, get_database_instance, get_user_instance};
 /// #
-/// # pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError>{
+/// # pub async fn save(data: &ListInfo) -> Result<(), ControlError>{
 ///     let db_instance = get_database_instance();
 ///
 ///     if let Some(user_logged) = get_user_instance().as_ref(){
@@ -32,7 +32,7 @@ pub static mut GLOBAL_COUNTS: OnceLock<InterfaceInfo> = OnceLock::new();
 ///     Ok(())
 /// # }
 /// ```
-pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
+pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
 
     if let Some(user_logged) = get_user_instance().as_ref() {
@@ -45,11 +45,11 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
     Ok(())
 }
 
-/// Asynchronously edits the provided `InterfaceInfo` data.
+/// Asynchronously edits the provided `ListInfo` data.
 ///
 /// # Arguments
 ///
-/// * `data` - A reference to an `InterfaceInfo` struct.
+/// * `data` - A reference to an `ListInfo` struct.
 ///
 /// # Returns
 ///
@@ -59,7 +59,7 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
 ///
 /// ```rust
 /// # use crate::ControlError;
-/// # use crate::InterfaceInfo;
+/// # use crate::ListInfo;
 /// # use crate::Data;
 /// #
 /// # pub async fn get_database_instance() -> DatabaseInstance { unimplemented!() }
@@ -81,7 +81,7 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
 /// #
 /// # #[derive(Clone)]
 /// # pub enum Data {
-/// #     Counts(InterfaceInfo, UserInstance),
+/// #     Counts(ListInfo, UserInstance),
 /// # }
 /// #
 /// # #[derive(Debug)]
@@ -90,9 +90,9 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
 /// # }
 /// #
 /// # #[derive(Clone)]
-/// # pub struct InterfaceInfo;
+/// # pub struct ListInfo;
 /// #
-/// # pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError>{
+/// # pub async fn edit(data: &ListInfo) -> Result<(), ControlError>{
 ///     let db_instance = get_database_instance();
 ///
 ///     if let Some(user_logged) = get_user_instance().as_ref(){
@@ -105,7 +105,7 @@ pub async fn save(data: &InterfaceInfo) -> Result<(), ControlError> {
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError> {
+pub async fn edit(data: &ListInfo) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
 
     if let Some(user_logged) = get_user_instance().as_ref() {
@@ -133,13 +133,13 @@ pub async fn edit(data: &InterfaceInfo) -> Result<(), ControlError> {
 ///
 /// # Returns
 ///
-/// If successful, returns the recovered data as `Ok(data: InterfaceInfo)`.
+/// If successful, returns the recovered data as `Ok(data: ListInfo)`.
 ///
 /// # Panics
 ///
 /// This function will panic if the `get_user_instance` function returns `None`.
-pub async fn recover() -> Result<InterfaceInfo, ControlError> {
-    let data = InterfaceInfo::new();
+pub async fn recover() -> Result<ListInfo, ControlError> {
+    let data = ListInfo::new();
     let db_instance = get_database_instance();
 
     let user_logged = get_user_instance().as_ref().unwrap().clone();
