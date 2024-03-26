@@ -3,8 +3,8 @@ use crate::prelude::env::var;
 use crate::prelude::log;
 use crate::prelude::model::{
     errors::{DataBaseError, ErrorLog},
-    list::ListInfo,
-    Info::Info,
+    Count::Count,
+    List::ListCount,
     User::*,
 };
 use chrono::NaiveDate;
@@ -26,7 +26,7 @@ use std::sync::Mutex;
 /// Inputs:
 /// - `data`: An enum that represents different types of data to be added, retrieved, or edited in the database.
 /// - `user`: An instance of the `User` struct that contains user information.
-/// - `counts`: An instance of the `ListInfo` struct that contains a list of `Info` structs.
+/// - `counts`: An instance of the `ListCount` struct that contains a list of `Count` structs.
 
 /// Outputs:
 /// - `Result<Self, DataBaseError>`: The `new` method returns a `Result` with either a `DataBase` instance or a `DataBaseError`.
@@ -95,7 +95,7 @@ impl DataBase {
                 conn.execute(&stmt, &[&user.username, &user.password, &user.email])
                     .await
                     .map_err(|err| {
-                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
@@ -106,7 +106,7 @@ impl DataBase {
 
                 Ok(())
             }
-            Data::Counts(counts, user) => {
+            Data::Counts(mut counts, user) => {
                 let conn = self.pool.get().await.map_err(|_| {
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to get pool",
@@ -115,59 +115,58 @@ impl DataBase {
                     })
                 })?;
 
-                for i in 0..counts.len() {
-                    let stmt: Statement = conn.prepare("INSERT INTO counts (
-                            count_id,
-                            user_id, 
-                            debtor, 
-                            title, 
-                            description, 
-                            value, 
-                            paid_installments, 
-                            installments, 
-                            date_in, 
-                            date_out, 
-                            status,
-                            nature
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11, $12) ").await.map_err(|_| {
-                        DataBaseError::AddCountError(ErrorLog {
-                            title: "Error to prepare query",
-                            code: 808,
-                            file: "Database.rs",
-                        })
-                    })?;
+                let stmt: Statement = conn.prepare("INSERT INTO counts (
+                        count_id,
+                        user_id, 
+                        debtor, 
+                        title, 
+                        description, 
+                        value, 
+                        paid_installments, 
+                        installments, 
+                        date_in, 
+                        date_out, 
+                        status,
+                        nature
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11, $12) ").await.map_err(|_| {
+                    DataBaseError::AddCountError(ErrorLog {
+                        title: "Error to prepare query",
+                        code: 808,
+                        file: "Database.rs",
+                    })
+                })?;
 
-                    conn.execute(
+                let _ = conn
+                    .execute(
                         &stmt,
                         &[
-                            &format!("{}{}", user.id, counts.list[i].id)
+                            &format!("{}{}", user.id, counts.list[0].id)
                                 .trim()
                                 .parse::<i32>()
                                 .unwrap(),
                             &user.id,
-                            &counts.list[i].debtor,
-                            &counts.list[i].title,
-                            &counts.list[i].description,
-                            &counts.list[i].value,
-                            &(counts.list[i].paid_installments as i32),
-                            &(counts.list[i].installments as i32),
-                            &counts.list[i].date_in.to_string(),
-                            &counts.list[i].date_out.to_string(),
-                            &counts.list[i].status,
-                            &counts.list[i].nature,
+                            &counts.list[0].debtor,
+                            &counts.list[0].title,
+                            &counts.list[0].description,
+                            &counts.list[0].value,
+                            &(counts.list[0].paid_installments as i32),
+                            &(counts.list[0].installments as i32),
+                            &counts.list[0].date_in.to_string(),
+                            &counts.list[0].date_out.to_string(),
+                            &counts.list[0].status,
+                            &counts.list[0].nature,
                         ],
                     )
                     .await
                     .map_err(|err| {
-                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
                             code: 808,
                             file: "Database.rs",
                         })
-                    })?;
-                }
+                    });
 
                 Ok(())
             }
@@ -190,7 +189,7 @@ impl DataBase {
         match data {
             Data::User(user) => {
                 let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
@@ -232,9 +231,9 @@ impl DataBase {
 
                 Ok(Data::UserDb(user))
             }
-            Data::Counts(mut i_info, user) => {
+            Data::Counts(mut l_counts, user) => {
                 let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                     DataBaseError::GetUserError(ErrorLog {
                         title: "Error to get Object<Manager>",
@@ -268,8 +267,9 @@ impl DataBase {
                     })
                 })?;
 
+                let mut counts: Vec<Count> = Vec::new();
                 for row in rows {
-                    let info = Info {
+                    let count = Count {
                         id: row.get::<_, i32>("count_id"),
                         debtor: row.get::<_, String>("debtor"),
                         title: row.get::<_, String>("title"),
@@ -297,10 +297,11 @@ impl DataBase {
                         nature: row.get::<_, String>("nature"),
                     };
 
-                    i_info.put(info)
+                    counts.insert(0, count);
                 }
 
-                Ok(Data::Counts(i_info, user))
+                l_counts.list = counts;
+                Ok(Data::Counts(l_counts, user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -375,7 +376,7 @@ impl DataBase {
                     )
                     .await
                     .map_err(|err| {
-                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                         DataBaseError::AddUserError(ErrorLog {
                             title: "Error to execute query",
@@ -414,7 +415,7 @@ impl DataBase {
                 conn.execute(&query, &[&user.password, &user.id])
                     .await
                     .map_err(|err| {
-                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}"));
+                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
                         DataBaseError::EditUserError(ErrorLog {
                             title: "Error to execute query",
@@ -449,5 +450,5 @@ pub enum Data {
     NewUser(NewUser),
     User(User),
     UserDb(UserDb),
-    Counts(ListInfo, UserDb),
+    Counts(ListCount, UserDb),
 }

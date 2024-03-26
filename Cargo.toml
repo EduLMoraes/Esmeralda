@@ -52,3 +52,4 @@ async-trait = "0.1.77"
 mailjet-rs = "0.3.0"
 libc = "0.2.153"
 gtk = { version = "0.8.1", package = "gtk4", features = ["v4_12"] }
+rust-fuzzy-search = "0.1.1"

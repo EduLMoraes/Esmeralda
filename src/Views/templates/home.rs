@@ -12,9 +12,8 @@ pub fn home_screen() -> Box {
 
     let run = tokio::runtime::Runtime::new().unwrap();
     let _ = run.block_on(recover()).unwrap();
-
-    let box_body = box_body(&stack);
-    let box_menu_left = box_menu_left(&stack);
+    let box_menu_left = get_box_menu_left(&stack);
+    let box_body = get_box_body(&stack);
 
     screen.append(&box_menu_left);
     screen.append(&box_body);

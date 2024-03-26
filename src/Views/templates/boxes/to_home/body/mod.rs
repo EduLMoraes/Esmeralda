@@ -8,7 +8,7 @@ mod top;
 pub use bottom::*;
 pub use top::*;
 
-pub fn box_body(stack: &Stack) -> Box {
+pub fn get_box_body(stack: &Stack) -> Box {
     let box_body = Box::new(Orientation::Vertical, 0);
 
     stack.add_titled(&box_count(), Some("Contas"), "Contas");

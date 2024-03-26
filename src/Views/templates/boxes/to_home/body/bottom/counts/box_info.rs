@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn new_box_info(info: &Info) -> Box {
+pub fn new_box_info(info: &Count) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_new_info");
 
@@ -76,7 +76,7 @@ pub fn new_box_info(info: &Info) -> Box {
     box_info
 }
 
-pub fn box_info(info: &Info) -> Box {
+pub fn box_info(info: &Count) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
 

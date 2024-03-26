@@ -20,9 +20,9 @@ mod test_export_csv {
     async fn test_export_csv_with_correct_headers_and_values() {
         let temp_dir = env::temp_dir();
         let mut path = temp_dir.as_path().join("test.csv");
-        let data = ListInfo {
+        let data = ListCount {
             list: vec![
-                Info {
+                Count {
                     id: 1,
                     debtor: "John Doe".to_string(),
                     title: "Invoice".to_string(),
@@ -35,7 +35,7 @@ mod test_export_csv {
                     status: true,
                     nature: String::from("Investimentos"),
                 },
-                Info {
+                Count {
                     id: 2,
                     debtor: "Jane Smith".to_string(),
                     title: "Invoice".to_string(),
@@ -69,8 +69,8 @@ mod test_export_csv {
     async fn test_export_csv_creates_new_file_if_path_does_not_exist() {
         let temp_dir = env::temp_dir();
         let path = temp_dir.as_path().join("test.csv");
-        let data = ListInfo {
-            list: vec![Info {
+        let data = ListCount {
+            list: vec![Count {
                 id: 1,
                 debtor: "John Doe".to_string(),
                 title: "Invoice".to_string(),
@@ -96,8 +96,8 @@ mod test_export_csv {
         let path = temp_dir.as_path().join("test.csv");
         let existing_file_path = temp_dir.as_path().join("test(1).csv");
         std::fs::write(&existing_file_path, "").unwrap();
-        let data = ListInfo {
-            list: vec![Info {
+        let data = ListCount {
+            list: vec![Count {
                 id: 1,
                 debtor: "John Doe".to_string(),
                 title: "Invoice".to_string(),
@@ -121,8 +121,8 @@ mod test_export_csv {
 
     // #[tokio::test]
     async fn test_export_csv_returns_error_if_unable_to_create_file() {
-        let data = ListInfo {
-            list: vec![Info {
+        let data = ListCount {
+            list: vec![Count {
                 id: 1,
                 debtor: "John Doe".to_string(),
                 title: "Invoice".to_string(),
@@ -146,8 +146,8 @@ mod test_export_csv {
     async fn test_export_csv_handles_file_names_with_multiple_dots_correctly() {
         let temp_dir = env::temp_dir();
         let mut path = temp_dir.as_path().join("test.file.csv");
-        let data = ListInfo {
-            list: vec![Info {
+        let data = ListCount {
+            list: vec![Count {
                 id: 1,
                 debtor: "John Doe".to_string(),
                 title: "Invoice".to_string(),
@@ -184,7 +184,7 @@ mod test_export_html {
     async fn test_export_html_valid_input() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 
@@ -196,7 +196,7 @@ mod test_export_html {
     async fn test_export_html_empty_input() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
-        let data = ListInfo { list: vec![] };
+        let data = ListCount { list: vec![] };
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 
@@ -208,7 +208,7 @@ mod test_export_html {
     async fn test_export_html_special_characters_input() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 
@@ -219,7 +219,7 @@ mod test_export_html {
     // #[tokio::test]
     async fn test_export_html_unable_to_create_directory() {
         let file_path = "/nonexistent_directory/output.html";
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::html::export_html(file_path, &data).await;
 
@@ -230,7 +230,7 @@ mod test_export_html {
     async fn test_export_html_create_file_not_exists() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("nonexistent_directory/output.html");
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 
@@ -241,7 +241,7 @@ mod test_export_html {
     async fn test_export_html_write_to_file() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 
@@ -256,7 +256,7 @@ mod test_export_pdf {
     #[test]
     fn test_export_pdf_with_expected_format_and_content() {
         let path = "test.pdf";
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::pdf::export_pdf(path, &data);
 
@@ -266,7 +266,7 @@ mod test_export_pdf {
     #[test]
     fn test_export_pdf_with_empty_input_data() {
         let path = "test.pdf";
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::pdf::export_pdf(path, &data);
 
@@ -276,10 +276,10 @@ mod test_export_pdf {
     #[test]
     fn test_export_pdf_with_very_large_input_data() {
         let path = "test.pdf";
-        let mut data = ListInfo::new();
+        let mut data = ListCount::new();
 
         for _ in 0..10000 {
-            data.put(Info {
+            data.put(Count {
                 id: 1,
                 debtor: "John Doe".to_string(),
                 title: "Invoice".to_string(),
@@ -302,7 +302,7 @@ mod test_export_pdf {
     #[test]
     fn test_export_pdf_with_very_small_input_data() {
         let path = "test.pdf";
-        let data = ListInfo::new();
+        let data = ListCount::new();
 
         let result = export::pdf::export_pdf(path, &data);
 
@@ -312,9 +312,9 @@ mod test_export_pdf {
     #[test]
     fn test_export_pdf_with_very_long_strings_in_input_data() {
         let path = "test.pdf";
-        let mut data = ListInfo::new();
+        let mut data = ListCount::new();
 
-        data.put( Info{
+        data.put( Count{
             id: 1,
             debtor: "John Doe Silver Algostin Guilherme Santos Pedro Fabiancio".to_string(),
             title: "Invoice the RPG in game of life on real life, like video of youtube with montage of dragons and dungeons".to_string(),

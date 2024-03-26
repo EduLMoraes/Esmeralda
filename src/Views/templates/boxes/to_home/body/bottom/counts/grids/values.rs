@@ -1,7 +1,11 @@
 use super::*;
 
 #[allow(dead_code)]
-pub fn get_grid_values(count: f32, debt: f32, paid: f32) -> Grid {
+pub fn get_grid_values(count: f32, debt: f32, mut paid: f32) -> Grid {
+    if paid < 0.0 {
+        paid = 0.0;
+    }
+
     let grid = Grid::new();
     grid.set_column_homogeneous(true);
 

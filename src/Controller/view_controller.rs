@@ -22,7 +22,7 @@ pub fn signed_month_difference(start: NaiveDate, end: NaiveDate) -> i32 {
     }
 }
 
-/// Checks if the given `Info` struct contains all the required information for it to be considered complete.
+/// Checks if the given `Count` struct contains all the required information for it to be considered complete.
 ///
 /// # Example
 ///
@@ -30,14 +30,14 @@ pub fn signed_month_difference(start: NaiveDate, end: NaiveDate) -> i32 {
 /// use futures::executor::block_on;
 ///
 /// #[derive(Debug)]
-/// struct Info {
+/// struct Count {
 ///     debtor: String,
 ///     title: String,
 ///     value: f64,
 ///     installments: u32,
 /// }
 ///
-/// async fn is_complete(info: &Info) -> bool {
+/// async fn is_complete(info: &Count) -> bool {
 ///     if info.debtor.is_empty() || !is_alphabetic(&info.debtor) {
 ///         return false;
 ///     } else if info.title.is_empty() {
@@ -56,7 +56,7 @@ pub fn signed_month_difference(start: NaiveDate, end: NaiveDate) -> i32 {
 /// }
 ///
 /// fn main() {
-///     let info = Info {
+///     let info = Count {
 ///         debtor: String::from("John Doe"),
 ///         title: String::from("Payment"),
 ///         value: 100.0,
@@ -67,7 +67,7 @@ pub fn signed_month_difference(start: NaiveDate, end: NaiveDate) -> i32 {
 ///     println!("Is the info complete? {}", result);
 /// }
 /// ```
-pub async fn is_complete(info: &Info) -> bool {
+pub async fn is_complete(info: &Count) -> bool {
     if info.debtor.trim().is_empty() || !is_alphabetic(&info.debtor) {
         return false;
     } else if info.title.is_empty() {

@@ -1,15 +1,14 @@
 use super::*;
-use crate::model::list::ListInfo;
-use crate::std::sync::Mutex;
+use crate::model::List::ListCount;
 use crate::std::sync::OnceLock;
 
-pub static mut GLOBAL_COUNTS: OnceLock<ListInfo> = OnceLock::new();
+pub static mut GLOBAL_COUNTS: OnceLock<ListCount> = OnceLock::new();
 
-/// Saves the provided `ListInfo` data to the global database.
+/// Saves the provided `ListCount` data to the global database.
 ///
 /// # Arguments
 ///
-/// * `data` - A reference to an `ListInfo` struct containing the data to be saved.
+/// * `data` - A reference to an `ListCount` struct containing the data to be saved.
 ///
 /// # Returns
 ///
@@ -18,9 +17,9 @@ pub static mut GLOBAL_COUNTS: OnceLock<ListInfo> = OnceLock::new();
 /// # Example
 ///
 /// ```rust
-/// # use crate::{ListInfo, ControlError, Data, get_database_instance, get_user_instance};
+/// # use crate::{ListCount, ControlError, Data, get_database_instance, get_user_instance};
 /// #
-/// # pub async fn save(data: &ListInfo) -> Result<(), ControlError>{
+/// # pub async fn save(data: &ListCount) -> Result<(), ControlError>{
 ///     let db_instance = get_database_instance();
 ///
 ///     if let Some(user_logged) = get_user_instance().as_ref(){
@@ -32,8 +31,9 @@ pub static mut GLOBAL_COUNTS: OnceLock<ListInfo> = OnceLock::new();
 ///     Ok(())
 /// # }
 /// ```
-pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
+pub async fn save() -> Result<(), ControlError> {
     let db_instance = get_database_instance();
+    let data = unsafe { GLOBAL_COUNTS.get().unwrap() };
 
     if let Some(user_logged) = get_user_instance().as_ref() {
         db_instance
@@ -45,11 +45,11 @@ pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
     Ok(())
 }
 
-/// Asynchronously edits the provided `ListInfo` data.
+/// Asynchronously edits the provided `ListCount` data.
 ///
 /// # Arguments
 ///
-/// * `data` - A reference to an `ListInfo` struct.
+/// * `data` - A reference to an `ListCount` struct.
 ///
 /// # Returns
 ///
@@ -59,7 +59,7 @@ pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
 ///
 /// ```rust
 /// # use crate::ControlError;
-/// # use crate::ListInfo;
+/// # use crate::ListCount;
 /// # use crate::Data;
 /// #
 /// # pub async fn get_database_instance() -> DatabaseInstance { unimplemented!() }
@@ -81,7 +81,7 @@ pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
 /// #
 /// # #[derive(Clone)]
 /// # pub enum Data {
-/// #     Counts(ListInfo, UserInstance),
+/// #     Counts(ListCount, UserInstance),
 /// # }
 /// #
 /// # #[derive(Debug)]
@@ -90,9 +90,9 @@ pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
 /// # }
 /// #
 /// # #[derive(Clone)]
-/// # pub struct ListInfo;
+/// # pub struct ListCount;
 /// #
-/// # pub async fn edit(data: &ListInfo) -> Result<(), ControlError>{
+/// # pub async fn edit(data: &ListCount) -> Result<(), ControlError>{
 ///     let db_instance = get_database_instance();
 ///
 ///     if let Some(user_logged) = get_user_instance().as_ref(){
@@ -105,7 +105,7 @@ pub async fn save(data: &ListInfo) -> Result<(), ControlError> {
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn edit(data: &ListInfo) -> Result<(), ControlError> {
+pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
 
     if let Some(user_logged) = get_user_instance().as_ref() {
@@ -133,13 +133,13 @@ pub async fn edit(data: &ListInfo) -> Result<(), ControlError> {
 ///
 /// # Returns
 ///
-/// If successful, returns the recovered data as `Ok(data: ListInfo)`.
+/// If successful, returns the recovered data as `Ok(data: ListCount)`.
 ///
 /// # Panics
 ///
 /// This function will panic if the `get_user_instance` function returns `None`.
-pub async fn recover() -> Result<ListInfo, ControlError> {
-    let data = ListInfo::new();
+pub async fn recover() -> Result<ListCount, ControlError> {
+    let data = ListCount::new();
     let db_instance = get_database_instance();
 
     let user_logged = get_user_instance().as_ref().unwrap().clone();
@@ -153,7 +153,7 @@ pub async fn recover() -> Result<ListInfo, ControlError> {
         Data::Counts(mut data, _) => {
             let id_user_len = user_logged.id.to_string().len();
 
-            let list: Vec<Info> = data
+            let list: Vec<Count> = data
                 .list
                 .iter_mut()
                 .map(|count| {
@@ -169,8 +169,8 @@ pub async fn recover() -> Result<ListInfo, ControlError> {
             data.list = list;
 
             unsafe {
-                let teste = GLOBAL_COUNTS.get_mut();
-                match teste {
+                let global = GLOBAL_COUNTS.get_mut();
+                match global {
                     Some(_) => {}
                     None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
                 }

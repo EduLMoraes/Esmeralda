@@ -1,4 +1,4 @@
-use super::{mkdir::mkdir, ListInfo, Write};
+use super::{mkdir::mkdir, ListCount, Write};
 
 /// # export_csv
 ///
@@ -11,12 +11,12 @@ use super::{mkdir::mkdir, ListInfo, Write};
 ///
 /// ## Arguments
 /// - `path` (string): The path to the file that needs to be created.
-/// - `data` (ListInfo): The data that will be written to the file.
+/// - `data` (ListCount): The data that will be written to the file.
 ///
 /// ## Returns
 /// A `Result` object that contains either the path of the created file or an error message.
 #[allow(dead_code)]
-pub async fn export_csv(path: &str, data: &ListInfo) -> Result<String, String> {
+pub async fn export_csv(path: &str, data: &ListCount) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();

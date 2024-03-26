@@ -1,6 +1,11 @@
 mod prelude;
+use crate::control::GLOBAL_COUNTS;
+use gtk::glib::timeout_add;
+use gtk::{glib, glib::clone, LinkButton};
 use libc;
 use prelude::segurance::criptography::gen_string;
+use prelude::sty::load_style;
+use prelude::views::esmeralda;
 use prelude::*;
 use std::fs;
 use std::fs::File;
@@ -8,9 +13,7 @@ use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
 use std::os::unix::io::AsRawFd;
-
-use prelude::sty::load_style;
-use prelude::views::esmeralda;
+use std::time::Duration;
 
 fn main() {
     // match std::env::consts::OS {
@@ -82,6 +85,5 @@ fn main() {
 
     application.connect_startup(|_| load_style());
     application.connect_activate(esmeralda);
-
     application.run();
 }

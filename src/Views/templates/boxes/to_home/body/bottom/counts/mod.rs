@@ -1,8 +1,8 @@
 use super::*;
 use crate::control::GLOBAL_COUNTS;
-use crate::model::list::*;
+use crate::model::Count::Count;
 use crate::model::Debtor::Debtor;
-use crate::model::Info::Info;
+use crate::model::List::*;
 use gtk::{DropDown, ScrolledWindow};
 
 mod bottom_left;

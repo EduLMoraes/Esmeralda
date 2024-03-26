@@ -30,21 +30,21 @@ pub fn right() -> Box {
     let scrolled = ScrolledWindow::new();
     scrolled.add_css_class("list_info_history");
 
-    let box_list_info = Box::new(Orientation::Vertical, 8);
-    box_list_info.set_halign(gtk::Align::Center);
+    let box_list_count = Box::new(Orientation::Vertical, 8);
+    box_list_count.set_halign(gtk::Align::Center);
 
     let counts = unsafe { GLOBAL_COUNTS.get() };
 
     match counts {
         Some(counts) => {
             for count in &counts.list {
-                box_list_info.append(&new_box_info(count));
+                box_list_count.append(&new_box_info(count));
             }
         }
         None => {}
     }
 
-    scrolled.set_child(Some(&box_list_info));
+    scrolled.set_child(Some(&box_list_count));
 
     box_right.append(&box_head);
     box_right.append(&scrolled);

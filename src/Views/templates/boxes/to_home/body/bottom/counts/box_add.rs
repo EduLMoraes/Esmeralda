@@ -1,6 +1,6 @@
-use gtk::{Adjustment, Calendar, CheckButton, SpinButton};
-
 use super::*;
+use crate::chrono::NaiveDate;
+use gtk::{Adjustment, Calendar, CheckButton, SpinButton};
 
 pub fn get_add_box(stack: &Stack) -> Box {
     let box_add = Box::new(Orientation::Vertical, 10);
@@ -29,6 +29,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let box_description = Box::new(Orientation::Vertical, 0);
     let box_installments = Box::new(Orientation::Horizontal, 5);
     let box_status = Box::new(Orientation::Horizontal, 5);
+    let box_value = Box::new(Orientation::Horizontal, 5);
 
     let name_label = Label::new(Some("*Name:"));
     let title_label = Label::new(Some("*Título:"));
@@ -37,6 +38,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let description_label = Label::new(Some("Descrição:"));
     let installments_label = Label::new(Some("Nª de Parcelas:"));
     let status_label = Label::new(Some("Já tá paga?"));
+    let value_label = Label::new(Some("R$:"));
 
     let name_input = Entry::new();
     let title_input = Entry::new();
@@ -57,6 +59,11 @@ pub fn get_add_box(stack: &Stack) -> Box {
         0,
     );
     let status_input = CheckButton::new();
+    let value_input = SpinButton::new(
+        Some(&Adjustment::new(0.0, 0.01, 99999999.00, 0.01, 0.1, 0.0)),
+        1.0,
+        2,
+    );
 
     let date_string = format!(
         "{:02}/{:02}/{:04}",
@@ -106,9 +113,57 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_installments.append(&installment_input);
     box_status.append(&status_label);
     box_status.append(&status_input);
+    box_value.append(&value_label);
+    box_value.append(&value_input);
 
     let button_append = Button::with_label("Adicionar");
     button_append.add_css_class("button");
+
+    button_append.connect_clicked(clone!(
+        @strong name_input,
+        @strong title_input,
+        @strong description_input,
+        @strong date_input,
+        @strong value_input,
+        @strong status_input,
+        @strong installment_input,
+        @strong nature_input=> move |_| {
+            let mut count = Count::from(
+                name_input.text().trim(),
+                title_input.text().trim(),
+                description_input.text().as_str(),
+                value_input.value() as f32,
+                NaiveDate::from_ymd_opt(date_input.year(), (date_input.month() + 1) as u32, date_input.day() as u32).unwrap(),
+                installment_input.value() as u32,
+                match nature_input.selected(){
+                    0 => "Casa",
+                    1 => "Alimentação",
+                    2 => "Transporte",
+                    3 => "Saúde",
+                    4 => "Lazer",
+                    _ => "Outros"
+                }
+            );
+
+            if status_input.is_active(){
+                count.pay_all()
+            }
+
+            if !count.is_empty(){
+                use tokio::runtime::Runtime;
+                let rnt = Runtime::new().unwrap();
+                let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+
+                ref_counts.put(count.clone());
+
+                match rnt.block_on(control::save()){
+                    Ok(_) => {},
+                    Err(err) => println!("{err}")
+                };
+            }else{
+                println!("Faltam dados!");
+            }
+    }));
 
     let grid = Grid::new();
     grid.set_column_homogeneous(true);
@@ -118,10 +173,11 @@ pub fn get_add_box(stack: &Stack) -> Box {
     grid.attach(&box_title, 0, 1, 1, 1);
     grid.attach(&box_description, 0, 2, 1, 1);
     grid.attach(&box_nature, 0, 3, 1, 1);
-    grid.attach(&box_installments, 0, 4, 1, 1);
-    grid.attach(&box_date, 0, 5, 1, 1);
-    grid.attach(&box_status, 0, 6, 1, 1);
-    grid.attach(&button_append, 0, 7, 1, 1);
+    grid.attach(&box_value, 0, 4, 1, 1);
+    grid.attach(&box_installments, 0, 5, 1, 1);
+    grid.attach(&box_date, 0, 6, 1, 1);
+    grid.attach(&box_status, 0, 7, 1, 1);
+    grid.attach(&button_append, 0, 8, 1, 1);
 
     box_form.append(&grid);
 

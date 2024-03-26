@@ -51,7 +51,7 @@ use super::*;
 /// # }
 /// # fn main() {}
 /// ```
-pub async fn save_in_file(path: &str, data: &ListInfo) -> Result<String, ControlError> {
+pub async fn save_in_file(path: &str, data: &ListCount) -> Result<String, ControlError> {
     let extend: Vec<&str> = path.split('.').collect();
 
     let response = match extend[1] {

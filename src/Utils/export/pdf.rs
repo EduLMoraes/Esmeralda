@@ -1,6 +1,6 @@
 use super::*;
 
-/// Exports data from an `ListInfo` object to a PDF file.
+/// Exports data from an `ListCount` object to a PDF file.
 ///
 /// # Arguments
 ///
@@ -10,7 +10,7 @@ use super::*;
 /// # Returns
 ///
 /// * `Result<String, String>` - The path of the exported PDF file, or an error message if the export fails.
-pub fn export_pdf(path: &str, data: &ListInfo) -> Result<String, String> {
+pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
     let mut x = Mm(297.0);
     let mut y = Mm(210.0);
 

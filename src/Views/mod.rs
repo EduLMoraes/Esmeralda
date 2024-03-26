@@ -4,8 +4,8 @@ use crate::prelude::log;
 use crate::prelude::model::errors::*;
 pub use gtk::prelude::*;
 pub use gtk::{
-    gdk::Display, Application, ApplicationWindow, Box, Button, Entry, Label, Orientation, Stack,
-    StackSwitcher,
+    gdk::Display, glib::clone, Application, ApplicationWindow, Box, Button, Entry, Label,
+    LinkButton, Orientation, Stack, StackSwitcher,
 };
 
 mod app;

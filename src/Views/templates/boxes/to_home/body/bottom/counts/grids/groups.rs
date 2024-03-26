@@ -10,7 +10,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
     let counts = unsafe {
         match GLOBAL_COUNTS.get() {
             Some(counts) => counts.to_owned(),
-            None => ListInfo::new(),
+            None => ListCount::new(),
         }
     };
 
