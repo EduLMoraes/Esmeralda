@@ -106,7 +106,7 @@ impl DataBase {
 
                 Ok(())
             }
-            Data::Counts(mut counts, user) => {
+            Data::Counts(counts, user, _year) => {
                 let conn = self.pool.get().await.map_err(|_| {
                     DataBaseError::AddUserError(ErrorLog {
                         title: "Error to get pool",
@@ -231,7 +231,7 @@ impl DataBase {
 
                 Ok(Data::UserDb(user))
             }
-            Data::Counts(mut l_counts, user) => {
+            Data::Counts(mut l_counts, user, year) => {
                 let conn = self.pool.get().await.map_err(|err| {
                     let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
@@ -247,7 +247,9 @@ impl DataBase {
                         "SELECT 
                         TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
                         TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
-                        * FROM counts WHERE user_id = $1
+                        * FROM counts 
+                        WHERE user_id = $1
+                        AND CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2
                         ORDER BY count_id",
                     )
                     .await
@@ -259,7 +261,7 @@ impl DataBase {
                         })
                     })?;
 
-                let rows = conn.query(&stmt, &[&user.id]).await.map_err(|_| {
+                let rows = conn.query(&stmt, &[&user.id, &year]).await.map_err(|_| {
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "User not found!",
                         code: 804,
@@ -300,8 +302,54 @@ impl DataBase {
                     counts.insert(0, count);
                 }
 
+                
                 l_counts.list = counts;
-                Ok(Data::Counts(l_counts, user))
+                Ok(Data::Counts(l_counts, user, year))
+            }
+            Data::Years(mut l_counts, user) => {
+                let conn = self.pool.get().await.map_err(|err| {
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
+
+                    DataBaseError::GetUserError(ErrorLog {
+                        title: "Error to get Object<Manager>",
+                        code: 804,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                let stmt_years = conn
+                    .prepare(
+                        "SELECT 
+                        DISTINCT CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) AS date_in
+                        FROM counts 
+                        WHERE user_id = $1",
+                    )
+                    .await
+                    .map_err(|_| {
+                        DataBaseError::GetCountsError(ErrorLog {
+                            title: "Error to prepare query to get user",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                let rows = conn.query(&stmt_years, &[&user.id]).await.map_err(|_| {
+                    DataBaseError::GetCountsError(ErrorLog {
+                        title: "User not found!",
+                        code: 804,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                let mut years: Vec<i16> = Vec::new();
+
+                for row in rows {
+                    years.insert(0, row.get::<_, i16>("date_in") as i16);
+                }
+                
+                l_counts.years = years;
+
+                Ok(Data::Years(l_counts, user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -320,7 +368,7 @@ impl DataBase {
         path.push_str("/.esmeralda/log.log");
 
         match data {
-            Data::Counts(counts, user) => {
+            Data::Counts(counts, user, _) => {
                 let conn = self.pool.get().await.map_err(|_| {
                     DataBaseError::EditCountsError(ErrorLog {
                         title: "Error to get pool",
@@ -450,5 +498,6 @@ pub enum Data {
     NewUser(NewUser),
     User(User),
     UserDb(UserDb),
-    Counts(ListCount, UserDb),
+    Counts(ListCount, UserDb, i16),
+    Years(ListCount, UserDb),
 }

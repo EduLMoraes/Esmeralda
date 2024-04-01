@@ -10,13 +10,14 @@ pub fn right() -> Box {
 
     let order_by = Label::new(Some("Ordernar por: "));
     let drop_order = DropDown::from_strings(&[
-        "Entrada ⤒⤓",
-        "Data limite ⤒⤓",
-        "Valor ⤒⤓",
-        "Natureza ⤒⤓",
-        "Status ⤒⤓",
-        "Devedor ⤒⤓",
+        "Entrada",
+        "Data limite",
+        "Valor",
+        "Natureza",
+        "Status",
+        "Devedor",
     ]);
+
 
     let box_order = Box::new(Orientation::Horizontal, 0);
     box_order.append(&order_by);
@@ -30,10 +31,28 @@ pub fn right() -> Box {
     let scrolled = ScrolledWindow::new();
     scrolled.add_css_class("list_info_history");
 
-    let box_list_count = Box::new(Orientation::Vertical, 8);
-    box_list_count.set_halign(gtk::Align::Center);
+    let box_list_count = get_list_box();
 
     let counts = unsafe { GLOBAL_COUNTS.get() };
+    drop_order.connect_selected_item_notify(clone!(@strong drop_order, @strong box_list_count => move |_| {
+        let counts = unsafe { GLOBAL_COUNTS.get_mut() };
+        match counts{
+            Some(counts) => {
+                match drop_order.selected(){
+                    0 => counts.order_by_date(true, true),
+                    1 => counts.order_by_date(false, false),
+                    2 => counts.order_by_value(true),
+                    3 => counts.order_alphabetical("nature", true),
+                    4 => counts.order_by_status(true),
+                    5 => counts.order_alphabetical("name", true),
+                    _ => {}
+                }
+                
+                update_list(counts);
+            }
+            None => {}
+        }
+    }));
 
     match counts {
         Some(counts) => {
@@ -44,7 +63,7 @@ pub fn right() -> Box {
         None => {}
     }
 
-    scrolled.set_child(Some(&box_list_count));
+    scrolled.set_child(Some(box_list_count));
 
     box_right.append(&box_head);
     box_right.append(&scrolled);

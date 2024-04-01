@@ -120,6 +120,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     button_append.add_css_class("button");
 
     button_append.connect_clicked(clone!(
+        @strong stack,
         @strong name_input,
         @strong title_input,
         @strong description_input,
@@ -157,7 +158,20 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 ref_counts.put(count.clone());
 
                 match rnt.block_on(control::save()){
-                    Ok(_) => {},
+                    Ok(_) => {
+                        update_list(ref_counts);
+                        
+                        let tmp = stack.child_by_name("home").unwrap();
+                        stack.remove(&tmp);
+                        stack.add_titled(&get_home_box(&stack), Some("home"), "home");
+                    
+                        title_input.set_text("");
+                        description_input.set_text("");
+                        value_input.set_value(0.01);
+                        date_input.clear_marks();
+                        installment_input.set_value(1.0);
+                        nature_input.set_selected(0);
+                    },
                     Err(err) => println!("{err}")
                 };
             }else{

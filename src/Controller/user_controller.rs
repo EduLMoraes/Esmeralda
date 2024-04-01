@@ -84,7 +84,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
         );
 
         ControlError::ErrorExternDB(err)
-    })?;
+    }).expect("????");
 
     match db_user {
         Data::UserDb(data) => {

@@ -56,7 +56,7 @@ pub fn login_screen(stack: &Stack) -> Box {
     screen.append(&box_pass);
     screen.append(&login_button);
 
-    login_button.connect_clicked(clone!(@strong stack => move |_| {
+    login_button.connect_clicked(clone!(@strong stack, @strong screen => move |_| {
         let user = model::User::User{
             username: String::from(user_entry.text()),
             password: String::from(pass_entry.text())
@@ -71,6 +71,15 @@ pub fn login_screen(stack: &Stack) -> Box {
             stack.add_titled(&home_screen, Some("home"), "Home");
             stack.set_visible_child_name("home");
 
+            let tmp = stack.child_by_name("login").unwrap();
+            stack.remove(&tmp);
+            
+            let tmp = stack.child_by_name("register").unwrap();
+            stack.remove(&tmp);
+
+        }else{
+            let error = Label::new(Some("Usuário não encontrado."));
+            screen.append(&error);
         }
     }));
 

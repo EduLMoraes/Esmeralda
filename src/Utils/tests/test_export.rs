@@ -49,6 +49,7 @@ mod test_export_csv {
                     nature: String::from("Investimentos"),
                 },
             ],
+            years: vec![]
         };
 
         let result = export::csv::export_csv(path.to_str().unwrap(), &data).await;
@@ -83,6 +84,7 @@ mod test_export_csv {
                 status: true,
                 nature: String::from("Investimentos"),
             }],
+            years: vec![]
         };
 
         let result = export::csv::export_csv(path.to_str().unwrap(), &data).await;
@@ -110,6 +112,7 @@ mod test_export_csv {
                 status: true,
                 nature: String::from("Investimentos"),
             }],
+            years: vec![]
         };
 
         let result = export::csv::export_csv(path.to_str().unwrap(), &data).await;
@@ -135,6 +138,7 @@ mod test_export_csv {
                 status: true,
                 nature: String::from("Investimentos"),
             }],
+            years: vec![]
         };
 
         let result = export::csv::export_csv("/root/test.csv", &data).await;
@@ -160,6 +164,7 @@ mod test_export_csv {
                 status: true,
                 nature: String::from("Investimentos"),
             }],
+            years: vec![]
         };
 
         let result = export::csv::export_csv(path.to_str().unwrap(), &data).await;
@@ -196,7 +201,7 @@ mod test_export_html {
     async fn test_export_html_empty_input() {
         let temp_dir = temp_dir();
         let file_path = temp_dir.as_path().join("output.html");
-        let data = ListCount { list: vec![] };
+        let data = ListCount { list: vec![], years: vec![] };
 
         let result = export::html::export_html(file_path.to_str().unwrap(), &data).await;
 

@@ -2,6 +2,7 @@ use super::*;
 use gtk::Image;
 use std::path::PathBuf;
 
+
 mod bottom;
 mod top;
 
@@ -14,7 +15,7 @@ pub fn get_box_body(stack: &Stack) -> Box {
     stack.add_titled(&box_count(), Some("Contas"), "Contas");
     stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
 
-    box_body.append(&box_top());
+    box_body.append(&box_top(stack));
     box_body.append(stack);
 
     box_body.add_css_class("box_body");

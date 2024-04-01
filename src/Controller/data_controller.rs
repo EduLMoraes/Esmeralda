@@ -37,7 +37,7 @@ pub async fn save() -> Result<(), ControlError> {
 
     if let Some(user_logged) = get_user_instance().as_ref() {
         db_instance
-            .add(Data::Counts(data.clone(), user_logged.clone()))
+            .add(Data::Counts(data.clone(), user_logged.clone(), 0))
             .await
             .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
@@ -110,12 +110,44 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
 
     if let Some(user_logged) = get_user_instance().as_ref() {
         db_instance
-            .edit(Data::Counts(data.clone(), user_logged.clone()))
+            .edit(Data::Counts(data.clone(), user_logged.clone(), 0))
             .await
             .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
 
     Ok(())
+}
+
+pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
+    let data = ListCount::new();
+    let db_instance = get_database_instance();
+
+    let user_logged = get_user_instance().as_ref().unwrap().clone();
+
+    let recovered_data = db_instance
+        .get(Data::Years(data, user_logged.clone()))
+        .await
+        .map_err(|err| ControlError::ErrorExternDB(err))?;
+
+    match recovered_data {
+        Data::Years(data, _) => {
+            unsafe {
+                let global = GLOBAL_COUNTS.get_mut();
+
+                match global {
+                    Some(counts) => { counts.years = data.years.clone() }
+                    None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
+                }
+            }
+
+            Ok(data.years)
+        }
+        _ => Err(ControlError::ErrorExtern(ErrorLog {
+            title: "Error to recover data",
+            code: 306,
+            file: "control.rs",
+        })),
+    }
 }
 
 /// Asynchronously retrieves data from a database and returns it as a result.
@@ -138,19 +170,19 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
 /// # Panics
 ///
 /// This function will panic if the `get_user_instance` function returns `None`.
-pub async fn recover() -> Result<ListCount, ControlError> {
+pub async fn recover(year: i16) -> Result<(), ControlError> {
     let data = ListCount::new();
     let db_instance = get_database_instance();
 
     let user_logged = get_user_instance().as_ref().unwrap().clone();
 
     let recovered_data = db_instance
-        .get(Data::Counts(data, user_logged.clone()))
+        .get(Data::Counts(data.clone(), user_logged.clone(), year))
         .await
         .map_err(|err| ControlError::ErrorExternDB(err))?;
 
     match recovered_data {
-        Data::Counts(mut data, _) => {
+        Data::Counts(mut data, _, _) => {
             let id_user_len = user_logged.id.to_string().len();
 
             let list: Vec<Count> = data
@@ -171,12 +203,12 @@ pub async fn recover() -> Result<ListCount, ControlError> {
             unsafe {
                 let global = GLOBAL_COUNTS.get_mut();
                 match global {
-                    Some(_) => {}
-                    None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
+                    Some( counts ) => { counts.list = data.list }
+                    None => GLOBAL_COUNTS = OnceLock::from(data),
                 }
             }
 
-            Ok(data)
+            Ok(())
         }
         _ => Err(ControlError::ErrorExtern(ErrorLog {
             title: "Error to recover data",
