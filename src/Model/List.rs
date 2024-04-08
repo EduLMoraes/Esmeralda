@@ -1,6 +1,6 @@
+use crate::gtk::ListBox;
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
-use crate::gtk::ListBox;
 use std::cmp::Reverse;
 use std::collections::HashMap;
 
@@ -53,15 +53,15 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, PartialEq)]
 pub struct ListCount {
     pub list: Vec<Count>,
-    pub years: Vec<i16>
+    pub years: Vec<i16>,
 }
 
 impl ListCount {
     #[allow(dead_code)]
     pub fn new() -> ListCount {
-        ListCount { 
+        ListCount {
             list: Vec::new(),
-            years: Vec::new() 
+            years: Vec::new(),
         }
     }
 

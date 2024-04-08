@@ -18,7 +18,6 @@ pub fn right() -> Box {
         "Devedor",
     ]);
 
-
     let box_order = Box::new(Orientation::Horizontal, 0);
     box_order.append(&order_by);
     box_order.append(&drop_order);
@@ -34,25 +33,27 @@ pub fn right() -> Box {
     let box_list_count = get_list_box();
 
     let counts = unsafe { GLOBAL_COUNTS.get() };
-    drop_order.connect_selected_item_notify(clone!(@strong drop_order, @strong box_list_count => move |_| {
-        let counts = unsafe { GLOBAL_COUNTS.get_mut() };
-        match counts{
-            Some(counts) => {
-                match drop_order.selected(){
-                    0 => counts.order_by_date(true, true),
-                    1 => counts.order_by_date(false, false),
-                    2 => counts.order_by_value(true),
-                    3 => counts.order_alphabetical("nature", true),
-                    4 => counts.order_by_status(true),
-                    5 => counts.order_alphabetical("name", true),
-                    _ => {}
+    drop_order.connect_selected_item_notify(
+        clone!(@strong drop_order, @strong box_list_count => move |_| {
+            let counts = unsafe { GLOBAL_COUNTS.get_mut() };
+            match counts{
+                Some(counts) => {
+                    match drop_order.selected(){
+                        0 => counts.order_by_date(true, true),
+                        1 => counts.order_by_date(false, false),
+                        2 => counts.order_by_value(true),
+                        3 => counts.order_alphabetical("nature", true),
+                        4 => counts.order_by_status(true),
+                        5 => counts.order_alphabetical("name", true),
+                        _ => {}
+                    }
+
+                    update_list(counts);
                 }
-                
-                update_list(counts);
+                None => {}
             }
-            None => {}
-        }
-    }));
+        }),
+    );
 
     match counts {
         Some(counts) => {

@@ -73,12 +73,13 @@ pub fn login_screen(stack: &Stack) -> Box {
 
             let tmp = stack.child_by_name("login").unwrap();
             stack.remove(&tmp);
-            
+
             let tmp = stack.child_by_name("register").unwrap();
             stack.remove(&tmp);
 
         }else{
-            let error = Label::new(Some("Usuário não encontrado."));
+            let error = Label::new(Some("Senha ou usuário incorreto! Tente novamente"));
+            pass_entry.set_text("");
             screen.append(&error);
         }
     }));

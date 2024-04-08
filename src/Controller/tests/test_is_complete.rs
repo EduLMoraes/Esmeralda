@@ -19,7 +19,7 @@ async fn test_export_csv_success() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     let result = save_in_file(path.to_str().unwrap(), &data).await;
@@ -46,7 +46,7 @@ async fn test_export_pdf_success() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     let result = save_in_file(path.to_str().unwrap(), &data).await;
@@ -73,7 +73,7 @@ async fn test_export_html_success() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     let result = save_in_file(path.to_str().unwrap(), &data).await;
@@ -99,7 +99,7 @@ async fn test_export_non_existent_directory() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     let result = save_in_file(path, &data).await;
@@ -125,7 +125,7 @@ async fn test_export_read_only_directory() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     match fs::create_dir_all(path.clone()) {
@@ -170,7 +170,7 @@ async fn test_export_non_existent_file() {
             status: true,
             nature: "Casa".to_string(),
         }],
-        years: vec![]
+        years: vec![],
     };
 
     let result = save_in_file(path.to_str().unwrap(), &data).await;

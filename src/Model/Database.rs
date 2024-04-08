@@ -302,7 +302,6 @@ impl DataBase {
                     counts.insert(0, count);
                 }
 
-                
                 l_counts.list = counts;
                 Ok(Data::Counts(l_counts, user, year))
             }
@@ -346,7 +345,7 @@ impl DataBase {
                 for row in rows {
                     years.insert(0, row.get::<_, i16>("date_in") as i16);
                 }
-                
+
                 l_counts.years = years;
 
                 Ok(Data::Years(l_counts, user))

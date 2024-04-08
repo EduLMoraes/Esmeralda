@@ -1,6 +1,8 @@
+use gtk::ListBoxRow;
+
 use super::*;
 
-pub fn update_list(counts: &ListCount){
+pub fn update_list(counts: &ListCount) {
     let list_box = get_list_box();
     list_box.remove_all();
 

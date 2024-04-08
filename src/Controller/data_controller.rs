@@ -135,7 +135,7 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
                 let global = GLOBAL_COUNTS.get_mut();
 
                 match global {
-                    Some(counts) => { counts.years = data.years.clone() }
+                    Some(counts) => counts.years = data.years.clone(),
                     None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
                 }
             }
@@ -203,8 +203,10 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
             unsafe {
                 let global = GLOBAL_COUNTS.get_mut();
                 match global {
-                    Some( counts ) => { counts.list = data.list }
-                    None => GLOBAL_COUNTS = OnceLock::from(data),
+                    Some(counts) => {
+                        counts.list = data.list;
+                    }
+                    None => GLOBAL_COUNTS = { OnceLock::from(data) },
                 }
             }
 

@@ -2,7 +2,6 @@ use super::*;
 use gtk::Image;
 use std::path::PathBuf;
 
-
 mod bottom;
 mod top;
 
@@ -13,7 +12,7 @@ pub fn get_box_body(stack: &Stack) -> Box {
     let box_body = Box::new(Orientation::Vertical, 0);
 
     stack.add_titled(&box_count(), Some("Contas"), "Contas");
-    stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
+    // stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
 
     box_body.append(&box_top(stack));
     box_body.append(stack);
