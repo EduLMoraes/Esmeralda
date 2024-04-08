@@ -129,7 +129,7 @@ impl Count {
     pub fn pay(&mut self) {
         if self.paid_installments + 1 == self.installments {
             self.pay_all();
-        } else {
+        } else if self.paid_installments < self.installments {
             self.paid_installments += 1;
         }
     }

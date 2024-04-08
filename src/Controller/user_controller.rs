@@ -74,20 +74,17 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
 
     let data_user = Data::User(user.clone());
 
-    let db_user = db
-        .get(data_user)
-        .await
-        .map_err(|err| {
-            let _ = log(
-                path.clone().into(),
-                &format!(
-                    "\n[CONTROL] {err:?}\n[CONTROL] Time to login --- {:.3?}\n",
-                    start.elapsed()
-                ),
-            );
+    let db_user = db.get(data_user).await.map_err(|err| {
+        let _ = log(
+            path.clone().into(),
+            &format!(
+                "\n[CONTROL] {err:?}\n[CONTROL] Time to login --- {:.3?}\n",
+                start.elapsed()
+            ),
+        );
 
-            ControlError::ErrorExternDB(err)
-        })?;
+        ControlError::ErrorExternDB(err)
+    })?;
 
     match db_user {
         Data::UserDb(data) => {

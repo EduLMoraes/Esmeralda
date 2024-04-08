@@ -276,6 +276,14 @@ impl ListCount {
             .cloned()
             .collect::<Vec<Count>>()
     }
+
+    pub fn pay(&mut self, id: i32) {
+        for count in &mut self.list {
+            if count.id == id {
+                count.pay()
+            }
+        }
+    }
 }
 
 use std::fmt;

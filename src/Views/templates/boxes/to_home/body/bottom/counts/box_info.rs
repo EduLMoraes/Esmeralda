@@ -1,3 +1,5 @@
+use self::control::edit;
+
 use super::*;
 
 pub fn new_box_info(info: &Count) -> Box {
@@ -130,6 +132,19 @@ pub fn box_info(info: &Count) -> Box {
     label_status.add_css_class("label_status_i");
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
+
+    button_status.connect_clicked(clone!(@strong info => move |_|{
+        use crate::tokio::runtime::Runtime;
+
+        let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+
+        ref_counts.pay(info.id);
+
+        let rn = Runtime::new().unwrap();
+
+        rn.block_on(edit(&ref_counts)).unwrap();
+        update_list(ref_counts);
+    }));
 
     let date = Label::new(Some(&info.date_out.to_string()));
     date.add_css_class("date_i");

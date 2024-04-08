@@ -34,7 +34,7 @@ pub fn box_top(stack: &Stack) -> Box {
 
                     let tmp = stack.child_by_name("Contas").unwrap();
                     stack.remove(&tmp);
-                    
+
                     stack.add_titled(&box_count(), Some("Contas"), "Contas");
                 }
                 None => {}
