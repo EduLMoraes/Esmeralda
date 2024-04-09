@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(dead_code)]
-pub fn get_grid_groups(stack: &Stack) -> Grid {
+pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
     let grid_groups = Grid::new();
     grid_groups.set_halign(gtk::Align::Center);
     grid_groups.set_column_spacing(10);
@@ -15,7 +15,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
     };
 
     grid_groups.attach(
-        &new_group_info("Casa", "casa", &counts.search(String::from("Casa")), &stack),
+        &new_group_info("Casa", "casa", &counts.search(String::from("Casa")), &stack, stack_home),
         0,
         0,
         1,
@@ -27,6 +27,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
             "transporte",
             &counts.search(String::from("Transporte")),
             &stack,
+            stack_home
         ),
         0,
         1,
@@ -39,6 +40,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
             "alimentação",
             &counts.search(String::from("Alimentação")),
             &stack,
+            stack_home
         ),
         0,
         2,
@@ -51,6 +53,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
             "saúde",
             &counts.search(String::from("Saúde")),
             &stack,
+            stack_home
         ),
         1,
         0,
@@ -63,6 +66,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
             "lazer",
             &counts.search(String::from("Lazer")),
             &stack,
+            stack_home
         ),
         1,
         1,
@@ -75,6 +79,7 @@ pub fn get_grid_groups(stack: &Stack) -> Grid {
             "outros",
             &counts.search(String::from("Outros")),
             &stack,
+            stack_home
         ),
         1,
         2,

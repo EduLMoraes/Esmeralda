@@ -34,7 +34,7 @@ pub fn get_home_box(stack: &Stack) -> Box {
     let stack_switcher = StackSwitcher::new();
     stack_switcher.add_css_class("stack_switcher");
 
-    stack_infos.add_titled(&get_grid_groups(&stack_infos), Some("groups"), "Contas");
+    stack_infos.add_titled(&get_grid_groups(&stack_infos, stack), Some("groups"), "Contas");
     stack_infos.add_titled(&get_grid_debtors(), Some("debtors"), "Devedores");
     stack_infos.set_visible_child_name("groups");
 

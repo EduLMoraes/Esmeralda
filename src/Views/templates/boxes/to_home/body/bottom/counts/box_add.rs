@@ -160,9 +160,15 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 match rnt.block_on(control::save()){
                     Ok(_) => {
                         update_list(ref_counts);
+
                         let tmp = stack.child_by_name("home").unwrap();
                         stack.remove(&tmp);
                         stack.add_titled(&get_home_box(&stack), Some("home"), "home");
+
+                        let tmp = stack.child_by_name("payment").unwrap();
+                        stack.remove(&tmp);
+                        stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
+
                         title_input.set_text("");
                         description_input.set_text("");
                         value_input.set_value(0.01);

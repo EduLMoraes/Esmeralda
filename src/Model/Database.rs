@@ -246,10 +246,15 @@ impl DataBase {
                     .prepare(
                         "SELECT 
                         TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
-                        TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
-                        * FROM counts 
+                        TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out,
+                        MAX( 
+                            (SELECT MAX(count_id) FROM counts WHERE user_id = $1)
+                            ) AS max_id,
+                        count_id, user_id, debtor, title, description, value, paid_installments, installments, status, nature
+                        FROM counts 
                         WHERE user_id = $1
-                        AND CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2
+                        AND (CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2 and CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) >= $2)
+                        GROUP BY count_id
                         ORDER BY count_id",
                     )
                     .await
@@ -270,7 +275,7 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                for row in rows {
+                for row in &rows {
                     let count = Count {
                         id: row.get::<_, i32>("count_id"),
                         debtor: row.get::<_, String>("debtor"),
@@ -301,6 +306,8 @@ impl DataBase {
 
                     counts.insert(0, count);
                 }
+
+                counts[0].id = rows[0].get::<_, i32>("max_id");
 
                 l_counts.list = counts;
                 Ok(Data::Counts(l_counts, user, year))

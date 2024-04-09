@@ -78,7 +78,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_info
 }
 
-pub fn box_info(info: &Count) -> Box {
+pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
 
@@ -133,18 +133,46 @@ pub fn box_info(info: &Count) -> Box {
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
 
-    button_status.connect_clicked(clone!(@strong info => move |_|{
-        use crate::tokio::runtime::Runtime;
+    match stack{
+        Some(stack) => {
+            button_status.connect_clicked(clone!(@strong info, @strong stack => move |_|{
+                use crate::tokio::runtime::Runtime;
+        
+                let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+        
+                ref_counts.pay(info.id);
+        
+                let rn = Runtime::new().unwrap();
+        
+                rn.block_on(edit(&ref_counts)).unwrap();
 
-        let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+                let tmp = stack.child_by_name("home").unwrap();
+                stack.remove(&tmp);
+                stack.add_titled(&get_home_box(&stack), Some("home"), "home");
 
-        ref_counts.pay(info.id);
-
-        let rn = Runtime::new().unwrap();
-
-        rn.block_on(edit(&ref_counts)).unwrap();
-        update_list(ref_counts);
-    }));
+                let tmp = stack.child_by_name("payment").unwrap();
+                stack.remove(&tmp);
+                stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
+                
+                update_list(ref_counts);
+            }));
+        },
+        None => {
+            button_status.connect_clicked(clone!(@strong info => move |_|{
+                use crate::tokio::runtime::Runtime;
+        
+                let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+        
+                ref_counts.pay(info.id);
+        
+                let rn = Runtime::new().unwrap();
+        
+                rn.block_on(edit(&ref_counts)).unwrap();
+        
+                update_list(ref_counts);
+            }));
+        }
+    }
 
     let date = Label::new(Some(&info.date_out.to_string()));
     date.add_css_class("date_i");

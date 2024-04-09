@@ -2,7 +2,7 @@ use super::*;
 use crate::model::Count::Count;
 
 #[allow(dead_code)]
-pub fn get_grid_infos(stack: &Stack, infos: &Vec<Count>) -> Grid {
+pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>) -> Grid {
     let grid_infos = Grid::new();
     grid_infos.set_halign(gtk::Align::Center);
     grid_infos.set_column_spacing(10);
@@ -12,7 +12,7 @@ pub fn get_grid_infos(stack: &Stack, infos: &Vec<Count>) -> Grid {
     let mut y = 0;
 
     for info in infos {
-        let group = box_info(info);
+        let group = box_info(info, Some(stack_home));
         grid_infos.attach(&group, x, y as i32, 1, 1);
 
         if x < 1 {
