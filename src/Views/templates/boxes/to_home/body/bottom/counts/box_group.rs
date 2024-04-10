@@ -62,7 +62,7 @@ pub fn new_group_info(title: &str, nature: &str, infos: &Vec<Count>, stack: &Sta
     let details = Button::with_label("Detalhes");
     details.set_css_classes(&["link_details"]);
 
-    details.connect_clicked(clone!(@strong stack, @strong infos, @strong stack_home => move |_| {
+    details.connect_clicked(clone!(@weak stack, @strong infos, @weak stack_home => move |_| {
         let _ = get_grid_infos(&stack, &stack_home, &infos);
         stack.set_visible_child_name(&title.label());
     }));

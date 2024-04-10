@@ -22,7 +22,7 @@ pub fn box_top(stack: &Stack) -> Box {
     };
 
     select_year.connect_selected_item_notify(
-        clone!(@strong select_year, @strong stack => move |_|{
+        clone!(@weak select_year, @weak stack => move |_|{
             let counts = unsafe{ GLOBAL_COUNTS.get() };
 
             match counts{
@@ -57,7 +57,7 @@ pub fn box_top(stack: &Stack) -> Box {
     search.set_height_request(20);
     search.add_css_class("search_bar_t");
 
-    search.connect_changed(clone!(@strong search => move |_| {
+    search.connect_changed(clone!(@weak search => move |_| {
         let counts = unsafe{ GLOBAL_COUNTS.get() };
 
         match counts{

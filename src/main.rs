@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
+use std::mem::size_of;
 use std::os::unix::io::AsRawFd;
 use std::time::Duration;
 

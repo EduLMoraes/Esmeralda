@@ -33,8 +33,8 @@ pub fn right() -> Box {
     let box_list_count = get_list_box();
 
     let counts = unsafe { GLOBAL_COUNTS.get() };
-    drop_order.connect_selected_item_notify(
-        clone!(@strong drop_order, @strong box_list_count => move |_| {
+    drop_order.connect_selected_item_notify( 
+        move |drop_order| {
             let counts = unsafe { GLOBAL_COUNTS.get_mut() };
             match counts{
                 Some(counts) => {
@@ -52,8 +52,7 @@ pub fn right() -> Box {
                 }
                 None => {}
             }
-        }),
-    );
+        });
 
     match counts {
         Some(counts) => {

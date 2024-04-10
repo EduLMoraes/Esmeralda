@@ -135,7 +135,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
 
     match stack{
         Some(stack) => {
-            button_status.connect_clicked(clone!(@strong info, @strong stack => move |_|{
+            button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
                 use crate::tokio::runtime::Runtime;
         
                 let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };

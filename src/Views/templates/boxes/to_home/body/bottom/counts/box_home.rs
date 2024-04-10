@@ -19,11 +19,11 @@ pub fn get_home_box(stack: &Stack) -> Box {
     button_add.add_css_class("button_add");
     button_payment.add_css_class("button_payment");
 
-    button_add.connect_clicked(clone!(@strong stack => move |_| {
+    button_add.connect_clicked(clone!(@weak stack => move |_| {
         stack.set_visible_child_name("addition");
     }));
 
-    button_payment.connect_clicked(clone!(@strong stack => move |_| {
+    button_payment.connect_clicked(clone!(@weak stack => move |_| {
         stack.set_visible_child_name("payment");
     }));
 

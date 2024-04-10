@@ -12,7 +12,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     button_return.add_css_class("link_return");
 
     button_return.set_label("Retornar");
-    button_return.connect_clicked(clone!(@strong stack => move |_| {
+    button_return.connect_clicked(clone!(@weak stack => move |_| {
         stack.set_visible_child_name("home");
     }));
 
@@ -81,14 +81,14 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     date_input.set_size_request(10, 10);
 
-    date_input.connect_day_selected(clone!(@strong date_button, @strong date_input => move |_| {
+    date_input.connect_day_selected(clone!(@weak date_button, @weak date_input => move |_| {
         let date_string = format!("{:02}/{:02}/{:04}", date_input.day(), date_input.month()+1, date_input.year());
         date_button.set_label(&date_string);
         date_input.set_visible(false);
         date_button.set_visible(true);
     }));
 
-    date_button.connect_clicked(clone!(@strong date_button, @strong date_input => move |_| {
+    date_button.connect_clicked(clone!(@weak date_button, @weak date_input => move |_| {
         date_button.set_visible(false);
         date_input.set_visible(true);
     }));
@@ -120,15 +120,15 @@ pub fn get_add_box(stack: &Stack) -> Box {
     button_append.add_css_class("button");
 
     button_append.connect_clicked(clone!(
-        @strong stack,
-        @strong name_input,
-        @strong title_input,
-        @strong description_input,
-        @strong date_input,
-        @strong value_input,
-        @strong status_input,
-        @strong installment_input,
-        @strong nature_input=> move |_| {
+        @weak stack,
+        @weak name_input,
+        @weak title_input,
+        @weak description_input,
+        @weak date_input,
+        @weak value_input,
+        @weak status_input,
+        @weak installment_input,
+        @weak nature_input => move |_| {
             let mut count = Count::from(
                 name_input.text().trim(),
                 title_input.text().trim(),

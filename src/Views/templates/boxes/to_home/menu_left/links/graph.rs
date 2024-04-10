@@ -7,7 +7,7 @@ pub fn box_graph_link(stack: &Stack) -> Box {
     let graph_link = Button::with_label("Gráficos");
     graph_link.set_css_classes(&["link_view"]);
 
-    graph_link.connect_clicked(clone!(@strong stack, @strong graph_link => move |_| {
+    graph_link.connect_clicked(clone!(@weak stack, @weak graph_link => move |_| {
         stack.set_visible_child_name("Graficos");
     }));
 
