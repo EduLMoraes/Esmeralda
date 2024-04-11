@@ -9,7 +9,7 @@ use boxes::to_register::*;
 pub fn rgter_screen(stack: &Stack) -> Box {
     let screen = Box::new(Orientation::Vertical, 26);
 
-    let box_register = box_register();
+    let box_register = box_register(stack);
 
     let return_button = LinkButton::new("Voltar para login");
     let return_image = Image::from_file(format!("{}return.png", var("IMG_PATH").unwrap()));

@@ -1,5 +1,3 @@
-use gtk::ListBoxRow;
-
 use super::*;
 
 pub fn update_list(counts: &ListCount) {

@@ -58,6 +58,22 @@
     color: rgb(0, 0, 94);
 }
 
+.input_invalid{
+    border-color: #f00;
+    border-style: solid;
+    border-width: 3px;
+}
+
+.input_valid{
+    border-color: #0f0;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.weak_pass{
+    color: #fa0;
+}
+
 .box_accept{
     font-size: 12px;
 }

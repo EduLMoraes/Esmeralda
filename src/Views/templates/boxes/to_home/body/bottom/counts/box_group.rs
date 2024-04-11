@@ -1,6 +1,12 @@
 use super::*;
 
-pub fn new_group_info(title: &str, nature: &str, infos: &Vec<Count>, stack: &Stack, stack_home: &Stack) -> Box {
+pub fn new_group_info(
+    title: &str,
+    nature: &str,
+    infos: &Vec<Count>,
+    stack: &Stack,
+    stack_home: &Stack,
+) -> Box {
     let mut soma: f32 = 0.0;
     let mut status: bool = true;
 
@@ -62,10 +68,12 @@ pub fn new_group_info(title: &str, nature: &str, infos: &Vec<Count>, stack: &Sta
     let details = Button::with_label("Detalhes");
     details.set_css_classes(&["link_details"]);
 
-    details.connect_clicked(clone!(@weak stack, @strong infos, @weak stack_home => move |_| {
-        let _ = get_grid_infos(&stack, &stack_home, &infos);
-        stack.set_visible_child_name(&title.label());
-    }));
+    details.connect_clicked(
+        clone!(@weak stack, @strong infos, @weak stack_home => move |_| {
+            let _ = get_grid_infos(&stack, &stack_home, &infos);
+            stack.set_visible_child_name(&title.label());
+        }),
+    );
 
     box_right_g.append(&icon);
     if !infos.is_empty() {

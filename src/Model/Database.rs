@@ -82,7 +82,7 @@ impl DataBase {
                 })?;
 
                 let stmt: Statement = conn
-                    .prepare("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) ")
+                    .prepare("INSERT INTO users (username, password, email, name, wage) VALUES ($1, $2, $3, $4, $5) ")
                     .await
                     .map_err(|_| {
                         DataBaseError::AddUserError(ErrorLog {
@@ -92,17 +92,26 @@ impl DataBase {
                         })
                     })?;
 
-                conn.execute(&stmt, &[&user.username, &user.password, &user.email])
-                    .await
-                    .map_err(|err| {
-                        let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
+                conn.execute(
+                    &stmt,
+                    &[
+                        &user.username,
+                        &user.password,
+                        &user.email,
+                        &user.name,
+                        &user.wage,
+                    ],
+                )
+                .await
+                .map_err(|err| {
+                    let _ = log(path.clone().into(), &format!("[DATABASE] {err:?}\n"));
 
-                        DataBaseError::AddUserError(ErrorLog {
-                            title: "Error to execute query",
-                            code: 808,
-                            file: "Database.rs",
-                        })
-                    })?;
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "Error to execute query",
+                        code: 808,
+                        file: "Database.rs",
+                    })
+                })?;
 
                 Ok(())
             }
@@ -224,6 +233,7 @@ impl DataBase {
 
                 let user = UserDb {
                     id: id,
+                    name: row.get("name"),
                     username: row.get("username"),
                     password: row.get("password"),
                     email: row.get("email"),
@@ -253,7 +263,17 @@ impl DataBase {
                         count_id, user_id, debtor, title, description, value, paid_installments, installments, status, nature
                         FROM counts 
                         WHERE user_id = $1
-                        AND (CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2 and CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) >= $2)
+                        AND (
+                            CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2
+                            OR 
+                            CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) = $2
+                            OR 
+                                (
+                                    CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) < $2
+                                    AND
+                                    CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) > $2
+                                )
+                            )
                         GROUP BY count_id
                         ORDER BY count_id",
                     )
@@ -307,7 +327,9 @@ impl DataBase {
                     counts.insert(0, count);
                 }
 
-                counts[0].id = rows[0].get::<_, i32>("max_id");
+                if rows.len() > 0 {
+                    counts[0].id = rows[0].get::<_, i32>("max_id");
+                }
 
                 l_counts.list = counts;
                 Ok(Data::Counts(l_counts, user, year))

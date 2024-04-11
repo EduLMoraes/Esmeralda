@@ -39,38 +39,6 @@ pub struct Count {
 }
 
 impl Count {
-    /// Creates a new instance of the `Count` struct.
-    ///
-    /// The `id` field is initialized by concatenating the user's ID with a '0' and parsing it as an integer.
-    /// The other fields are initialized with default values.
-    ///
-    /// # Returns
-    ///
-    /// An instance of the `Count` struct with initialized fields.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// let count = Count::new();
-    /// ```
-    pub fn new() -> Count {
-        let today = chrono::Utc::now();
-
-        Count {
-            id: 0,
-            debtor: String::new(),
-            title: String::new(),
-            description: String::new(),
-            value: 0.0,
-            date_in: today.date_naive(),
-            date_out: today.date_naive(),
-            paid_installments: 0,
-            installments: 1,
-            status: false,
-            nature: String::from("Outros"),
-        }
-    }
-
     pub fn from(
         name: &str,
         title: &str,

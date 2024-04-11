@@ -14,33 +14,35 @@ pub fn box_top(stack: &Stack) -> Box {
     let title_top = Label::new(Some("Contas"));
     let select_year = match counts {
         Some(ref_counts) => {
-            let tmp: Vec<String> = ref_counts.years.iter().map(|&y| y.to_string()).collect();
+            let tmp: Vec<String> = if ref_counts.years.len() > 0 {
+                ref_counts.years.iter().map(|&y| y.to_string()).collect()
+            } else {
+                vec![format!("{}", Utc::now().year())]
+            };
             let tmp: Vec<&str> = tmp.iter().map(|y| y.trim()).collect();
             DropDown::from_strings(&tmp)
         }
         None => DropDown::from_strings(&[&format!("{}", Utc::now().year())]),
     };
 
-    select_year.connect_selected_item_notify(
-        clone!(@weak select_year, @weak stack => move |_|{
-            let counts = unsafe{ GLOBAL_COUNTS.get() };
+    select_year.connect_selected_item_notify(clone!(@weak select_year, @weak stack => move |_|{
+        let counts = unsafe{ GLOBAL_COUNTS.get() };
 
-            match counts{
-                Some(counts) => {
-                    use crate::tokio::runtime::Runtime;
-                    let rnt = Runtime::new().unwrap();
-                    rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
-                    update_list(counts);
+        match counts{
+            Some(counts) => {
+                use crate::tokio::runtime::Runtime;
+                let rnt = Runtime::new().unwrap();
+                rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
+                update_list(counts);
 
-                    let tmp = stack.child_by_name("Contas").unwrap();
-                    stack.remove(&tmp);
+                let tmp = stack.child_by_name("Contas").unwrap();
+                stack.remove(&tmp);
 
-                    stack.add_titled(&box_count(), Some("Contas"), "Contas");
-                }
-                None => {}
+                stack.add_titled(&box_count(), Some("Contas"), "Contas");
             }
-        }),
-    );
+            None => {}
+        }
+    }));
 
     select_year.set_halign(gtk::Align::Center);
     select_year.set_valign(gtk::Align::Center);
@@ -79,7 +81,7 @@ pub fn box_top(stack: &Stack) -> Box {
     button_ext.add_css_class("link_button");
 
     let username = get_user_instance().clone().unwrap();
-    let username = Label::new(Some(username.username.trim()));
+    let username = Label::new(Some(username.name.trim()));
     username.set_halign(gtk::Align::Center);
     username.set_valign(gtk::Align::Center);
     username.set_height_request(20);

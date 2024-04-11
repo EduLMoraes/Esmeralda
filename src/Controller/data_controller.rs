@@ -39,8 +39,7 @@ pub async fn save() -> Result<(), ControlError> {
         db_instance
             .add(Data::Counts(data.clone(), user_logged.clone(), 0))
             .await
-            .map_err(|err| 
-                ControlError::ErrorExternDB(err))?;
+            .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
 
     Ok(())

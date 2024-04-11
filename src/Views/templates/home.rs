@@ -3,6 +3,7 @@ use crate::control::{recover, recover_years, GLOBAL_COUNTS};
 
 #[path = "./boxes/to_home/mod.rs"]
 mod to_home;
+use chrono::Datelike;
 use to_home::*;
 
 pub fn home_screen() -> Box {
@@ -11,8 +12,18 @@ pub fn home_screen() -> Box {
     let mut stack = Stack::new();
 
     let run = tokio::runtime::Runtime::new().unwrap();
-    let years = run.block_on(recover_years()).unwrap();
-    let _ = run.block_on(recover(years[0])).unwrap();
+    match run.block_on(recover_years()) {
+        Ok(years) => {
+            if years.len() > 0 {
+                let _ = run.block_on(recover(years[0])).unwrap();
+            } else {
+                let _ = run
+                    .block_on(recover(crate::chrono::Utc::now().year() as i16))
+                    .unwrap();
+            }
+        }
+        Err(_) => {}
+    }
 
     let box_menu_left = get_box_menu_left(&stack);
     let box_body = get_box_body(&mut stack);

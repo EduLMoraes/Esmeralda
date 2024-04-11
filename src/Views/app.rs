@@ -3,7 +3,11 @@ use gtk::Grid;
 
 #[path = "./templates/mod.rs"]
 mod templates;
-use templates::{home_screen, login_screen, rgter_screen};
+use templates::{login_screen, rgter_screen};
+
+#[path = "./alerts/mod.rs"]
+mod alerts;
+use alerts::*;
 
 pub fn esmeralda(app: &Application) {
     let window = control::config::app::get_config(app);

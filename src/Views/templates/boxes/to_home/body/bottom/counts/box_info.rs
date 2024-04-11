@@ -133,17 +133,17 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
 
-    match stack{
+    match stack {
         Some(stack) => {
             button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
                 use crate::tokio::runtime::Runtime;
-        
+
                 let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
-        
+
                 ref_counts.pay(info.id);
-        
+
                 let rn = Runtime::new().unwrap();
-        
+
                 rn.block_on(edit(&ref_counts)).unwrap();
 
                 let tmp = stack.child_by_name("home").unwrap();
@@ -153,22 +153,22 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
                 let tmp = stack.child_by_name("payment").unwrap();
                 stack.remove(&tmp);
                 stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
-                
+
                 update_list(ref_counts);
             }));
-        },
+        }
         None => {
             button_status.connect_clicked(clone!(@strong info => move |_|{
                 use crate::tokio::runtime::Runtime;
-        
+
                 let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
-        
+
                 ref_counts.pay(info.id);
-        
+
                 let rn = Runtime::new().unwrap();
-        
+
                 rn.block_on(edit(&ref_counts)).unwrap();
-        
+
                 update_list(ref_counts);
             }));
         }

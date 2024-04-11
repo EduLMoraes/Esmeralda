@@ -23,6 +23,7 @@ lazy_static! {
 pub fn gen_user_instance(usr: UserDb) {
     *USER_LOGGED.lock().unwrap() = Some(UserDb {
         id: usr.id,
+        name: usr.name,
         username: usr.username,
         password: usr.password,
         email: usr.email,
@@ -200,14 +201,14 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
 ///
 /// let result = add_user(new_user, password).await;
 /// ```
-pub async fn add_user(new_user: NewUser, password: String) -> Result<(), ControlError> {
+pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
     if new_user.is_empty() {
         Err(ControlError::ErrorToAddUser(ErrorLog {
             title: "No has data for add user",
             code: 305,
             file: "controler.rs",
         }))
-    } else if new_user.password == password {
+    } else {
         let db = get_database_instance();
 
         let mut new_user = new_user;
@@ -219,12 +220,6 @@ pub async fn add_user(new_user: NewUser, password: String) -> Result<(), Control
             .await
             .map_err(|err| ControlError::ErrorExternDB(err))?;
         Ok(())
-    } else {
-        Err(ControlError::ErrorToAddUser(ErrorLog {
-            title: "Password is not equal",
-            code: 305,
-            file: "controller.rs",
-        }))
     }
 }
 

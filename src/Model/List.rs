@@ -1,4 +1,3 @@
-use crate::gtk::ListBox;
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
 use std::cmp::Reverse;
@@ -161,26 +160,6 @@ impl ListCount {
         }
     }
 
-    pub fn order_by_installments(&mut self, is_paid: bool, crescent: bool) {
-        if crescent {
-            self.list.sort_by_cached_key(|a| {
-                if is_paid {
-                    a.paid_installments
-                } else {
-                    a.installments
-                }
-            });
-        } else {
-            self.list.sort_by_cached_key(|a| {
-                Reverse(if is_paid {
-                    a.paid_installments
-                } else {
-                    a.installments
-                })
-            });
-        }
-    }
-
     pub fn order_alphabetical(&mut self, column: &str, crescent: bool) {
         match column {
             "name" => {
@@ -266,9 +245,9 @@ impl ListCount {
             .iter()
             .filter(|count| {
                 fuzzy_compare(&item, &count.debtor) > 0.5
-                    || fuzzy_compare(&item.to_lowercase(), &count.nature.to_lowercase()) > 0.3
+                    || fuzzy_compare(&item.to_lowercase(), &count.nature.to_lowercase()) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.title.to_lowercase()) > 0.5
-                    || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.3
+                    || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.5
                     || fuzzy_compare(&item, &count.date_in.to_string()) > 0.5
                     || fuzzy_compare(&item, &count.date_out.to_string()) > 0.5
                     || item == count.id.to_string()
