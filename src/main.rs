@@ -1,7 +1,4 @@
 mod prelude;
-use crate::control::GLOBAL_COUNTS;
-use gtk::glib::timeout_add;
-use gtk::{glib, glib::clone, LinkButton};
 use libc;
 use prelude::segurance::criptography::gen_string;
 use prelude::sty::load_style;
@@ -12,29 +9,27 @@ use std::fs::File;
 use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
-use std::mem::size_of;
 use std::os::unix::io::AsRawFd;
-use std::time::Duration;
 
 fn main() {
-    // match std::env::consts::OS {
-    //     "windows" => {
-    //         let null_stdout = File::create("NUL").unwrap();
-    //         let stdout_fd = stdout().as_raw_fd();
-    //         let null_stdout_fd = null_stdout.as_raw_fd();
-    //         unsafe {
-    //             libc::dup2(null_stdout_fd, stdout_fd);
-    //         }
-    //     }
-    //     _ => {
-    //         let null_stdout = File::create("/dev/null").unwrap();
-    //         let stdout_fd = stdout().as_raw_fd();
-    //         let null_stdout_fd = null_stdout.as_raw_fd();
-    //         unsafe {
-    //             libc::dup2(null_stdout_fd, stdout_fd);
-    //         }
-    //     }
-    // };
+    match std::env::consts::OS {
+        "windows" => {
+            let null_stdout = File::create("NUL").unwrap();
+            let stdout_fd = stdout().as_raw_fd();
+            let null_stdout_fd = null_stdout.as_raw_fd();
+            unsafe {
+                libc::dup2(null_stdout_fd, stdout_fd);
+            }
+        }
+        _ => {
+            let null_stdout = File::create("/dev/null").unwrap();
+            let stdout_fd = stdout().as_raw_fd();
+            let null_stdout_fd = null_stdout.as_raw_fd();
+            unsafe {
+                libc::dup2(null_stdout_fd, stdout_fd);
+            }
+        }
+    };
 
     match env::var("KEYESMERALD") {
         Ok(_) => {

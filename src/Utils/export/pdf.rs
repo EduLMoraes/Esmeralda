@@ -10,6 +10,7 @@ use super::*;
 /// # Returns
 ///
 /// * `Result<String, String>` - The path of the exported PDF file, or an error message if the export fails.
+#[allow(deprecated, unused)]
 pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
     let mut x = Mm(297.0);
     let mut y = Mm(210.0);

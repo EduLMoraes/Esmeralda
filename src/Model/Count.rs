@@ -102,6 +102,7 @@ impl Count {
         }
     }
 
+    #[allow(unused)]
     pub fn to_string(&self) -> String {
         format!(
             "{}, {}, {}, {}, {:.2}, {}, {}, {}, {}, {}, {}",

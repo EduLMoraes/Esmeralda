@@ -17,11 +17,9 @@ pub fn form_right() -> Box {
     box_wage.append(&wage_label);
     box_wage.append(&wage_entry);
 
-    wage_entry.connect_changed(clone!(@weak wage_entry => move |input|{
-        let new_u = unsafe { NEWUSER.borrow_mut() };
-
+    wage_entry.connect_value_changed(clone!(@weak wage_entry => move |input|{
         wage_entry.set_css_classes(&["input_valid", "entry_register"]);
-        new_u.wage = input.value() as f32;
+        unsafe{ NEWUSER.wage = input.value() as f32};
     }));
 
     let pass_label = Label::new(Some("Confirme sua senha:*"));

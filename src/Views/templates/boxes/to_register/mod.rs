@@ -21,7 +21,6 @@ mod form_left;
 mod form_right;
 pub use form_left::*;
 pub use form_right::*;
-use gtk::AlertDialog;
 
 pub fn box_register(stack: &Stack) -> Box {
     let box_register = Box::new(Orientation::Vertical, 26);

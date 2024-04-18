@@ -4,7 +4,6 @@ mod count;
 mod graph;
 
 pub use count::*;
-pub use graph::*;
 
 pub fn links(stack: &Stack) -> Box {
     let box_links = Box::new(Orientation::Vertical, 20);
