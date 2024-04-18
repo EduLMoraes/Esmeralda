@@ -1,8 +1,11 @@
 use super::*;
 use crate::model::List::ListCount;
-use crate::std::sync::OnceLock;
+use std::borrow::{Borrow, BorrowMut};
 
-pub static mut GLOBAL_COUNTS: OnceLock<ListCount> = OnceLock::new();
+pub static mut GLOBAL_COUNTS: ListCount = ListCount {
+    list: Vec::new(),
+    years: Vec::new(),
+};
 
 /// Saves the provided `ListCount` data to the global database.
 ///
@@ -33,7 +36,7 @@ pub static mut GLOBAL_COUNTS: OnceLock<ListCount> = OnceLock::new();
 /// ```
 pub async fn save() -> Result<(), ControlError> {
     let db_instance = get_database_instance();
-    let data = unsafe { GLOBAL_COUNTS.get().unwrap() };
+    let data = unsafe { GLOBAL_COUNTS.borrow() };
 
     if let Some(user_logged) = get_user_instance().as_ref() {
         db_instance
@@ -132,12 +135,8 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     match recovered_data {
         Data::Years(data, _) => {
             unsafe {
-                let global = GLOBAL_COUNTS.get_mut();
-
-                match global {
-                    Some(counts) => counts.years = data.years.clone(),
-                    None => GLOBAL_COUNTS = OnceLock::from(data.clone()),
-                }
+                let global = GLOBAL_COUNTS.borrow_mut();
+                global.years = data.years.clone()
             }
 
             Ok(data.years)
@@ -201,13 +200,7 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
             data.list = list;
 
             unsafe {
-                let global = GLOBAL_COUNTS.get_mut();
-                match global {
-                    Some(counts) => {
-                        counts.list = data.list;
-                    }
-                    None => GLOBAL_COUNTS = { OnceLock::from(data) },
-                }
+                GLOBAL_COUNTS.list = data.list;
             }
 
             Ok(())

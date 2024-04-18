@@ -32,34 +32,25 @@ pub fn right() -> Box {
 
     let box_list_count = get_list_box();
 
-    let counts = unsafe { GLOBAL_COUNTS.get() };
+    let counts = unsafe { GLOBAL_COUNTS.borrow() };
     drop_order.connect_selected_item_notify(move |drop_order| {
-        let counts = unsafe { GLOBAL_COUNTS.get_mut() };
-        match counts {
-            Some(counts) => {
-                match drop_order.selected() {
-                    0 => counts.order_by_date(true, true),
-                    1 => counts.order_by_date(false, false),
-                    2 => counts.order_by_value(true),
-                    3 => counts.order_alphabetical("nature", true),
-                    4 => counts.order_by_status(true),
-                    5 => counts.order_alphabetical("name", true),
-                    _ => {}
-                }
+        let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
-                update_list(counts);
-            }
-            None => {}
+        match drop_order.selected() {
+            0 => counts.order_by_date(true, true),
+            1 => counts.order_by_date(false, false),
+            2 => counts.order_by_value(true),
+            3 => counts.order_alphabetical("nature", true),
+            4 => counts.order_by_status(true),
+            5 => counts.order_alphabetical("name", true),
+            _ => {}
         }
+
+        update_list(counts);
     });
 
-    match counts {
-        Some(counts) => {
-            for count in &counts.list {
-                box_list_count.append(&new_box_info(count));
-            }
-        }
-        None => {}
+    for count in &counts.list {
+        box_list_count.append(&new_box_info(count));
     }
 
     scrolled.set_child(Some(box_list_count));

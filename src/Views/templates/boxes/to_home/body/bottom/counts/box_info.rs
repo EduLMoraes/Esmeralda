@@ -138,7 +138,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
             button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
                 use crate::tokio::runtime::Runtime;
 
-                let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
                 ref_counts.pay(info.id);
 
@@ -160,8 +160,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
         None => {
             button_status.connect_clicked(clone!(@strong info => move |_|{
                 use crate::tokio::runtime::Runtime;
-
-                let ref_counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
                 ref_counts.pay(info.id);
 

@@ -254,26 +254,18 @@ impl DataBase {
 
                 let stmt = conn
                     .prepare(
-                        "SELECT 
-                        TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
-                        TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out,
-                        MAX( 
-                            (SELECT MAX(count_id) FROM counts WHERE user_id = $1)
-                            ) AS max_id,
-                        count_id, user_id, debtor, title, description, value, paid_installments, installments, status, nature
-                        FROM counts 
+                        "SELECT MAX((SELECT MAX(count_id) FROM counts WHERE user_id = $1)) AS max_id, count_id, user_id,
+                        TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, debtor, title, description, value, paid_installments, installments, status, nature
+                        FROM counts
                         WHERE user_id = $1
-                        AND (
-                            CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) = $2
-                            OR 
+                        AND
+                        (
                             CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) = $2
-                            OR 
-                                (
-                                    CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) < $2
-                                    AND
-                                    CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) > $2
-                                )
-                            )
+                            OR
+                            CAST(EXTRACT(YEAR FROM date_out) AS SMALLINT) >= $2
+                            AND
+                            CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) <= $2
+                        )
                         GROUP BY count_id
                         ORDER BY count_id",
                     )
@@ -345,35 +337,37 @@ impl DataBase {
                     })
                 })?;
 
-                let stmt_years = conn
+                let stmt_sequence = conn
                     .prepare(
                         "SELECT 
-                        DISTINCT CAST(EXTRACT(YEAR FROM date_in) AS SMALLINT) AS date_in
-                        FROM counts 
-                        WHERE user_id = $1",
+                DISTINCT CAST(EXTRACT(YEAR FROM date_out) AS CHAR(4)) as date_out
+                FROM counts 
+                WHERE
+                user_id = $1",
                     )
                     .await
                     .map_err(|_| {
                         DataBaseError::GetCountsError(ErrorLog {
-                            title: "Error to prepare query to get user",
+                            title: "Not set value of sequence",
                             code: 804,
                             file: "Database.rs",
                         })
                     })?;
 
-                let rows = conn.query(&stmt_years, &[&user.id]).await.map_err(|_| {
+                let rows = conn.query(&stmt_sequence, &[&user.id]).await.map_err(|_| {
                     DataBaseError::GetCountsError(ErrorLog {
-                        title: "User not found!",
+                        title: "Not run sequence",
                         code: 804,
                         file: "Database.rs",
                     })
                 })?;
-
                 let mut years: Vec<i16> = Vec::new();
 
                 for row in rows {
-                    years.insert(0, row.get::<_, i16>("date_in") as i16);
+                    years.push(row.get::<_, String>("date_out").parse::<i16>().unwrap());
                 }
+
+                years.sort_unstable();
 
                 l_counts.years = years;
 

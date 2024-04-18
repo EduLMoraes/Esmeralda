@@ -57,7 +57,7 @@ pub fn get_home_box(stack: &Stack) -> Box {
     scrolled.set_child(Some(&box_stack));
     scrolled.set_height_request(500);
 
-    let counts = unsafe { GLOBAL_COUNTS.get_mut().unwrap() };
+    let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
     let total_counts = counts.get_total();
     let total_debt = counts.get_total_debt();
