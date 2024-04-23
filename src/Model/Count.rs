@@ -121,6 +121,9 @@ impl Count {
     }
 
     pub fn is_empty(&self) -> bool {
-        self.debtor.is_empty() || self.title.is_empty()
+        self.debtor.is_empty()
+            || self.title.is_empty()
+            || self.installments == 0
+            || self.value == 0.0
     }
 }

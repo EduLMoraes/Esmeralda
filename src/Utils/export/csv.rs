@@ -23,13 +23,12 @@ pub async fn export_csv(path: &str, data: &ListCount) -> Result<String, String> 
 
     let debtors = data.filter_debtors();
 
-    data_file.push_str("ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n");
+    data_file.push_str("Devedor;Dívida;Total Gasto;Status\n");
 
     for debtor in debtors {
         data_file.push_str(
             format!(
-                "{};{};{:.2};{:.2};{}",
-                debtor.get_id(),
+                "{};{:.2};{:.2};{}",
                 debtor.get_name(),
                 debtor.get_debt(),
                 debtor.get_value(),
@@ -42,14 +41,13 @@ pub async fn export_csv(path: &str, data: &ListCount) -> Result<String, String> 
     }
 
     data_file.push_str(
-        "\nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
+        "\nNome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
     );
 
     for info in &data.list {
         data_file.push_str(
             format!(
-                "{};{};{};{};{};{};{};{};{};{:.2};{}",
-                info.id,
+                "{};{};{};{};{};{};{};{};{:.2};{}",
                 info.debtor,
                 info.nature,
                 info.title,

@@ -14,6 +14,18 @@ DB_NAME = "esmeralda"
 DB_PASSWORD = ""
 DB_HOSTNAME = ""
 
+# ================================================|
+# Paths                                           |
+# ================================================|
+ICON_PATH = "./src/Views/assets/icon/"
+IMG_PATH = "./src/Views/assets/img/"
+
+# ================================================|
+# Chaves para a API da Mailjet.                   |
+# ================================================|
+KEYMAILAPI = "" 
+KEYPRIVATE = "" 
+
 # ===============================================|
 # Descomente e atribua uma chave que queira usar |
 # caso não quer que ele crie um arquivo .key     |

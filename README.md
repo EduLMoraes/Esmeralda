@@ -25,6 +25,10 @@
 ### *Versão* 🤖
 `v0.1.6`
 
+### *Referências*
+Todos os ícones são pertencentes à [Flaticon](https://www.flaticon.com/br/).
+<br>
+O projeto Esmeralda dá todos os créditos pelos ícones à [Flaticon](https://www.flaticon.com/br/) e seus artistas.
 
 ### Features
 [ → Veja as mudanças aqui ←](./features.md) 

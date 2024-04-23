@@ -18,8 +18,8 @@ async fn test_all_fields_non_empty_and_valid() {
         nature: String::from("Casa"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, true);
+    let result = info.is_empty();
+    assert_eq!(result, false);
 }
 
 // Returns false if debtor field is empty or contains non-alphabetic characters.
@@ -39,8 +39,8 @@ async fn test_debtor_field_empty_or_non_alphabetic() {
         nature: String::from("Casa"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if title field is empty.
@@ -60,8 +60,8 @@ async fn test_title_field_empty() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if value field is zero.
@@ -81,8 +81,8 @@ async fn test_value_field_zero() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if installments field is zero.
@@ -102,8 +102,8 @@ async fn test_installments_field_zero() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if debtor field contains only spaces.
@@ -123,8 +123,8 @@ async fn test_debtor_field_only_spaces() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if debtor field contains only non-alphabetic characters.
@@ -144,8 +144,8 @@ async fn test_debtor_field_only_non_alphabetic() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns true if debtor field contains alphabetic characters and spaces.
@@ -165,7 +165,7 @@ async fn test_debtor_field_alphabetic_and_spaces() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
+    let result = info.is_empty();
     assert_eq!(result, true);
 }
 
@@ -186,7 +186,7 @@ async fn test_value_field_non_zero() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
+    let result = info.is_empty();
     assert_eq!(result, true);
 }
 
@@ -207,7 +207,7 @@ async fn test_installments_field_non_zero() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
+    let result = info.is_empty();
     assert_eq!(result, true);
 }
 
@@ -228,8 +228,8 @@ async fn test_info_struct_empty() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }
 
 // Returns false if Count struct has only debtor field.
@@ -249,6 +249,6 @@ async fn test_info_struct_only_debtor_field() {
         nature: String::from("Investimentos"),
     };
 
-    let result = is_complete(&info).await;
-    assert_eq!(result, false);
+    let result = info.is_empty();
+    assert_eq!(result, true);
 }

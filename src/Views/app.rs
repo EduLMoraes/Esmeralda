@@ -1,3 +1,5 @@
+// use self::templates::lost_pass_screen;
+
 use super::*;
 use gtk::Grid;
 use std::borrow::{Borrow, BorrowMut};
@@ -21,9 +23,11 @@ pub fn esmeralda(app: &Application) {
 
     let login_screen = login_screen(&stack);
     let register_screen = rgter_screen(&stack);
+    // let lost_pass_screen = lost_pass_screen(&stack);
 
     stack.add_titled(&login_screen, Some("login"), "Login");
     stack.add_titled(&register_screen, Some("register"), "Register");
+    // stack.add_titled(&lost_pass_screen, Some("rem_pass"), "Rem_pass");
 
     let switcher = StackSwitcher::new();
     switcher.set_stack(Some(&stack));
