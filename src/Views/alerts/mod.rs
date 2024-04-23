@@ -1,5 +1,6 @@
 use super::*;
-use crate::gtk::{AlertDialog, MessageDialog, ResponseType, Window};
+#[allow(deprecated)]
+use crate::gtk::{AlertDialog, MessageDialog, Window};
 
 pub fn alert(message: &str, title: &str) {
     let window_alert = Window::new();
@@ -11,7 +12,7 @@ pub fn alert(message: &str, title: &str) {
     alert_dialog.show(Some(&window_alert));
 }
 
-#[allow(unused)]
+#[allow(unused, deprecated)]
 pub fn confirm(message: &str, title: &str) -> MessageDialog {
     let confirm = MessageDialog::builder()
         .buttons(gtk::ButtonsType::YesNo)

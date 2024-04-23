@@ -223,6 +223,7 @@ pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
     }
 }
 
+#[allow(deprecated, unused)]
 pub async fn restore_password(user: User) -> Result<(), ControlError> {
     let db = get_database_instance();
 

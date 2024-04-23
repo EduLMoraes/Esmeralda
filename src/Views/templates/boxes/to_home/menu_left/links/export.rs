@@ -1,5 +1,6 @@
 use super::*;
 
+#[allow(deprecated)]
 pub fn box_export_link() -> Box {
     let fbox_count = Box::new(Orientation::Horizontal, 0);
     let count_icon = Image::from_file(format!("{}export.png", var("ICON_PATH").unwrap()));
@@ -29,11 +30,14 @@ pub fn box_export_link() -> Box {
                         let rnt = Runtime::new().unwrap();
 
                         let res = rnt.block_on(save_in_file(
-                            &format!("{}/Resumo_Esmeralda.csv", folder.path().unwrap().to_str().unwrap()),
+                            &format!(
+                                "{}/Resumo_Esmeralda.csv",
+                                folder.path().unwrap().to_str().unwrap()
+                            ),
                             unsafe { GLOBAL_COUNTS.borrow() },
                         ));
 
-                        match res{
+                        match res {
                             Err(_) => alert("Erro ao exportar arquivo", "Erro"),
                             _ => {}
                         }
