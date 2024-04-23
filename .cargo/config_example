@@ -19,6 +19,7 @@ DB_HOSTNAME = ""
 # ================================================|
 ICON_PATH = "./src/Views/assets/icon/"
 IMG_PATH = "./src/Views/assets/img/"
+CSS_PATH = "./src/Views/styles/global.css"
 
 # ================================================|
 # Chaves para a API da Mailjet.                   |

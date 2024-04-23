@@ -34,11 +34,11 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let name_label = Label::new(Some("*Name:"));
     let title_label = Label::new(Some("*Título:"));
     let nature_label = Label::new(Some("Natureza:"));
-    let date_label = Label::new(Some("Data inicial:"));
+    let date_label = Label::new(Some("Data\ninicial:"));
     let description_label = Label::new(Some("Descrição:"));
-    let installments_label = Label::new(Some("Nª de Parcelas:"));
+    let installments_label = Label::new(Some("Nª de\nParcelas:"));
     let status_label = Label::new(Some("Já tá paga?"));
-    let value_label = Label::new(Some("R$:"));
+    let value_label = Label::new(Some("R$:\n(por parcela)"));
 
     let name_input = Entry::new();
     let title_input = Entry::new();

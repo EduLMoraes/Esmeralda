@@ -1,35 +1,16 @@
 mod prelude;
-use libc;
+use prelude::control::config::env_var::get_config;
 use prelude::segurance::criptography::gen_string;
 use prelude::sty::load_style;
 use prelude::views::esmeralda;
 use prelude::*;
 use std::fs;
 use std::fs::File;
-use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
-use std::os::unix::io::AsRawFd;
 
 fn main() {
-    match std::env::consts::OS {
-        "windows" => {
-            let null_stdout = File::create("NUL").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
-            }
-        }
-        _ => {
-            let null_stdout = File::create("/dev/null").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
-            }
-        }
-    };
+    get_config();
 
     match env::var("KEYESMERALD") {
         Ok(_) => {
