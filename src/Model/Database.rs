@@ -287,6 +287,7 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
+                let natures = vec!["Casa", "Transporte", "Saúde", "Lazer", "Alimentação"];
                 for row in &rows {
                     let count = Count {
                         id: row.get::<_, i32>("count_id"),
@@ -313,7 +314,11 @@ impl DataBase {
                             .parse::<u32>()
                             .unwrap(),
                         status: row.get::<_, bool>("status"),
-                        nature: row.get::<_, String>("nature"),
+                        nature: if natures.contains(&row.get::<_, String>("nature").trim()) {
+                            row.get::<_, String>("nature")
+                        } else {
+                            String::from("Outros")
+                        },
                     };
 
                     counts.insert(0, count);
