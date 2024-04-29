@@ -1,13 +1,14 @@
--- Active: 1703730527497@@127.0.0.1@5432@esmeralda
-CREATE DATABASE esmeralda;
+-- CREATE DATABASE esmeralda;
 
-\c esmeralda;
+-- \c esmeralda;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(200) NOT NULL
+    password VARCHAR(200) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    wage REAL NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS counts (
@@ -22,9 +23,6 @@ CREATE TABLE IF NOT EXISTS counts (
     date_in DATE NOT NULL,
     date_out DATE NOT NULL,
 	status BOOLEAN NOT NULL,
+    nature VARCHAR(15) NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users
 ); 
-
-ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT ' ';
-
-UPDATE counts SET nature = ' ' WHERE nature IS NULL;
