@@ -80,4 +80,8 @@ pub fn get_config() {
         Err(_) => env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path)),
         _ => {}
     }
+    match env::var("DB_PATH") {
+        Err(_) => env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path)),
+        _ => {}
+    }
 }

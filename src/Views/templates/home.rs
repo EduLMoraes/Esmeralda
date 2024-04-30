@@ -19,7 +19,7 @@ pub fn home_screen() -> Box {
             } else {
                 let _ = run
                     .block_on(recover(crate::chrono::Utc::now().year() as i16))
-                    .unwrap();
+                    .map_err(|err| println!("{}", err));
             }
         }
         Err(_) => {}

@@ -3,16 +3,7 @@
 # "config.toml" para funcionar.                   |
 # ================================================|
 
-# ================================================|
-# Insira os seus dados pro banco de dados postgres|
-# Do contrário será usado dados genéricos no      |
-# arquivo de configuração para o banco de dados.  |
-# ================================================|
 [env]
-DB_USER = ""
-DB_NAME = "esmeralda"
-DB_PASSWORD = ""
-DB_HOSTNAME = ""
 
 # ================================================|
 # Paths                                           |
@@ -20,6 +11,7 @@ DB_HOSTNAME = ""
 ICON_PATH = "./src/Views/assets/icon/"
 IMG_PATH = "./src/Views/assets/img/"
 CSS_PATH = "./src/Views/styles/global.css"
+DB_PATH = "./src/Model/SQL/esmeralda.db"
 
 # ================================================|
 # Chaves para a API da Mailjet.                   |
