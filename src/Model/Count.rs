@@ -1,28 +1,6 @@
-use chrono::Datelike;
+use crate::prelude::chrono::{Datelike, NaiveDate};
+use regex::Regex;
 
-use crate::prelude::chrono::NaiveDate;
-
-/// The `Count` struct represents information about a debtor.
-///
-/// # Fields
-///
-/// - `id`: An integer representing the ID of the debtor.
-/// - `debtor`: A string representing the name of the debtor.
-/// - `title`: A string representing the title of the debtor.
-/// - `description`: A string representing the description of the debtor.
-/// - `value`: A float representing the value of the debtor.
-/// - `date_in`: A `NaiveDate` representing the date the debtor was created.
-/// - `date_out`: A `NaiveDate` representing the date the debtor is due.
-/// - `paid_installments`: An unsigned integer representing the number of paid installments.
-/// - `installments`: An unsigned integer representing the total number of installments.
-/// - `status`: A boolean representing the status of the debtor.
-///
-/// # Example Usage
-///
-/// ```rust
-/// let mut count = Count::new();
-/// count.new_id();
-/// ```
 #[derive(Clone, Debug, PartialEq)]
 pub struct Count {
     pub id: i32,
@@ -50,7 +28,11 @@ impl Count {
     ) -> Count {
         Count {
             id: 0,
-            debtor: String::from(name),
+            debtor: if !Regex::new(r"[^a-zA-Z\s]").unwrap().is_match(name) {
+                String::from(name)
+            } else {
+                String::from("")
+            },
             title: String::from(title),
             description: String::from(desc),
             value: value,
@@ -75,16 +57,6 @@ impl Count {
         }
     }
 
-    /// Generates a new ID for the debtor.
-    ///
-    /// The `id` field is incremented by 1.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// let mut count = Count::new();
-    /// count.new_id();
-    /// ```
     pub fn new_id(&mut self) {
         self.id = self.id + 1;
     }
@@ -121,8 +93,9 @@ impl Count {
     }
 
     pub fn is_empty(&self) -> bool {
-        self.debtor.is_empty()
-            || self.title.is_empty()
+        self.debtor.trim().is_empty()
+            || Regex::new(r"[0-9]").unwrap().is_match(self.debtor.trim())
+            || self.title.trim().is_empty()
             || self.installments == 0
             || self.value == 0.0
     }

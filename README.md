@@ -1,16 +1,21 @@
-# *Esmeralda* 💹
+<h1 style="color: #37af03"> <b>$$ Esmeralda $$</b></h1> 
+
 <div style="
-  background-color: #777;
+  background-color: #1f1f1f;
   ">
-  <img src="./assets/images/icon.ico" style="
+  <img src="./assets/images/icon.png" style="
     display: flex;
     margin: auto;
     width: 175px;
-    box-shadow: 0px 0px 10px #333;
   "/>
 </div>
 
-#### O propósito da Esmeralda é ser um software de controle financeiro pessoal, ajudando a controlar os gastos e o dinheiro, sabendo para onde vai o dinheiro, quanto se pode gastar, quem fez a dívida e o total daquela dívida.
+<h3 style="text-align: justify">
+<b style="color: #37af03">Esmeralda</b> é um software de controle financeiro para desktop em contínua evolução para um mais completo e 
+<b style="color: #eeaa00"> gratuito e seguro</b>. Buscando um aumento na qualidade da gestão financeira pessoal, com uma interface clara e de fácil
+entendimento contendo as naturezas dos gastos separadas, os devedores que forem 
+registrados, cadastro e login para acesso ao sistema.
+</h3>
 
 ## Sumário:
   1.    [Detalhes](#details)
@@ -20,10 +25,19 @@
   5.    [Imagens](#images)
   6.    [Créditos](#credits)
 
-## *Detalhes*: <section id="details"/>
+# *Detalhes*: <section id="details"/>
 
 ### *Versão* 🤖
-`v0.1.6`
+`v1.0.0`
+
+<h2> Tecnologias </h2>
+<p>
+<input type="checkbox" checked> GTK4    <br>
+<input type="checkbox" checked> SQLite  <br>
+<input type="checkbox" checked> Rust    <br>
+<input type="checkbox" checked> CSS     <br>
+
+</p>
 
 ### *Referências*
 Todos os ícones são pertencentes à [Flaticon](https://www.flaticon.com/br/).
@@ -56,23 +70,22 @@ O aplicativo esta disponível para os sistemas operacionais listados a baixo:
 
 ### Como instalar no Windows 10
 
-#### Passo 1 - Baixe o instalador disponível [Aqui](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.6/Esmeralda_installer-v0.1.6.exe) ou em [releases](https://github.com/EduLMoraes/Esmeralda/releases/)
+#### Passo 1 - Baixe o instalador disponível [Aqui](https://github.com/EduLMoraes/Esmeralda/releases/download/v1.0.0/Esmeralda_installer-v1.0.0.exe) ou em [releases](https://github.com/EduLMoraes/Esmeralda/releases/)
 
-#### Passo 2 - Rode o instalador, por falta de assinatura o windows pode pedir  confirmação para executar o programa, basta clicar em `saiba mais > executar mesmo assim`.
+#### Passo 2 - Rode o instalador, por falta de assinatura o windows pode pedir  confirmação para executar o programa, basta clicar em `saiba mais > executar mesmo assim`. 
+
+``Obs.: Marcar para gerar atalho se estiver desmarcada.``
 
 #### Passo 3 - Ao finalizar a instalação, rode o atalho que deve ter sido gerado na área de trabalho.
 
 ---
 
-### Como instalar no Linux
-#### Passo 1 - Baixe o executável do esmeralda aqui [Linux](https://github.com/EduLMoraes/Esmeralda/releases/download/v0.1.5/esmeralda)
+### Como instalar no Linux *Em construção*
+#### Passo 1 - Baixe o executável do esmeralda aqui [Linux](https://github.com/EduLMoraes/Esmeralda/releases/download/v1.0.0/esmeralda)
 
 #### Passo 2 - Rode estes comandos:
 ```bash
-  sudo apt install postgresql
-  sudo psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
-  wget -O construct_db.sql https://raw.githubusercontent.com/EduLMoraes/Esmeralda/main/src/Model/SQL/construct_db.sql
-  sudo -u postgres psql -f construct_db.sql
+  
 ```
 
 ---

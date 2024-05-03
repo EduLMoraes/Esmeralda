@@ -57,12 +57,12 @@ mod test_export_csv {
         assert!(result.is_ok());
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n\
-                                1;John Doe;0.00;100.00;true\n\
-                                2;Jane Smith;600.00;400.00;false\n\
-                                \nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
-                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n\
-                                2;Jane Smith;Investimentos;Invoice;Payment for goods;2022-02-01;2022-02-28;2;5;200.00;false\n";
+        let expected_content = "Devedor;Dívida;Total Gasto;Status\n\
+                                John Doe;0.00;100.00;true\n\
+                                Jane Smith;600.00;400.00;false\n\
+                                \nNome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n\
+                                Jane Smith;Investimentos;Invoice;Payment for goods;2022-02-01;2022-02-28;2;5;200.00;false\n";
         assert_eq!(file_content, expected_content);
     }
 
@@ -173,10 +173,10 @@ mod test_export_csv {
 
         path = result.unwrap().into();
         let file_content = std::fs::read_to_string(path).unwrap();
-        let expected_content = "ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n\
-                                1;John Doe;0.00;100.00;true\n\
-                                \nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
-                                1;John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n";
+        let expected_content = "Devedor;Dívida;Total Gasto;Status\n\
+                                John Doe;0.00;100.00;true\n\
+                                \nNome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n\
+                                John Doe;Investimentos;Invoice;Payment for services;2022-01-01;2022-01-31;1;1;100.00;true\n";
         assert_eq!(file_content, expected_content);
     }
 }
@@ -275,32 +275,6 @@ mod test_export_pdf {
     fn test_export_pdf_with_empty_input_data() {
         let path = "test.pdf";
         let data = ListCount::new();
-
-        let result = export::pdf::export_pdf(path, &data);
-
-        assert!(result.is_ok());
-    }
-
-    #[test]
-    fn test_export_pdf_with_very_large_input_data() {
-        let path = "test.pdf";
-        let mut data = ListCount::new();
-
-        for _ in 0..10000 {
-            data.put(Count {
-                id: 1,
-                debtor: "John Doe".to_string(),
-                title: "Invoice".to_string(),
-                description: "Payment for services".to_string(),
-                date_in: "2022-01-01".parse::<NaiveDate>().unwrap(),
-                date_out: "2022-02-28".parse::<NaiveDate>().unwrap(),
-                paid_installments: 1,
-                installments: 3,
-                value: 100.0,
-                status: true,
-                nature: String::from("Casa"),
-            });
-        }
 
         let result = export::pdf::export_pdf(path, &data);
 

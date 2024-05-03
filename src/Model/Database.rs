@@ -1,4 +1,3 @@
-// use crate::prelude::control::config::database::get_config;
 use crate::prelude::env::var;
 // use crate::prelude::log;
 use crate::prelude::model::{
@@ -8,32 +7,10 @@ use crate::prelude::model::{
     User::*,
 };
 use chrono::{Datelike, NaiveDate};
-// use deadpool_postgres::{GenericClient, Pool, Runtime};
 use lazy_static::lazy_static;
-// use postgres::{NoTls, Statement};
 use rusqlite::{params, Connection};
 use std::sync::Mutex;
 
-/// This code snippet defines a `DataBase` struct in Rust. It contains methods for creating a new database self.poolection, adding data to the database, getting data from the database, and editing data in the database.
-
-/// Example Usage:
-/// ```
-/// let db = DataBase::new()?;
-/// db.add(Data::NewUser(user))?;
-/// let data = db.get(Data::User(user))?;
-/// db.edit(Data::Counts(counts, user))?;
-/// ```
-
-/// Inputs:
-/// - `data`: An enum that represents different types of data to be added, retrieved, or edited in the database.
-/// - `user`: An instance of the `User` struct that contains user information.
-/// - `counts`: An instance of the `ListCount` struct that contains a list of `Count` structs.
-
-/// Outputs:
-/// - `Result<Self, DataBaseError>`: The `new` method returns a `Result` with either a `DataBase` instance or a `DataBaseError`.
-/// - `Result<(), DataBaseError>`: The `add` and `edit` methods return a `Result` with either an empty value or a `DataBaseError`.
-/// - `Result<Data, DataBaseError>`: The `get` method returns a `Result` with either a `Data` enum or a `DataBaseError`.
-///
 #[allow(dead_code)]
 pub struct DataBase {
     pub pool: Connection,
@@ -44,12 +21,30 @@ impl DataBase {
     pub fn new() -> Result<Self, DataBaseError> {
         let db = DataBase {
             pool: match Connection::open(var("DB_PATH").unwrap())
-                .unwrap()
+                .map_err(|_| {
+                    DataBaseError::CreatePoolError(ErrorLog {
+                        title: "Error to connect database",
+                        code: 812,
+                        file: "Database.rs",
+                    })
+                })?
                 .execute_batch("SELECT * FROM users, counts")
             {
-                Ok(_) => Connection::open(var("DB_PATH").unwrap()).unwrap(),
+                Ok(_) => Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                    DataBaseError::CreatePoolError(ErrorLog {
+                        title: "Error to connect database",
+                        code: 812,
+                        file: "Database.rs",
+                    })
+                })?,
                 Err(_) => {
-                    let conn = Connection::open(var("DB_PATH").unwrap()).unwrap();
+                    let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                        DataBaseError::CreatePoolError(ErrorLog {
+                            title: "Error to connect database",
+                            code: 812,
+                            file: "Database.rs",
+                        })
+                    })?;
                     let _ = conn.execute_batch(
                         "
                     CREATE TABLE IF NOT EXISTS users (
@@ -141,7 +136,7 @@ impl DataBase {
                     counts.list[0].installments,
                     counts.list[0].date_in.to_string(),
                     counts.list[0].date_out.to_string(),
-                    counts.list[0].status.to_string(),
+                    counts.list[0].status,
                     counts.list[0].nature
                 ])
                 .unwrap();
@@ -285,7 +280,7 @@ impl DataBase {
                         id: row
                             .get::<_, i32>("count_id")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get id value",
                                     code: 500,
                                     file: "Database.rs",
@@ -295,7 +290,7 @@ impl DataBase {
                         debtor: row
                             .get::<_, String>("debtor")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get debtor value",
                                     code: 500,
                                     file: "Database.rs",
@@ -305,7 +300,7 @@ impl DataBase {
                         title: row
                             .get::<_, String>("title")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get title value",
                                     code: 500,
                                     file: "Database.rs",
@@ -315,7 +310,7 @@ impl DataBase {
                         description: row
                             .get::<_, String>("description")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get description value",
                                     code: 500,
                                     file: "Database.rs",
@@ -325,7 +320,7 @@ impl DataBase {
                         value: row
                             .get::<_, f32>("value")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get value",
                                     code: 500,
                                     file: "Database.rs",
@@ -335,7 +330,7 @@ impl DataBase {
                         date_in: row
                             .get::<_, String>("date_in")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get date_in value",
                                     code: 500,
                                     file: "Database.rs",
@@ -347,7 +342,7 @@ impl DataBase {
                         date_out: row
                             .get::<_, String>("date_out")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get date_out value",
                                     code: 500,
                                     file: "Database.rs",
@@ -359,7 +354,7 @@ impl DataBase {
                         paid_installments: row
                             .get::<_, i32>("paid_installments")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get paid_installments value",
                                     code: 500,
                                     file: "Database.rs",
@@ -372,7 +367,7 @@ impl DataBase {
                         installments: row
                             .get::<_, i32>("installments")
                             .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
+                                DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get installments value",
                                     code: 500,
                                     file: "Database.rs",
@@ -382,21 +377,18 @@ impl DataBase {
                             .to_string()
                             .parse::<u32>()
                             .unwrap(),
-                        status: row
-                            .get::<_, String>("status")
-                            .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
-                                    title: "Error to get status value",
-                                    code: 500,
-                                    file: "Database.rs",
-                                })
+                        status: row.get::<_, i64>("status").map_err(|err| {
+                            println!("{:?}", err);
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get status value",
+                                code: 500,
+                                file: "Database.rs",
                             })
-                            .unwrap()
-                            != String::from("false"),
+                        })? > 0,
                         nature: if natures.contains(
                             &row.get::<_, String>("nature")
                                 .map_err(|_| {
-                                    DataBaseError::GetUserError(ErrorLog {
+                                    DataBaseError::GetCountsError(ErrorLog {
                                         title: "Error to get nature value",
                                         code: 500,
                                         file: "Database.rs",
@@ -407,7 +399,7 @@ impl DataBase {
                         ) {
                             row.get::<_, String>("nature")
                                 .map_err(|_| {
-                                    DataBaseError::GetUserError(ErrorLog {
+                                    DataBaseError::GetCountsError(ErrorLog {
                                         title: "Error to get nature value",
                                         code: 500,
                                         file: "Database.rs",
@@ -422,7 +414,7 @@ impl DataBase {
                     max_id = row
                         .get::<_, i32>("max_id")
                         .map_err(|_| {
-                            DataBaseError::GetUserError(ErrorLog {
+                            DataBaseError::GetCountsError(ErrorLog {
                                 title: "Error to get max_id value",
                                 code: 500,
                                 file: "Database.rs",
@@ -511,8 +503,8 @@ impl DataBase {
                             value = ?6,  
                             paid_installments = ?7, 
                             installments = ?8, 
-                            date_in = TO_DATE(?9, 'YYYY-MM-DD'), 
-                            date_out = TO_DATE(?10, 'YYYY-MM-DD'), 
+                            date_in = strftime('%Y-%m-%d', ?9), 
+                            date_out = strftime('%Y-%m-%d', ?10), 
                             status = ?11, 
                             nature = ?12
                             WHERE count_id = ?1 AND user_id = ?2",
@@ -535,7 +527,13 @@ impl DataBase {
                             &counts.list[i].status,
                             &counts.list[i].nature,
                         ])
-                        .unwrap();
+                        .map_err(|_| {
+                            DataBaseError::EditCountsError(ErrorLog {
+                                title: "Error to edit count",
+                                code: 808,
+                                file: "Database.rs",
+                            })
+                        })?;
                 }
 
                 Ok(())

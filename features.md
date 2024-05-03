@@ -4,6 +4,34 @@
     <td> Versão </td>
     <td> Descrição </td>
   </tr>
+  <tr>
+   <td> v1.0.0</td>
+   <td>
+        Nova visualização.
+        <br>
+        Novo banco de dados.
+        <br>
+        Removido exportação para PDF.
+        <br>
+        Aumento na segurança.
+        <br>
+        Pesquisa mais eficiente.
+        <br>
+        Organização por natureza.
+        <br>
+        Novo perfil, sendo adicionados os campos para nome e salário.
+        <br>
+        Mudança de tecnologia para o front-end.
+        <br>
+        Novos testes automatizados.
+        <br>
+        Novo filtro por ano.
+        <br>
+        Nova projeção de dívidas.
+        <br>
+        Adicionados ícones de seções e contas.
+   </td>
+  </tr>
   <tr> 
    <td> v0.1.6</td>
     <td>

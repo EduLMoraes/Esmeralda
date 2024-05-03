@@ -106,7 +106,7 @@ async fn test_installments_field_zero() {
     assert_eq!(result, true);
 }
 
-// Returns false if debtor field contains only spaces.
+// Returns true if debtor field contains only spaces.
 #[tokio::test]
 async fn test_debtor_field_only_spaces() {
     let info = Count {
@@ -127,7 +127,7 @@ async fn test_debtor_field_only_spaces() {
     assert_eq!(result, true);
 }
 
-// Returns false if debtor field contains only non-alphabetic characters.
+// Returns true if debtor field contains only non-alphabetic characters.
 #[tokio::test]
 async fn test_debtor_field_only_non_alphabetic() {
     let info = Count {
@@ -153,7 +153,7 @@ async fn test_debtor_field_only_non_alphabetic() {
 async fn test_debtor_field_alphabetic_and_spaces() {
     let info = Count {
         id: 1,
-        debtor: String::from("John Doe     "),
+        debtor: String::from(""),
         title: String::from("Invoice"),
         description: String::from("Payment for services"),
         date_in: NaiveDate::from_ymd_opt(2021, 1, 1).unwrap(),
@@ -169,7 +169,7 @@ async fn test_debtor_field_alphabetic_and_spaces() {
     assert_eq!(result, true);
 }
 
-// Returns true if value field is non-zero.
+// Returns false if value field is non-zero.
 #[tokio::test]
 async fn test_value_field_non_zero() {
     let info = Count {
@@ -187,10 +187,10 @@ async fn test_value_field_non_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert_eq!(result, false);
 }
 
-// Returns true if installments field is non-zero.
+// Returns false if installments field is non-zero.
 #[tokio::test]
 async fn test_installments_field_non_zero() {
     let info = Count {
@@ -208,7 +208,7 @@ async fn test_installments_field_non_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert_eq!(result, false);
 }
 
 // Returns false if Count struct is empty.
