@@ -27,4 +27,4 @@ test:
 	rm /tmp/nonexistent_directory/*
 	rmdir /tmp/non_existent_directory
 	rmdir /tmp/nonexistent_directory
-	echo testes finalizados
+	echo testes finalizados com sucesso!
