@@ -180,24 +180,29 @@
 }
 
 .box_ml{
+    background-color: #1F1F1F;
     min-width: 220px;
     border-right: 1px solid #3B3B3B;
 }
 
 .box_body{
+    background-color: #1F1F1F;
     min-width: 1060px;
 }
 
 .box_head_ml{
+    background-color: #1F1F1F;
     min-height: 140px;
     border-bottom: 1px solid #3B3B3B;
 }
 
 .box_title_ml{
+    background-color: #1F1F1F;
     min-height: 100px;
 }
 
 .box_body_ml{
+    background-color: #1F1F1F;
     padding-top: 20px;
     padding-left: 20px;
     min-height: 580px;
@@ -207,15 +212,18 @@
 }
 
 .box_links_ml{
+    background-color: #1F1F1F;
     min-height: 430px;
 }
 
 .box_top_b{
+    background-color: #1F1F1F;
     min-height: 100px;
     border-bottom: 1px solid #3B3B3B;
 }
 
 .box_select_t{
+    background-color: #1F1F1F;
     background-color: transparent;
     color: #fff;
     font-size: 20px;
@@ -231,22 +239,27 @@
 }
 
 .box_bottom_b{
+    background-color: #1F1F1F;
     min-height: 620px;
 }
 
 .box_left_bb{
+    background-color: #1F1F1F;
     border-right: 1px solid #3B3B3B;
     min-width: 680px;
 }
 
 .box_right_bb{
+    background-color: #1F1F1F;
     min-width: 400px;
 }
 
 .box_head_bbr{
+    background-color: #1F1F1F;
     color: #8E8E8E;
 }
 .box_new_info{
+    background-color: #1F1F1F;
     min-height: 90px;
     min-width: 350px;
     border-color: #333;
@@ -256,15 +269,18 @@
     padding: 3px;
 }
 .box_left_i{
+    background-color: #1F1F1F;
     margin-left: 5px;
     font-size: 12px;
 }
 
 .box_center_i{
+    background-color: #1F1F1F;
     min-width: 250px;
 
 }
 .box_info{
+    background-color: #1F1F1F;
     min-height: 50px;
     min-width: 100px;
     border-color: #333;
@@ -274,15 +290,18 @@
     padding: 5px;
 }
 .box_left_info{
+    background-color: #1F1F1F;
     font-size: 12px;
 }
 
 .box_center_info{
+    background-color: #1F1F1F;
     min-width: 120px;
     padding: 10px;
 }
 
 .box_group{
+    background-color: #1F1F1F;
     min-height: 120px;
     min-width: 300px;
     border-color: #333;
@@ -293,9 +312,11 @@
 }
 
 .box_left_g{
+    background-color: #1F1F1F;
     min-width: 200px;
 }
 
 .list_info_history{
+    background-color: #1F1F1F;
     min-height: 570px;
 }

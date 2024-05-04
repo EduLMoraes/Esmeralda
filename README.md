@@ -146,6 +146,11 @@ Você pode rodar o projeto (necessário rust instalado) usando:
 cargo run
 ```
 
+Para rodar os testes:
+```bash
+make test
+```
+
 Para enviar suas alterações:
 ```bash
 make git

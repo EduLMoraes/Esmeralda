@@ -31,6 +31,7 @@ pub fn right() -> Box {
     scrolled.add_css_class("list_info_history");
 
     let box_list_count = get_list_box();
+    box_list_count.add_css_class("list_info_history");
 
     let counts = unsafe { GLOBAL_COUNTS.borrow() };
     drop_order.connect_selected_item_notify(move |drop_order| {
