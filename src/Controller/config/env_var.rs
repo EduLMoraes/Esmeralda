@@ -44,7 +44,10 @@ pub fn get_config() {
             let mut file = match File::open(format!("{path}/.key")) {
                 Ok(file) => file,
                 Err(_) => {
-                    let file = File::create(format!("{path}/.esmeralda/.key")).unwrap();
+                    let file = match File::open(format!("{path}/.esmeralda/.key")) {
+                        Ok(file) => file,
+                        Err(_) => File::create(format!("{path}/.esmeralda/.key")).unwrap(),
+                    };
 
                     let mut perms = fs::metadata(format!("{path}/.esmeralda/.key"))
                         .unwrap()
