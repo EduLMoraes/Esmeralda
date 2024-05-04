@@ -22,4 +22,3 @@ Cargo.lock
 
 log.txt
 /src/Model/SQL/esmeralda.db
-install_to_linux.sh
