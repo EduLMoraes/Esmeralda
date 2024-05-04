@@ -9,6 +9,7 @@ run:
 git:
 	cargo check
 	cargo fmt
+	make test
 	git add .
 	git commit -m "commited with makefile"
 	git push
