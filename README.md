@@ -85,7 +85,7 @@ O aplicativo esta disponível para os sistemas operacionais listados a baixo:
 
 #### Passo 2 - Rode estes comandos:
 ```bash
-  bash -c "${ curl -fsSL https://raw.githubusercontent.com/EduLMoraes/Esmeralda/Master/install_to_linux.sh}"
+  curl -fsSL https://raw.githubusercontent.com/EduLMoraes/Esmeralda/Master/install_to_linux.sh | bash
 ```
 
 ---
