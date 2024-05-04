@@ -101,6 +101,7 @@ O aplicativo esta disponível para os sistemas operacionais listados a baixo:
 A tela de login será a primeira tela a ser vista ao abrir o programa,
 ela poderá te redirecionar para a tela de cadastro caso não haja conta
 ou para a principal quando realizar o login.
+
 ### *Cadastro*
 A tela de cadastro te permite criar uma conta, caso tente cadastrar uma
 conta já existente, ela acusará falha no cadastro, do contrário, ela 
@@ -127,41 +128,6 @@ Aqui é onde a mágica acontece.
 <img src="./assets/gif/pay.gif" style="display: flex; margin: auto;">
  
  ___
- 
- ### Selecionando as colunas que deseja exibir.
-  Por padrão as colunas exibidas são ID, Nome, Título, Data final, 
-  Valor p/ parcela e Status, porém, é possível mudar isto selecionando
-  as que deseja que sejam exibidas ou não na tabela à esquerda da tela,
-  com exceção do ID.
-<img src="./assets/gif/select.gif" style="display: flex; margin: auto;">
- 
- ___
-
- ### Editando conta.
-  Apenas ao editar é possível adicionar uma descrição à uma conta,
-  quase todas as colunas são editáveis, com exceção do ID e status.
-<img src="./assets/gif/edit.gif" style="display: flex; margin: auto;">
-
- ____
-
- ### Ordenando a tabela segundo a coluna clicada.
-  Ao clicar no cabeçalho de uma coluna você a ordenará de forma
-  crescente, decrescente ou alfabeticamente. Para inverter a ordenação
-  basta clicar novamente.
-
-<img src="./assets/gif/ordened.gif" style="display: flex; margin: auto;">
-
-______
-
- ### Pesquisando conta.
-  É possível pesquisar uma conta específica desde que tenha-se 
-  conhecimento de algum atributo como Título, Nome, Natureza, ID,
-  Descrição ou data, tanto final como inicial.
-
-<img src="./assets/gif/search.gif" style="display: flex; margin: auto;">
-
-______
-
 
 
 ### *Como contribuir com o projeto*
@@ -177,13 +143,13 @@ porquê foi modificado.
 
 Você pode rodar o projeto (necessário rust instalado) usando:
 ```bash
-make run
-```
-ou
-```bash
 cargo run
 ```
 
+Para enviar suas alterações:
+```bash
+make git
+```
 
 ### *Contribuidores*: <section id="credits"/>
 <table>
