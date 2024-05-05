@@ -42,7 +42,7 @@ lazy_static = "1.4.0"
 libc = "0.2.153"
 logger = { git = "https://github.com/EduLMoraes/logger" }
 mailjet-rs = "0.3.0"
-nfd = "0.0.4"
+nfd = {version = "0.0.4", optional = true}
 printpdf = "0.7.0"
 rand = "0.8.5"
 regex = "1.10.2"
