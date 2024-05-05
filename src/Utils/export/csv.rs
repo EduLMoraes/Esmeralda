@@ -1,8 +1,4 @@
-use super::{
-    InterfaceInfo,
-    mkdir::mkdir,
-    Write
-};
+use super::{mkdir::mkdir, ListCount, Write};
 
 /// # export_csv
 ///
@@ -10,51 +6,48 @@ use super::{
 ///
 /// ## Example Usage
 /// ```rust
-/// let result = export_csv("path/to/file.csv", &interface_info).await;
+/// let result = export_csv("path/to/file.csv", &List_info).await;
 /// ```
 ///
 /// ## Arguments
 /// - `path` (string): The path to the file that needs to be created.
-/// - `data` (InterfaceInfo): The data that will be written to the file.
+/// - `data` (ListCount): The data that will be written to the file.
 ///
 /// ## Returns
 /// A `Result` object that contains either the path of the created file or an error message.
 #[allow(dead_code)]
-pub async fn export_csv(path: &str, data: &InterfaceInfo) -> Result<String, String> {
+pub async fn export_csv(path: &str, data: &ListCount) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();
 
     let debtors = data.filter_debtors();
 
-    data_file.push_str("ID_DEVEDOR;Devedor;Dívida;Total Gasto;Status\n");
+    data_file.push_str("Devedor;Dívida;Total Gasto;Status\n");
 
-    for debtor in debtors{
+    for debtor in debtors {
         data_file.push_str(
             format!(
-                "{};{};{:.2};{:.2};{}",
-                debtor.get_id(),
+                "{};{:.2};{:.2};{}",
                 debtor.get_name(),
                 debtor.get_debt(),
                 debtor.get_value(),
                 debtor.get_status()
             )
-        .trim()
+            .trim(),
         );
 
         data_file.push('\n');
     }
 
     data_file.push_str(
-        "\nID_CONTA;Nome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
+        "\nNome;Natureza do Gasto;Titulo;Descricao;Data Inicial;Data Final;Parcelas Pagas;Parcelas;Valor;Status\n",
     );
 
     for info in &data.list {
-
         data_file.push_str(
             format!(
-                "{};{};{};{};{};{};{};{};{};{:.2};{}",
-                info.id,
+                "{};{};{};{};{};{};{};{};{:.2};{}",
                 info.debtor,
                 info.nature,
                 info.title,

@@ -1,0 +1,41 @@
+@import url("./login.css");
+@import url("./register.css");
+@import url("./home.css");
+
+.window{
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+entry{
+    background-color: white;
+    min-width: 300px;
+    color: black;
+}
+
+.input{
+    background-color: white;
+    min-width: 100px;
+    color: black;
+    padding: 0px;
+}
+
+.button{
+    background-color: #00B477;
+}
+
+.button:active{
+    background-color: #018055;
+}
+
+dropdown{
+    background-color: #ffffff00;
+    padding: 0px;
+    min-height: 10px;
+    margin: 0px;
+}
+
+.link{
+    background-color: transparent;
+    color: blue;
+}

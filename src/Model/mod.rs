@@ -1,5 +1,4 @@
-#[allow(non_snake_case)]
-pub mod App;
+mod tests;
 
 #[allow(non_snake_case)]
 pub mod Database;
@@ -8,11 +7,10 @@ pub mod Database;
 pub mod Debtor;
 
 #[allow(non_snake_case)]
-pub mod Info;
-pub mod list;
+pub mod Count;
 
 #[allow(non_snake_case)]
-pub mod Message;
+pub mod List;
 
 #[allow(non_snake_case)]
 pub mod User;

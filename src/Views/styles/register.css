@@ -1,0 +1,85 @@
+.register_window {
+    transition-duration: 500ms;
+    background-image: url("../assets/img/background-register.png");
+}
+
+.return_img_register{
+    min-width: 50px;
+    min-height: 50px;
+}
+.return_register{
+    color: white;
+    min-width: 200px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: transparent;
+}
+.register_title{
+    font-size: 48px;
+    font-family: 'Open Sans';
+    font-weight: bolder;
+    color: #00B477;
+    margin-top: -20px;
+}
+.register_image{
+    min-width: 100px;
+    min-height: 100px;
+}
+
+.bf_main{
+    background-image: linear-gradient(90deg, #000000c5, #3633cdc5);
+    min-width: 600px;
+    min-height: 325px;
+    border-radius: 50px;
+    padding: 20px;
+    font-size: 18px;
+}
+.bf_right, .bf_left{
+    min-width: 300px;
+}
+
+.bf_right{
+    border-left: 1px solid #fff;
+    padding-left: 15px;
+}
+
+.bf_left{
+    border-right: 1px solid #fff;
+}
+
+.entry_register{
+    min-width: 270px;
+}
+
+.obs_register{
+    color: red;
+}
+
+.link_register{
+    color: rgb(0, 0, 94);
+}
+
+.input_invalid{
+    border-color: #f00;
+    border-style: solid;
+    border-width: 3px;
+}
+
+.input_valid{
+    border-color: #0f0;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.weak_pass{
+    color: #fa0;
+}
+
+.box_accept{
+    font-size: 12px;
+}
+
+.box_return{
+    color: white;
+    font-size: 30px;
+}
+

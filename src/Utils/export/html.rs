@@ -1,8 +1,4 @@
-use super::{
-    InterfaceInfo,
-    mkdir::mkdir,
-    Write
-};
+use super::{mkdir::mkdir, ListCount, Write};
 
 /// Export HTML
 ///
@@ -12,7 +8,7 @@ use super::{
 ///
 /// ```rust
 /// let path = "output.html";
-/// let data = InterfaceInfo { ... };
+/// let data = ListCount { ... };
 ///
 /// match export_html(path, &data).await {
 ///     Ok(file_path) => println!("HTML file exported successfully: {}", file_path),
@@ -23,14 +19,14 @@ use super::{
 /// # Arguments
 ///
 /// * `path` - A string representing the file path where the HTML file will be exported.
-/// * `data` - A reference to an `InterfaceInfo` struct containing the data to be included in the HTML table.
+/// * `data` - A reference to an `ListCount` struct containing the data to be included in the HTML table.
 ///
 /// # Returns
 ///
 /// * If the HTML file is exported successfully, the function returns a `Result` containing the path of the exported file.
 /// * If there is an error during the file export, the function returns a `Result` containing an error message.
 #[allow(dead_code)]
-pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, String> {
+pub async fn export_html(path: &str, data: &ListCount) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
 
     let mut data_file = String::new();
@@ -39,10 +35,12 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
 
     data_file.push_str("<html><head></head><body><table>");
     data_file.push_str("<tr>");
-    data_file.push_str("<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>");
+    data_file.push_str(
+        "<td>ID_DEVEDOR</td><td>Nome</td><td>Dívida</td><td>Total Gasto</td><td>Status</td>",
+    );
     data_file.push_str("</tr>");
 
-    for debtor in debtors{
+    for debtor in debtors {
         data_file.push_str("<tr>");
 
         data_file.push_str(
@@ -54,7 +52,7 @@ pub async fn export_html(path: &str, data: &InterfaceInfo) -> Result<String, Str
                 debtor.get_value(),
                 debtor.get_status()
             )
-        .trim()
+            .trim(),
         );
 
         data_file.push_str("</tr>");

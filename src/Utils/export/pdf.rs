@@ -1,6 +1,6 @@
 use super::*;
 
-/// Exports data from an `InterfaceInfo` object to a PDF file.
+/// Exports data from an `ListCount` object to a PDF file.
 ///
 /// # Arguments
 ///
@@ -10,7 +10,8 @@ use super::*;
 /// # Returns
 ///
 /// * `Result<String, String>` - The path of the exported PDF file, or an error message if the export fails.
-pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
+#[allow(deprecated, unused)]
+pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
     let mut x = Mm(297.0);
     let mut y = Mm(210.0);
 
@@ -29,18 +30,12 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
 
     y = Mm(205.0);
     let pos_x: Vec<f32> = vec![5.0, 40.0, 80.0, 100.0, 140.0];
-    let header: Vec<&str> = vec![
-        "ID_Devedor",
-        "|Nome",
-        "|Dívida",
-        "|Total Gasto",
-        "|Status",
-    ];
+    let header: Vec<&str> = vec!["ID_Devedor", "|Nome", "|Dívida", "|Total Gasto", "|Status"];
 
     for col in 0..5 {
         current_layer.use_text(header[col], 12.0, Mm(pos_x[col]), y, &font);
     }
-    
+
     x = Mm(0.2);
     y -= Mm(2.0);
     for _ in 0..300 {
@@ -82,11 +77,11 @@ pub fn export_pdf(path: &str, data: &InterfaceInfo) -> Result<String, String> {
             x += Mm(2.0);
         }
     }
-    
+
     // ==============
     // PART OF COUNTS
     // ==============
-    
+
     x = Mm(297.0);
     y = Mm(210.0);
     page_count += 1;

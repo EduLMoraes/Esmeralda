@@ -75,6 +75,14 @@ pub enum DataBaseError {
     #[error("Error to get user from db")]
     GetCountsError(ErrorLog<'static>),
 
+    /// Get user not working
+    #[error("Error to get user from db")]
+    EditCountsError(ErrorLog<'static>),
+
+    /// Get user not working
+    #[error("Error to get user from db")]
+    EditUserError(ErrorLog<'static>),
+
     /// DataType not Accept
     #[error("Error in data type receive")]
     DataTypeInvalid(ErrorLog<'static>),
@@ -110,4 +118,14 @@ pub enum ControlError {
     /// Error when saving data.
     #[error("Error to save")]
     ErrorNotSave(ErrorLog<'static>),
+}
+
+#[allow(dead_code)]
+#[derive(Error, Debug, PartialEq)]
+pub enum ApiError {
+    #[error("Error to send email")]
+    ErrorMailjet(ErrorLog<'static>),
+
+    #[error("Error on router")]
+    ErrorRouter(ErrorLog<'static>),
 }

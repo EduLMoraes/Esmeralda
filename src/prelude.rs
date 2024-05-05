@@ -1,20 +1,19 @@
 pub use chrono;
-pub use dioxus;
-pub use dioxus::prelude::*;
-pub use dioxus_desktop;
-pub use dioxus_router;
+pub use gtk;
+pub use gtk::prelude::*;
+pub use gtk::{gdk::Display, Application};
 pub use logger::log;
+pub use std;
 pub use thiserror::Error;
 pub use tokio;
 
 pub use std::env;
 pub use std::error::Error;
 pub use std::time::Instant;
-pub use std::path::PathBuf;
 
 /// APIs
 #[path = "./APIs/mod.rs"]
-pub mod router;
+pub mod apis;
 
 /// Controllers
 #[path = "./Controller/mod.rs"]
@@ -32,3 +31,8 @@ pub mod segurance;
 #[path = "Utils/mod.rs"]
 pub mod utils;
 
+#[path = "Views/mod.rs"]
+pub mod views;
+
+#[path = "Views/styles/sty.rs"]
+pub mod sty;

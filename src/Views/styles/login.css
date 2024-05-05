@@ -1,0 +1,53 @@
+
+
+.login_window {
+    transition-duration: 500ms;
+    background-image: url("../assets/img/background-login.png");
+}
+
+.login_entry{
+    min-width: 300px;
+}
+
+.login_button{
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.login_box{
+    background-color: rgba(0, 0, 0, 0.80);
+    font-size: larger;
+    color: white;
+    min-height: 400px;
+    min-width: 400px;
+    border-radius: 40px;
+    box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.50),
+        -3px -3px 20px rgba(255, 255, 255, 0.10);
+}
+
+.login_title_box{
+    margin-top: 20px;
+}
+
+.login_newu_box{
+    background-color: transparent;
+    font-size: 12px;
+}
+
+.login_title{
+    font-size: 80px;
+    color: #00B477;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.login_subtitle{
+    margin-top: -15px;
+    font-size: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login_link{
+    padding: 0;
+    margin-top: 0;
+    margin-left: 2px;
+}

@@ -39,9 +39,10 @@ Requisitos Funcionais:
     · Permitir a exportação de dados em formato .csv. ✅
     · Os dados exportados devem incluir informações sobre gastos individuais, status da dívida, total gasto, e detalhes das compras parceladas. ✅
 
-❌ 5 - Conexão à Internet:
+⏳ 5 - Conexão à Internet:
 
     · O sistema deve utilizar a internet para enviar e-mail de confirmação durante o processo de cadastro. ❌
+    · O sistema deve utilizar a internet para enviar e-mail de recuperação de senha quando solicitado. ✅
     · Enviar dados apenas quando solicitado pelo usuário, utilizando a internet somente para essa finalidade. ❌
 
 Requisitos Não Funcionais:

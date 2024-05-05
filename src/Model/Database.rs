@@ -1,66 +1,81 @@
-use crate::prelude::control::config::database::get_config;
-use crate::prelude::model::{
-    errors::{
-        DataBaseError, 
-        ErrorLog
-    }, 
-    User::*, 
-    list::InterfaceInfo,
-    Info::Info
-};
-use crate::prelude::log;
 use crate::prelude::env::var;
-use chrono::NaiveDate;
-use deadpool_postgres::{GenericClient, Pool, Runtime};
+// use crate::prelude::log;
+use crate::prelude::model::{
+    errors::{DataBaseError, ErrorLog},
+    Count::Count,
+    List::ListCount,
+    User::*,
+};
+use chrono::{Datelike, NaiveDate};
 use lazy_static::lazy_static;
-use postgres::{NoTls, Statement};
+use rusqlite::{params, Connection};
 use std::sync::Mutex;
 
-/// This code snippet defines a `DataBase` struct in Rust. It contains methods for creating a new database connection, adding data to the database, getting data from the database, and editing data in the database.
-
-/// Example Usage:
-/// ```
-/// let db = DataBase::new()?;
-/// db.add(Data::NewUser(user))?;
-/// let data = db.get(Data::User(user))?;
-/// db.edit(Data::Counts(counts, user))?;
-/// ```
-
-/// Inputs:
-/// - `data`: An enum that represents different types of data to be added, retrieved, or edited in the database.
-/// - `user`: An instance of the `User` struct that contains user information.
-/// - `counts`: An instance of the `InterfaceInfo` struct that contains a list of `Info` structs.
-
-/// Outputs:
-/// - `Result<Self, DataBaseError>`: The `new` method returns a `Result` with either a `DataBase` instance or a `DataBaseError`.
-/// - `Result<(), DataBaseError>`: The `add` and `edit` methods return a `Result` with either an empty value or a `DataBaseError`.
-/// - `Result<Data, DataBaseError>`: The `get` method returns a `Result` with either a `Data` enum or a `DataBaseError`.
-///
 #[allow(dead_code)]
 pub struct DataBase {
-    pub pool: Pool,
+    pub pool: Connection,
 }
 
 #[allow(dead_code)]
 impl DataBase {
     pub fn new() -> Result<Self, DataBaseError> {
         let db = DataBase {
-            pool: get_config()
-                .map_err(|_| {
-                    DataBaseError::GetConfigError(ErrorLog {
-                        title: "Config no error",
-                        code: 802,
-                        file: "db.rs",
-                    })
-                })?
-                .create_pool(Some(Runtime::Tokio1), NoTls)
+            pool: match Connection::open(var("DB_PATH").unwrap())
                 .map_err(|_| {
                     DataBaseError::CreatePoolError(ErrorLog {
-                        title: "Pool not found",
-                        code: 802,
-                        file: "db.rs",
+                        title: "Error to connect database",
+                        code: 812,
+                        file: "Database.rs",
+                    })
+                })?
+                .execute_batch("SELECT * FROM users, counts")
+            {
+                Ok(_) => Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                    DataBaseError::CreatePoolError(ErrorLog {
+                        title: "Error to connect database",
+                        code: 812,
+                        file: "Database.rs",
                     })
                 })?,
+                Err(_) => {
+                    let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                        DataBaseError::CreatePoolError(ErrorLog {
+                            title: "Error to connect database",
+                            code: 812,
+                            file: "Database.rs",
+                        })
+                    })?;
+                    let _ = conn.execute_batch(
+                        "
+                    CREATE TABLE IF NOT EXISTS users (
+                        user_id INTEGER PRIMARY KEY,
+                        username VARCHAR(50) NOT NULL UNIQUE,
+                        email VARCHAR(100) NOT NULL UNIQUE,
+                        password VARCHAR(200) NOT NULL,
+                        name VARCHAR(100) NOT NULL,
+                        wage REAL NOT NULL
+                    );
+                    
+                    CREATE TABLE IF NOT EXISTS counts (
+                        count_id INTEGER PRIMARY KEY,
+                        user_id INTEGER NOT NULL,
+                        debtor VARCHAR(100) NOT NULL,
+                        title VARCHAR(50) NOT NULL,
+                        description TEXT,
+                        value REAL NOT NULL,
+                        paid_installments INTEGER,
+                        installments INTEGER DEFAULT 1,
+                        date_in DATE NOT NULL,
+                        date_out DATE NOT NULL,
+                        status BOOLEAN NOT NULL,
+                        nature VARCHAR(15) NOT NULL,
+                        FOREIGN KEY (user_id) REFERENCES users
+                    ); ",
+                    );
+
+                    conn
+                }
+            },
         };
 
         Ok(db)
@@ -71,120 +86,67 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::NewUser(user) => {
-                let conn = self.pool.get().await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "Error to get pool",
-                        code: 804,
-                        file: "db.rs",
-                    })
-                })?;
+                let mut stmt = self.pool
+                    .prepare("INSERT INTO users (username, password, email, name, wage) VALUES (?1, ?2, ?3, ?4, ?5) ")
+                    .unwrap();
 
-                let stmt: Statement = conn
-                    .prepare("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) ")
-                    .await
-                    .map_err(|_| {
-                        DataBaseError::AddUserError(ErrorLog {
-                            title: "Error to prepare query",
-                            code: 808,
-                            file: "db.rs",
-                        })
-                    })?;
-
-                conn.execute(&stmt, &[&user.username, &user.password, &user.email])
-                    .await
-                    .map_err(|err| {
-                        
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
-
-                        DataBaseError::AddUserError(ErrorLog {
-                            title: "Error to execute query",
-                            code: 808,
-                            file: "db.rs",
-                        })
-                    })?;
+                stmt.execute([
+                    user.username,
+                    user.password,
+                    user.email,
+                    user.name,
+                    user.wage.to_string(),
+                ])
+                .unwrap();
 
                 Ok(())
             }
-            Data::Counts(counts, user) => {
-                let conn = self.pool.get().await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "Error to get pool",
-                        code: 804,
-                        file: "db.rs",
-                    })
-                })?;
-
-                for i in 0..counts.len() {
-                    let stmt: Statement = conn.prepare("INSERT INTO counts (
-                            count_id,
-                            user_id, 
-                            debtor, 
-                            title, 
-                            description, 
-                            value, 
-                            paid_installments, 
-                            installments, 
-                            date_in, 
-                            date_out, 
-                            status,
-                            nature
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TO_DATE($9, 'YYYY-MM-DD'), TO_DATE($10, 'YYYY-MM-DD'), $11, $12) ").await.map_err(|_| {
-                        DataBaseError::AddCountError(ErrorLog {
-                            title: "Error to prepare query",
-                            code: 808,
-                            file: "db.rs",
-                        })
-                    })?;
-
-                    conn.execute(
-                        &stmt,
-                        &[
-                            &format!("{}{}", user.id, counts.list[i].id)
-                                .trim()
-                                .parse::<i32>()
-                                .unwrap(),
-                            &user.id,
-                            &counts.list[i].debtor,
-                            &counts.list[i].title,
-                            &counts.list[i].description,
-                            &counts.list[i].value,
-                            &(counts.list[i].paid_installments as i32),
-                            &(counts.list[i].installments as i32),
-                            &counts.list[i].date_in.to_string(),
-                            &counts.list[i].date_out.to_string(),
-                            &counts.list[i].status,
-                            &counts.list[i].nature,
-                        ],
-                    )
-                    .await
-                    .map_err(|err| {
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
-
-                        DataBaseError::AddUserError(ErrorLog {
-                            title: "Error to execute query",
-                            code: 808,
-                            file: "db.rs",
-                        })
-                    })?;
-                }
+            Data::Counts(counts, user, _year) => {
+                self.pool.prepare("INSERT INTO counts (
+                        count_id,
+                        user_id, 
+                        debtor, 
+                        title, 
+                        description, 
+                        value, 
+                        paid_installments, 
+                        installments, 
+                        date_in, 
+                        date_out, 
+                        status,
+                        nature
+                    ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, strftime('%Y-%m-%d', ?9), strftime('%Y-%m-%d', ?10), ?11, ?12) ")
+                .unwrap()
+                .execute(params![
+                    format!("{}{}", user.id, counts.list[0].id)
+                        .trim()
+                        .parse::<i32>()
+                        .unwrap(),
+                    user.id,
+                    counts.list[0].debtor,
+                    counts.list[0].title,
+                    counts.list[0].description,
+                    counts.list[0].value,
+                    counts.list[0].paid_installments,
+                    counts.list[0].installments,
+                    counts.list[0].date_in.to_string(),
+                    counts.list[0].date_out.to_string(),
+                    counts.list[0].status,
+                    counts.list[0].nature
+                ])
+                .unwrap();
 
                 Ok(())
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }
@@ -194,138 +156,329 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
             Data::User(user) => {
-                let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(
-                        path.clone().into(),
-                        &format!("[DATABASE] {err:?}"),
-                    );
-
-                    DataBaseError::GetUserError(ErrorLog {
-                        title: "Error to get Object<Manager>",
-                        code: 804,
-                        file: "db.rs",
-                    })
-                })?;
-
-                let stmt = conn
-                    .prepare("SELECT * FROM users WHERE username = $1 LIMIT 1")
-                    .await
-                    .map_err(|_| {
-                        DataBaseError::GetUserError(ErrorLog {
-                            title: "Error to prepare query to get user",
-                            code: 804,
-                            file: "db.rs",
-                        })
-                    })?;
-
-                let row = conn
-                    .query_one(&stmt, &[&user.username])
-                    .await
+                let mut stmt = self
+                    .pool
+                    .prepare("SELECT * FROM users WHERE username = ?1 LIMIT 1")
                     .map_err(|_| {
                         DataBaseError::GetUserError(ErrorLog {
                             title: "User not found!",
                             code: 804,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
-                let id = row.get::<_, i32>("user_id");
-
-                let user = UserDb {
-                    id: id,
-                    username: row.get("username"),
-                    password: row.get("password"),
-                };
+                let user = stmt
+                    .query_row([user.username], |row| {
+                        Ok(UserDb {
+                            id: row
+                                .get::<_, i32>("user_id")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get id value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                            name: row
+                                .get::<_, String>("name")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get name value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                            username: row
+                                .get::<_, String>("username")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get username value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                            password: row
+                                .get::<_, String>("password")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get password value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                            email: row
+                                .get::<_, String>("email")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get email value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                        })
+                    })
+                    .map_err(|_| {
+                        DataBaseError::GetUserError(ErrorLog {
+                            title: "Error to get user in database",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
 
                 Ok(Data::UserDb(user))
             }
-            Data::Counts(mut i_info, user) => {
-                let conn = self.pool.get().await.map_err(|err| {
-                    let _ = log(
-                        path.clone().into(),
-                        &format!("[DATABASE] {err:?}"),
-                    );
-
-                    DataBaseError::GetUserError(ErrorLog {
-                        title: "Error to get Object<Manager>",
-                        code: 804,
-                        file: "db.rs",
-                    })
-                })?;
-
-                let stmt = conn
+            Data::Counts(mut l_counts, user, year) => {
+                let mut stmt = self.pool
                     .prepare(
-                        "SELECT 
-                        TO_CHAR(date_in, 'YYYY-MM-DD') AS date_in, 
-                        TO_CHAR(date_out, 'YYYY-MM-DD') AS date_out, 
-                        * FROM counts WHERE user_id = $1",
+                        "SELECT MAX((SELECT MAX(count_id) FROM counts WHERE user_id = ?1)) AS max_id, count_id, user_id,
+                        strftime('%Y-%m-%d', date_in) AS date_in, strftime('%Y-%m-%d', date_out) AS date_out, debtor, title, description, value, paid_installments, installments, status, nature
+                        FROM counts
+                        WHERE user_id = ?1
+                        AND
+                        (
+                            CAST(strftime('%Y', date_out) AS SMALLINT) = ?2
+                            OR
+                            CAST(strftime('%Y', date_out) AS SMALLINT) >= ?2
+                            AND
+                            CAST(strftime('%Y', date_in) AS SMALLINT) <= ?2
+                        )
+                        GROUP BY count_id
+                        ORDER BY count_id",
                     )
-                    .await
                     .map_err(|_| {
                         DataBaseError::GetCountsError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,
-                            file: "db.rs",
+                            file: "Database.rs",
                         })
                     })?;
 
-                let rows = conn.query(&stmt, &[&user.id]).await.map_err(|_| {
+                let mut rows = stmt.query(&[&user.id, &(year as i32)]).map_err(|_| {
                     DataBaseError::GetCountsError(ErrorLog {
-                        title: "User not found!",
+                        title: "Query to counts not working!",
                         code: 804,
-                        file: "db.rs",
+                        file: "Database.rs",
                     })
                 })?;
 
-                for row in rows {
-                    let info = Info {
-                        id: row.get::<_, i32>("count_id"),
-                        debtor: row.get::<_, String>("debtor"),
-                        title: row.get::<_, String>("title"),
-                        description: row.get::<_, String>("description"),
-                        value: row.get::<_, f32>("value"),
+                let mut counts: Vec<Count> = Vec::new();
+                let mut max_id = 0;
+                let natures = vec!["Casa", "Transporte", "Saúde", "Lazer", "Alimentação"];
+
+                while let Ok(Some(row)) = rows.next() {
+                    let count = Count {
+                        id: row
+                            .get::<_, i32>("count_id")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get id value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap(),
+                        debtor: row
+                            .get::<_, String>("debtor")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get debtor value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap(),
+                        title: row
+                            .get::<_, String>("title")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get title value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap(),
+                        description: row
+                            .get::<_, String>("description")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get description value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap(),
+                        value: row
+                            .get::<_, f32>("value")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap(),
                         date_in: row
                             .get::<_, String>("date_in")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get date_in value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap()
                             .parse::<NaiveDate>()
                             .unwrap(),
                         date_out: row
                             .get::<_, String>("date_out")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get date_out value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap()
                             .parse::<NaiveDate>()
                             .unwrap(),
                         paid_installments: row
                             .get::<_, i32>("paid_installments")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get paid_installments value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap()
                             .to_string()
                             .parse::<u32>()
                             .unwrap(),
                         installments: row
                             .get::<_, i32>("installments")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get installments value",
+                                    code: 500,
+                                    file: "Database.rs",
+                                })
+                            })
+                            .unwrap()
                             .to_string()
                             .parse::<u32>()
                             .unwrap(),
-                        status: row.get::<_, bool>("status"),
-                        nature: row.get::<_, String>("nature"),
+                        status: row.get::<_, i64>("status").map_err(|err| {
+                            println!("{:?}", err);
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get status value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })? > 0,
+                        nature: if natures.contains(
+                            &row.get::<_, String>("nature")
+                                .map_err(|_| {
+                                    DataBaseError::GetCountsError(ErrorLog {
+                                        title: "Error to get nature value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap()
+                                .trim(),
+                        ) {
+                            row.get::<_, String>("nature")
+                                .map_err(|_| {
+                                    DataBaseError::GetCountsError(ErrorLog {
+                                        title: "Error to get nature value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap()
+                        } else {
+                            String::from("Outros")
+                        },
                     };
 
-                    i_info.put(info)
+                    max_id = row
+                        .get::<_, i32>("max_id")
+                        .map_err(|_| {
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get max_id value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })
+                        .unwrap();
+
+                    counts.insert(0, count);
                 }
 
-                Ok(Data::Counts(
-                    i_info
-                    .order_by_id(false)
-                    .order_by_status(true),
-                     user
+                if counts.len() > 0 {
+                    counts[0].id = max_id;
+                }
+
+                l_counts.list = counts;
+                Ok(Data::Counts(l_counts, user, year))
+            }
+            Data::Years(mut l_counts, user) => {
+                let mut stmt = self
+                    .pool
+                    .prepare(
+                        "SELECT 
+                        DISTINCT strftime('%Y', date_out) as date_out
+                        FROM counts 
+                        WHERE
+                        user_id = ?1",
                     )
-                )
+                    .unwrap();
+
+                let mut rows = stmt.query([user.id as i64]).unwrap();
+
+                let mut years: Vec<i16> = Vec::new();
+
+                while let Ok(Some(row)) = rows.next() {
+                    years.push(
+                        row.get::<_, String>("date_out")
+                            .unwrap()
+                            .parse::<i16>()
+                            .unwrap(),
+                    );
+                }
+
+                if years.len() == 0 {
+                    years.push(chrono::Utc::now().year() as i16);
+                } else {
+                    years.sort_unstable();
+
+                    for y in *years.first().unwrap()..*years.last().unwrap() {
+                        if !years.contains(&y) {
+                            years.push(y);
+                        }
+                    }
+
+                    years.sort_unstable();
+                }
+
+                l_counts.years = years;
+
+                Ok(Data::Years(l_counts, user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }
@@ -335,47 +488,29 @@ impl DataBase {
             "windows" => var("HOMEPATH").unwrap(),
             _ => var("HOME").unwrap(),
         };
-    
+
         path.push_str("/.esmeralda/log.log");
 
         match data {
-            Data::Counts(counts, user) => {
-                let conn = self.pool.get().await.map_err(|_| {
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "Error to get pool",
-                        code: 804,
-                        file: "db.rs",
-                    })
-                })?;
-
+            Data::Counts(counts, user, _) => {
                 for i in 0..counts.len() {
-                    let stmt: Statement = conn
+                    self.pool
                         .prepare(
                             "UPDATE counts SET
-                            debtor = $3, 
-                            title = $4, 
-                            description = $5, 
-                            value = $6,  
-                            paid_installments = $7, 
-                            installments = $8, 
-                            date_in = TO_DATE($9, 'YYYY-MM-DD'), 
-                            date_out = TO_DATE($10, 'YYYY-MM-DD'), 
-                            status = $11, 
-                            nature = $12
-                            WHERE count_id = $1 AND user_id = $2",
+                            debtor = ?3, 
+                            title = ?4, 
+                            description = ?5, 
+                            value = ?6,  
+                            paid_installments = ?7, 
+                            installments = ?8, 
+                            date_in = strftime('%Y-%m-%d', ?9), 
+                            date_out = strftime('%Y-%m-%d', ?10), 
+                            status = ?11, 
+                            nature = ?12
+                            WHERE count_id = ?1 AND user_id = ?2",
                         )
-                        .await
-                        .map_err(|_| {
-                            DataBaseError::AddUserError(ErrorLog {
-                                title: "Error to prepare query",
-                                code: 808,
-                                file: "db.rs",
-                            })
-                        })?;
-
-                    conn.execute(
-                        &stmt,
-                        &[
+                        .unwrap()
+                        .execute(params![
                             &format!("{}{}", user.id, counts.list[i].id)
                                 .trim()
                                 .parse::<i32>()
@@ -391,29 +526,36 @@ impl DataBase {
                             &counts.list[i].date_out.to_string(),
                             &counts.list[i].status,
                             &counts.list[i].nature,
-                        ],
-                    )
-                    .await
-                    .map_err(|err| {
-                        let _ = log(
-                            path.clone().into(),
-                            &format!("[DATABASE] {err:?}"),
-                        );
-
-                        DataBaseError::AddUserError(ErrorLog {
-                            title: "Error to execute query",
-                            code: 808,
-                            file: "db.rs",
-                        })
-                    })?;
+                        ])
+                        .map_err(|_| {
+                            DataBaseError::EditCountsError(ErrorLog {
+                                title: "Error to edit count",
+                                code: 808,
+                                file: "Database.rs",
+                            })
+                        })?;
                 }
+
+                Ok(())
+            }
+            Data::UserDb(user) => {
+                let mut stmt = self
+                    .pool
+                    .prepare(
+                        "UPDATE users SET
+                            password = ?1
+                            WHERE user_id = ?2",
+                    )
+                    .unwrap();
+
+                stmt.execute(params![user.password, user.id]).unwrap();
 
                 Ok(())
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
-                file: "db.rs",
+                file: "Database.rs",
             })),
         }
     }
@@ -434,5 +576,6 @@ pub enum Data {
     NewUser(NewUser),
     User(User),
     UserDb(UserDb),
-    Counts(InterfaceInfo, UserDb),
+    Counts(ListCount, UserDb, i16),
+    Years(ListCount, UserDb),
 }
