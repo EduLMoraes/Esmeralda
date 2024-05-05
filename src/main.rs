@@ -6,11 +6,11 @@ use prelude::*;
 use std::fs::File;
 
 fn main() {
-    // get_config();
+    get_config();
 
-    // let application = Application::new(Some("myapp.Esmeralda.com"), Default::default());
+    let application = Application::new(Some("myapp.Esmeralda.com"), Default::default());
 
-    // application.connect_startup(|_| load_style());
-    // application.connect_activate(esmeralda);
-    // application.run();
+    application.connect_startup(|_| load_style());
+    application.connect_activate(esmeralda);
+    application.run();
 }
