@@ -15,7 +15,6 @@ git:
 	git push
 
 test:
-	clear
 	cargo test -- --test-threads=1
 	rm /tmp/*.csv --force
 	rm /tmp/*.pdf
