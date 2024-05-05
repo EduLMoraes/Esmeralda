@@ -273,7 +273,14 @@ impl DataBase {
 
                 let mut counts: Vec<Count> = Vec::new();
                 let mut max_id = 0;
-                let natures = vec!["Casa", "Transporte", "Saúde", "Lazer", "Alimentação"];
+                let natures = vec![
+                    "Casa",
+                    "Transporte",
+                    "Saúde",
+                    "Lazer",
+                    "Alimentação",
+                    "Receita",
+                ];
 
                 while let Ok(Some(row)) = rows.next() {
                     let count = Count {
@@ -459,16 +466,6 @@ impl DataBase {
 
                 if years.len() == 0 {
                     years.push(chrono::Utc::now().year() as i16);
-                } else {
-                    years.sort_unstable();
-
-                    for y in *years.first().unwrap()..*years.last().unwrap() {
-                        if !years.contains(&y) {
-                            years.push(y);
-                        }
-                    }
-
-                    years.sort_unstable();
                 }
 
                 l_counts.years = years;

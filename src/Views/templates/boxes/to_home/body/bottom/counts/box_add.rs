@@ -48,6 +48,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
         "Transporte",
         "Saúde",
         "Lazer",
+        "Receita",
         "Outros",
     ]);
     let date_input = Calendar::new();
@@ -142,6 +143,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     2 => "Transporte",
                     3 => "Saúde",
                     4 => "Lazer",
+                    5 => "Receita",
                     _ => "Outros"
                 }
             );

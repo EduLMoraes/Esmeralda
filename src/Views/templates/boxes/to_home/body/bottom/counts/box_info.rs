@@ -36,7 +36,11 @@ pub fn new_box_info(info: &Count) -> Box {
     box_center_i.add_css_class("box_center_i");
     box_center_i.set_valign(gtk::Align::Center);
 
-    let value = format!("R${:.2}", info.value);
+    let value = if info.nature == String::from("Receita") {
+        format!("R$ +{:.2}", info.value)
+    } else {
+        format!("R$ -{:.2}", info.value)
+    };
     let label_value = Label::new(Some(&value));
     label_value.add_css_class("label_value_i");
 
@@ -111,7 +115,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     box_center_i.add_css_class("box_center_info");
     box_center_i.set_valign(gtk::Align::Center);
 
-    let value = format!("R${:.2}", info.value);
+    let value = format!("R$ {:.2}", info.value);
     let label_value = Label::new(Some(&value));
     label_value.add_css_class("label_value_i");
 

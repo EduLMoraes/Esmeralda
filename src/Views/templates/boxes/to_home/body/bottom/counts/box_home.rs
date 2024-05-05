@@ -59,13 +59,10 @@ pub fn get_home_box(stack: &Stack) -> Box {
 
     let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
-    let total_counts = counts.get_total();
-    let total_debt = counts.get_total_debt();
-
     box_home.append(&get_grid_values(
-        total_counts,
-        total_debt,
-        total_counts - total_debt,
+        counts.get_total(),
+        counts.get_total_debt(),
+        counts.get_total_perfomance(),
     ));
     box_home.append(&box_button_lb);
     box_home.append(&scrolled);

@@ -1,6 +1,6 @@
 use super::*;
 use crate::env::var;
-use gtk::{Adjustment, CheckButton, SpinButton};
+use gtk::CheckButton;
 
 #[path = "./boxes/mod.rs"]
 mod boxes;

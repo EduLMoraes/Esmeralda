@@ -99,6 +99,19 @@ impl ListCount {
         sum
     }
 
+    pub fn get_total_perfomance(&self) -> f32 {
+        let mut perfomance = 0.0;
+
+        for c in &self.list {
+            if c.nature == String::from("Receita") {
+                perfomance += c.value;
+            } else {
+                perfomance -= c.value;
+            }
+        }
+        perfomance
+    }
+
     pub fn order_by_id(&mut self, crescent: bool) {
         if crescent {
             self.list.sort_unstable_by_key(|a| a.id);
