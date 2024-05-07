@@ -4,6 +4,8 @@
 # ================================================|
 
 [env]
+# variavel para caso esteja em desenvolvimento
+IS_DEV = "true"
 
 # ================================================|
 # Paths                                           |

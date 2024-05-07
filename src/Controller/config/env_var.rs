@@ -12,22 +12,26 @@ use std::os::unix::io::AsRawFd;
 pub fn get_config() {
     let path = match std::env::consts::OS {
         "windows" => {
-            let null_stdout = File::create("NUL").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
+            if env::var("IS_DEV").is_err() {
+                let null_stdout = File::create("NUL").unwrap();
+                let stdout_fd = stdout().as_raw_fd();
+                let null_stdout_fd = null_stdout.as_raw_fd();
+                unsafe {
+                    libc::dup2(null_stdout_fd, stdout_fd);
+                }
             }
 
             env::var("HOMEPATH").unwrap()
         }
         _ => {
-            // let null_stdout = File::create("/dev/null").unwrap();
-            // let stdout_fd = stdout().as_raw_fd();
-            // let null_stdout_fd = null_stdout.as_raw_fd();
-            // unsafe {
-            //     libc::dup2(null_stdout_fd, stdout_fd);
-            // }
+            if env::var("IS_DEV").is_err() {
+                let null_stdout = File::create("/dev/null").unwrap();
+                let stdout_fd = stdout().as_raw_fd();
+                let null_stdout_fd = null_stdout.as_raw_fd();
+                unsafe {
+                    libc::dup2(null_stdout_fd, stdout_fd);
+                }
+            }
 
             env::var("HOME").unwrap()
         }

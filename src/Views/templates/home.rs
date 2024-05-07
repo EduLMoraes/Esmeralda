@@ -25,6 +25,33 @@ pub fn home_screen() -> Box {
         Err(_) => {}
     }
 
+    let today = chrono::Utc::now();
+
+    if today.day() == 1 {
+        if today.month() - 1 == 0 {
+            alert("Pronto para começar mais um ano? Tenho certeza que neste as coisas serão ainda melhores!", "Feliz ano novo!")
+        } else {
+            let month_perfomance = unsafe { GLOBAL_COUNTS.get_perfomance_months() };
+            let month_perfomance = month_perfomance[(today.month() - 1) as usize];
+
+            if month_perfomance < 0.0 {
+                alert(&format!("Que triste :´( Seu último mês teve um rendimento de R${month_perfomance:.2}"), "Abre o olho!");
+            } else if month_perfomance > 0.0 {
+                alert(
+                    &format!(
+                        "Parabéns!!! Seu último mês teve um rendimento de R${month_perfomance:.2}"
+                    ),
+                    "Você positivou!",
+                );
+            } else {
+                alert(
+                    "Seu último mês teve rendimento de R$0,00",
+                    "Nem pra mais, nem pra menos!",
+                );
+            }
+        }
+    }
+
     let box_menu_left = get_box_menu_left(&stack);
     let box_body = get_box_body(&mut stack);
 

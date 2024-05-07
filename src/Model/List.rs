@@ -1,3 +1,5 @@
+use chrono::Datelike;
+
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
 use std::cmp::Reverse;
@@ -110,6 +112,20 @@ impl ListCount {
             }
         }
         perfomance
+    }
+
+    pub fn get_perfomance_months(&self) -> Vec<f32> {
+        let mut months: Vec<f32> = vec![0.0; 12];
+
+        for count in &self.list {
+            if count.nature == String::from("Receita") {
+                months[count.date_in.month() as usize] += count.value;
+            } else {
+                months[count.date_in.month() as usize] -= count.value;
+            }
+        }
+
+        months
     }
 
     pub fn order_by_id(&mut self, crescent: bool) {
