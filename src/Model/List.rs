@@ -119,13 +119,41 @@ impl ListCount {
 
         for count in &self.list {
             if count.nature == String::from("Receita") {
-                months[count.date_in.month() as usize] += count.value;
+                months[(count.date_in.month() - 1) as usize] += count.value;
             } else {
-                months[count.date_in.month() as usize] -= count.value;
+                months[(count.date_in.month() - 1) as usize] -= count.value;
             }
         }
 
         months
+    }
+
+    pub fn get_data_months(&self) -> Vec<(String, Vec<f32>)> {
+        let mut data: Vec<(String, Vec<f32>)> = vec![];
+
+        let mut list = self.clone();
+
+        list.order_alphabetical("nature", true);
+
+        let mut months: Vec<f32> = vec![0.0; 12];
+        let mut cont = 0;
+
+        for count in list.list {
+            if data.len() > 0 && count.nature == data[cont].0 {
+                months[(count.date_in.month() - 1) as usize] += count.value as f32;
+            } else {
+                months = vec![0.0; 12];
+                months[(count.date_in.month() - 1) as usize] += count.value as f32;
+                data.push((count.nature, months.clone()));
+
+                if data.len() > 1 {
+                    cont += 1;
+                }
+            }
+            data[cont].1 = months.clone();
+        }
+
+        data
     }
 
     pub fn order_by_id(&mut self, crescent: bool) {

@@ -48,7 +48,7 @@ impl Count {
                     tmp_month = tmp_installments;
                 }
 
-                NaiveDate::from_ymd_opt(tmp_year, tmp_month, date_in.day() as u32).unwrap()
+                NaiveDate::from_ymd_opt(tmp_year, tmp_month, 1).unwrap()
             },
             paid_installments: 0,
             installments: installments,

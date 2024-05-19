@@ -1,0 +1,175 @@
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="600" height="400" fill="#1F1D1D"/>
+<text font-size="24" x="217.5" y="5" dy="15" font-weight="bold" dominant-baseline="middle" font-family="Roboto" fill="#D8D9DA">
+2024 - Resumo
+</text>
+<g>
+<line stroke-width="2" x1="116" y1="39" x2="141" y2="39" stroke="#7EB26D"/>
+<circle cx="128.5" cy="39" r="5.5" stroke-width="2" stroke="#7EB26D" fill="#7EB26D"/>
+<text font-size="16" x="144" y="45" font-family="Roboto" fill="#D8D9DA">
+Alimentação
+</text>
+</g>
+<g>
+<line stroke-width="2" x1="243" y1="39" x2="268" y2="39" stroke="#EAB839"/>
+<circle cx="255.5" cy="39" r="5.5" stroke-width="2" stroke="#EAB839" fill="#EAB839"/>
+<text font-size="16" x="271" y="45" font-family="Roboto" fill="#D8D9DA">
+Casa
+</text>
+</g>
+<g>
+<line stroke-width="2" x1="313" y1="39" x2="338" y2="39" stroke="#6ED0E0"/>
+<circle cx="325.5" cy="39" r="5.5" stroke-width="2" stroke="#6ED0E0" fill="#6ED0E0"/>
+<text font-size="16" x="341" y="45" font-family="Roboto" fill="#D8D9DA">
+Receita
+</text>
+</g>
+<g>
+<line stroke-width="2" x1="401" y1="39" x2="426" y2="39" stroke="#EF843C"/>
+<circle cx="413.5" cy="39" r="5.5" stroke-width="2" stroke="#EF843C" fill="#EF843C"/>
+<text font-size="16" x="429" y="45" font-family="Roboto" fill="#D8D9DA">
+Saúde
+</text>
+</g>
+<g stroke="#444343">
+<line stroke-width="1" x1="59" y1="63" x2="595" y2="63"/><line stroke-width="1" x1="59" y1="113.3" x2="595" y2="113.3"/><line stroke-width="1" x1="59" y1="163.7" x2="595" y2="163.7"/><line stroke-width="1" x1="59" y1="214" x2="595" y2="214"/><line stroke-width="1" x1="59" y1="264.3" x2="595" y2="264.3"/><line stroke-width="1" x1="59" y1="314.7" x2="595" y2="314.7"/>
+</g>
+<g>
+
+<text font-size="14" x="2" y="68" font-family="Roboto" fill="#B9B8CE">
+R$ 2.9k
+</text>
+<text font-size="14" x="2" y="118.3" font-family="Roboto" fill="#B9B8CE">
+R$ 2.4k
+</text>
+<text font-size="14" x="2" y="168.7" font-family="Roboto" fill="#B9B8CE">
+R$ 1.9k
+</text>
+<text font-size="14" x="2" y="219" font-family="Roboto" fill="#B9B8CE">
+R$ 1.4k
+</text>
+<text font-size="14" x="6" y="269.3" font-family="Roboto" fill="#B9B8CE">
+R$ 960
+</text>
+<text font-size="14" x="6" y="319.7" font-family="Roboto" fill="#B9B8CE">
+R$ 480
+</text>
+<text font-size="14" x="22" y="370" font-family="Roboto" fill="#B9B8CE">
+R$ 0
+</text>
+</g>
+<g>
+<g stroke="#B9B8CE">
+<line stroke-width="1" x1="59" y1="365" x2="595" y2="365"/>
+<line stroke-width="1" x1="59" y1="365" x2="59" y2="370"/>
+<line stroke-width="1" x1="103.7" y1="365" x2="103.7" y2="370"/>
+<line stroke-width="1" x1="148.3" y1="365" x2="148.3" y2="370"/>
+<line stroke-width="1" x1="193" y1="365" x2="193" y2="370"/>
+<line stroke-width="1" x1="237.7" y1="365" x2="237.7" y2="370"/>
+<line stroke-width="1" x1="282.3" y1="365" x2="282.3" y2="370"/>
+<line stroke-width="1" x1="327" y1="365" x2="327" y2="370"/>
+<line stroke-width="1" x1="371.7" y1="365" x2="371.7" y2="370"/>
+<line stroke-width="1" x1="416.3" y1="365" x2="416.3" y2="370"/>
+<line stroke-width="1" x1="461" y1="365" x2="461" y2="370"/>
+<line stroke-width="1" x1="505.7" y1="365" x2="505.7" y2="370"/>
+<line stroke-width="1" x1="550.3" y1="365" x2="550.3" y2="370"/>
+<line stroke-width="1" x1="595" y1="365" x2="595" y2="370"/>
+</g>
+<text font-size="14" x="69.8" y="384" font-family="Roboto" fill="#B9B8CE">
+Jan
+</text>
+<text font-size="14" x="114.5" y="384" font-family="Roboto" fill="#B9B8CE">
+Fev
+</text>
+<text font-size="14" x="157.7" y="384" font-family="Roboto" fill="#B9B8CE">
+Mar
+</text>
+<text font-size="14" x="203.8" y="384" font-family="Roboto" fill="#B9B8CE">
+Abr
+</text>
+<text font-size="14" x="248" y="384" font-family="Roboto" fill="#B9B8CE">
+Mai
+</text>
+<text font-size="14" x="293.2" y="384" font-family="Roboto" fill="#B9B8CE">
+Jun
+</text>
+<text font-size="14" x="339.8" y="384" font-family="Roboto" fill="#B9B8CE">
+Jul
+</text>
+<text font-size="14" x="381" y="384" font-family="Roboto" fill="#B9B8CE">
+Ago
+</text>
+<text font-size="14" x="427.7" y="384" font-family="Roboto" fill="#B9B8CE">
+Set
+</text>
+<text font-size="14" x="471.8" y="384" font-family="Roboto" fill="#B9B8CE">
+Out
+</text>
+<text font-size="14" x="515.5" y="384" font-family="Roboto" fill="#B9B8CE">
+Nov
+</text>
+<text font-size="14" x="560.2" y="384" font-family="Roboto" fill="#B9B8CE">
+Dez
+</text>
+</g>
+<g>
+<path d="M 81.3 359.8 L 126 365 L 170.7 365 L 215.3 360.5 L 260 365 L 304.7 365 L 349.3 365 L 394 365 L 438.7 365 L 483.3 365 L 528 365 L 572.7 365" stroke-width="2" fill="none" stroke="#7EB26D"/>
+<circle cx="81.3" cy="359.8" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="126" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="170.7" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="215.3" cy="360.5" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="260" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="304.7" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="349.3" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="394" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="438.7" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="483.3" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="528" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+<circle cx="572.7" cy="365" r="2" stroke-width="2" stroke="#7EB26D" fill="#1F1D1D"/>
+</g>
+<g>
+<path d="M 81.3 207.7 L 126 365 L 170.7 365 L 215.3 365 L 260 365 L 304.7 365 L 349.3 365 L 394 365 L 438.7 365 L 483.3 365 L 528 365 L 572.7 361.5" stroke-width="2" fill="none" stroke="#EAB839"/>
+<circle cx="81.3" cy="207.7" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="126" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="170.7" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="215.3" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="260" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="304.7" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="349.3" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="394" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="438.7" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="483.3" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="528" cy="365" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+<circle cx="572.7" cy="361.5" r="2" stroke-width="2" stroke="#EAB839" fill="#1F1D1D"/>
+</g>
+<g>
+<path d="M 81.3 365 L 126 365 L 170.7 365 L 215.3 354.5 L 260 69 L 304.7 365 L 349.3 365 L 394 365 L 438.7 328.3 L 483.3 365 L 528 365 L 572.7 365" stroke-width="2" fill="none" stroke="#6ED0E0"/>
+<circle cx="81.3" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="126" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="170.7" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="215.3" cy="354.5" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="260" cy="69" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="304.7" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="349.3" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="394" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="438.7" cy="328.3" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="483.3" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="528" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+<circle cx="572.7" cy="365" r="2" stroke-width="2" stroke="#6ED0E0" fill="#1F1D1D"/>
+</g>
+<g>
+<path d="M 81.3 344 L 126 365 L 170.7 333.5 L 215.3 357.6 L 260 365 L 304.7 365 L 349.3 365 L 394 365 L 438.7 365 L 483.3 365 L 528 365 L 572.7 365" stroke-width="2" fill="none" stroke="#EF843C"/>
+<circle cx="81.3" cy="344" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="126" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="170.7" cy="333.5" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="215.3" cy="357.6" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="260" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="304.7" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="349.3" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="394" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="438.7" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="483.3" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="528" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+<circle cx="572.7" cy="365" r="2" stroke-width="2" stroke="#EF843C" fill="#1F1D1D"/>
+</g>
+</svg>

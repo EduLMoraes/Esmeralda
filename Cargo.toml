@@ -34,6 +34,7 @@ edition = "2023"
 group = "Utilities"
 
 [dependencies]
+charts-rs = "0.3.8"
 chrono = "0.4.31"
 diacritics = "0.2.0"
 glib = "0.19.4"
