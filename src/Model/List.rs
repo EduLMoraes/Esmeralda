@@ -140,10 +140,14 @@ impl ListCount {
 
         for count in list.list {
             if data.len() > 0 && count.nature == data[cont].0 {
-                months[(count.date_in.month() - 1) as usize] += count.value as f32;
+                for month in (count.date_in.month() - 1)..count.date_out.month() {
+                    months[month as usize] += count.value as f32;
+                }
             } else {
                 months = vec![0.0; 12];
-                months[(count.date_in.month() - 1) as usize] += count.value as f32;
+                for month in (count.date_in.month() - 1)..count.date_out.month() {
+                    months[month as usize] += count.value as f32;
+                }
                 data.push((count.nature, months.clone()));
 
                 if data.len() > 1 {
