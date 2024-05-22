@@ -2,7 +2,8 @@ use super::*;
 
 pub fn right() -> Box {
     let box_right = Box::new(Orientation::Vertical, 20);
-
+    box_right.set_hexpand(true);
+    box_right.set_vexpand(true);
     box_right.add_css_class("box_right_bb");
 
     let history = Label::new(Some("Histórico"));
@@ -29,9 +30,11 @@ pub fn right() -> Box {
 
     let scrolled = ScrolledWindow::new();
     scrolled.add_css_class("list_info_history");
+    scrolled.set_hexpand(true);
 
     let box_list_count = get_list_box();
     box_list_count.add_css_class("list_info_history");
+    box_list_count.set_vexpand(true);
 
     let counts = unsafe { GLOBAL_COUNTS.borrow() };
     drop_order.connect_selected_item_notify(move |drop_order| {

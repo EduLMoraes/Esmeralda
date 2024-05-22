@@ -6,6 +6,7 @@ use gtk::{DropDown, SearchEntry};
 
 pub fn box_top(stack: &Stack) -> Box {
     let box_top = Box::new(Orientation::Horizontal, 200);
+    box_top.set_hexpand(true);
 
     box_top.add_css_class("box_top_b");
 

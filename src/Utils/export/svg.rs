@@ -42,6 +42,9 @@ pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>) {
         .push(bar_chart.y_axis_configs[0].clone());
     bar_chart.y_axis_configs[0].axis_formatter = Some("R$ {c}".to_string());
 
+    bar_chart.width = 1080.0;
+    bar_chart.height = 300.0;
+
     to_save(bar_chart.svg().unwrap());
 }
 

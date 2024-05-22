@@ -6,8 +6,6 @@ use grids::*;
 
 pub fn get_home_box(stack: &Stack) -> Box {
     let box_home = Box::new(Orientation::Vertical, 10);
-    box_home.set_halign(gtk::Align::Center);
-    box_home.set_valign(gtk::Align::Center);
     box_home.add_css_class("box_left_bb");
 
     let box_button_lb = Box::new(Orientation::Horizontal, 10);

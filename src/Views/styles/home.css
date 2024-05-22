@@ -245,13 +245,13 @@
 
 .box_left_bb{
     background-color: #1F1F1F;
-    border-right: 1px solid #3B3B3B;
     min-width: 680px;
 }
 
 .box_right_bb{
     background-color: #1F1F1F;
     min-width: 400px;
+    border-left: 1px solid #3B3B3B;
 }
 
 .box_head_bbr{
