@@ -1,5 +1,5 @@
 use charts_rs::{Box, LineChart, Series, THEME_GRAFANA};
-use std::io::Write;
+use std::{env, io::Write};
 
 pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>) {
     let mut series_list: Vec<Series> = vec![];
@@ -48,6 +48,6 @@ pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>) {
 fn to_save(svg: String) {
     use std::fs::File;
 
-    let mut file = File::create("plot_1A.svg").unwrap();
+    let mut file = File::create(format!("{}/plot_1A.svg", env::temp_dir().display())).unwrap();
     let _ = file.write_all(svg.as_bytes());
 }
