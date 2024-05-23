@@ -64,7 +64,16 @@ pub fn new_box_info(info: &Count) -> Box {
         label_status.add_css_class("status_negative");
     }
 
-    let date = Label::new(Some(&info.date_out.to_string()));
+    let date = Label::new(Some(&format!(
+        "{:02}/{:02}/{} - {:02}/{:02}/{:02}",
+        &info.date_in.day(),
+        &info.date_in.month(),
+        &info.date_in.year().to_string().get(2..=3).unwrap(),
+        &info.date_out.day(),
+        &info.date_out.month(),
+        &info.date_out.year().to_string().get(2..=3).unwrap()
+    )));
+
     date.add_css_class("date_i");
 
     box_right_i.append(&label_status);

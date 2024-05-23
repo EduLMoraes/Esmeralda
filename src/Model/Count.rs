@@ -38,17 +38,21 @@ impl Count {
             value: value,
             date_in: date_in,
             date_out: {
-                let mut tmp_month = date_in.month() + installments;
-                let mut tmp_year = date_in.year();
-                let mut tmp_installments = tmp_month;
+                if nature != "Receita" {
+                    let mut tmp_month = date_in.month() + installments;
+                    let mut tmp_year = date_in.year();
+                    let mut tmp_installments = tmp_month;
 
-                while tmp_month > 12 {
-                    tmp_year += 1;
-                    tmp_installments -= 12;
-                    tmp_month = tmp_installments;
+                    while tmp_month > 12 {
+                        tmp_year += 1;
+                        tmp_installments -= 12;
+                        tmp_month = tmp_installments;
+                    }
+
+                    NaiveDate::from_ymd_opt(tmp_year, tmp_month, 1).unwrap()
+                } else {
+                    date_in
                 }
-
-                NaiveDate::from_ymd_opt(tmp_year, tmp_month, 1).unwrap()
             },
             paid_installments: 0,
             installments: installments,
