@@ -1,15 +1,28 @@
-use charts_rs::{Box, LineChart, Series, THEME_GRAFANA};
+use crate::model::Debtor::Debtor;
+use charts_rs::{Box, HorizontalBarChart, LineChart, PieChart, Series, THEME_GRAFANA};
 use std::{env, io::Write};
 
-pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>) {
-    let mut series_list: Vec<Series> = vec![];
+pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>, debtors: Vec<Debtor>) {
+    let mut series: Vec<Series> = vec![];
 
     for data in data {
-        series_list.push((data.0.trim(), data.1.clone()).into());
+        series.push((data.0.trim(), data.1.clone()).into());
     }
 
-    let mut bar_chart = LineChart::new_with_theme(
-        series_list,
+    p_pie(series.clone());
+    p_line(year, series.clone());
+
+    series = vec![];
+    for debtor in debtors {
+        series.push((debtor.get_name().trim(), vec![debtor.get_value()]).into());
+    }
+
+    p_bar(series);
+}
+
+fn p_line(year: i16, series: Vec<Series>) {
+    let mut plot = LineChart::new_with_theme(
+        series,
         vec![
             "Jan".to_string(),
             "Fev".to_string(),
@@ -27,30 +40,45 @@ pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>) {
         THEME_GRAFANA,
     );
 
-    bar_chart.title_text = format!("{year} - Resumo");
-    bar_chart.title_font_size = 24.0;
-    bar_chart.legend_font_size = 16.0;
+    plot.title_text = format!("{year} - Resumo");
+    plot.title_font_size = 24.0;
+    plot.legend_font_size = 16.0;
 
-    bar_chart.legend_margin = Some(Box {
-        top: bar_chart.title_font_size,
+    plot.legend_margin = Some(Box {
+        top: plot.title_font_size,
         bottom: 10.0,
         ..Default::default()
     });
 
-    bar_chart
-        .y_axis_configs
-        .push(bar_chart.y_axis_configs[0].clone());
-    bar_chart.y_axis_configs[0].axis_formatter = Some("R$ {c}".to_string());
+    plot.y_axis_configs.push(plot.y_axis_configs[0].clone());
+    plot.y_axis_configs[0].axis_formatter = Some("R$ {c}".to_string());
 
-    bar_chart.width = 1080.0;
-    bar_chart.height = 300.0;
+    plot.width = 1920.0;
+    plot.height = 460.0;
 
-    to_save(bar_chart.svg().unwrap());
+    to_save(plot.svg().unwrap(), "plot_1B");
+}
+fn p_pie(series: Vec<Series>) {
+    let mut plot = PieChart::new_with_theme(series, THEME_GRAFANA);
+
+    plot.width = 800.0;
+    plot.height = 600.0;
+
+    to_save(plot.svg().unwrap(), "plot_1A");
+}
+fn p_bar(series: Vec<Series>) {
+    let mut plot =
+        HorizontalBarChart::new_with_theme(series, vec!["Total gasto".to_string()], THEME_GRAFANA);
+
+    plot.width = 800.0;
+    plot.height = 600.0;
+
+    to_save(plot.svg().unwrap(), "plot_2A");
 }
 
-fn to_save(svg: String) {
+fn to_save(svg: String, name: &str) {
     use std::fs::File;
 
-    let mut file = File::create(format!("{}/plot_1A.svg", env::temp_dir().display())).unwrap();
+    let mut file = File::create(format!("{}/{name}.svg", env::temp_dir().display())).unwrap();
     let _ = file.write_all(svg.as_bytes());
 }

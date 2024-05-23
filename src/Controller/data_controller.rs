@@ -204,8 +204,13 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
             }
 
             use crate::utils::export::svg;
-
-            svg::to_svg(2024, unsafe { GLOBAL_COUNTS.get_data_months() });
+            unsafe {
+                svg::to_svg(
+                    2024,
+                    GLOBAL_COUNTS.get_data_months(),
+                    GLOBAL_COUNTS.filter_debtors(),
+                );
+            }
             Ok(())
         }
         _ => Err(ControlError::ErrorExtern(ErrorLog {

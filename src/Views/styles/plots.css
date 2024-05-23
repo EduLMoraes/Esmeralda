@@ -1,12 +1,36 @@
-.plot_1A{
-    background-color: green;
+.plot_1A, .plot_2A{
+    min-width: 25em;
+    min-height: 25em;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    transition-duration: 1s;
+}
+
+.plot_1A:hover{
+    transition-duration: 1s;
+    min-width: 38em;
+    min-height: 38em;
+}
+
+.plot_2A:hover{
+    transition-duration: 1s;
+    min-width: 38em;
+    min-height: 38em;
+}
+
+.plot_1B{
     padding: 0;
     margin: 0;
     border: 0;
 }
 
-.box_plots{
+.box_plot_A{
     padding: 0;
     margin: 0;
     border: 0;
+}
+
+.plot_1A, .plot_2A, .plot_1B{
+    border: 1px #3B3B3B solid;
 }
