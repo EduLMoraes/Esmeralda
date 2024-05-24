@@ -1,3 +1,5 @@
+use gtk::{gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu};
+
 use self::control::edit;
 
 use super::*;
@@ -76,6 +78,30 @@ pub fn new_box_info(info: &Count) -> Box {
 
     date.add_css_class("date_i");
 
+    let gesture = GestureClick::new();
+    gesture.set_button(BUTTON_SECONDARY as u32);
+
+    gesture.connect_pressed(clone!(@strong info, @weak box_info => move |_, _, _, _| {
+        let button_del = Button::with_label("Deletar");
+        let button_edt = Button::with_label("Editar");
+
+        button_del.connect_clicked(|_|{
+            println!("Deletado!");
+        });
+
+        let box_options = Box::new(Orientation::Vertical, 1);
+        box_options.append(&button_edt);
+        box_options.append(&button_del);
+
+        let test = PopoverMenu::builder()
+            .child(&box_options)
+            .build();
+
+
+        box_info.append(&test);
+        test.show();
+    }));
+
     box_right_i.append(&label_status);
     box_right_i.append(&date);
     box_right_i.set_valign(gtk::Align::Center);
@@ -84,6 +110,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_body.append(&box_center_i);
     box_body.append(&box_right_i);
 
+    box_info.add_controller(gesture);
     box_info.append(&box_top);
     box_info.append(&box_body);
     box_info.append(&box_bottom);
@@ -186,7 +213,16 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
         }
     }
 
-    let date = Label::new(Some(&info.date_out.to_string()));
+    let date = Label::new(Some(&format!(
+        "{:02}/{:02}/{} - {:02}/{:02}/{:02}",
+        &info.date_in.day(),
+        &info.date_in.month(),
+        &info.date_in.year().to_string().get(2..=3).unwrap(),
+        &info.date_out.day(),
+        &info.date_out.month(),
+        &info.date_out.year().to_string().get(2..=3).unwrap()
+    )));
+
     date.add_css_class("date_i");
 
     box_right_i.append(&label_status);
@@ -203,6 +239,14 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
         button_status.set_label("pagar");
     }
 
+    let gesture = GestureClick::new();
+    gesture.set_button(BUTTON_SECONDARY as u32);
+
+    gesture.connect_pressed(|_, _, _, _| {
+        println!("Cursosr notificando");
+    });
+
+    box_body.add_controller(gesture);
     box_body.append(&box_left_i);
     box_body.append(&box_center_i);
     box_body.append(&box_right_i);
