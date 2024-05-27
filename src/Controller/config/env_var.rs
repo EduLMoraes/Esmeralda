@@ -74,7 +74,10 @@ pub fn get_config() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
-
+    match env::var("UPDT_PATH") {
+        Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
+        _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
+    }
     match env::var("ICON_PATH") {
         Err(_) => env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path)),
         _ => {}
