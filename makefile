@@ -11,7 +11,7 @@ git:
 	cargo fmt
 	make test
 	git add .
-	git commit -m "commited with makefile"
+	git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
 	git push
 
 test:
