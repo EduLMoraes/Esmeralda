@@ -99,6 +99,8 @@ pub fn new_box_info(info: &Count) -> Box {
 
 
         box_info.append(&test);
+
+        #[allow(deprecated)]
         test.show();
     }));
 

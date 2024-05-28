@@ -9,6 +9,8 @@ use std::io::Read;
 use std::io::Write;
 use std::os::unix::io::AsRawFd;
 
+/// This gen the variables of ambient if she's not exists
+/// garant the functionality of system.
 pub fn get_config() {
     let path = match std::env::consts::OS {
         "windows" => {

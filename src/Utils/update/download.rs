@@ -10,7 +10,7 @@ pub fn download_file(url: &str, file_path: &str) -> Result<(), Box<dyn Error>> {
     }
 
     let mut dest = File::create(file_path)?;
-    dest.write_all(&rnt.block_on(response.bytes()).unwrap());
+    dest.write_all(&rnt.block_on(response.bytes()).unwrap())?;
 
     Ok(())
 }

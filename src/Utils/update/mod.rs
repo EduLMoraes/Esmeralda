@@ -16,6 +16,7 @@ use unzip::*;
 mod version;
 use version::has_new_version;
 
+#[allow(dead_code)]
 pub fn update_sys() {
     let output = Command::new("wget")
         .arg("-q")
@@ -38,11 +39,11 @@ pub fn update_sys() {
                 let zip_file_path = format!("{}sources.zip", env::var("UPDT_PATH").unwrap());
                 let output_directory = format!("{}", env::var("UPDT_PATH").unwrap());
 
-                download_file(
+                let _ = download_file(
                     "https://github.com/EduLMoraes/Esmeralda/releases/latest/download/esmeralda",
                     &format!("{}esmeralda", &output_directory),
                 );
-                download_file(
+                let _ = download_file(
                     "https://github.com/EduLMoraes/Esmeralda/releases/latest/download/sources.zip",
                     &zip_file_path,
                 );

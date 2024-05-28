@@ -566,7 +566,6 @@ pub fn get_database_instance() -> std::sync::MutexGuard<'static, DataBase> {
     GLOBAL_DATABASE.lock().unwrap()
 }
 
-/// Represents different types of data that can be used as input for a function or method.
 #[allow(dead_code)]
 #[derive(Debug, PartialEq)]
 pub enum Data {
