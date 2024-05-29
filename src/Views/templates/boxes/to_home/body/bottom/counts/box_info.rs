@@ -1,6 +1,6 @@
-use gtk::{gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu};
-
 use self::control::edit;
+use alerts::{confirm, edit_count};
+use gtk::{gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu, ResponseType};
 
 use super::*;
 
@@ -85,23 +85,43 @@ pub fn new_box_info(info: &Count) -> Box {
         let button_del = Button::with_label("Deletar");
         let button_edt = Button::with_label("Editar");
 
-        button_del.connect_clicked(|_|{
-            println!("Deletado!");
-        });
-
         let box_options = Box::new(Orientation::Vertical, 1);
         box_options.append(&button_edt);
         box_options.append(&button_del);
 
-        let test = PopoverMenu::builder()
+        let options = PopoverMenu::builder()
             .child(&box_options)
             .build();
 
+        button_del.connect_clicked(clone!(@weak options => move |_|{
+            options.popdown();
 
-        box_info.append(&test);
+            let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+            alert.present();
 
-        #[allow(deprecated)]
-        test.show();
+            #[allow(deprecated)]
+            alert.connect_response(clone!( @weak alert => move |_, res|{
+                match res{
+                    ResponseType::Yes => { println!("Conta deletada!"); }
+                    ResponseType::No => { println!("Ação cancelada!"); }
+                    _ => {}
+                }
+
+                alert.close();
+            }));
+
+        }));
+
+        button_edt.connect_clicked(clone!(@strong info, @weak options => move |_|{
+            options.popdown();
+
+            let form = edit_count("Editar conta", &info);
+            form.present();
+        }));
+
+        box_info.append(&options);
+
+        options.popup();
     }));
 
     box_right_i.append(&label_status);
