@@ -1,5 +1,5 @@
 use super::*;
-use crate::control::{recover, GLOBAL_COUNTS};
+use crate::control::GLOBAL_COUNTS;
 
 #[allow(deprecated)]
 pub fn edit_count(title: &str, count: &Count) -> MessageDialog {

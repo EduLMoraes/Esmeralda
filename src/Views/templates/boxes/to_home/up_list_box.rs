@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn update_list(stack: std::option::Option<&Stack>) {
+pub fn update_list(list: Option<ListCount>, stack: std::option::Option<&Stack>) {
     let list_box = get_list_box();
     list_box.remove_all();
 

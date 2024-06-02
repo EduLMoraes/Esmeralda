@@ -50,7 +50,7 @@ pub fn right() -> Box {
             _ => {}
         }
 
-        update_list(None);
+        update_list(None, None);
     });
 
     for count in &counts.list {

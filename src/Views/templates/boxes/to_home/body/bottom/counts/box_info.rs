@@ -118,7 +118,7 @@ pub fn new_box_info(info: &Count) -> Box {
 
             let form = edit_count("Editar conta", &info);
             form.connect_destroy(|_|{
-                update_list(None);
+                update_list(None, None);
             });
             form.present();
         }));
@@ -143,7 +143,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_info
 }
 
-pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
+pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
 
@@ -198,36 +198,18 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
 
-    match stack {
-        Some(stack) => {
-            button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
-                use crate::tokio::runtime::Runtime;
-                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
+    button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
+        use crate::tokio::runtime::Runtime;
+        let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
-                ref_counts.pay(info.id);
+        ref_counts.pay(info.id);
 
-                let rn = Runtime::new().unwrap();
+        let rn = Runtime::new().unwrap();
 
-                rn.block_on(edit(&ref_counts)).unwrap();
+        rn.block_on(edit(&ref_counts)).unwrap();
 
-                update_list(Some(&stack));
-            }));
-        }
-        None => {
-            button_status.connect_clicked(clone!(@strong info => move |_|{
-                use crate::tokio::runtime::Runtime;
-                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
-
-                ref_counts.pay(info.id);
-
-                let rn = Runtime::new().unwrap();
-
-                rn.block_on(edit(&ref_counts)).unwrap();
-
-                update_list(None);
-            }));
-        }
-    }
+        update_list(None, Some(&stack));
+    }));
 
     let date = Label::new(Some(&format!(
         "{:02}/{:02}/{} - {:02}/{:02}/{:02}",
@@ -258,9 +240,52 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     let gesture = GestureClick::new();
     gesture.set_button(BUTTON_SECONDARY as u32);
 
-    gesture.connect_pressed(|_, _, _, _| {
-        println!("Cursosr notificando");
-    });
+    gesture.connect_pressed(
+        clone!(@strong info, @weak box_info, @weak stack => move |_, _, _, _| {
+            let button_del = Button::with_label("Deletar");
+            let button_edt = Button::with_label("Editar");
+
+            let box_options = Box::new(Orientation::Vertical, 1);
+            box_options.append(&button_edt);
+            box_options.append(&button_del);
+
+            let options = PopoverMenu::builder()
+                .child(&box_options)
+                .build();
+
+            button_del.connect_clicked(clone!(@weak options => move |_|{
+                options.popdown();
+
+                let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+                alert.present();
+
+                #[allow(deprecated)]
+                alert.connect_response(clone!( @weak alert => move |_, res|{
+                    match res{
+                        ResponseType::Yes => { println!("Conta deletada!"); }
+                        ResponseType::No => { println!("Ação cancelada!"); }
+                        _ => {}
+                    }
+
+                    alert.close();
+                }));
+
+            }));
+
+            button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
+                options.popdown();
+
+                let form = edit_count("Editar conta", &info);
+                form.connect_destroy(move |_|{
+                    update_list(None, Some(&stack));
+                });
+                form.present();
+            }));
+
+            box_info.append(&options);
+            options.popup();
+        }),
+    );
 
     box_body.add_controller(gesture);
     box_body.append(&box_left_i);
