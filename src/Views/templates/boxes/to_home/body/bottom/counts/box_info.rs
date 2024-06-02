@@ -1,8 +1,9 @@
 use self::control::edit;
-use alerts::{confirm, edit_count};
-use gtk::{gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu, ResponseType};
-
 use super::*;
+use crate::gtk::{
+    gdk::BUTTON_SECONDARY, prelude::GtkWindowExt, GestureClick, PopoverMenu, ResponseType,
+};
+use alerts::{confirm, edit_count};
 
 pub fn new_box_info(info: &Count) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
@@ -116,11 +117,13 @@ pub fn new_box_info(info: &Count) -> Box {
             options.popdown();
 
             let form = edit_count("Editar conta", &info);
+            form.connect_destroy(|_|{
+                update_list(None);
+            });
             form.present();
         }));
 
         box_info.append(&options);
-
         options.popup();
     }));
 
@@ -199,7 +202,6 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
         Some(stack) => {
             button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
                 use crate::tokio::runtime::Runtime;
-
                 let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
                 ref_counts.pay(info.id);
@@ -208,15 +210,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
 
                 rn.block_on(edit(&ref_counts)).unwrap();
 
-                let tmp = stack.child_by_name("home").unwrap();
-                stack.remove(&tmp);
-                stack.add_titled(&get_home_box(&stack), Some("home"), "home");
-
-                let tmp = stack.child_by_name("payment").unwrap();
-                stack.remove(&tmp);
-                stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
-
-                update_list(ref_counts);
+                update_list(Some(&stack));
             }));
         }
         None => {
@@ -230,7 +224,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
 
                 rn.block_on(edit(&ref_counts)).unwrap();
 
-                update_list(ref_counts);
+                update_list(None);
             }));
         }
     }

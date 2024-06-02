@@ -32,7 +32,7 @@ pub fn get_pay_box(stack: &Stack) -> Box {
     if !infos.list.is_empty() {
         for mut info in &infos.list {
             if !info.status {
-                let group = box_info(&mut info, Some(stack));
+                let group = box_info(&mut info, Some(&stack));
                 grid.attach(&group, x, y as i32, 1, 1);
 
                 if x < 1 {

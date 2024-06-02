@@ -29,17 +29,7 @@ pub fn box_top(stack: &Stack) -> Box {
         use crate::tokio::runtime::Runtime;
         let rnt = Runtime::new().unwrap();
         rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
-        update_list(counts);
-
-        let tmp = stack.child_by_name("Contas").unwrap();
-        stack.remove(&tmp);
-
-        let tmp = stack.child_by_name("Graficos").unwrap();
-        stack.remove(&tmp);
-
-        stack.add_titled(&box_count(), Some("Contas"), "Contas");
-        stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
-
+        update_list(Some(&stack));
     }));
 
     select_year.set_halign(gtk::Align::Center);
@@ -67,7 +57,7 @@ pub fn box_top(stack: &Stack) -> Box {
             }
         );
 
-        update_list(&result);
+        update_list(None);
     }));
 
     let button_ext = Button::with_label("Sair");
