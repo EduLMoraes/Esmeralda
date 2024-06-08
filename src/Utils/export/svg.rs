@@ -2,9 +2,9 @@ use crate::model::Debtor::Debtor;
 use charts_rs::{Box, HorizontalBarChart, LineChart, PieChart, Series, THEME_GRAFANA};
 use std::{env, io::Write};
 
-pub fn to_svg(year: i16, data: Vec<(String, Vec<f32>)>, debtors: Vec<Debtor>) {
+pub fn to_svg(data: Vec<(String, Vec<f32>)>, debtors: Vec<Debtor>) {
     let mut series: Vec<Series> = vec![];
-
+    let year = env::var("YEAR_SELECTED").unwrap().parse::<i16>().unwrap();
     for data in data {
         series.push((data.0.trim(), data.1.clone()).into());
     }

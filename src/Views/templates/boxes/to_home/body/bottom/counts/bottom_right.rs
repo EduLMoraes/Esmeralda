@@ -51,7 +51,7 @@ pub fn right() -> Box {
             _ => {}
         }
 
-        update_list(None, None);
+        reload_home(None, None);
     });
 
     for count in &counts.list {

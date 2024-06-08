@@ -11,9 +11,9 @@ static mut LISTBOX: OnceLock<ListBox> = OnceLock::new();
 static mut BOXHOME: OnceLock<Box> = OnceLock::new();
 
 mod get_list_box;
-mod up_list_box;
+mod reload_home;
 use get_list_box::get_list_box;
-pub use up_list_box::*;
+pub use reload_home::*;
 
 mod body;
 mod menu_left;

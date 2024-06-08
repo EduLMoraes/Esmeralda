@@ -159,7 +159,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
                 match rnt.block_on(control::save()){
                     Ok(_) => {
-                        update_list(None, Some(&stack));
+                        reload_home(None, Some(&stack));
                         title_input.set_text("");
                         description_input.set_text("");
                         value_input.set_value(0.01);

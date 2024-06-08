@@ -118,7 +118,7 @@ pub fn new_box_info(info: &Count) -> Box {
 
             let form = edit_count("Editar conta", &info);
             form.connect_destroy(|_|{
-                update_list(None, None);
+                reload_home(None, None);
             });
             form.present();
         }));
@@ -208,7 +208,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
         rn.block_on(edit(&ref_counts)).unwrap();
 
-        update_list(None, Some(&stack));
+        reload_home(None, Some(&stack));
     }));
 
     let date = Label::new(Some(&format!(
@@ -277,7 +277,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
                 let form = edit_count("Editar conta", &info);
                 form.connect_destroy(move |_|{
-                    update_list(None, Some(&stack));
+                    reload_home(None, Some(&stack));
                 });
                 form.present();
             }));

@@ -30,7 +30,7 @@ pub fn box_top(stack: &Stack) -> Box {
         let rnt = Runtime::new().unwrap();
         rnt.block_on(recover(counts[select_year.selected() as usize])).unwrap();
 
-        update_list(None, Some(&stack));
+        reload_home(None, Some(&stack));
     }));
 
     select_year.set_halign(gtk::Align::Center);
@@ -56,7 +56,7 @@ pub fn box_top(stack: &Stack) -> Box {
             }
         );
 
-        update_list(Some(&result), None);
+        reload_home(Some(&result), None);
     }));
 
     let button_ext = Button::with_label("Sair");
