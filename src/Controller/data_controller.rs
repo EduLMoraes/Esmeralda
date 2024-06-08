@@ -1,6 +1,9 @@
 use super::*;
 use crate::model::List::ListCount;
-use std::borrow::{Borrow, BorrowMut};
+use std::{
+    borrow::{Borrow, BorrowMut},
+    env,
+};
 
 pub static mut GLOBAL_COUNTS: ListCount = ListCount {
     list: Vec::new(),
@@ -79,6 +82,7 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
     let db_instance = get_database_instance();
 
     let user_logged = get_user_instance().as_ref().unwrap().clone();
+    env::set_var("YEAR_SELECTED", format!("{}", &year));
 
     let recovered_data = db_instance
         .get(Data::Counts(data.clone(), user_logged.clone(), year))
@@ -108,14 +112,6 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
                 GLOBAL_COUNTS.list = data.list;
             }
 
-            use crate::utils::export::svg;
-            unsafe {
-                svg::to_svg(
-                    2024,
-                    GLOBAL_COUNTS.get_data_months(),
-                    GLOBAL_COUNTS.filter_debtors(),
-                );
-            }
             Ok(())
         }
         _ => Err(ControlError::ErrorExtern(ErrorLog {

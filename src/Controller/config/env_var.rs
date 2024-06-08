@@ -96,4 +96,8 @@ pub fn get_config() {
         Err(_) => env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path)),
         _ => {}
     }
+    match env::var("YEAR_SELECTED") {
+        Ok(_) => {}
+        Err(_) => env::set_var("YEAR_SELECTED", "0"),
+    }
 }

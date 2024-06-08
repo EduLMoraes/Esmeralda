@@ -23,12 +23,13 @@ pub fn box_top(stack: &Stack) -> Box {
         DropDown::from_strings(&tmp)
     };
 
-    select_year.connect_selected_item_notify(clone!(@weak select_year, @weak stack => move |_|{
+    select_year.connect_selected_item_notify(clone!(@weak stack => move |select_year|{
         let counts = unsafe{ GLOBAL_COUNTS.borrow() };
 
         use crate::tokio::runtime::Runtime;
         let rnt = Runtime::new().unwrap();
         rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
+
         update_list(None, Some(&stack));
     }));
 
@@ -57,7 +58,7 @@ pub fn box_top(stack: &Stack) -> Box {
             }
         );
 
-        update_list(Some(result), None);
+        update_list(Some(&result), None);
     }));
 
     let button_ext = Button::with_label("Sair");

@@ -1,10 +1,20 @@
 use super::*;
 
-pub fn update_list(list: Option<ListCount>, stack: std::option::Option<&Stack>) {
+pub fn update_list(list: Option<&ListCount>, stack: std::option::Option<&Stack>) {
     let list_box = get_list_box();
     list_box.remove_all();
 
-    let counts = unsafe { GLOBAL_COUNTS.borrow() };
+    let counts = match list {
+        Some(counts) => counts,
+        None => unsafe { GLOBAL_COUNTS.borrow() },
+    };
+
+    use crate::utils::export::svg;
+    svg::to_svg(
+        var("YEAR_SELECTED").unwrap().parse::<i16>().unwrap(),
+        counts.get_data_months(),
+        counts.filter_debtors(),
+    );
 
     for count in &counts.list {
         list_box.append(&new_box_info(count));
