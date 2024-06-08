@@ -1,5 +1,5 @@
 use super::*;
-use crate::control::GLOBAL_COUNTS;
+use crate::model::List::get_counts_instance;
 
 #[allow(deprecated)]
 pub fn edit_count(title: &str, count: &Count) -> MessageDialog {
@@ -172,23 +172,21 @@ pub fn edit_count(title: &str, count: &Count) -> MessageDialog {
             test.pay_all();
         }
 
-        unsafe{
-            let tmp = GLOBAL_COUNTS.borrow_mut();
-            for i in 0..tmp.list.len(){
-                if tmp.list[i].id == count.id{
-                    tmp.list[i] = test.clone();
-                    tmp.list[i].id = count.id;
-                    break;
-                }
+        let mut tmp = get_counts_instance();
+        for i in 0..tmp.list.len(){
+            if tmp.list[i].id == count.id{
+                tmp.list[i] = test.clone();
+                tmp.list[i].id = count.id;
+                break;
             }
-            use tokio::runtime::Runtime;
-            let rnt = Runtime::new().unwrap();
-
-            match rnt.block_on(control::edit(tmp)){
-                Ok(_) => {},
-                Err(err) => println!("{err}")
-            };
         }
+        use tokio::runtime::Runtime;
+        let rnt = Runtime::new().unwrap();
+
+        match rnt.block_on(control::edit(&tmp)){
+            Ok(_) => {},
+            Err(err) => println!("{err}")
+        };
 
         edit.close()
     }));

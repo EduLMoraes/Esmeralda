@@ -200,9 +200,9 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
     button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
         use crate::tokio::runtime::Runtime;
-        let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
-        ref_counts.pay(info.id);
+        get_counts_instance().pay(info.id);
+        let ref_counts = get_counts_instance().clone();
 
         let rn = Runtime::new().unwrap();
 

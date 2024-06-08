@@ -34,7 +34,7 @@ pub fn box_export_link() -> Box {
                                 "{}/Resumo_Esmeralda.csv",
                                 folder.path().unwrap().to_str().unwrap()
                             ),
-                            unsafe { GLOBAL_COUNTS.borrow() },
+                            get_counts_instance().borrow(),
                         ));
 
                         match res {

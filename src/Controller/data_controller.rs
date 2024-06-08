@@ -1,24 +1,17 @@
 use super::*;
-use crate::model::List::ListCount;
-use std::{
-    borrow::{Borrow, BorrowMut},
-    env,
-};
-
-pub static mut GLOBAL_COUNTS: ListCount = ListCount {
-    list: Vec::new(),
-    years: Vec::new(),
-};
+use crate::env;
+use crate::model::List::{get_counts_instance, ListCount};
+use std::ops::DerefMut;
 
 /// This communicate with the database to save
 /// the new data of GLOBAL_COUNTS.
 pub async fn save() -> Result<(), ControlError> {
     let db_instance = get_database_instance();
-    let data = unsafe { GLOBAL_COUNTS.borrow() };
+    let data = get_counts_instance().clone();
 
     if let Some(user_logged) = get_user_instance().as_ref() {
         db_instance
-            .add(Data::Counts(data.clone(), user_logged.clone(), 0))
+            .add(Data::Counts(data, user_logged.clone(), 0))
             .await
             .map_err(|err| ControlError::ErrorExternDB(err))?;
     }
@@ -55,11 +48,7 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
 
     match recovered_data {
         Data::Years(data, _) => {
-            unsafe {
-                let global = GLOBAL_COUNTS.borrow_mut();
-                global.years = data.years.clone()
-            }
-
+            get_counts_instance().years = data.years.clone();
             Ok(data.years)
         }
         _ => Err(ControlError::ErrorExtern(ErrorLog {
@@ -108,9 +97,9 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
 
             data.list = list;
 
-            unsafe {
-                GLOBAL_COUNTS.list = data.list;
-            }
+            get_counts_instance().deref_mut().list = data.list;
+
+            // binding.list = data.list;
 
             Ok(())
         }

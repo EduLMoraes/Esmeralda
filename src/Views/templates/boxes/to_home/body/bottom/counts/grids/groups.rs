@@ -7,7 +7,7 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
     grid_groups.set_column_spacing(10);
     grid_groups.set_row_spacing(10);
 
-    let counts = unsafe { GLOBAL_COUNTS.to_owned() };
+    let counts = get_counts_instance();
 
     grid_groups.attach(
         &new_group_info(

@@ -1,5 +1,8 @@
 use super::*;
-use crate::control::{recover, recover_years, GLOBAL_COUNTS};
+use crate::{
+    control::{recover, recover_years},
+    model::List::get_counts_instance,
+};
 
 #[path = "./boxes/to_home/mod.rs"]
 mod to_home;
@@ -31,7 +34,7 @@ pub fn home_screen() -> Box {
         if today.month() - 1 == 0 {
             alert("Pronto para começar mais um ano? Tenho certeza que neste as coisas serão ainda melhores!", "Feliz ano novo!")
         } else {
-            let month_perfomance = unsafe { GLOBAL_COUNTS.get_perfomance_months() };
+            let month_perfomance = get_counts_instance().get_perfomance_months();
             let month_perfomance = month_perfomance[(today.month() - 1) as usize];
 
             if month_perfomance < 0.0 {

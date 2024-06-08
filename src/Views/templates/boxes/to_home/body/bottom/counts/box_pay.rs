@@ -20,7 +20,8 @@ pub fn get_pay_box(stack: &Stack) -> Box {
 
     box_pay.append(&box_title);
 
-    let infos = unsafe { GLOBAL_COUNTS.borrow() };
+    let binding = get_counts_instance();
+    let infos = binding.borrow();
     let grid = Grid::new();
     grid.set_halign(gtk::Align::Center);
     grid.set_column_spacing(10);

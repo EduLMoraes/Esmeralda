@@ -36,9 +36,10 @@ pub fn right() -> Box {
     box_list_count.add_css_class("list_info_history");
     box_list_count.set_vexpand(true);
 
-    let counts = unsafe { GLOBAL_COUNTS.borrow() };
+    let counts = get_counts_instance();
     drop_order.connect_selected_item_notify(move |drop_order| {
-        let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
+        let mut binding = get_counts_instance();
+        let counts = binding.borrow_mut();
 
         match drop_order.selected() {
             0 => counts.order_by_date(true, true),

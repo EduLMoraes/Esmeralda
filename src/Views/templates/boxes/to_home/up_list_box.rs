@@ -4,9 +4,10 @@ pub fn update_list(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
     let list_box = get_list_box();
     list_box.remove_all();
 
+    let binding = get_counts_instance().clone();
     let counts = match list {
         Some(counts) => counts,
-        None => unsafe { GLOBAL_COUNTS.borrow() },
+        None => &binding,
     };
 
     use crate::utils::export::svg;

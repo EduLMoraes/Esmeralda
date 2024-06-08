@@ -280,6 +280,16 @@ impl ListCount {
     }
 }
 
+use crate::std::sync::Mutex;
+use lazy_static::lazy_static;
+lazy_static! {
+    static ref GLOBAL_COUNTS: Mutex<ListCount> = Mutex::new(ListCount::new());
+}
+
+pub fn get_counts_instance() -> std::sync::MutexGuard<'static, ListCount> {
+    GLOBAL_COUNTS.lock().unwrap()
+}
+
 use std::fmt;
 impl fmt::Display for ListCount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

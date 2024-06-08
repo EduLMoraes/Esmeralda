@@ -11,8 +11,8 @@ pub fn box_top(stack: &Stack) -> Box {
     box_top.add_css_class("box_top_b");
 
     let title_top = Label::new(Some("Contas"));
-    let select_year = unsafe {
-        let ref_counts = GLOBAL_COUNTS.borrow();
+    let select_year = {
+        let ref_counts = get_counts_instance();
 
         let tmp: Vec<String> = if ref_counts.years.len() > 0 {
             ref_counts.years.iter().map(|&y| y.to_string()).collect()
@@ -24,11 +24,11 @@ pub fn box_top(stack: &Stack) -> Box {
     };
 
     select_year.connect_selected_item_notify(clone!(@weak stack => move |select_year|{
-        let counts = unsafe{ GLOBAL_COUNTS.borrow() };
+        let counts = get_counts_instance().years.clone();
 
         use crate::tokio::runtime::Runtime;
         let rnt = Runtime::new().unwrap();
-        rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
+        rnt.block_on(recover(counts[select_year.selected() as usize])).unwrap();
 
         update_list(None, Some(&stack));
     }));
@@ -49,11 +49,9 @@ pub fn box_top(stack: &Stack) -> Box {
     search.add_css_class("search_bar_t");
 
     search.connect_changed(clone!(@weak search => move |_| {
-        let counts = unsafe{ GLOBAL_COUNTS.borrow() };
-
         let result = ListCount::from(
             ListCount {
-                list: counts.search(search.text().to_string()),
+                list: get_counts_instance().search(search.text().to_string()),
                 years: vec![0]
             }
         );

@@ -55,7 +55,8 @@ pub fn get_home_box(stack: &Stack) -> Box {
     scrolled.set_child(Some(&box_stack));
     scrolled.set_height_request(500);
 
-    let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
+    let mut binding = get_counts_instance();
+    let counts = binding.borrow_mut();
 
     box_home.append(&get_grid_values(
         counts.get_total(),
