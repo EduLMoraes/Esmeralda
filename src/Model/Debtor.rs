@@ -12,10 +12,10 @@ impl Debtor {
         let stt = debt <= value;
 
         Debtor {
-            id: id,
+            id,
             name: name.to_string(),
-            debt: debt,
-            value: value,
+            debt,
+            value,
             status: stt,
         }
     }

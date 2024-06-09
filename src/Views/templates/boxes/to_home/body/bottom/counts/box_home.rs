@@ -1,7 +1,5 @@
 use super::*;
 
-#[path = "./grids/mod.rs"]
-mod grids;
 use grids::*;
 
 pub fn get_home_box(stack: &Stack) -> Box {

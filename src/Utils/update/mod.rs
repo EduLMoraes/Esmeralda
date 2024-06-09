@@ -37,7 +37,7 @@ pub fn update_sys() {
                 println!("Versão mais recente: {}", version.as_str());
 
                 let zip_file_path = format!("{}sources.zip", env::var("UPDT_PATH").unwrap());
-                let output_directory = format!("{}", env::var("UPDT_PATH").unwrap());
+                let output_directory = env::var("UPDT_PATH").unwrap().to_string();
 
                 let _ = download_file(
                     "https://github.com/EduLMoraes/Esmeralda/releases/latest/download/esmeralda",

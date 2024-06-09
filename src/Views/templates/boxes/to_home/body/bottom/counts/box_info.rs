@@ -39,7 +39,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_center_i.add_css_class("box_center_i");
     box_center_i.set_valign(gtk::Align::Center);
 
-    let value = if info.nature == String::from("Receita") {
+    let value = if info.nature == *"Receita" {
         format!("R$ +{:.2}", info.value)
     } else {
         format!("R$ -{:.2}", info.value)
@@ -80,7 +80,7 @@ pub fn new_box_info(info: &Count) -> Box {
     date.add_css_class("date_i");
 
     let gesture = GestureClick::new();
-    gesture.set_button(BUTTON_SECONDARY as u32);
+    gesture.set_button(BUTTON_SECONDARY);
 
     gesture.connect_pressed(clone!(@strong info, @weak box_info => move |_, _, _, _| {
         let button_del = Button::with_label("Deletar");
@@ -238,7 +238,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     }
 
     let gesture = GestureClick::new();
-    gesture.set_button(BUTTON_SECONDARY as u32);
+    gesture.set_button(BUTTON_SECONDARY);
 
     gesture.connect_pressed(
         clone!(@strong info, @weak box_info, @weak stack => move |_, _, _, _| {

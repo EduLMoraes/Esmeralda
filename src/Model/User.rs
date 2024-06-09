@@ -9,11 +9,7 @@ pub struct NewUser {
 
 impl NewUser {
     pub fn is_empty(&self) -> bool {
-        if self.username.is_empty() || self.password.is_empty() || self.email.is_empty() {
-            true
-        } else {
-            false
-        }
+        self.username.is_empty() || self.password.is_empty() || self.email.is_empty()
     }
 }
 

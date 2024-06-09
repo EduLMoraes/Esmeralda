@@ -6,8 +6,8 @@ pub async fn mkdir(path: &str) -> Result<(File, String), String> {
 
     let paths: Vec<&str> = path.split('/').collect();
 
-    for i in 0..paths.len() - 1 {
-        new_path.push_str(paths[i]);
+    for item in paths.iter().take(paths.len() - 1) {
+        new_path.push_str(item);
         new_path.push('/');
     }
 

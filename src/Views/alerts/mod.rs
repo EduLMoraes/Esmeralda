@@ -21,12 +21,10 @@ pub fn alert(message: &str, title: &str) {
 
 #[allow(deprecated)]
 pub fn confirm(message: &str, title: &str) -> MessageDialog {
-    let confirm = MessageDialog::builder()
+    MessageDialog::builder()
         .buttons(gtk::ButtonsType::YesNo)
         .message_type(gtk::MessageType::Warning)
         .text(message)
         .title(title)
-        .build();
-
-    confirm
+        .build()
 }

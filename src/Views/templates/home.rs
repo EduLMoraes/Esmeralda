@@ -12,20 +12,17 @@ use to_home::*;
 pub fn home_screen() -> Box {
     let screen = Box::new(Orientation::Horizontal, 0);
 
-    let mut stack = Stack::new();
+    let stack = Stack::new();
 
     let run = tokio::runtime::Runtime::new().unwrap();
-    match run.block_on(recover_years()) {
-        Ok(years) => {
-            if years.len() > 0 {
-                let _ = run.block_on(recover(years[0])).unwrap();
-            } else {
-                let _ = run
-                    .block_on(recover(crate::chrono::Utc::now().year() as i16))
-                    .map_err(|err| println!("{}", err));
-            }
+    if let Ok(years) = run.block_on(recover_years()) {
+        if !years.is_empty() {
+            run.block_on(recover(years[0])).unwrap();
+        } else {
+            let _ = run
+                .block_on(recover(crate::chrono::Utc::now().year() as i16))
+                .map_err(|err| println!("{}", err));
         }
-        Err(_) => {}
     }
 
     let today = chrono::Utc::now();
@@ -56,7 +53,7 @@ pub fn home_screen() -> Box {
     }
 
     let box_menu_left = get_box_menu_left(&stack);
-    let box_body = get_box_body(&mut stack);
+    let box_body = get_box_body(&stack);
 
     screen.append(&box_menu_left);
     screen.append(&box_body);

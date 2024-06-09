@@ -263,7 +263,7 @@ impl DataBase {
                         })
                     })?;
 
-                let mut rows = stmt.query(&[&user.id, &(year as i32)]).map_err(|_| {
+                let mut rows = stmt.query([&user.id, &(year as i32)]).map_err(|_| {
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "Query to counts not working!",
                         code: 804,
@@ -273,7 +273,7 @@ impl DataBase {
 
                 let mut counts: Vec<Count> = Vec::new();
                 let mut max_id = 0;
-                let natures = vec![
+                let natures = [
                     "Casa",
                     "Transporte",
                     "Saúde",
@@ -432,7 +432,7 @@ impl DataBase {
                     counts.insert(0, count);
                 }
 
-                if counts.len() > 0 {
+                if !counts.is_empty() {
                     counts[0].id = max_id;
                 }
 
@@ -464,7 +464,7 @@ impl DataBase {
                     );
                 }
 
-                if years.len() == 0 {
+                if years.is_empty() {
                     years.push(chrono::Utc::now().year() as i16);
                 }
 

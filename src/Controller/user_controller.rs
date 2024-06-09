@@ -51,7 +51,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             if data.username.is_empty() {
                 let _ = log(
                     path.clone().into(),
-                    &format!("[CONTROL] Error to find user in system\n"),
+                    "[CONTROL] Error to find user in system\n",
                 );
 
                 Err(ControlError::UserNotExists(ErrorLog {
@@ -118,7 +118,7 @@ pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
 
         db.add(new_user)
             .await
-            .map_err(|err| ControlError::ErrorExternDB(err))?;
+            .map_err(ControlError::ErrorExternDB)?;
         Ok(())
     }
 }
@@ -130,7 +130,7 @@ pub async fn restore_password(user: User) -> Result<(), ControlError> {
     let db_user = db
         .get(Data::User(user))
         .await
-        .map_err(|err| ControlError::ErrorExternDB(err))?;
+        .map_err(ControlError::ErrorExternDB)?;
 
     match db_user {
         Data::UserDb(mut user_data) => {
@@ -138,17 +138,17 @@ pub async fn restore_password(user: User) -> Result<(), ControlError> {
             user_data.password = criptography::encrpt(String::from(&new_pass));
             db.edit(Data::UserDb(user_data.clone()))
                 .await
-                .map_err(|err| ControlError::ErrorExternDB(err))?;
+                .map_err(ControlError::ErrorExternDB)?;
 
-            let _ = tokio::task::spawn(async move {
+            std::mem::drop(tokio::task::spawn(async move {
                 let _ = send_email(
                     "esmeralda.restorepass@gmail.com",
                     &user_data.email,
                     "Recuperação de senha Esmeralda",
-                    String::from(format!("Caso não tenha sido você, apenas ignore este e-mail.\n Sua senha agora é: {}", new_pass)),
+                    format!("Caso não tenha sido você, apenas ignore este e-mail.\n Sua senha agora é: {}", new_pass),
                     String::from("Foi solicitada uma recuperação de senha com seu e-mail")
                     ).await;
-            });
+            }));
         }
         _ => {
             return Err(ControlError::UserNotExists(ErrorLog {

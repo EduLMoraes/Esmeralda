@@ -59,7 +59,7 @@ impl ListCount {
         let mut perfomance = 0.0;
 
         for c in &self.list {
-            if c.nature == String::from("Receita") {
+            if c.nature == *"Receita" {
                 perfomance += c.value;
             } else {
                 perfomance -= c.value;
@@ -72,7 +72,7 @@ impl ListCount {
         let mut months: Vec<f32> = vec![0.0; 12];
 
         for count in &self.list {
-            if count.nature == String::from("Receita") {
+            if count.nature == *"Receita" {
                 months[(count.date_in.month() - 1) as usize] += count.value;
             } else {
                 months[(count.date_in.month() - 1) as usize] -= count.value;
@@ -93,14 +93,14 @@ impl ListCount {
         let mut cont = 0;
 
         for count in list.list {
-            if data.len() > 0 && count.nature == data[cont].0 {
+            if !data.is_empty() && count.nature == data[cont].0 {
                 for month in (count.date_in.month() - 1)..count.date_out.month() {
-                    months[month as usize] += count.value as f32;
+                    months[month as usize] += count.value;
                 }
             } else {
                 months = vec![0.0; 12];
                 for month in (count.date_in.month() - 1)..count.date_out.month() {
-                    months[month as usize] += count.value as f32;
+                    months[month as usize] += count.value;
                 }
                 data.push((count.nature, months.clone()));
 
@@ -294,7 +294,7 @@ use std::fmt;
 impl fmt::Display for ListCount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {
-            write!(f, "{:?}\n", self.list[i])?;
+            writeln!(f, "{:?}", self.list[i])?;
         }
 
         Ok(())

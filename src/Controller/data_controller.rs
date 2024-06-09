@@ -13,7 +13,7 @@ pub async fn save() -> Result<(), ControlError> {
         db_instance
             .add(Data::Counts(data, user_logged.clone(), 0))
             .await
-            .map_err(|err| ControlError::ErrorExternDB(err))?;
+            .map_err(ControlError::ErrorExternDB)?;
     }
 
     Ok(())
@@ -28,7 +28,7 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
         db_instance
             .edit(Data::Counts(data.clone(), user_logged.clone(), 0))
             .await
-            .map_err(|err| ControlError::ErrorExternDB(err))?;
+            .map_err(ControlError::ErrorExternDB)?;
     }
 
     Ok(())
@@ -44,7 +44,7 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     let recovered_data = db_instance
         .get(Data::Years(data, user_logged.clone()))
         .await
-        .map_err(|err| ControlError::ErrorExternDB(err))?;
+        .map_err(ControlError::ErrorExternDB)?;
 
     match recovered_data {
         Data::Years(data, _) => {
@@ -76,7 +76,7 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
     let recovered_data = db_instance
         .get(Data::Counts(data.clone(), user_logged.clone(), year))
         .await
-        .map_err(|err| ControlError::ErrorExternDB(err))?;
+        .map_err(ControlError::ErrorExternDB)?;
 
     match recovered_data {
         Data::Counts(mut data, _, _) => {

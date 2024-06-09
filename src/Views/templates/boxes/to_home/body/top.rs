@@ -14,7 +14,7 @@ pub fn box_top(stack: &Stack) -> Box {
     let select_year = {
         let ref_counts = get_counts_instance();
 
-        let tmp: Vec<String> = if ref_counts.years.len() > 0 {
+        let tmp: Vec<String> = if !ref_counts.years.is_empty() {
             ref_counts.years.iter().map(|&y| y.to_string()).collect()
         } else {
             vec![format!("{}", Utc::now().year())]
@@ -49,12 +49,10 @@ pub fn box_top(stack: &Stack) -> Box {
     search.add_css_class("search_bar_t");
 
     search.connect_changed(clone!(@weak search => move |_| {
-        let result = ListCount::from(
-            ListCount {
+        let result = ListCount {
                 list: get_counts_instance().search(search.text().to_string()),
                 years: vec![0]
-            }
-        );
+            };
 
         reload_home(Some(&result), None);
     }));

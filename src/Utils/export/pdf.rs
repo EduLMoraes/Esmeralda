@@ -51,7 +51,7 @@ pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
         }
 
         for col in 0..5 {
-            let line = vec![
+            let line = [
                 format!("{}", debtor.get_id()),
                 format!("| {:.18}", debtor.get_name()),
                 format!("| {:.2}", debtor.get_debt()),

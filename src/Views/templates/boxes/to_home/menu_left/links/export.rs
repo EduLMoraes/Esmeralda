@@ -16,8 +16,8 @@ pub fn box_export_link() -> Box {
             .build();
 
         fc.add_buttons(&[
-            ("Cancel", gtk::ResponseType::Cancel.into()),
-            ("Open", gtk::ResponseType::Accept.into()),
+            ("Cancel", gtk::ResponseType::Cancel),
+            ("Open", gtk::ResponseType::Accept),
         ]);
 
         fc.connect_response(|window, response| {
@@ -37,9 +37,8 @@ pub fn box_export_link() -> Box {
                             get_counts_instance().borrow(),
                         ));
 
-                        match res {
-                            Err(_) => alert("Erro ao exportar arquivo", "Erro"),
-                            _ => {}
+                        if res.is_err() {
+                            alert("Erro ao exportar arquivo", "Erro")
                         }
                     }
                     None => alert("Nenhum caminho escolhido!", "Erro: caminho inválido"),

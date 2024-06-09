@@ -30,7 +30,7 @@ pub fn encrpt(msg: String) -> String {
 
     final_result.extend(write_buffer.take_read_buffer().take_remaining());
 
-    let msg: String = String::from_utf8_lossy(&*final_result).to_string();
+    let msg: String = String::from_utf8_lossy(&final_result).to_string();
 
     msg
 }

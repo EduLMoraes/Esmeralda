@@ -43,7 +43,7 @@ pub fn get_config() {
         Ok(_) => {
             let _ = log(
                 format!("{path}/.esmeralda/log.log").into(),
-                &format!("[MAIN] Variabel of environment already exists\n"),
+                "[MAIN] Variabel of environment already exists\n",
             );
         }
         Err(_) => {
@@ -80,24 +80,19 @@ pub fn get_config() {
         Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
         _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
     }
-    match env::var("ICON_PATH") {
-        Err(_) => env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path)),
-        _ => {}
+    if env::var("YEAR_SELECTED").is_err() {
+        env::set_var("YEAR_SELECTED", "0")
     }
-    match env::var("IMG_PATH") {
-        Err(_) => env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path)),
-        _ => {}
+    if env::var("IMG_PATH").is_err() {
+        env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
     }
-    match env::var("CSS_PATH") {
-        Err(_) => env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path)),
-        _ => {}
+    if env::var("DB_PATH").is_err() {
+        env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path))
     }
-    match env::var("DB_PATH") {
-        Err(_) => env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path)),
-        _ => {}
+    if env::var("ICON_PATH").is_err() {
+        env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path))
     }
-    match env::var("YEAR_SELECTED") {
-        Ok(_) => {}
-        Err(_) => env::set_var("YEAR_SELECTED", "0"),
+    if env::var("CSS_PATH").is_err() {
+        env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path))
     }
 }
