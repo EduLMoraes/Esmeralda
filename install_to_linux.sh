@@ -28,7 +28,7 @@ if [[ ! -f "$ICON" ]]; then
     exit 1
 fi
 
-cat <<EOF > "$FILE_DESKTOP"
+echo "
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -36,8 +36,8 @@ Name=$NOME
 Comment=$COMENTARIO
 Exec=$EXEC
 Icon=$ICON
-Terminal=false
-EOF
+Terminal=false" > "$FILE_DESKTOP"
+
 
 chmod +x "$FILE_DESKTOP"
 echo "Instalação concluída com sucesso!."
