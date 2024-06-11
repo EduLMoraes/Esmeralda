@@ -16,7 +16,7 @@ NOME="Esmeralda"
 COMENTARIO="The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
 EXEC="$HOME/.esmeralda/esmeralda"
 ICON="$HOME/.esmeralda/assets/icon/icon.png"
-FILE_DESKTOP="$XDG_DESKTOP_DIR/esmeralda.desktop"
+FILE_DESKTOP="$~/Área\ de\ trabalho/esmeralda.desktop"
 
 if [[ ! -f "$EXEC" ]]; then
     echo "Erro: Arquivo executável não encontrado em $EXEC"
