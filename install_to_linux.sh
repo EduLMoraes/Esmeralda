@@ -28,7 +28,7 @@ if [[ ! -f "$ICON" ]]; then
     exit 1
 fi
 
-touch "$FILE_DESKTOP"
+touch $FILE_DESKTOP
 cat <<EOF >> "$FILE_DESKTOP"
 [Desktop Entry]
 Version=1.0
