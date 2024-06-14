@@ -73,15 +73,15 @@ pub fn box_register(stack: &Stack) -> Box {
                         stack.remove(&tmp);
 
                     }else{
-                        alert("Tente novamente pela tela de login!", "Falha ao realizar login");
+                        // alert("Tente novamente pela tela de login!", "Falha ao realizar login");
                     }
                 },
                 Err(_) => {
-                    alert("Login ou email de usuário já existente!", "Falha ao cadastrar-se");
+                    // alert("Login ou email de usuário já existente!", "Falha ao cadastrar-se");
                 }
             };
         } else{
-            alert("Por favor, preencha corretamente o formulário.", "Entradas inválidas");
+            // alert("Por favor, preencha corretamente o formulário.", "Entradas inválidas");
         }
 
     }));

@@ -1,9 +1,10 @@
 use self::control::edit;
 use super::*;
 use crate::gtk::{
-    gdk::BUTTON_SECONDARY, prelude::GtkWindowExt, GestureClick, PopoverMenu, ResponseType,
+    gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick,
+    PopoverMenu, /*, ResponseType,*/
 };
-use alerts::{confirm, edit_count};
+// use alerts::{confirm, edit_count};
 
 pub fn new_box_info(info: &Count) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
@@ -97,30 +98,30 @@ pub fn new_box_info(info: &Count) -> Box {
         button_del.connect_clicked(clone!(@weak options => move |_|{
             options.popdown();
 
-            let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-            alert.present();
+            // let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+            // alert.present();
 
-            #[allow(deprecated)]
-            alert.connect_response(clone!( @weak alert => move |_, res|{
-                match res{
-                    ResponseType::Yes => { println!("Conta deletada!"); }
-                    ResponseType::No => { println!("Ação cancelada!"); }
-                    _ => {}
-                }
+            // #[allow(deprecated)]
+            // alert.connect_response(clone!( @weak alert => move |_, res|{
+            //     match res{
+            //         ResponseType::Yes => { println!("Conta deletada!"); }
+            //         ResponseType::No => { println!("Ação cancelada!"); }
+            //         _ => {}
+            //     }
 
-                alert.close();
-            }));
+            //     alert.close();
+            // }));
 
         }));
 
         button_edt.connect_clicked(clone!(@strong info, @weak options => move |_|{
             options.popdown();
 
-            let form = edit_count("Editar conta", &info);
-            form.connect_destroy(|_|{
-                reload_home(None, None);
-            });
-            form.present();
+            // let form = edit_count("Editar conta", &info);
+            // form.connect_destroy(|_|{
+            //     reload_home(None, None);
+            // });
+            // form.present();
         }));
 
         box_info.append(&options);
@@ -256,30 +257,30 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
             button_del.connect_clicked(clone!(@weak options => move |_|{
                 options.popdown();
 
-                let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-                alert.present();
+                // let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+                // alert.present();
 
-                #[allow(deprecated)]
-                alert.connect_response(clone!( @weak alert => move |_, res|{
-                    match res{
-                        ResponseType::Yes => { println!("Conta deletada!"); }
-                        ResponseType::No => { println!("Ação cancelada!"); }
-                        _ => {}
-                    }
+                // #[allow(deprecated)]
+                // alert.connect_response(clone!( @weak alert => move |_, res|{
+                //     match res{
+                //         ResponseType::Yes => { println!("Conta deletada!"); }
+                //         ResponseType::No => { println!("Ação cancelada!"); }
+                //         _ => {}
+                //     }
 
-                    alert.close();
-                }));
+                //     alert.close();
+                // }));
 
             }));
 
             button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
                 options.popdown();
 
-                let form = edit_count("Editar conta", &info);
-                form.connect_destroy(move |_|{
-                    reload_home(None, Some(&stack));
-                });
-                form.present();
+                // let form = edit_count("Editar conta", &info);
+                // form.connect_destroy(move |_|{
+                //     reload_home(None, Some(&stack));
+                // });
+                // form.present();
             }));
 
             box_info.append(&options);

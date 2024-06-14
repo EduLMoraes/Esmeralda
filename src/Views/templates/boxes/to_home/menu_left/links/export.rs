@@ -38,10 +38,10 @@ pub fn box_export_link() -> Box {
                         ));
 
                         if res.is_err() {
-                            alert("Erro ao exportar arquivo", "Erro")
+                            // alert("Erro ao exportar arquivo", "Erro")
                         }
                     }
-                    None => alert("Nenhum caminho escolhido!", "Erro: caminho inválido"),
+                    None => {} //alert("Nenhum caminho escolhido!", "Erro: caminho inválido"),
                 }
             }
 

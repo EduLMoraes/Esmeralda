@@ -8,9 +8,9 @@ use std::borrow::{Borrow, BorrowMut};
 mod templates;
 use templates::{login_screen, rgter_screen};
 
-#[path = "./alerts/mod.rs"]
-mod alerts;
-use alerts::*;
+// #[path = "./alerts/mod.rs"]
+// mod alerts;
+// use alerts::*;
 
 pub fn esmeralda(app: &Application) {
     let window = control::config::app::get_config(app);

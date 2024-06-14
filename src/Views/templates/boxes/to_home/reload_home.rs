@@ -4,7 +4,7 @@ pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
     println!("reload_home()");
 
     let list_box = get_list_box();
-    list_box.remove_all();
+    // list_box.remove_all();
 
     let binding = get_counts_instance().clone();
     let counts = match list {
