@@ -33,7 +33,7 @@ pub fn login_screen(stack: &Stack) -> Box {
 
     let box_newu = Box::new(Orientation::Horizontal, 0);
     let newu_label = Label::new(Some("Não possuí uma conta?"));
-    let newu_link = LinkButton::new("Cadastre-se aqui!");
+    let newu_link = Button::with_label("Cadastre-se aqui!");
     box_newu.append(&newu_label);
     box_newu.append(&newu_link);
 
@@ -93,7 +93,7 @@ pub fn login_screen(stack: &Stack) -> Box {
     screen.add_css_class("login_box");
     title.add_css_class("login_title");
     subtitle.add_css_class("login_subtitle");
-    newu_link.add_css_class("login_link");
+    newu_link.set_css_classes(&["login_link", "link"]);
     login_button.add_css_class("login_button");
     login_button.add_css_class("button");
     box_newu.add_css_class("login_newu_box");

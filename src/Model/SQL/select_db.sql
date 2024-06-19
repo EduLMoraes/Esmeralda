@@ -1,3 +1,4 @@
+-- Active: 1718076179564@@127.0.0.1@3306
 SELECT * FROM users;
 
 -- SELECT MAX((SELECT MAX(count_id) FROM counts WHERE user_id = $1)) AS max_id, count_id, user_id,
@@ -20,3 +21,12 @@ SELECT * FROM users;
 -- FROM counts 
 -- WHERE
 -- user_id = $1
+
+
+SELECT debtor, user_id FROM counts
+UNION
+SELECT name, user_id FROM users;
+
+SELECT debtor, user_id FROM counts
+UNION ALL
+SELECT name, user_id FROM users;

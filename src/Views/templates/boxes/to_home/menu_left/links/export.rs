@@ -38,14 +38,16 @@ pub fn box_export_link() -> Box {
                         ));
 
                         if res.is_err() {
-                            // alert("Erro ao exportar arquivo", "Erro")
+                            alert("Erro ao exportar arquivo", "Erro")
+                        } else {
+                            alert("Sucesso ao exportar arquivo", "Concluído")
                         }
                     }
-                    None => {} //alert("Nenhum caminho escolhido!", "Erro: caminho inválido"),
+                    None => alert("Nenhum caminho escolhido!", "Erro: caminho inválido"),
                 }
             }
 
-            window.close()
+            window.destroy()
         });
 
         fc.show();

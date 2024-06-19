@@ -2,7 +2,13 @@ use super::*;
 use crate::model::List::get_counts_instance;
 
 #[allow(deprecated)]
-pub fn edit_count(title: &str, count: &Count) -> MessageDialog {
+pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
+    unsafe {
+        if HAS_MESSAGE_DIALOG {
+            return None;
+        }
+    }
+
     let box_form = Box::new(Orientation::Vertical, 10);
     box_form.set_halign(gtk::Align::Center);
 
@@ -188,8 +194,14 @@ pub fn edit_count(title: &str, count: &Count) -> MessageDialog {
             Err(err) => println!("{err}")
         };
 
-        edit.close()
+        edit.destroy()
     }));
 
-    edit
+    unsafe {
+        edit.connect_destroy(|_| {
+            HAS_MESSAGE_DIALOG = false;
+        });
+        HAS_MESSAGE_DIALOG = true;
+    }
+    Some(edit)
 }
