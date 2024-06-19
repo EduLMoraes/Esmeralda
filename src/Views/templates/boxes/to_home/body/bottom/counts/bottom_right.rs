@@ -38,8 +38,7 @@ pub fn right() -> Box {
 
     let counts = get_counts_instance();
     drop_order.connect_selected_item_notify(move |drop_order| {
-        let mut binding = get_counts_instance();
-        let counts = binding.borrow_mut();
+        let mut counts = get_counts_instance().clone();
 
         match drop_order.selected() {
             0 => counts.order_by_date(true, true),
@@ -51,12 +50,16 @@ pub fn right() -> Box {
             _ => {}
         }
 
-        reload_home(None, None);
+        println!("aaa");
+        reload_home(Some(&counts), None);
+        std::mem::drop(counts);
     });
 
     for count in &counts.list {
         box_list_count.append(&new_box_info(count));
     }
+
+    std::mem::drop(counts);
 
     scrolled.set_child(Some(box_list_count));
 
