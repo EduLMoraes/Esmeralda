@@ -8,6 +8,7 @@ pub fn box_count_link(stack: &Stack) -> Box {
     count_link.set_css_classes(&["link_view"]);
 
     count_link.connect_clicked(clone!(@weak stack, @weak count_link => move |_| {
+        reload_home(None, Some(&stack));
         stack.set_visible_child_name("Contas");
     }));
 

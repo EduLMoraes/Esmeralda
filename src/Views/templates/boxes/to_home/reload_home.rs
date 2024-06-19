@@ -44,4 +44,6 @@ pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
             stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
         }
     }
+
+    let _ = std::mem::drop(binding);
 }

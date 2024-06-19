@@ -9,6 +9,7 @@ pub fn box_graph_link(stack: &Stack) -> Box {
     graph_link.set_css_classes(&["link_view"]);
 
     graph_link.connect_clicked(clone!(@weak stack, @weak graph_link => move |_| {
+        reload_home(None, Some(&stack));
         stack.set_visible_child_name("Graficos");
     }));
 
