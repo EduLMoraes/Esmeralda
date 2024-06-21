@@ -228,23 +228,30 @@ impl ListCount {
                 name.clone().trim(),
                 0.0,
                 0.0,
+                0.0,
             ));
-            let mut value = 0.0;
 
-            if Count.installments != Count.paid_installments {
-                let remaining_installments = Count.installments - Count.paid_installments;
+            if Count.nature == "Receita"{
+                debtor.add_receipt(Count.value * Count.paid_installments as f32);
+            }else{
+                let mut value = 0.0;
 
-                value = Count.value * remaining_installments as f32;
-            } else {
-                value = Count.value * Count.paid_installments as f32;
+                if Count.installments != Count.paid_installments {
+                    let remaining_installments = Count.installments - Count.paid_installments;
+    
+                    value = Count.value * remaining_installments as f32;
+                } else {
+                    value = Count.value * Count.paid_installments as f32;
+                }
+    
+                if Count.status {
+                    debtor.add_value(value);
+                } else {
+                    debtor.add_value(Count.value * Count.paid_installments as f32);
+                    debtor.add_debt(value);
+                }
             }
 
-            if Count.status {
-                debtor.add_value(value);
-            } else {
-                debtor.add_value(Count.value * Count.paid_installments as f32);
-                debtor.add_debt(value);
-            }
         }
 
         let mut debtors: Vec<Debtor> = debtors_map.into_values().collect();

@@ -3,18 +3,20 @@ pub struct Debtor {
     id: i32,
     name: String,
     debt: f32,
+    receipt: f32,
     value: f32,
     status: bool,
 }
 
 impl Debtor {
-    pub fn new(id: i32, name: &str, debt: f32, value: f32) -> Debtor {
+    pub fn new(id: i32, name: &str, debt: f32, value: f32, receipt: f32) -> Debtor {
         let stt = debt <= value;
 
         Debtor {
             id,
             name: name.to_string(),
             debt,
+            receipt,
             value,
             status: stt,
         }
@@ -40,6 +42,10 @@ impl Debtor {
         self.status
     }
 
+    pub fn get_receipt(&self) -> f32{
+        self.receipt
+    }
+
     pub fn add_value(&mut self, v: f32) {
         self.value += v;
 
@@ -54,5 +60,9 @@ impl Debtor {
         if self.debt > 0.0 {
             self.status = false;
         }
+    }
+
+    pub fn add_receipt(&mut self, r: f32){
+        self.receipt += r;
     }
 }

@@ -30,3 +30,4 @@ SELECT name, user_id FROM users;
 SELECT debtor, user_id FROM counts
 UNION ALL
 SELECT name, user_id FROM users;
+
