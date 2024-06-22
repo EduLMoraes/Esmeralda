@@ -44,9 +44,11 @@ pub fn confirm(message: &str, title: &str) -> Option<MessageDialog> {
                 .title(title)
                 .build();
 
-            dialog.connect_destroy(|_| {
+            dialog.connect_response(|alert, _| {
+                alert.destroy();
                 HAS_MESSAGE_DIALOG = false;
             });
+
             HAS_MESSAGE_DIALOG = true;
 
             Some(dialog)

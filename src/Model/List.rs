@@ -1,5 +1,6 @@
 use chrono::Datelike;
 
+use crate::control::delete;
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
 use std::cmp::Reverse;
@@ -33,6 +34,21 @@ impl ListCount {
         }
 
         self.list.insert(0, value)
+    }
+
+    pub fn remove(&mut self, id_count: &i32) -> bool {
+        let rnt = crate::tokio::runtime::Runtime::new().unwrap();
+        if rnt.block_on(delete(id_count)).is_ok() {
+            for i in 0..self.list.len() {
+                if &self.list[i].id == id_count {
+                    self.list.remove(i);
+                }
+            }
+
+            true
+        } else {
+            false
+        }
     }
 
     pub fn get_total(&self) -> f32 {
@@ -231,19 +247,19 @@ impl ListCount {
                 0.0,
             ));
 
-            if Count.nature == "Receita"{
+            if Count.nature == "Receita" {
                 debtor.add_receipt(Count.value * Count.paid_installments as f32);
-            }else{
+            } else {
                 let mut value = 0.0;
 
                 if Count.installments != Count.paid_installments {
                     let remaining_installments = Count.installments - Count.paid_installments;
-    
+
                     value = Count.value * remaining_installments as f32;
                 } else {
                     value = Count.value * Count.paid_installments as f32;
                 }
-    
+
                 if Count.status {
                     debtor.add_value(value);
                 } else {
@@ -251,7 +267,6 @@ impl ListCount {
                     debtor.add_debt(value);
                 }
             }
-
         }
 
         let mut debtors: Vec<Debtor> = debtors_map.into_values().collect();

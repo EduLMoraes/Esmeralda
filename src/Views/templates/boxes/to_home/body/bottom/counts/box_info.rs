@@ -94,27 +94,30 @@ pub fn new_box_info(info: &Count) -> Box {
             .child(&box_options)
             .build();
 
-        button_del.connect_clicked(clone!(@weak options => move |_|{
+        button_del.connect_clicked(clone!(@strong info, @weak options => move |_|{
             options.popdown();
 
-            let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-            if alert.is_some(){
-                let alert = alert.unwrap();
-                alert.present();
+            let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+            if alert_confirm.is_some(){
+                let alert_confirm = alert_confirm.unwrap();
+                alert_confirm.present();
 
                 #[allow(deprecated)]
-                alert.connect_response(clone!( @weak alert => move |_, res|{
+                alert_confirm.connect_response(clone!( @weak alert_confirm => move |_, res|{
                     match res{
-                        ResponseType::Yes => { println!("Conta deletada!"); }
+                        ResponseType::Yes => {
+                            if !get_counts_instance().remove(&info.id){
+                                alert("Ocorreu um erro ao tentar remover a conta.", "Erro!");
+                            }else{
+                                alert("Conta deletada com sucesso!", "Sucesso");
+                                reload_home(None, None);
+                            }
+                         }
                         ResponseType::No => { println!("Ação cancelada!"); }
                         _ => {}
                     }
-
-                    alert.destroy();
                 }));
             }
-
-
         }));
 
         button_edt.connect_clicked(clone!(@strong info, @weak options => move |_|{
@@ -262,27 +265,30 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
                 .child(&box_options)
                 .build();
 
-            button_del.connect_clicked(clone!(@weak options => move |_|{
+            button_del.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
                 options.popdown();
 
-                let alert = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-
-                if alert.is_some(){
-                    let alert = alert.unwrap();
-                    alert.present();
+                let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+                if alert_confirm.is_some(){
+                    let alert_confirm = alert_confirm.unwrap();
+                    alert_confirm.present();
 
                     #[allow(deprecated)]
-                    alert.connect_response(move |alert, res|{
+                    alert_confirm.connect_response(clone!( @weak alert_confirm => move |_, res|{
                         match res{
-                            ResponseType::Yes => { println!("Conta deletada!"); }
+                            ResponseType::Yes => {
+                                if !get_counts_instance().remove(&info.id){
+                                    alert("Ocorreu um erro ao tentar remover a conta.", "Erro!");
+                                }else{
+                                    alert("Conta deletada com sucesso!", "Sucesso");
+                                    reload_home(None, Some(&stack));
+                                }
+                                }
                             ResponseType::No => { println!("Ação cancelada!"); }
                             _ => {}
                         }
-
-                        alert.destroy();
-                    });
+                    }));
                 }
-
             }));
 
             button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{

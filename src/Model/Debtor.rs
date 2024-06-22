@@ -42,7 +42,7 @@ impl Debtor {
         self.status
     }
 
-    pub fn get_receipt(&self) -> f32{
+    pub fn get_receipt(&self) -> f32 {
         self.receipt
     }
 
@@ -62,7 +62,7 @@ impl Debtor {
         }
     }
 
-    pub fn add_receipt(&mut self, r: f32){
+    pub fn add_receipt(&mut self, r: f32) {
         self.receipt += r;
     }
 }

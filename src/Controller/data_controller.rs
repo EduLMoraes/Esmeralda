@@ -59,6 +59,17 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     }
 }
 
+/// This delete a count on databse.
+pub async fn delete(id: &i32) -> Result<(), ControlError> {
+    let user_id = get_user_instance().as_ref().unwrap().id;
+
+    get_database_instance()
+        .delete(Data::Count(id.clone(), user_id))
+        .await
+        .map_err(|err| ControlError::ErrorExternDB(err))?;
+
+    Ok(())
+}
 /// This recover all payments and counts of the year existent
 /// on database.
 ///

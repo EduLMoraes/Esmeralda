@@ -432,7 +432,7 @@ impl DataBase {
                     counts.insert(0, count);
                 }
 
-                if !counts.is_empty() {
+                if !counts.is_empty() && counts.len() > 1 {
                     counts[0].id = max_id;
                 }
 
@@ -556,6 +556,49 @@ impl DataBase {
             })),
         }
     }
+
+    pub async fn delete(&self, data: Data) -> Result<(), DataBaseError> {
+        match data {
+            Data::UserDb(user) => {
+                self.pool
+                    .prepare("DELETE FROM users WHERE user_id = ?1")
+                    .unwrap()
+                    .execute(params![user.id])
+                    .map_err(|_| {
+                        DataBaseError::DeleteUserError(ErrorLog {
+                            title: "User not found!",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                Ok(())
+            }
+            Data::Count(count_id, user_id) => {
+                println!("Deletando conta {}{}...", user_id, count_id);
+
+                let _ = self
+                    .pool
+                    .prepare("DELETE FROM counts WHERE user_id = ?1 AND count_id = ?2")
+                    .unwrap()
+                    .execute(params![user_id, format!("{}{}", user_id, count_id)])
+                    .map_err(|_| {
+                        DataBaseError::DeleteCountError(ErrorLog {
+                            title: "Error on delete count",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                Ok(())
+            }
+            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                title: "Type of data is invalid to delete",
+                code: 817,
+                file: "Database.rs",
+            })),
+        }
+    }
 }
 
 lazy_static! {
@@ -574,4 +617,5 @@ pub enum Data {
     UserDb(UserDb),
     Counts(ListCount, UserDb, i16),
     Years(ListCount, UserDb),
+    Count(i32, i32),
 }

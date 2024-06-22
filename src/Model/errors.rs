@@ -45,6 +45,12 @@ pub enum DataBaseError {
     #[error("Error to get user from db")]
     EditUserError(ErrorLog<'static>),
 
+    #[error("Error to delete user from db")]
+    DeleteUserError(ErrorLog<'static>),
+
+    #[error("Errror to delete count from db")]
+    DeleteCountError(ErrorLog<'static>),
+
     #[error("Error in data type receive")]
     DataTypeInvalid(ErrorLog<'static>),
 }

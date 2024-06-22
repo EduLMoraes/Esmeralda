@@ -33,13 +33,13 @@ pub fn new_debtor_info(debtor: &Debtor) -> Box {
     income_label.add_css_class("title_i");
 
     grid.attach(&name, 0, 0, 1, 1);
-    
+
     grid.attach(&rece_label, 0, 1, 1, 1);
     grid.attach(&debt_label, 0, 2, 1, 1);
     grid.attach(&paid_label, 0, 3, 1, 1);
     grid.attach(&total_label, 0, 4, 1, 1);
     grid.attach(&income_label, 0, 5, 1, 1);
-    
+
     grid.attach(&rece_value, 1, 1, 1, 1);
     grid.attach(&debt_value, 1, 2, 1, 1);
     grid.attach(&paid_value, 1, 3, 1, 1);

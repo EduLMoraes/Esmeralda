@@ -155,7 +155,8 @@ pub fn get_add_box(stack: &Stack) -> Box {
             if !count.is_empty(){
                 use tokio::runtime::Runtime;
                 let rnt = Runtime::new().unwrap();
-                get_counts_instance().put(count.clone());
+
+                get_counts_instance().put(count);
 
                 match rnt.block_on(control::save()){
                     Ok(_) => {
