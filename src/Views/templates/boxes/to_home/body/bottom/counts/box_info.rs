@@ -107,10 +107,9 @@ pub fn new_box_info(info: &Count) -> Box {
                     match res{
                         ResponseType::Yes => {
                             if !get_counts_instance().remove(&info.id){
-                                alert("Ocorreu um erro ao tentar remover a conta.", "Erro!");
+                                alert("Ocorreu um erro ao tentar", "Erro!");
                             }else{
-                                alert("Conta deletada com sucesso!", "Sucesso");
-                                reload_home(None, None);
+                                reload_home(None, None)
                             }
                          }
                         ResponseType::No => { println!("Ação cancelada!"); }
@@ -265,31 +264,30 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
                 .child(&box_options)
                 .build();
 
-            button_del.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
-                options.popdown();
+                button_del.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
+                    options.popdown();
+                    let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
 
-                let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-                if alert_confirm.is_some(){
-                    let alert_confirm = alert_confirm.unwrap();
-                    alert_confirm.present();
+                    if alert_confirm.is_some(){
+                        let alert_confirm = alert_confirm.unwrap();
+                        alert_confirm.present();
 
-                    #[allow(deprecated)]
-                    alert_confirm.connect_response(clone!( @weak alert_confirm => move |_, res|{
-                        match res{
-                            ResponseType::Yes => {
-                                if !get_counts_instance().remove(&info.id){
-                                    alert("Ocorreu um erro ao tentar remover a conta.", "Erro!");
-                                }else{
-                                    alert("Conta deletada com sucesso!", "Sucesso");
-                                    reload_home(None, Some(&stack));
-                                }
-                                }
-                            ResponseType::No => { println!("Ação cancelada!"); }
-                            _ => {}
-                        }
-                    }));
-                }
-            }));
+                        #[allow(deprecated)]
+                        alert_confirm.connect_response(clone!( @weak alert_confirm, @weak stack => move |_, res|{
+                            match res{
+                                ResponseType::Yes => {
+                                    if !get_counts_instance().remove(&info.id){
+                                        alert("Ocorreu um erro ao tentar", "Erro!");
+                                    }else{
+                                        reload_home(None, Some(&stack))
+                                    }
+                                 }
+                                ResponseType::No => { println!("Ação cancelada!"); }
+                                _ => {}
+                            }
+                        }));
+                    }
+                }));
 
             button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
                 options.popdown();
