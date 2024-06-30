@@ -38,10 +38,12 @@ impl ListCount {
 
     pub fn remove(&mut self, id_count: &i32) -> bool {
         let rnt = crate::tokio::runtime::Runtime::new().unwrap();
+
         if rnt.block_on(delete(id_count)).is_ok() {
             for i in 0..self.list.len() {
                 if &self.list[i].id == id_count {
                     self.list.remove(i);
+                    break;
                 }
             }
 

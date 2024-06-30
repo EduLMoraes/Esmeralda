@@ -107,7 +107,9 @@ impl DataBase {
                 Ok(())
             }
             Data::Counts(counts, user, _year) => {
-                self.pool.prepare("INSERT INTO counts (
+                self.pool
+                    .prepare(
+                        "INSERT INTO counts (
                         count_id,
                         user_id, 
                         debtor, 
@@ -120,26 +122,50 @@ impl DataBase {
                         date_out, 
                         status,
                         nature
-                    ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, strftime('%Y-%m-%d', ?9), strftime('%Y-%m-%d', ?10), ?11, ?12) ")
-                .unwrap()
-                .execute(params![
-                    format!("{}{}", user.id, counts.list[0].id)
-                        .trim()
-                        .parse::<i32>()
-                        .unwrap(),
-                    user.id,
-                    counts.list[0].debtor,
-                    counts.list[0].title,
-                    counts.list[0].description,
-                    counts.list[0].value,
-                    counts.list[0].paid_installments,
-                    counts.list[0].installments,
-                    counts.list[0].date_in.to_string(),
-                    counts.list[0].date_out.to_string(),
-                    counts.list[0].status,
-                    counts.list[0].nature
-                ])
-                .unwrap();
+                    ) VALUES (
+                        (
+                            select
+                                user_id || (
+                                    max(
+                                        substr(count_id, 2)
+                                    +1)
+                                ) 
+                            from counts 
+                            where user_id = ?1
+                        ), 
+                    ?1, ?2, ?3, ?4, ?5, ?6, ?7, 
+                    strftime('%Y-%m-%d', ?8), strftime('%Y-%m-%d', ?9), 
+                    ?10, ?11) ",
+                    )
+                    .map_err(|er| {
+                        println!("{er}");
+                        DataBaseError::AddCountError(ErrorLog {
+                            title: "Error to prepare statement",
+                            code: 301,
+                            file: "database.rs",
+                        })
+                    })?
+                    .execute(params![
+                        user.id,
+                        counts.list[0].debtor,
+                        counts.list[0].title,
+                        counts.list[0].description,
+                        counts.list[0].value,
+                        counts.list[0].paid_installments,
+                        counts.list[0].installments,
+                        counts.list[0].date_in.to_string(),
+                        counts.list[0].date_out.to_string(),
+                        counts.list[0].status,
+                        counts.list[0].nature
+                    ])
+                    .map_err(|er| {
+                        println!("{er}");
+                        DataBaseError::AddCountError(ErrorLog {
+                            title: "Error to prepare statement",
+                            code: 301,
+                            file: "database.rs",
+                        })
+                    })?;
 
                 Ok(())
             }
@@ -240,20 +266,15 @@ impl DataBase {
             Data::Counts(mut l_counts, user, year) => {
                 let mut stmt = self.pool
                     .prepare(
-                        "SELECT MAX((SELECT MAX(count_id) FROM counts WHERE user_id = ?1)) AS max_id, count_id, user_id,
-                        strftime('%Y-%m-%d', date_in) AS date_in, strftime('%Y-%m-%d', date_out) AS date_out, debtor, title, description, value, paid_installments, installments, status, nature
+                        "SELECT count_id, user_id,
+                        strftime('%Y-%m-%d', date_in) AS date_in, strftime('%Y-%m-%d', date_out) AS date_out, 
+                        debtor, title, description, value, paid_installments, installments, status, nature
                         FROM counts
                         WHERE user_id = ?1
                         AND
-                        (
-                            CAST(strftime('%Y', date_out) AS SMALLINT) = ?2
-                            OR
-                            CAST(strftime('%Y', date_out) AS SMALLINT) >= ?2
-                            AND
-                            CAST(strftime('%Y', date_in) AS SMALLINT) <= ?2
-                        )
-                        GROUP BY count_id
-                        ORDER BY count_id",
+                        ( strftime('%Y', date_in) like ?2
+                        OR strftime('%Y', date_out) like ?2 )
+                        order by count_id",
                     )
                     .map_err(|_| {
                         DataBaseError::GetCountsError(ErrorLog {
@@ -263,7 +284,8 @@ impl DataBase {
                         })
                     })?;
 
-                let mut rows = stmt.query([&user.id, &(year as i32)]).map_err(|_| {
+                let mut rows = stmt.query([&user.id, &(year as i32)]).map_err(|e| {
+                    println!("{e}");
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "Query to counts not working!",
                         code: 804,
@@ -272,7 +294,6 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                let mut max_id = 0;
                 let natures = [
                     "Casa",
                     "Transporte",
@@ -418,22 +439,7 @@ impl DataBase {
                         },
                     };
 
-                    max_id = row
-                        .get::<_, i32>("max_id")
-                        .map_err(|_| {
-                            DataBaseError::GetCountsError(ErrorLog {
-                                title: "Error to get max_id value",
-                                code: 500,
-                                file: "Database.rs",
-                            })
-                        })
-                        .unwrap();
-
                     counts.insert(0, count);
-                }
-
-                if !counts.is_empty() && counts.len() > 1 {
-                    counts[0].id = max_id;
                 }
 
                 l_counts.list = counts;

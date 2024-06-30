@@ -18,7 +18,7 @@ pub fn new_debtor_info(debtor: &Debtor) -> Box {
     )));
     let income_value: Label = Label::new(Some(&format!(
         "{:.2}",
-        debtor.get_receipt() - debtor.get_value() + debtor.get_debt()
+        debtor.get_receipt() - (debtor.get_value() + debtor.get_debt())
     )));
 
     let rece_label: Label = Label::new(Some("Receita:"));

@@ -37,7 +37,7 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     let natures = vec![
         "Casa",
         "Alimentação",
-        "Transprte",
+        "Transporte",
         "Saúde",
         "Lazer",
         "Receita",
