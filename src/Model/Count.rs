@@ -30,7 +30,7 @@ impl Count {
     ) -> Count {
         Count {
             id: 0,
-            debtor: if !Regex::new(r"[^a-zA-Z\s]").unwrap().is_match(name) {
+            debtor: if !Regex::new(r"[^a-zA-Z\p{L}\s]").unwrap().is_match(name) {
                 String::from(name)
             } else {
                 String::from("")
