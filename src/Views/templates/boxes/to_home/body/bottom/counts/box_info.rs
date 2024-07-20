@@ -1,6 +1,9 @@
 use self::control::edit;
-
 use super::*;
+use crate::gtk::{
+    gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu, ResponseType,
+};
+use alerts::{confirm, edit_count};
 
 pub fn new_box_info(info: &Count) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
@@ -36,7 +39,11 @@ pub fn new_box_info(info: &Count) -> Box {
     box_center_i.add_css_class("box_center_i");
     box_center_i.set_valign(gtk::Align::Center);
 
-    let value = format!("R${:.2}", info.value);
+    let value = if info.nature == *"Receita" {
+        format!("R$ +{:.2}", info.value)
+    } else {
+        format!("R$ -{:.2}", info.value)
+    };
     let label_value = Label::new(Some(&value));
     label_value.add_css_class("label_value_i");
 
@@ -60,8 +67,76 @@ pub fn new_box_info(info: &Count) -> Box {
         label_status.add_css_class("status_negative");
     }
 
-    let date = Label::new(Some(&info.date_out.to_string()));
+    let date = Label::new(Some(&format!(
+        "{:02}/{:02}/{:02} - {:02}/{:02}/{:02}",
+        &info.date_in.day(),
+        &info.date_in.month(),
+        &info.date_in.year().to_string().get(2..=3).unwrap(),
+        &info.date_out.day(),
+        &info.date_out.month(),
+        &info.date_out.year().to_string().get(2..=3).unwrap()
+    )));
+
     date.add_css_class("date_i");
+
+    let gesture = GestureClick::new();
+    gesture.set_button(BUTTON_SECONDARY);
+
+    gesture.connect_pressed(clone!(@strong info, @weak box_info => move |_, _, _, _| {
+        let button_del = Button::with_label("Deletar");
+        let button_edt = Button::with_label("Editar");
+
+        let box_options = Box::new(Orientation::Vertical, 1);
+        box_options.append(&button_edt);
+        box_options.append(&button_del);
+
+        let options = PopoverMenu::builder()
+            .child(&box_options)
+            .build();
+
+        button_del.connect_clicked(clone!(@strong info, @weak options => move |_|{
+            options.popdown();
+
+            let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+            if alert_confirm.is_some(){
+                let alert_confirm = alert_confirm.unwrap();
+                alert_confirm.present();
+
+                #[allow(deprecated)]
+                alert_confirm.connect_response(clone!( @weak alert_confirm => move |_, res|{
+                    match res{
+                        ResponseType::Yes => {
+                            if !get_counts_instance().remove(&info.id){
+                                alert("Ocorreu um erro ao tentar", "Erro!");
+                            }else{
+                                reload_home(None, None)
+                            }
+                         }
+                        ResponseType::No => { println!("Ação cancelada!"); }
+                        _ => {}
+                    }
+                }));
+            }
+        }));
+
+        button_edt.connect_clicked(clone!(@strong info, @weak options => move |_|{
+            options.popdown();
+
+            let form = edit_count("Editar conta", &info);
+            if form.is_some(){
+                let form = form.unwrap();
+
+                form.connect_destroy(|_|{
+                    reload_home(None, None);
+                });
+
+                form.present();
+            }
+        }));
+
+        box_info.append(&options);
+        options.popup();
+    }));
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
@@ -71,6 +146,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_body.append(&box_center_i);
     box_body.append(&box_right_i);
 
+    box_info.add_controller(gesture);
     box_info.append(&box_top);
     box_info.append(&box_body);
     box_info.append(&box_bottom);
@@ -78,7 +154,7 @@ pub fn new_box_info(info: &Count) -> Box {
     box_info
 }
 
-pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
+pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
 
@@ -111,7 +187,7 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     box_center_i.add_css_class("box_center_info");
     box_center_i.set_valign(gtk::Align::Center);
 
-    let value = format!("R${:.2}", info.value);
+    let value = format!("R$ {:.2}", info.value);
     let label_value = Label::new(Some(&value));
     label_value.add_css_class("label_value_i");
 
@@ -133,47 +209,29 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
 
-    match stack {
-        Some(stack) => {
-            button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
-                use crate::tokio::runtime::Runtime;
+    button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
+        use crate::tokio::runtime::Runtime;
 
-                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
+        get_counts_instance().pay(info.id);
+        let ref_counts = get_counts_instance().clone();
 
-                ref_counts.pay(info.id);
+        let rn = Runtime::new().unwrap();
 
-                let rn = Runtime::new().unwrap();
+        rn.block_on(edit(&ref_counts)).unwrap();
 
-                rn.block_on(edit(&ref_counts)).unwrap();
+        reload_home(None, Some(&stack));
+    }));
 
-                let tmp = stack.child_by_name("home").unwrap();
-                stack.remove(&tmp);
-                stack.add_titled(&get_home_box(&stack), Some("home"), "home");
+    let date = Label::new(Some(&format!(
+        "{:02}/{:02}/{} - {:02}/{:02}/{:02}",
+        &info.date_in.day(),
+        &info.date_in.month(),
+        &info.date_in.year().to_string().get(2..=3).unwrap(),
+        &info.date_out.day(),
+        &info.date_out.month(),
+        &info.date_out.year().to_string().get(2..=3).unwrap()
+    )));
 
-                let tmp = stack.child_by_name("payment").unwrap();
-                stack.remove(&tmp);
-                stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
-
-                update_list(ref_counts);
-            }));
-        }
-        None => {
-            button_status.connect_clicked(clone!(@strong info => move |_|{
-                use crate::tokio::runtime::Runtime;
-                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
-
-                ref_counts.pay(info.id);
-
-                let rn = Runtime::new().unwrap();
-
-                rn.block_on(edit(&ref_counts)).unwrap();
-
-                update_list(ref_counts);
-            }));
-        }
-    }
-
-    let date = Label::new(Some(&info.date_out.to_string()));
     date.add_css_class("date_i");
 
     box_right_i.append(&label_status);
@@ -190,6 +248,68 @@ pub fn box_info(info: &Count, stack: Option<&Stack>) -> Box {
         button_status.set_label("pagar");
     }
 
+    let gesture = GestureClick::new();
+    gesture.set_button(BUTTON_SECONDARY);
+
+    gesture.connect_pressed(
+        clone!(@strong info, @weak box_info, @weak stack => move |_, _, _, _| {
+            let button_del = Button::with_label("Deletar");
+            let button_edt = Button::with_label("Editar");
+
+            let box_options = Box::new(Orientation::Vertical, 1);
+            box_options.append(&button_edt);
+            box_options.append(&button_del);
+
+            let options = PopoverMenu::builder()
+                .child(&box_options)
+                .build();
+
+                button_del.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
+                    options.popdown();
+                    let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+
+                    if alert_confirm.is_some(){
+                        let alert_confirm = alert_confirm.unwrap();
+                        alert_confirm.present();
+
+                        #[allow(deprecated)]
+                        alert_confirm.connect_response(clone!( @weak alert_confirm, @weak stack => move |_, res|{
+                            match res{
+                                ResponseType::Yes => {
+                                    if !get_counts_instance().remove(&info.id){
+                                        alert("Ocorreu um erro ao tentar", "Erro!");
+                                    }else{
+                                        reload_home(None, Some(&stack))
+                                    }
+                                 }
+                                ResponseType::No => { println!("Ação cancelada!"); }
+                                _ => {}
+                            }
+                        }));
+                    }
+                }));
+
+            button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
+                options.popdown();
+
+                let form = edit_count("Editar conta", &info);
+                if form.is_some(){
+                    let form = form.unwrap();
+
+                    form.connect_destroy(move |_|{
+                        reload_home(None, Some(&stack));
+                    });
+
+                    form.present();
+                }
+            }));
+
+            box_info.append(&options);
+            options.popup();
+        }),
+    );
+
+    box_body.add_controller(gesture);
     box_body.append(&box_left_i);
     box_body.append(&box_center_i);
     box_body.append(&box_right_i);

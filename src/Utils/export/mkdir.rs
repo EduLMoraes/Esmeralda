@@ -1,46 +1,13 @@
 use super::*;
 
-/// Creates a directory structure and returns a file and its path. If the directory already exists, it appends a number to the file name to avoid overwriting existing files.
-///
-/// # Arguments
-///
-/// * `path` - A string representing the path to the file that needs to be created.
-///
-/// # Example
-///
-/// ```rust
-/// let (file, path) = mkdir("path/to/file.txt").await;
-/// ```
-///
-/// # Returns
-///
-/// A tuple containing the created file and its path.
-///
-/// # Code Analysis
-///
-/// The function splits the `path` string into individual directory names and creates the directory structure by iterating over the directory names. It then uses the `create_dir_all` function to create all the directories in the `new_path` string.
-///
-/// The function determines the limit index where the file name starts by counting the characters until the first dot ('.') is encountered. It initializes variables for the file, the altered path, and a flag to track if the path has been altered.
-///
-/// The function starts a loop to handle cases where the file already exists. If the file count is between 1 and 10, it appends a number to the file name using the `replace_range` or `insert_str` methods. It prints the altered path for debugging purposes.
-///
-/// The function checks if the file exists using the `fs::metadata` function. If the file does not exist, it creates it using the `File::create` function and returns the file and the path. If the file already exists, it increments the file count and repeats the loop.
-///
-/// # Errors
-///
-/// The function may return an error if there are issues with creating directories or files.
-///
-/// # Safety
-///
-/// The function is marked as `async` and may need to be used within an asynchronous context.
 #[allow(dead_code)]
 pub async fn mkdir(path: &str) -> Result<(File, String), String> {
     let mut new_path: String = String::new();
 
     let paths: Vec<&str> = path.split('/').collect();
 
-    for i in 0..paths.len() - 1 {
-        new_path.push_str(paths[i]);
+    for item in paths.iter().take(paths.len() - 1) {
+        new_path.push_str(item);
         new_path.push('/');
     }
 

@@ -1,6 +1,5 @@
 use super::*;
 use crate::env::var;
-use gtk::{Adjustment, CheckButton, SpinButton};
 
 #[path = "./boxes/mod.rs"]
 mod boxes;
@@ -11,7 +10,7 @@ pub fn rgter_screen(stack: &Stack) -> Box {
 
     let box_register = box_register(stack);
 
-    let return_button = LinkButton::new("Voltar para login");
+    let return_button = Button::with_label("Voltar para login");
     let return_image = Image::from_file(format!("{}return.png", var("IMG_PATH").unwrap()));
     let box_return = Box::new(Orientation::Horizontal, 0);
     box_return.append(&return_image);

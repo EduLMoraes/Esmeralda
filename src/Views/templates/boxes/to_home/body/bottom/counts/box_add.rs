@@ -48,6 +48,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
         "Transporte",
         "Saúde",
         "Lazer",
+        "Receita",
         "Outros",
     ]);
     let date_input = Calendar::new();
@@ -142,6 +143,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     2 => "Transporte",
                     3 => "Saúde",
                     4 => "Lazer",
+                    5 => "Receita",
                     _ => "Outros"
                 }
             );
@@ -153,22 +155,12 @@ pub fn get_add_box(stack: &Stack) -> Box {
             if !count.is_empty(){
                 use tokio::runtime::Runtime;
                 let rnt = Runtime::new().unwrap();
-                let ref_counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
 
-                ref_counts.put(count.clone());
+                get_counts_instance().put(count);
 
                 match rnt.block_on(control::save()){
                     Ok(_) => {
-                        update_list(ref_counts);
-
-                        let tmp = stack.child_by_name("home").unwrap();
-                        stack.remove(&tmp);
-                        stack.add_titled(&get_home_box(&stack), Some("home"), "home");
-
-                        let tmp = stack.child_by_name("payment").unwrap();
-                        stack.remove(&tmp);
-                        stack.add_titled(&get_pay_box(&stack), Some("payment"), "payment");
-
+                        reload_home(None, Some(&stack));
                         title_input.set_text("");
                         description_input.set_text("");
                         value_input.set_value(0.01);

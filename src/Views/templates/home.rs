@@ -1,5 +1,8 @@
 use super::*;
-use crate::control::{recover, recover_years, GLOBAL_COUNTS};
+use crate::{
+    control::{recover, recover_years},
+    model::List::get_counts_instance,
+};
 
 #[path = "./boxes/to_home/mod.rs"]
 mod to_home;
@@ -9,24 +12,48 @@ use to_home::*;
 pub fn home_screen() -> Box {
     let screen = Box::new(Orientation::Horizontal, 0);
 
-    let mut stack = Stack::new();
+    let stack = Stack::new();
 
     let run = tokio::runtime::Runtime::new().unwrap();
-    match run.block_on(recover_years()) {
-        Ok(years) => {
-            if years.len() > 0 {
-                let _ = run.block_on(recover(years[0])).unwrap();
+    if let Ok(years) = run.block_on(recover_years()) {
+        if !years.is_empty() {
+            run.block_on(recover(years[0])).unwrap();
+        } else {
+            let _ = run
+                .block_on(recover(crate::chrono::Utc::now().year() as i16))
+                .map_err(|err| println!("{}", err));
+        }
+    }
+
+    let today = chrono::Utc::now();
+
+    if today.day() == 1 {
+        if today.month() - 1 == 0 {
+            alert("Pronto para começar mais um ano? Tenho certeza que neste as coisas serão ainda melhores!", "Feliz ano novo!")
+        } else {
+            let month_perfomance = get_counts_instance().get_perfomance_months();
+            let month_perfomance = month_perfomance[(today.month() - 1) as usize];
+
+            if month_perfomance < 0.0 {
+                alert(&format!("Que triste :´( Seu último mês teve um rendimento de R${month_perfomance:.2}"), "Abre o olho!");
+            } else if month_perfomance > 0.0 {
+                alert(
+                    &format!(
+                        "Parabéns!!! Seu último mês teve um rendimento de R${month_perfomance:.2}"
+                    ),
+                    "Você positivou!",
+                );
             } else {
-                let _ = run
-                    .block_on(recover(crate::chrono::Utc::now().year() as i16))
-                    .map_err(|err| println!("{}", err));
+                alert(
+                    "Seu último mês teve rendimento de R$0,00",
+                    "Nem pra mais, nem pra menos!",
+                );
             }
         }
-        Err(_) => {}
     }
 
     let box_menu_left = get_box_menu_left(&stack);
-    let box_body = get_box_body(&mut stack);
+    let box_body = get_box_body(&stack);
 
     screen.append(&box_menu_left);
     screen.append(&box_body);

@@ -1,28 +1,12 @@
-use std::borrow::BorrowMut;
-
 use super::*;
+use gtk::CheckButton;
+use std::borrow::BorrowMut;
 
 pub fn form_right() -> Box {
     let form = Box::new(Orientation::Vertical, 12);
     form.add_css_class("bf_right");
 
-    let wage_label = Label::new(Some("Qual o seu salário?"));
-    let wage_entry = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.00, 10000000.0, 1.0, 0.1, 0.1)),
-        0.00,
-        2,
-    );
-
-    let box_wage = Box::new(Orientation::Vertical, 0);
-    box_wage.append(&wage_label);
-    box_wage.append(&wage_entry);
-
-    wage_entry.connect_value_changed(clone!(@weak wage_entry => move |input|{
-        wage_entry.set_css_classes(&["input_valid", "entry_register"]);
-        unsafe{ NEWUSER.wage = input.value() as f32};
-    }));
-
-    let pass_label = Label::new(Some("Confirme sua senha:*"));
+    let pass_label = Label::new(Some("Senha:*"));
     let pass_entry = Entry::new();
     let box_pass = Box::new(Orientation::Vertical, 0);
     box_pass.append(&pass_label);
@@ -30,12 +14,31 @@ pub fn form_right() -> Box {
     pass_entry.set_visibility(false);
 
     pass_entry.connect_changed(clone!(@weak pass_entry => move |input|{
+
+        if input.text().len() < 4{
+            pass_entry.set_css_classes(&["input_invalid", "entry_register"]);
+        }else{
+            let new_u = unsafe { NEWUSER.borrow_mut() };
+            new_u.password = input.text().to_string();
+
+            pass_entry.set_css_classes(&["input_valid", "entry_register"]);
+        }
+    }));
+
+    let pass_confirm_label = Label::new(Some("Confirme sua senha:*"));
+    let pass_confirm_entry = Entry::new();
+    let box_pass_confirm = Box::new(Orientation::Vertical, 0);
+    box_pass_confirm.append(&pass_confirm_label);
+    box_pass_confirm.append(&pass_confirm_entry);
+    pass_confirm_entry.set_visibility(false);
+
+    pass_confirm_entry.connect_changed(clone!(@weak pass_confirm_entry => move |input|{
         let new_u = unsafe { NEWUSER.borrow_mut() };
 
         if new_u.password != input.text(){
-            pass_entry.set_css_classes(&["input_invalid", "entry_register"]);
+            pass_confirm_entry.set_css_classes(&["input_invalid", "entry_register"]);
         }else{
-            pass_entry.set_css_classes(&["input_valid", "entry_register"]);
+            pass_confirm_entry.set_css_classes(&["input_valid", "entry_register"]);
         }
     }));
 
@@ -52,20 +55,22 @@ pub fn form_right() -> Box {
 
     accept_check.connect_toggled(|input| unsafe { ACCEPT = input.is_active() });
 
-    wage_label.set_halign(gtk::Align::Start);
     pass_label.set_halign(gtk::Align::Start);
+    pass_confirm_label.set_halign(gtk::Align::Start);
 
-    box_wage.set_halign(gtk::Align::Start);
     box_pass.set_halign(gtk::Align::Start);
+    box_pass_confirm.set_halign(gtk::Align::Start);
 
     box_accept.add_css_class("box_accept");
+    box_pass.add_css_class("box_pass");
+    box_pass_confirm.add_css_class("box_pass");
 
     accept_link.add_css_class("link_register");
-    wage_entry.add_css_class("entry_register");
     pass_entry.add_css_class("entry_register");
+    pass_confirm_entry.add_css_class("entry_register");
 
-    form.append(&box_wage);
     form.append(&box_pass);
+    form.append(&box_pass_confirm);
     form.append(&box_accept);
 
     form

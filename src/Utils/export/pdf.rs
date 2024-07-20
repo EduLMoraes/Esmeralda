@@ -1,15 +1,5 @@
 use super::*;
 
-/// Exports data from an `ListCount` object to a PDF file.
-///
-/// # Arguments
-///
-/// * `path` - The path where the PDF file will be saved.
-/// * `data` - The data to be exported to the PDF file.
-///
-/// # Returns
-///
-/// * `Result<String, String>` - The path of the exported PDF file, or an error message if the export fails.
 #[allow(deprecated, unused)]
 pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
     let mut x = Mm(297.0);
@@ -61,7 +51,7 @@ pub fn export_pdf(path: &str, data: &ListCount) -> Result<String, String> {
         }
 
         for col in 0..5 {
-            let line = vec![
+            let line = [
                 format!("{}", debtor.get_id()),
                 format!("| {:.18}", debtor.get_name()),
                 format!("| {:.2}", debtor.get_debt()),

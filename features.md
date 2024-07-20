@@ -5,6 +5,17 @@
     <td> Descrição </td>
   </tr>
   <tr>
+   <td> v1.1.0</td>
+   <td>
+        Nova aba para gráficos.<br>
+        Grupos organizados dinâmicamente<br>
+        Novo grupo "Receitas"<br>
+        Remoção temporária do campo de salário<br>
+        Nova demonstração de rentabilidade anual<br>
+        Nova demonstração de devedores<br>        
+   </td>
+  </tr>
+  <tr>
    <td> v1.0.0</td>
    <td>
         Nova visualização.

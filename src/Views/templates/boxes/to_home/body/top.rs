@@ -6,14 +6,15 @@ use gtk::{DropDown, SearchEntry};
 
 pub fn box_top(stack: &Stack) -> Box {
     let box_top = Box::new(Orientation::Horizontal, 200);
+    box_top.set_hexpand(true);
 
     box_top.add_css_class("box_top_b");
 
     let title_top = Label::new(Some("Contas"));
-    let select_year = unsafe {
-        let ref_counts = GLOBAL_COUNTS.borrow();
+    let select_year = {
+        let ref_counts = get_counts_instance();
 
-        let tmp: Vec<String> = if ref_counts.years.len() > 0 {
+        let tmp: Vec<String> = if !ref_counts.years.is_empty() {
             ref_counts.years.iter().map(|&y| y.to_string()).collect()
         } else {
             vec![format!("{}", Utc::now().year())]
@@ -22,19 +23,14 @@ pub fn box_top(stack: &Stack) -> Box {
         DropDown::from_strings(&tmp)
     };
 
-    select_year.connect_selected_item_notify(clone!(@weak select_year, @weak stack => move |_|{
-        let counts = unsafe{ GLOBAL_COUNTS.borrow() };
+    select_year.connect_selected_item_notify(clone!(@weak stack => move |select_year|{
+        let counts = get_counts_instance().years.clone();
 
         use crate::tokio::runtime::Runtime;
         let rnt = Runtime::new().unwrap();
-        rnt.block_on(recover(counts.years[select_year.selected() as usize])).unwrap();
-        update_list(counts);
+        rnt.block_on(recover(counts[select_year.selected() as usize])).unwrap();
 
-        let tmp = stack.child_by_name("Contas").unwrap();
-        stack.remove(&tmp);
-
-        stack.add_titled(&box_count(), Some("Contas"), "Contas");
-
+        reload_home(None, Some(&stack));
     }));
 
     select_year.set_halign(gtk::Align::Center);
@@ -53,16 +49,12 @@ pub fn box_top(stack: &Stack) -> Box {
     search.add_css_class("search_bar_t");
 
     search.connect_changed(clone!(@weak search => move |_| {
-        let counts = unsafe{ GLOBAL_COUNTS.borrow() };
-
-        let result = ListCount::from(
-            ListCount {
-                list: counts.search(search.text().to_string()),
+        let result = ListCount {
+                list: get_counts_instance().search(search.text().to_string()),
                 years: vec![0]
-            }
-        );
+            };
 
-        update_list(&result);
+        reload_home(Some(&result), None);
     }));
 
     let button_ext = Button::with_label("Sair");

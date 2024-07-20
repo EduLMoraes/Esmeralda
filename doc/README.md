@@ -23,11 +23,11 @@ Requisitos Funcionais:
     · O sistema deve permitir o login de usuários com um nome de usuário e senha. ✅
     · Para cadastro, será solicitado um e-mail, senha, confirmação de senha e nome de usuário. ✅
 
-⏳ 2 - Controle de Gastos:
+✅ 2 - Controle de Gastos:
 
     · Mostrar na tela os gastos individuais por usuário, indicando o valor gasto e o status da dívida. ✅
     · Registrar e exibir a quantidade total de dinheiro gasto por usuário. ✅
-    · Exibir o saldo disponível para gastos. ❌
+    · Exibir o saldo disponível para gastos. ✅
 
 ✅ 3 - Compra Parcelada:
 
@@ -42,7 +42,7 @@ Requisitos Funcionais:
 ⏳ 5 - Conexão à Internet:
 
     · O sistema deve utilizar a internet para enviar e-mail de confirmação durante o processo de cadastro. ❌
-    · O sistema deve utilizar a internet para enviar e-mail de recuperação de senha quando solicitado. ✅
+    · O sistema deve utilizar a internet para enviar e-mail de recuperação de senha quando solicitado. ❌
     · Enviar dados apenas quando solicitado pelo usuário, utilizando a internet somente para essa finalidade. ❌
 
 Requisitos Não Funcionais:

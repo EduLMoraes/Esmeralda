@@ -23,7 +23,7 @@ fn test_new_count_with_valid_parameters() {
     assert_eq!(count.date_in, date_in);
     assert_eq!(count.paid_installments, 0);
     assert_eq!(count.installments, installments);
-    assert_eq!(count.status, false);
+    assert!(!count.status);
     assert_eq!(count.nature, String::from(nature));
 }
 
@@ -74,7 +74,7 @@ fn test_pay_all() {
     );
     count.pay_all();
     assert_eq!(count.paid_installments, count.installments);
-    assert_eq!(count.status, true);
+    assert!(count.status);
 }
 
 // Calling pay() on a Count object with installments > 0 and paid_installments < installments should increment the paid_installments field by 1.
@@ -109,7 +109,7 @@ fn test_pay_with_installments_minus_one() {
     count.paid_installments = count.installments - 1;
     count.pay();
     assert_eq!(count.paid_installments, count.installments);
-    assert_eq!(count.status, true);
+    assert!(count.status);
 }
 
 // Creating a new Count with a non-alphanumeric name field should return a Count object with an empty debtor field.
@@ -173,7 +173,7 @@ fn test_pay_with_zero_installments() {
     count.pay();
 
     assert_eq!(count.paid_installments, 0);
-    assert_eq!(count.status, false);
+    assert!(!count.status);
 }
 
 // Calling is_empty() on a Count object with an empty name field should return true.
@@ -189,7 +189,7 @@ fn test_is_empty_with_empty_name() {
 
     let count = Count::from(name, title, desc, value, date_in, installments, nature);
 
-    assert_eq!(count.is_empty(), true);
+    assert!(count.is_empty());
 }
 
 // Calling is_empty() on a Count object with a non-alphanumeric name field should return true.
@@ -205,7 +205,7 @@ fn test_is_empty_with_non_alphanumeric_name() {
 
     let count = Count::from(name, title, desc, value, date_in, installments, nature);
 
-    assert_eq!(count.is_empty(), true);
+    assert!(count.is_empty());
 }
 
 // Calling is_empty() on a Count object with an empty title field should return true.
@@ -221,7 +221,7 @@ fn test_is_empty_with_empty_title() {
 
     let count = Count::from(name, title, desc, value, date_in, installments, nature);
 
-    assert_eq!(count.is_empty(), true);
+    assert!(count.is_empty());
 }
 
 // Calling is_empty() on a Count object with a value of 0.0 should return true.
@@ -237,7 +237,7 @@ fn test_is_empty_with_zero_value() {
 
     let count = Count::from(name, title, desc, value, date_in, installments, nature);
 
-    assert_eq!(count.is_empty(), true);
+    assert!(count.is_empty());
 }
 
 // Calling to_string() on a Count object should return a string representation of the object in the format "id, debtor, title, description, value, date_in, date_out, paid_installments, installments, nature, status".

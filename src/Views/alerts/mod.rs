@@ -1,25 +1,14 @@
 use super::*;
+use crate::chrono::Datelike;
 #[allow(deprecated)]
-use crate::gtk::{AlertDialog, MessageDialog, Window};
+use crate::gtk::{Adjustment, Calendar, CheckButton, DropDown, MessageDialog, SpinButton};
+use crate::model::Count::Count;
 
-pub fn alert(message: &str, title: &str) {
-    let window_alert = Window::new();
-    window_alert.set_title(Some(title));
-    window_alert.set_default_size(350, 70);
+mod alert;
+mod confirm;
+mod edit;
 
-    let alert_dialog = AlertDialog::builder().message(message).build();
-
-    alert_dialog.show(Some(&window_alert));
-}
-
-#[allow(unused, deprecated)]
-pub fn confirm(message: &str, title: &str) -> MessageDialog {
-    let confirm = MessageDialog::builder()
-        .buttons(gtk::ButtonsType::YesNo)
-        .message_type(gtk::MessageType::Warning)
-        .text(message)
-        .title(title)
-        .build();
-
-    confirm
-}
+pub use alert::alert;
+pub use confirm::confirm;
+pub use edit::edit_count;
+static mut HAS_MESSAGE_DIALOG: bool = false;

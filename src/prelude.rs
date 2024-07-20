@@ -1,3 +1,4 @@
+pub use ::regex;
 pub use chrono;
 pub use gtk;
 pub use gtk::prelude::*;

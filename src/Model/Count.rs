@@ -1,3 +1,5 @@
+use core::fmt;
+
 use crate::prelude::chrono::{Datelike, NaiveDate};
 use regex::Regex;
 
@@ -28,37 +30,41 @@ impl Count {
     ) -> Count {
         Count {
             id: 0,
-            debtor: if !Regex::new(r"[^a-zA-Z\s]").unwrap().is_match(name) {
+            debtor: if !Regex::new(r"[^a-zA-Z\p{L}\s]").unwrap().is_match(name) {
                 String::from(name)
             } else {
                 String::from("")
             },
             title: String::from(title),
             description: String::from(desc),
-            value: value,
-            date_in: date_in,
+            value,
+            date_in,
             date_out: {
-                let mut tmp_month = date_in.month() + installments;
-                let mut tmp_year = date_in.year();
-                let mut tmp_installments = tmp_month;
+                if nature != "Receita" {
+                    let mut tmp_month = date_in.month() + installments;
+                    let mut tmp_year = date_in.year();
+                    let mut tmp_installments = tmp_month;
 
-                while tmp_month > 12 {
-                    tmp_year += 1;
-                    tmp_installments -= 12;
-                    tmp_month = tmp_installments;
+                    while tmp_month > 12 {
+                        tmp_year += 1;
+                        tmp_installments -= 12;
+                        tmp_month = tmp_installments;
+                    }
+
+                    NaiveDate::from_ymd_opt(tmp_year, tmp_month, 1).unwrap()
+                } else {
+                    date_in
                 }
-
-                NaiveDate::from_ymd_opt(tmp_year, tmp_month, date_in.day() as u32).unwrap()
             },
             paid_installments: 0,
-            installments: installments,
+            installments,
             status: false,
             nature: String::from(nature),
         }
     }
 
     pub fn new_id(&mut self) {
-        self.id = self.id + 1;
+        self.id += 1;
     }
 
     pub fn pay_all(&mut self) {
@@ -74,9 +80,19 @@ impl Count {
         }
     }
 
-    #[allow(unused)]
-    pub fn to_string(&self) -> String {
-        format!(
+    pub fn is_empty(&self) -> bool {
+        self.debtor.trim().is_empty()
+            || Regex::new(r"[0-9]").unwrap().is_match(self.debtor.trim())
+            || self.title.trim().is_empty()
+            || self.installments == 0
+            || self.value == 0.0
+    }
+}
+
+impl fmt::Display for Count {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
             "{}, {}, {}, {}, {:.2}, {}, {}, {}, {}, {}, {}",
             self.id,
             self.debtor,
@@ -90,13 +106,5 @@ impl Count {
             self.nature,
             self.status
         )
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.debtor.trim().is_empty()
-            || Regex::new(r"[0-9]").unwrap().is_match(self.debtor.trim())
-            || self.title.trim().is_empty()
-            || self.installments == 0
-            || self.value == 0.0
     }
 }

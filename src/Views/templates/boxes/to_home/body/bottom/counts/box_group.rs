@@ -25,6 +25,7 @@ pub fn new_group_info(
 
     let box_group = Box::new(Orientation::Horizontal, 0);
     box_group.add_css_class("box_group");
+    box_group.set_hexpand(true);
 
     let box_left_g = Box::new(Orientation::Vertical, 2);
     box_left_g.add_css_class("box_left_g");

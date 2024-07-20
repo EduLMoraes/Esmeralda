@@ -7,7 +7,8 @@ pub fn get_grid_debtors() -> Grid {
     grid_debtors.set_column_spacing(10);
     grid_debtors.set_row_spacing(10);
 
-    let counts = unsafe { GLOBAL_COUNTS.borrow() };
+    let binding = get_counts_instance();
+    let counts = binding.borrow();
     let debtors: Vec<Debtor> = counts.filter_debtors();
 
     let mut x = 0;

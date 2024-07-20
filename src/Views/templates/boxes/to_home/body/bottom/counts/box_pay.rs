@@ -20,7 +20,8 @@ pub fn get_pay_box(stack: &Stack) -> Box {
 
     box_pay.append(&box_title);
 
-    let infos = unsafe { GLOBAL_COUNTS.borrow() };
+    let binding = get_counts_instance();
+    let infos = binding.borrow();
     let grid = Grid::new();
     grid.set_halign(gtk::Align::Center);
     grid.set_column_spacing(10);
@@ -30,10 +31,10 @@ pub fn get_pay_box(stack: &Stack) -> Box {
     let mut y = 0;
 
     if !infos.list.is_empty() {
-        for mut info in &infos.list {
+        for info in &infos.list {
             if !info.status {
-                let group = box_info(&mut info, Some(stack));
-                grid.attach(&group, x, y as i32, 1, 1);
+                let group = box_info(info, stack);
+                grid.attach(&group, x, y, 1, 1);
 
                 if x < 1 {
                     x += 1;

@@ -1,13 +1,9 @@
 use super::*;
 
-#[path = "./grids/mod.rs"]
-mod grids;
 use grids::*;
 
 pub fn get_home_box(stack: &Stack) -> Box {
     let box_home = Box::new(Orientation::Vertical, 10);
-    box_home.set_halign(gtk::Align::Center);
-    box_home.set_valign(gtk::Align::Center);
     box_home.add_css_class("box_left_bb");
 
     let box_button_lb = Box::new(Orientation::Horizontal, 10);
@@ -57,15 +53,13 @@ pub fn get_home_box(stack: &Stack) -> Box {
     scrolled.set_child(Some(&box_stack));
     scrolled.set_height_request(500);
 
-    let counts = unsafe { GLOBAL_COUNTS.borrow_mut() };
-
-    let total_counts = counts.get_total();
-    let total_debt = counts.get_total_debt();
+    let mut binding = get_counts_instance();
+    let counts = binding.borrow_mut();
 
     box_home.append(&get_grid_values(
-        total_counts,
-        total_debt,
-        total_counts - total_debt,
+        counts.get_total(),
+        counts.get_total_debt(),
+        counts.get_total_perfomance(),
     ));
     box_home.append(&box_button_lb);
     box_home.append(&scrolled);

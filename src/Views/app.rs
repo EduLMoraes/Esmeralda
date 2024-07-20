@@ -44,6 +44,5 @@ pub fn esmeralda(app: &Application) {
     grid.set_column_spacing(0);
 
     window.set_child(Some(&grid));
-
     window.present();
 }

@@ -9,24 +9,30 @@ use std::io::Read;
 use std::io::Write;
 use std::os::unix::io::AsRawFd;
 
+/// This gen the variables of ambient if she's not exists
+/// garant the functionality of system.
 pub fn get_config() {
     let path = match std::env::consts::OS {
         "windows" => {
-            let null_stdout = File::create("NUL").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
+            if env::var("IS_DEV").is_err() {
+                let null_stdout = File::create("NUL").unwrap();
+                let stdout_fd = stdout().as_raw_fd();
+                let null_stdout_fd = null_stdout.as_raw_fd();
+                unsafe {
+                    libc::dup2(null_stdout_fd, stdout_fd);
+                }
             }
 
             env::var("HOMEPATH").unwrap()
         }
         _ => {
-            let null_stdout = File::create("/dev/null").unwrap();
-            let stdout_fd = stdout().as_raw_fd();
-            let null_stdout_fd = null_stdout.as_raw_fd();
-            unsafe {
-                libc::dup2(null_stdout_fd, stdout_fd);
+            if env::var("IS_DEV").is_err() {
+                let null_stdout = File::create("/dev/null").unwrap();
+                let stdout_fd = stdout().as_raw_fd();
+                let null_stdout_fd = null_stdout.as_raw_fd();
+                unsafe {
+                    libc::dup2(null_stdout_fd, stdout_fd);
+                }
             }
 
             env::var("HOME").unwrap()
@@ -37,7 +43,7 @@ pub fn get_config() {
         Ok(_) => {
             let _ = log(
                 format!("{path}/.esmeralda/log.log").into(),
-                &format!("[MAIN] Variabel of environment already exists\n"),
+                "[MAIN] Variabel of environment already exists\n",
             );
         }
         Err(_) => {
@@ -70,21 +76,23 @@ pub fn get_config() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
-
-    match env::var("ICON_PATH") {
-        Err(_) => env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path)),
-        _ => {}
+    match env::var("UPDT_PATH") {
+        Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
+        _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
     }
-    match env::var("IMG_PATH") {
-        Err(_) => env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path)),
-        _ => {}
+    if env::var("YEAR_SELECTED").is_err() {
+        env::set_var("YEAR_SELECTED", "0")
     }
-    match env::var("CSS_PATH") {
-        Err(_) => env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path)),
-        _ => {}
+    if env::var("IMG_PATH").is_err() {
+        env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
     }
-    match env::var("DB_PATH") {
-        Err(_) => env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path)),
-        _ => {}
+    if env::var("DB_PATH").is_err() {
+        env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path))
+    }
+    if env::var("ICON_PATH").is_err() {
+        env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path))
+    }
+    if env::var("CSS_PATH").is_err() {
+        env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path))
     }
 }

@@ -1,30 +1,5 @@
 use super::{mkdir::mkdir, ListCount, Write};
 
-/// Export HTML
-///
-/// The `export_html` function exports data to an HTML file. It takes a `path` and `data` as inputs and returns a `Result` containing either the path of the exported HTML file or an error message.
-///
-/// # Example Usage
-///
-/// ```rust
-/// let path = "output.html";
-/// let data = ListCount { ... };
-///
-/// match export_html(path, &data).await {
-///     Ok(file_path) => println!("HTML file exported successfully: {}", file_path),
-///     Err(error) => println!("Error exporting HTML file: {}", error),
-/// }
-/// ```
-///
-/// # Arguments
-///
-/// * `path` - A string representing the file path where the HTML file will be exported.
-/// * `data` - A reference to an `ListCount` struct containing the data to be included in the HTML table.
-///
-/// # Returns
-///
-/// * If the HTML file is exported successfully, the function returns a `Result` containing the path of the exported file.
-/// * If there is an error during the file export, the function returns a `Result` containing an error message.
 #[allow(dead_code)]
 pub async fn export_html(path: &str, data: &ListCount) -> Result<String, String> {
     let (mut file, path) = mkdir(path).await?;
@@ -76,8 +51,8 @@ pub async fn export_html(path: &str, data: &ListCount) -> Result<String, String>
                 info.nature,
                 info.title,
                 info.description,
-                info.date_in.to_string(),
-                info.date_out.to_string(),
+                info.date_in,
+                info.date_out,
                 info.paid_installments,
                 info.installments,
                 info.value,

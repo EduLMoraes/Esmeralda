@@ -19,7 +19,7 @@ async fn test_all_fields_non_empty_and_valid() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, false);
+    assert!(!result);
 }
 
 // Returns false if debtor field is empty or contains non-alphabetic characters.
@@ -40,7 +40,7 @@ async fn test_debtor_field_empty_or_non_alphabetic() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns false if title field is empty.
@@ -61,7 +61,7 @@ async fn test_title_field_empty() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns false if value field is zero.
@@ -82,7 +82,7 @@ async fn test_value_field_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns false if installments field is zero.
@@ -103,7 +103,7 @@ async fn test_installments_field_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns true if debtor field contains only spaces.
@@ -124,7 +124,7 @@ async fn test_debtor_field_only_spaces() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns true if debtor field contains only non-alphabetic characters.
@@ -145,7 +145,7 @@ async fn test_debtor_field_only_non_alphabetic() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns true if debtor field contains alphabetic characters and spaces.
@@ -166,7 +166,7 @@ async fn test_debtor_field_alphabetic_and_spaces() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns false if value field is non-zero.
@@ -187,7 +187,7 @@ async fn test_value_field_non_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, false);
+    assert!(!result);
 }
 
 // Returns false if installments field is non-zero.
@@ -208,7 +208,7 @@ async fn test_installments_field_non_zero() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, false);
+    assert!(!result);
 }
 
 // Returns false if Count struct is empty.
@@ -229,7 +229,7 @@ async fn test_info_struct_empty() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
 
 // Returns false if Count struct has only debtor field.
@@ -250,5 +250,5 @@ async fn test_info_struct_only_debtor_field() {
     };
 
     let result = info.is_empty();
-    assert_eq!(result, true);
+    assert!(result);
 }
