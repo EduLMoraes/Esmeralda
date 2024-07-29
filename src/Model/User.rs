@@ -26,4 +26,5 @@ pub struct UserDb {
     pub username: String,
     pub password: String,
     pub email: String,
+    pub last_login: String,
 }

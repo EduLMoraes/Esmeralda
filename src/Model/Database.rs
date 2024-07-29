@@ -53,7 +53,8 @@ impl DataBase {
                         email VARCHAR(100) NOT NULL UNIQUE,
                         password VARCHAR(200) NOT NULL,
                         name VARCHAR(100) NOT NULL,
-                        wage REAL NOT NULL
+                        wage REAL NOT NULL,
+                        last_login DATE
                     );
                     
                     CREATE TABLE IF NOT EXISTS counts (
@@ -189,10 +190,10 @@ impl DataBase {
             Data::User(user) => {
                 let mut stmt = self
                     .pool
-                    .prepare("SELECT * FROM users WHERE username = ?1 LIMIT 1")
+                    .prepare("SELECT user_id, name, username, password, email, coalesce(strftime('%m', last_login), '') as last_login FROM users WHERE username = ?1 LIMIT 1")
                     .map_err(|_| {
                         DataBaseError::GetUserError(ErrorLog {
-                            title: "User not found!",
+                            title: "stmt not working!",
                             code: 804,
                             file: "Database.rs",
                         })
@@ -246,6 +247,16 @@ impl DataBase {
                                 .map_err(|_| {
                                     DataBaseError::GetUserError(ErrorLog {
                                         title: "Error to get email value",
+                                        code: 500,
+                                        file: "Database.rs",
+                                    })
+                                })
+                                .unwrap(),
+                            last_login: row
+                                .get::<_, String>("last_login")
+                                .map_err(|_| {
+                                    DataBaseError::GetUserError(ErrorLog {
+                                        title: "Error to get last_login value",
                                         code: 500,
                                         file: "Database.rs",
                                     })
@@ -555,6 +566,20 @@ impl DataBase {
 
                 Ok(())
             }
+            Data::LastLogin(id) => {
+                let mut stmt = self
+                    .pool
+                    .prepare(
+                        "UPDATE users SET
+                            last_login = CURRENT_DATE
+                            WHERE user_id = ?1",
+                    )
+                    .unwrap();
+
+                stmt.execute(params![id]).unwrap();
+
+                Ok(())
+            }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
@@ -624,4 +649,5 @@ pub enum Data {
     Counts(ListCount, UserDb, i16),
     Years(ListCount, UserDb),
     Count(i32, i32),
+    LastLogin(i32),
 }

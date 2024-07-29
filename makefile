@@ -14,6 +14,17 @@ git:
 	git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
 	git push
 
+release:
+	cargo check
+	cargo fmt
+	make test
+	cargo build --release
+	cargo bundle --release
+	zip -o ./target/release/sources.zip ./src/Views/assets/* ./src/Views/assets/*/* ./src/Views/assets/*/*/* ./src/Views/styles/*
+	git add .
+	git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
+	git push
+
 test:
 	cargo test -- --test-threads=1
 	rm /tmp/*.csv --force

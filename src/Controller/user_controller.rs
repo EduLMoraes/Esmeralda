@@ -11,6 +11,7 @@ pub fn gen_user_instance(usr: UserDb) {
         username: usr.username,
         password: usr.password,
         email: usr.email,
+        last_login: usr.last_login,
     });
 }
 
@@ -60,6 +61,10 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
                     file: "control.rs",
                 }))
             } else if data.password == user.password {
+                db.edit(Data::LastLogin(data.id))
+                    .await
+                    .map_err(|err| ControlError::ErrorExternDB(err))?;
+
                 gen_user_instance(data);
 
                 let _ = log(

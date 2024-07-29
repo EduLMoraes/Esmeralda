@@ -53,3 +53,4 @@ SELECT debtor, user_id FROM counts
 UNION ALL
 SELECT name, user_id FROM users;
 
+SELECT user_id, name, username, password, email, coalesce(strftime('%m', last_login), '') as last_login FROM users WHERE username = 'teste' LIMIT 1;

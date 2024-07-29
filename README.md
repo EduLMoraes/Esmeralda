@@ -28,7 +28,7 @@ registrados, cadastro e login para acesso ao sistema.
 # *Detalhes*: <section id="details"/>
 
 ### *Versão* 🤖
-`v1.0.0`
+`v1.1.0`
 
 <h2> Tecnologias </h2>
 <p>
@@ -61,7 +61,7 @@ O aplicativo esta disponível para os sistemas operacionais listados a baixo:
 |Sistema <br> operacional|Versão <br> Disponível|
 |-------------------|----------|
 |Windows 10         |  0.1.5+  |
-|Linux              |  0.1.*   |
+|Linux              |  1.1.0 < |
 |MacOs              |    ❌    |
 
 </div>
@@ -85,7 +85,7 @@ O aplicativo esta disponível para os sistemas operacionais listados a baixo:
 
 #### Passo 2 - Rode estes comandos:
 ```bash
-  curl -fsSL https://raw.githubusercontent.com/EduLMoraes/Esmeralda/Master/install_to_linux.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/EduLMoraes/Esmeralda/main/install_to_linux.sh | bash
 ```
 
 ---
