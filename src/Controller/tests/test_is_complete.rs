@@ -132,14 +132,14 @@ async fn test_export_read_only_directory() {
         Ok(_) => {
             fs::set_permissions(
                 path.to_str().unwrap(),
-                std::os::unix::prelude::PermissionsExt::from_mode(0o444),
+                std::os::windows::prelude::PermissionsExt::from_mode(0o444),
             )
             .unwrap();
         }
         Err(_) => {
             fs::set_permissions(
                 path.to_str().unwrap(),
-                std::os::unix::prelude::PermissionsExt::from_mode(0o444),
+                std::os::windows::prelude::PermissionsExt::from_mode(0o444),
             )
             .unwrap();
         }

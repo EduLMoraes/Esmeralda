@@ -48,7 +48,7 @@ printpdf = "0.7.0"
 rand = "0.8.5"
 regex = "1.10.2"
 reqwest = "0.12.4"
-rusqlite = "0.31.0"
+rusqlite = {version = "0.31.0", features = ["bundled"]}
 rust-crypto = "0.2.36"
 rust-fuzzy-search = "0.1.1"
 serde = { version = "1.0.193", features = ["derive"] }
