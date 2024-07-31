@@ -59,6 +59,7 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
+            last_login: "7".to_string(),
         };
         let count = Count {
             id: 1,
@@ -102,6 +103,7 @@ mod tests_database {
                 username: "test_user".to_string(),
                 password: "new_password".to_string(),
                 email: "test@example.com".to_string(),
+                last_login: "".to_string()
             })
         );
     }
@@ -118,6 +120,7 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
+            last_login: "7".to_string(),
         };
         let list_count = ListCount {
             list: vec![Count {
@@ -152,6 +155,7 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
+            last_login: "7".to_string(),
         };
         let list_count = ListCount {
             list: vec![Count {
@@ -215,6 +219,7 @@ mod tests_database {
                 username: "test_user".to_string(),
                 password: "password".to_string(),
                 email: "test@example.com".to_string(),
+                last_login: "7".to_string(),
             },
         );
         let result = db.add(data);
@@ -288,6 +293,7 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
+            last_login: "7".to_string(),
         };
         let count = Count {
             id: 1,
@@ -323,6 +329,7 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "new_password".to_string(),
             email: "test@example.com".to_string(),
+            last_login: "7".to_string(),
         };
         let data = Data::UserDb(user);
         let result = db.edit(data);
@@ -390,6 +397,7 @@ mod tests_database {
                 username: "test_user".to_string(),
                 password: "new_password".to_string(),
                 email: "test@test.com".to_string(),
+                last_login: "7".to_string(),
             },
             2022,
         );

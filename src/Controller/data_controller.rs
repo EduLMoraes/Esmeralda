@@ -98,9 +98,11 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
                 .iter_mut()
                 .map(|count| {
                     let count_id: String = count.id.to_string();
-                    let count_id = count_id.split_at(id_user_len);
-
-                    count.id = count_id.1.trim().parse().unwrap();
+                    println!("{}", count_id);
+                    if count_id.len() > 1 {
+                        let count_id = count_id.split_at(id_user_len);
+                        count.id = count_id.1.trim().parse().unwrap();
+                    }
 
                     count.clone()
                 })
@@ -109,8 +111,6 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
             data.list = list;
 
             get_counts_instance().deref_mut().list = data.list;
-
-            // binding.list = data.list;
 
             Ok(())
         }

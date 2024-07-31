@@ -12,9 +12,13 @@ pub fn get_add_box(stack: &Stack) -> Box {
     button_return.add_css_class("link_return");
 
     button_return.set_label("Retornar");
-    button_return.connect_clicked(clone!(@weak stack => move |_| {
-        stack.set_visible_child_name("home");
-    }));
+    button_return.connect_clicked(clone!(
+        #[weak]
+        stack,
+        move |_| {
+            stack.set_visible_child_name("home");
+        }
+    ));
 
     box_top.append(&Label::new(Some("Adicionando conta")));
     box_top.append(&button_return);
@@ -82,17 +86,34 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     date_input.set_size_request(10, 10);
 
-    date_input.connect_day_selected(clone!(@weak date_button, @weak date_input => move |_| {
-        let date_string = format!("{:02}/{:02}/{:04}", date_input.day(), date_input.month()+1, date_input.year());
-        date_button.set_label(&date_string);
-        date_input.set_visible(false);
-        date_button.set_visible(true);
-    }));
+    date_input.connect_day_selected(clone!(
+        #[weak]
+        date_button,
+        #[weak]
+        date_input,
+        move |_| {
+            let date_string = format!(
+                "{:02}/{:02}/{:04}",
+                date_input.day(),
+                date_input.month() + 1,
+                date_input.year()
+            );
+            date_button.set_label(&date_string);
+            date_input.set_visible(false);
+            date_button.set_visible(true);
+        }
+    ));
 
-    date_button.connect_clicked(clone!(@weak date_button, @weak date_input => move |_| {
-        date_button.set_visible(false);
-        date_input.set_visible(true);
-    }));
+    date_button.connect_clicked(clone!(
+        #[weak]
+        date_button,
+        #[weak]
+        date_input,
+        move |_| {
+            date_button.set_visible(false);
+            date_input.set_visible(true);
+        }
+    ));
 
     box_name.set_halign(gtk::Align::Start);
     box_title.set_halign(gtk::Align::Start);
@@ -121,44 +142,59 @@ pub fn get_add_box(stack: &Stack) -> Box {
     button_append.add_css_class("button");
 
     button_append.connect_clicked(clone!(
-        @weak stack,
-        @weak name_input,
-        @weak title_input,
-        @weak description_input,
-        @weak date_input,
-        @weak value_input,
-        @weak status_input,
-        @weak installment_input,
-        @weak nature_input => move |_| {
+        #[weak]
+        stack,
+        #[weak]
+        name_input,
+        #[weak]
+        title_input,
+        #[weak]
+        description_input,
+        #[weak]
+        date_input,
+        #[weak]
+        value_input,
+        #[weak]
+        status_input,
+        #[weak]
+        installment_input,
+        #[weak]
+        nature_input,
+        move |_| {
             let mut count = Count::from(
                 name_input.text().trim(),
                 title_input.text().trim(),
                 description_input.text().as_str(),
                 value_input.value() as f32,
-                NaiveDate::from_ymd_opt(date_input.year(), (date_input.month() + 1) as u32, date_input.day() as u32).unwrap(),
+                NaiveDate::from_ymd_opt(
+                    date_input.year(),
+                    (date_input.month() + 1) as u32,
+                    date_input.day() as u32,
+                )
+                .unwrap(),
                 installment_input.value() as u32,
-                match nature_input.selected(){
+                match nature_input.selected() {
                     0 => "Casa",
                     1 => "Alimentação",
                     2 => "Transporte",
                     3 => "Saúde",
                     4 => "Lazer",
                     5 => "Receita",
-                    _ => "Outros"
-                }
+                    _ => "Outros",
+                },
             );
 
-            if status_input.is_active(){
+            if status_input.is_active() {
                 count.pay_all()
             }
 
-            if !count.is_empty(){
+            if !count.is_empty() {
                 use tokio::runtime::Runtime;
                 let rnt = Runtime::new().unwrap();
 
                 get_counts_instance().put(count);
 
-                match rnt.block_on(control::save()){
+                match rnt.block_on(control::save()) {
                     Ok(_) => {
                         reload_home(None, Some(&stack));
                         title_input.set_text("");
@@ -167,13 +203,14 @@ pub fn get_add_box(stack: &Stack) -> Box {
                         date_input.clear_marks();
                         installment_input.set_value(1.0);
                         nature_input.set_selected(0);
-                    },
-                    Err(err) => println!("{err}")
+                    }
+                    Err(err) => println!("{err}"),
                 };
-            }else{
+            } else {
                 println!("Faltam dados!");
             }
-    }));
+        }
+    ));
 
     let grid = Grid::new();
     grid.set_column_homogeneous(true);

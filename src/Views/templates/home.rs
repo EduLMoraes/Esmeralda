@@ -7,6 +7,7 @@ use crate::{
 #[path = "./boxes/to_home/mod.rs"]
 mod to_home;
 use chrono::Datelike;
+use control::get_user_instance;
 use to_home::*;
 
 pub fn home_screen() -> Box {
@@ -27,19 +28,26 @@ pub fn home_screen() -> Box {
 
     let today = chrono::Utc::now();
 
-    if today.day() == 1 {
-        if today.month() - 1 == 0 {
+    if today.month()
+        != get_user_instance()
+            .as_ref()
+            .unwrap()
+            .last_login
+            .parse::<u32>()
+            .unwrap()
+    {
+        if today.month() == 1 {
             alert("Pronto para começar mais um ano? Tenho certeza que neste as coisas serão ainda melhores!", "Feliz ano novo!")
         } else {
             let month_perfomance = get_counts_instance().get_perfomance_months();
-            let month_perfomance = month_perfomance[(today.month() - 1) as usize];
+            let month_perfomance = month_perfomance[(today.month() - 2) as usize];
 
             if month_perfomance < 0.0 {
-                alert(&format!("Que triste :´( Seu último mês teve um rendimento de R${month_perfomance:.2}"), "Abre o olho!");
+                alert(&format!("Que triste :´( Seu último mês teve um rendimento negativo de R${month_perfomance:.2}"), "Abre o olho!");
             } else if month_perfomance > 0.0 {
                 alert(
                     &format!(
-                        "Parabéns!!! Seu último mês teve um rendimento de R${month_perfomance:.2}"
+                        "Parabéns!!! Seu último mês teve um rendimento positivo de R${month_perfomance:.2}"
                     ),
                     "Você positivou!",
                 );

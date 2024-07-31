@@ -82,61 +82,80 @@ pub fn new_box_info(info: &Count) -> Box {
     let gesture = GestureClick::new();
     gesture.set_button(BUTTON_SECONDARY);
 
-    gesture.connect_pressed(clone!(@strong info, @weak box_info => move |_, _, _, _| {
-        let button_del = Button::with_label("Deletar");
-        let button_edt = Button::with_label("Editar");
+    gesture.connect_pressed(clone!(
+        #[strong]
+        info,
+        #[weak]
+        box_info,
+        move |_, _, _, _| {
+            let button_del = Button::with_label("Deletar");
+            let button_edt = Button::with_label("Editar");
 
-        let box_options = Box::new(Orientation::Vertical, 1);
-        box_options.append(&button_edt);
-        box_options.append(&button_del);
+            let box_options = Box::new(Orientation::Vertical, 1);
+            box_options.append(&button_edt);
+            box_options.append(&button_del);
 
-        let options = PopoverMenu::builder()
-            .child(&box_options)
-            .build();
+            let options = PopoverMenu::builder().child(&box_options).build();
 
-        button_del.connect_clicked(clone!(@strong info, @weak options => move |_|{
-            options.popdown();
+            button_del.connect_clicked(clone!(
+                #[strong]
+                info,
+                #[weak]
+                options,
+                move |_| {
+                    options.popdown();
 
-            let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
-            if alert_confirm.is_some(){
-                let alert_confirm = alert_confirm.unwrap();
-                alert_confirm.present();
+                    let alert_confirm =
+                        confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+                    if alert_confirm.is_some() {
+                        let alert_confirm = alert_confirm.unwrap();
+                        alert_confirm.present();
 
-                #[allow(deprecated)]
-                alert_confirm.connect_response(clone!( @weak alert_confirm => move |_, res|{
-                    match res{
-                        ResponseType::Yes => {
-                            if !get_counts_instance().remove(&info.id){
-                                alert("Ocorreu um erro ao tentar", "Erro!");
-                            }else{
-                                reload_home(None, None)
+                        #[allow(deprecated)]
+                        alert_confirm.connect_response(clone!(move |_, res| {
+                            match res {
+                                ResponseType::Yes => {
+                                    if !get_counts_instance().remove(&info.id) {
+                                        alert("Ocorreu um erro ao tentar", "Erro!");
+                                    } else {
+                                        reload_home(None, None)
+                                    }
+                                }
+                                ResponseType::No => {
+                                    println!("Ação cancelada!");
+                                }
+                                _ => {}
                             }
-                         }
-                        ResponseType::No => { println!("Ação cancelada!"); }
-                        _ => {}
+                        }));
                     }
-                }));
-            }
-        }));
+                }
+            ));
 
-        button_edt.connect_clicked(clone!(@strong info, @weak options => move |_|{
-            options.popdown();
+            button_edt.connect_clicked(clone!(
+                #[strong]
+                info,
+                #[weak]
+                options,
+                move |_| {
+                    options.popdown();
 
-            let form = edit_count("Editar conta", &info);
-            if form.is_some(){
-                let form = form.unwrap();
+                    let form = edit_count("Editar conta", &info);
+                    if form.is_some() {
+                        let form = form.unwrap();
 
-                form.connect_destroy(|_|{
-                    reload_home(None, None);
-                });
+                        form.connect_destroy(|_| {
+                            reload_home(None, None);
+                        });
 
-                form.present();
-            }
-        }));
+                        form.present();
+                    }
+                }
+            ));
 
-        box_info.append(&options);
-        options.popup();
-    }));
+            box_info.append(&options);
+            options.popup();
+        }
+    ));
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
@@ -209,18 +228,24 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     button_status.add_css_class("button_status_negative");
     button_status.add_css_class("button");
 
-    button_status.connect_clicked(clone!(@strong info, @weak stack => move |_|{
-        use crate::tokio::runtime::Runtime;
+    button_status.connect_clicked(clone!(
+        #[strong]
+        info,
+        #[weak]
+        stack,
+        move |_| {
+            use crate::tokio::runtime::Runtime;
 
-        get_counts_instance().pay(info.id);
-        let ref_counts = get_counts_instance().clone();
+            get_counts_instance().pay(info.id);
+            let ref_counts = get_counts_instance().clone();
 
-        let rn = Runtime::new().unwrap();
+            let rn = Runtime::new().unwrap();
 
-        rn.block_on(edit(&ref_counts)).unwrap();
+            rn.block_on(edit(&ref_counts)).unwrap();
 
-        reload_home(None, Some(&stack));
-    }));
+            reload_home(None, Some(&stack));
+        }
+    ));
 
     let date = Label::new(Some(&format!(
         "{:02}/{:02}/{} - {:02}/{:02}/{:02}",
@@ -251,8 +276,14 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let gesture = GestureClick::new();
     gesture.set_button(BUTTON_SECONDARY);
 
-    gesture.connect_pressed(
-        clone!(@strong info, @weak box_info, @weak stack => move |_, _, _, _| {
+    gesture.connect_pressed(clone!(
+        #[strong]
+        info,
+        #[weak]
+        box_info,
+        #[weak]
+        stack,
+        move |_, _, _, _| {
             let button_del = Button::with_label("Deletar");
             let button_edt = Button::with_label("Editar");
 
@@ -260,54 +291,75 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
             box_options.append(&button_edt);
             box_options.append(&button_del);
 
-            let options = PopoverMenu::builder()
-                .child(&box_options)
-                .build();
+            let options = PopoverMenu::builder().child(&box_options).build();
 
-                button_del.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
+            button_del.connect_clicked(clone!(
+                #[strong]
+                info,
+                #[weak]
+                options,
+                #[weak]
+                stack,
+                move |_| {
                     options.popdown();
-                    let alert_confirm = confirm("Tem certeza que deseja deletar a conta?", "Atenção");
+                    let alert_confirm =
+                        confirm("Tem certeza que deseja deletar a conta?", "Atenção");
 
-                    if alert_confirm.is_some(){
+                    if alert_confirm.is_some() {
                         let alert_confirm = alert_confirm.unwrap();
                         alert_confirm.present();
 
                         #[allow(deprecated)]
-                        alert_confirm.connect_response(clone!( @weak alert_confirm, @weak stack => move |_, res|{
-                            match res{
-                                ResponseType::Yes => {
-                                    if !get_counts_instance().remove(&info.id){
-                                        alert("Ocorreu um erro ao tentar", "Erro!");
-                                    }else{
-                                        reload_home(None, Some(&stack))
+                        alert_confirm.connect_response(clone!(
+                            #[weak]
+                            stack,
+                            move |_, res| {
+                                match res {
+                                    ResponseType::Yes => {
+                                        if !get_counts_instance().remove(&info.id) {
+                                            alert("Ocorreu um erro ao tentar", "Erro!");
+                                        } else {
+                                            reload_home(None, Some(&stack))
+                                        }
                                     }
-                                 }
-                                ResponseType::No => { println!("Ação cancelada!"); }
-                                _ => {}
+                                    ResponseType::No => {
+                                        println!("Ação cancelada!");
+                                    }
+                                    _ => {}
+                                }
                             }
-                        }));
+                        ));
                     }
-                }));
-
-            button_edt.connect_clicked(clone!(@strong info, @weak options, @weak stack => move |_|{
-                options.popdown();
-
-                let form = edit_count("Editar conta", &info);
-                if form.is_some(){
-                    let form = form.unwrap();
-
-                    form.connect_destroy(move |_|{
-                        reload_home(None, Some(&stack));
-                    });
-
-                    form.present();
                 }
-            }));
+            ));
+
+            button_edt.connect_clicked(clone!(
+                #[strong]
+                info,
+                #[weak]
+                options,
+                #[weak]
+                stack,
+                move |_| {
+                    options.popdown();
+
+                    let form = edit_count("Editar conta", &info);
+                    if form.is_some() {
+                        let form = form.unwrap();
+
+                        form.connect_destroy(move |_| {
+                            reload_home(None, Some(&stack));
+                        });
+
+                        form.present();
+                    }
+                }
+            ));
 
             box_info.append(&options);
             options.popup();
-        }),
-    );
+        }
+    ));
 
     box_body.add_controller(gesture);
     box_body.append(&box_left_i);

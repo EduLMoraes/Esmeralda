@@ -1,4 +1,4 @@
--- Active: 1703730527497@@127.0.0.1@5432@esmeralda
+-- Active: 1718076179564@@127.0.0.1@3306
 -- ALTER TABLE counts ADD COLUMN nature VARCHAR(15) DEFAULT ' ';
 
 -- UPDATE counts SET nature = ' ' WHERE nature IS NULL;
@@ -50,4 +50,5 @@ FROM old_table_counts, natures
 WHERE old_table_counts.nature = natures.nature
 ORDER BY old_table_counts.user_id;
 
+alter table users add column last_login date;
 

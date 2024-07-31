@@ -56,39 +56,48 @@ pub fn login_screen(stack: &Stack) -> Box {
     screen.append(&box_pass);
     screen.append(&login_button);
 
-    login_button.connect_clicked(clone!(@weak stack, @weak screen => move |_| {
-        let user = model::User::User{
-            username: String::from(user_entry.text()),
-            password: String::from(pass_entry.text())
-        };
-        let run = tokio::runtime::Runtime::new().unwrap();
+    login_button.connect_clicked(clone!(
+        #[weak]
+        stack,
+        #[weak]
+        screen,
+        move |_| {
+            let user = model::User::User {
+                username: String::from(user_entry.text()),
+                password: String::from(pass_entry.text()),
+            };
+            let run = tokio::runtime::Runtime::new().unwrap();
 
-        if run.block_on(control::login(user)).is_ok(){
-            let home_screen = home_screen();
-            stack.add_css_class("home_window");
-            stack.remove_css_class("login_window");
+            if run.block_on(control::login(user)).is_ok() {
+                let home_screen = home_screen();
+                stack.add_css_class("home_window");
+                stack.remove_css_class("login_window");
 
-            stack.add_titled(&home_screen, Some("home"), "Home");
-            stack.set_visible_child_name("home");
+                stack.add_titled(&home_screen, Some("home"), "Home");
+                stack.set_visible_child_name("home");
 
-            let tmp = stack.child_by_name("login").unwrap();
-            stack.remove(&tmp);
+                let tmp = stack.child_by_name("login").unwrap();
+                stack.remove(&tmp);
 
-            let tmp = stack.child_by_name("register").unwrap();
-            stack.remove(&tmp);
-
-        }else{
-            let error = Label::new(Some("Senha ou usuário incorreto! Tente novamente"));
-            pass_entry.set_text("");
-            screen.append(&error);
+                let tmp = stack.child_by_name("register").unwrap();
+                stack.remove(&tmp);
+            } else {
+                let error = Label::new(Some("Senha ou usuário incorreto! Tente novamente"));
+                pass_entry.set_text("");
+                screen.append(&error);
+            }
         }
-    }));
+    ));
 
-    newu_link.connect_clicked(clone!(@weak stack => move |_| {
-        stack.remove_css_class("login_window");
-        stack.add_css_class("register_window");
-        stack.set_visible_child_name("register");
-    }));
+    newu_link.connect_clicked(clone!(
+        #[weak]
+        stack,
+        move |_| {
+            stack.remove_css_class("login_window");
+            stack.add_css_class("register_window");
+            stack.set_visible_child_name("register");
+        }
+    ));
 
     screen.add_css_class("login_box");
     title.add_css_class("login_title");

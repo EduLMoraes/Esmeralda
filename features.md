@@ -5,6 +5,15 @@
     <td> Descrição </td>
   </tr>
   <tr>
+   <td> v1.2.1</td>
+   <td>
+        Funcionalidades de deletar e editar contas.<br>
+        Resolvido bug de usuário novo.<br>
+        Adicionado registro de último login para feedback mensal.<br>
+        Atualização de dependências.<br>
+   </td>
+  </tr>
+  <tr>
    <td> v1.1.0</td>
    <td>
         Nova aba para gráficos.<br>
