@@ -15,6 +15,7 @@ entry{
 }
 
 .input{
+    border: transparent;
     background-color: white;
     min-width: 100px;
     color: black;
@@ -22,6 +23,8 @@ entry{
 }
 
 .button{
+    border: transparent;
+    background: transparent;
     background-color: #00B477;
 }
 
@@ -30,13 +33,15 @@ entry{
 }
 
 dropdown{
-    background-color: #ffffff00;
+    background-color: transparent;
+    background: transparent;
+    border: transparent;
     padding: 0px;
     min-height: 10px;
     margin: 0px;
 }
 
 .link{
-    background-color: transparent;
+    background: transparent;
     color: blue;
 }

@@ -28,7 +28,7 @@ impl DataBase {
                         file: "Database.rs",
                     })
                 })?
-                .execute_batch("SELECT * FROM users, counts")
+                .execute_batch("SELECT * FROM users NATURAL JOIN counts")
             {
                 Ok(_) => Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                     DataBaseError::CreatePoolError(ErrorLog {
@@ -45,34 +45,42 @@ impl DataBase {
                             file: "Database.rs",
                         })
                     })?;
-                    let _ = conn.execute_batch(
+                    conn.execute_batch(
                         "
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        username VARCHAR(50) NOT NULL UNIQUE,
-                        email VARCHAR(100) NOT NULL UNIQUE,
-                        password VARCHAR(200) NOT NULL,
-                        name VARCHAR(100) NOT NULL,
-                        wage REAL NOT NULL,
-                        last_login DATE
-                    );
-                    
-                    CREATE TABLE IF NOT EXISTS counts (
-                        count_id INTEGER PRIMARY KEY,
-                        user_id INTEGER NOT NULL,
-                        debtor VARCHAR(100) NOT NULL,
-                        title VARCHAR(50) NOT NULL,
-                        description TEXT,
-                        value REAL NOT NULL,
-                        paid_installments INTEGER,
-                        installments INTEGER DEFAULT 1,
-                        date_in DATE NOT NULL,
-                        date_out DATE NOT NULL,
-                        status BOOLEAN NOT NULL,
-                        nature VARCHAR(15) NOT NULL,
-                        FOREIGN KEY (user_id) REFERENCES users
-                    ); ",
-                    );
+                        CREATE TABLE IF NOT EXISTS users (
+                            user_id INTEGER PRIMARY KEY,
+                            username VARCHAR(50) NOT NULL UNIQUE,
+                            email VARCHAR(100) NOT NULL UNIQUE,
+                            password VARCHAR(200) NOT NULL,
+                            name VARCHAR(100) NOT NULL,
+                            wage REAL NOT NULL,
+                            last_login DATE
+                        );
+                        
+                        CREATE TABLE IF NOT EXISTS counts (
+                            count_id INTEGER PRIMARY KEY,
+                            user_id INTEGER NOT NULL,
+                            debtor VARCHAR(100) NOT NULL,
+                            title VARCHAR(50) NOT NULL,
+                            description TEXT,
+                            value REAL NOT NULL,
+                            paid_installments INTEGER,
+                            installments INTEGER DEFAULT 1,
+                            date_in DATE NOT NULL,
+                            date_out DATE NOT NULL,
+                            status BOOLEAN NOT NULL,
+                            nature VARCHAR(15) NOT NULL,
+                            FOREIGN KEY (user_id) REFERENCES users
+                        ); 
+                    ",
+                    )
+                    .map_err(|_| {
+                        DataBaseError::CreatePoolError(ErrorLog {
+                            title: "Create tables failed!",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
 
                     conn
                 }
@@ -103,7 +111,13 @@ impl DataBase {
                     user.name,
                     user.wage.to_string(),
                 ])
-                .unwrap();
+                .map_err(|_err| {
+                    DataBaseError::AddUserError(ErrorLog {
+                        title: "User already existis",
+                        code: 500,
+                        file: "Database.rs",
+                    })
+                })?;
 
                 Ok(())
             }
@@ -125,12 +139,13 @@ impl DataBase {
                         nature
                     ) VALUES (
                         (
-                            select
-                                user_id || (
+                            select(
+                                    select user_id from users where user_id = ?1
+                                ) || coalesce((
                                     max(
                                         substr(count_id, 2)
                                     +1)
-                                ) 
+                                ), 1)
                             from counts 
                             where user_id = ?1
                         ), 
@@ -190,8 +205,17 @@ impl DataBase {
             Data::User(user) => {
                 let mut stmt = self
                     .pool
-                    .prepare("SELECT user_id, name, username, password, email, coalesce(strftime('%m', last_login), '') as last_login FROM users WHERE username = ?1 LIMIT 1")
-                    .map_err(|_| {
+                    .prepare("SELECT user_id, name, username, password, email, coalesce(strftime('%m', last_login), '0') as last_login FROM users WHERE username = ?1 LIMIT 1")
+                    .map_err( |_| {
+                        match self.pool.execute_batch("
+                            ALTER TABLE users ADD COLUMN last_login DATE;
+                        ").map_err(|_|
+                            { DataBaseError::GetUserError(ErrorLog { title: "Not added columns", code: 804, file: "Database.rs" })}
+                        ){
+                            Ok(_) => {},
+                            Err(err) => {return err}
+                        }
+
                         DataBaseError::GetUserError(ErrorLog {
                             title: "stmt not working!",
                             code: 804,

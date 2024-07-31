@@ -18,6 +18,7 @@ pub fn right() -> Box {
         "Status",
         "Devedor",
     ]);
+    drop_order.set_css_classes(&["dropdown_order_by"]);
 
     let box_order = Box::new(Orientation::Horizontal, 0);
     box_order.append(&order_by);

@@ -6,8 +6,17 @@
 
 .stack_switcher{
     padding: 0;
+    background: transparent;
+    border: transparent;
     background-color: transparent;
     font-size: 12px;
+}
+
+.dropdown_order_by, .dropdown_select_year{
+    background: transparent;
+    background-color: transparent;
+    border: transparent;
+    color: white;
 }
 
 .value_total{
@@ -15,7 +24,8 @@
 }
 
 .link_details, .link_return{
-    background-color: transparent;
+    background: transparent;
+    border: transparent;
     text-decoration: solid #7ED957;
     color: #7ED957;
 }
@@ -26,7 +36,8 @@
 
 .link_view{
     color: #666;
-    background-color: transparent;
+    background: transparent;
+    border: transparent;
 }
 
 .link_view:hover{
@@ -43,6 +54,8 @@
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
+    border: transparent;
+    color: #fff;
 }
 
 .button_add{
@@ -69,7 +82,7 @@
     background-image: linear-gradient(90deg, #00c, #CB6CE6);
 }
 .button_payment:hover{
-    animation: hover_payment 2 forwards;
+    animation: hover_payment 3 forwards;
 }
 
 @keyframes hover_payment {
@@ -142,7 +155,8 @@
 }
 
 .label_status_i{
-    background-color: transparent;
+    background: transparent;
+    border: transparent;
 }
 
 .label_value_i{
@@ -173,6 +187,7 @@
 }
 
 .select_year_b{
+    background: transparent;
     background-color: transparent;
     font-size: 20px;
     color: #fff;
@@ -224,7 +239,8 @@
 
 .box_select_t{
     background-color: #1F1F1F;
-    background-color: transparent;
+    background: transparent;
+    border: transparent;
     color: #fff;
     font-size: 20px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -233,6 +249,7 @@
 }
 
 .search_bar_t{
+    border: transparent;
     border-radius: 20px;
     background-color: #3B3B3B;
     color: white;

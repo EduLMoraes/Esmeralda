@@ -11,9 +11,13 @@ pub fn get_pay_box(stack: &Stack) -> Box {
     button_return.add_css_class("link_return");
 
     button_return.set_label("Retornar");
-    button_return.connect_clicked(clone!(@weak stack => move |_| {
-        stack.set_visible_child_name("home");
-    }));
+    button_return.connect_clicked(clone!(
+        #[weak]
+        stack,
+        move |_| {
+            stack.set_visible_child_name("home");
+        }
+    ));
 
     box_title.append(&Label::new(Some("Pagando conta")));
     box_title.append(&button_return);

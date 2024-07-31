@@ -8,10 +8,16 @@ pub fn box_graph_link(stack: &Stack) -> Box {
     let graph_link = Button::with_label("Gráficos");
     graph_link.set_css_classes(&["link_view"]);
 
-    graph_link.connect_clicked(clone!(@weak stack, @weak graph_link => move |_| {
-        reload_home(None, Some(&stack));
-        stack.set_visible_child_name("Graficos");
-    }));
+    graph_link.connect_clicked(clone!(
+        #[weak]
+        stack,
+        #[weak]
+        graph_link,
+        move |_| {
+            reload_home(None, Some(&stack));
+            stack.set_visible_child_name("Graficos");
+        }
+    ));
 
     graph_icon.add_css_class("icon_ml");
 

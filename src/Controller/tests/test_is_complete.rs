@@ -128,23 +128,6 @@ async fn test_export_read_only_directory() {
         years: vec![],
     };
 
-    match fs::create_dir_all(path.clone()) {
-        Ok(_) => {
-            fs::set_permissions(
-                path.to_str().unwrap(),
-                std::os::windows::prelude::PermissionsExt::from_mode(0o444),
-            )
-            .unwrap();
-        }
-        Err(_) => {
-            fs::set_permissions(
-                path.to_str().unwrap(),
-                std::os::windows::prelude::PermissionsExt::from_mode(0o444),
-            )
-            .unwrap();
-        }
-    }
-
     let result = save_in_file(path.to_str().unwrap(), &data).await;
 
     assert!(result.is_ok());

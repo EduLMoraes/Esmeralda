@@ -13,17 +13,20 @@ pub fn form_right() -> Box {
     box_pass.append(&pass_entry);
     pass_entry.set_visibility(false);
 
-    pass_entry.connect_changed(clone!(@weak pass_entry => move |input|{
+    pass_entry.connect_changed(clone!(
+        #[weak]
+        pass_entry,
+        move |input| {
+            if input.text().len() < 4 {
+                pass_entry.set_css_classes(&["input_invalid", "entry_register"]);
+            } else {
+                let new_u = unsafe { NEWUSER.borrow_mut() };
+                new_u.password = input.text().to_string();
 
-        if input.text().len() < 4{
-            pass_entry.set_css_classes(&["input_invalid", "entry_register"]);
-        }else{
-            let new_u = unsafe { NEWUSER.borrow_mut() };
-            new_u.password = input.text().to_string();
-
-            pass_entry.set_css_classes(&["input_valid", "entry_register"]);
+                pass_entry.set_css_classes(&["input_valid", "entry_register"]);
+            }
         }
-    }));
+    ));
 
     let pass_confirm_label = Label::new(Some("Confirme sua senha:*"));
     let pass_confirm_entry = Entry::new();
@@ -32,15 +35,19 @@ pub fn form_right() -> Box {
     box_pass_confirm.append(&pass_confirm_entry);
     pass_confirm_entry.set_visibility(false);
 
-    pass_confirm_entry.connect_changed(clone!(@weak pass_confirm_entry => move |input|{
-        let new_u = unsafe { NEWUSER.borrow_mut() };
+    pass_confirm_entry.connect_changed(clone!(
+        #[weak]
+        pass_confirm_entry,
+        move |input| {
+            let new_u = unsafe { NEWUSER.borrow_mut() };
 
-        if new_u.password != input.text(){
-            pass_confirm_entry.set_css_classes(&["input_invalid", "entry_register"]);
-        }else{
-            pass_confirm_entry.set_css_classes(&["input_valid", "entry_register"]);
+            if new_u.password != input.text() {
+                pass_confirm_entry.set_css_classes(&["input_invalid", "entry_register"]);
+            } else {
+                pass_confirm_entry.set_css_classes(&["input_valid", "entry_register"]);
+            }
         }
-    }));
+    ));
 
     let accept_label = Label::new(Some("Li e aceito as"));
     let accept_link = LinkButton::with_label(

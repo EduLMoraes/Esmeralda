@@ -25,11 +25,15 @@ pub fn rgter_screen(stack: &Stack) -> Box {
     screen.append(&box_return);
     screen.append(&box_register);
 
-    return_button.connect_clicked(clone!(@weak stack => move |_| {
-        stack.remove_css_class("register_window");
-        stack.add_css_class("login_window");
-        stack.set_visible_child_name("login");
-    }));
+    return_button.connect_clicked(clone!(
+        #[weak]
+        stack,
+        move |_| {
+            stack.remove_css_class("register_window");
+            stack.add_css_class("login_window");
+            stack.set_visible_child_name("login");
+        }
+    ));
 
     screen
 }

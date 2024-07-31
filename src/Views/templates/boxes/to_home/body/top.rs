@@ -22,16 +22,22 @@ pub fn box_top(stack: &Stack) -> Box {
         let tmp: Vec<&str> = tmp.iter().map(|y| y.trim()).collect();
         DropDown::from_strings(&tmp)
     };
+    select_year.add_css_class("dropdown_select_year");
 
-    select_year.connect_selected_item_notify(clone!(@weak stack => move |select_year|{
-        let counts = get_counts_instance().years.clone();
+    select_year.connect_selected_item_notify(clone!(
+        #[weak]
+        stack,
+        move |select_year| {
+            let counts = get_counts_instance().years.clone();
 
-        use crate::tokio::runtime::Runtime;
-        let rnt = Runtime::new().unwrap();
-        rnt.block_on(recover(counts[select_year.selected() as usize])).unwrap();
+            use crate::tokio::runtime::Runtime;
+            let rnt = Runtime::new().unwrap();
+            rnt.block_on(recover(counts[select_year.selected() as usize]))
+                .unwrap();
 
-        reload_home(None, Some(&stack));
-    }));
+            reload_home(None, Some(&stack));
+        }
+    ));
 
     select_year.set_halign(gtk::Align::Center);
     select_year.set_valign(gtk::Align::Center);
@@ -48,14 +54,18 @@ pub fn box_top(stack: &Stack) -> Box {
     search.set_height_request(20);
     search.add_css_class("search_bar_t");
 
-    search.connect_changed(clone!(@weak search => move |_| {
-        let result = ListCount {
+    search.connect_changed(clone!(
+        #[weak]
+        search,
+        move |_| {
+            let result = ListCount {
                 list: get_counts_instance().search(search.text().to_string()),
-                years: vec![0]
+                years: vec![0],
             };
 
-        reload_home(Some(&result), None);
-    }));
+            reload_home(Some(&result), None);
+        }
+    ));
 
     let button_ext = Button::with_label("Sair");
     button_ext.add_css_class("link_button");
