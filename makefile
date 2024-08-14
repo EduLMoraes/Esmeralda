@@ -27,10 +27,13 @@ release:
 
 test:
 	cargo test -- --test-threads=1
+	make clean
+
+clean:
+	rm /tmp/test_db
 	rm /tmp/*.csv --force
 	rm /tmp/*.pdf
 	rm /tmp/*.html
-	rm /tmp/test_db
 	rm /tmp/non_existent_directory/*
 	rm /tmp/nonexistent_directory/*
 	rmdir /tmp/non_existent_directory

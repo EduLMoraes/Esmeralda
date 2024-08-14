@@ -12,6 +12,7 @@ use rusqlite::{params, Connection};
 use std::sync::Mutex;
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct DataBase {
     pub pool: Connection,
 }
