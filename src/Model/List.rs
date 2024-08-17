@@ -277,7 +277,7 @@ impl ListCount {
         debtors
     }
 
-    pub fn search(&self, item: String) -> Vec<Count> {
+    pub fn search(&self, item: &String) -> Vec<Count> {
         use rust_fuzzy_search::fuzzy_compare;
 
         self.list
@@ -289,7 +289,7 @@ impl ListCount {
                     || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.5
                     || fuzzy_compare(&item, &count.date_in.to_string()) > 0.5
                     || fuzzy_compare(&item, &count.date_out.to_string()) > 0.5
-                    || item == count.id.to_string()
+                    || item == &count.id.to_string()
             })
             .cloned()
             .collect::<Vec<Count>>()

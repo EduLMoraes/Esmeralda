@@ -59,7 +59,7 @@ pub fn box_top(stack: &Stack) -> Box {
         search,
         move |_| {
             let result = ListCount {
-                list: get_counts_instance().search(search.text().to_string()),
+                list: get_counts_instance().search(&search.text().to_string()),
                 years: vec![0],
             };
 

@@ -1,7 +1,12 @@
 use super::*;
 use crate::chrono::NaiveDate;
+// use glib::property::PropertyGet;
 use gtk::{Adjustment, Calendar, CheckButton, SpinButton};
 
+#[allow(deprecated)]
+use gtk::ComboBoxText;
+
+#[allow(deprecated)]
 pub fn get_add_box(stack: &Stack) -> Box {
     let box_add = Box::new(Orientation::Vertical, 10);
 
@@ -44,17 +49,40 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let status_label = Label::new(Some("Já tá paga?"));
     let value_label = Label::new(Some("R$:\n(por parcela)"));
 
+    let rnt = tokio::runtime::Runtime::new().unwrap();
+    let natures_base = vec![
+        String::from("Casa"),
+        String::from("Transporte"),
+        String::from("Alimentação"),
+        String::from("Saúde"),
+        String::from("Lazer"),
+        String::from("Receita"),
+        String::from("Outros"),
+    ];
+    let mut natures = match rnt.block_on(control::get_groups()) {
+        Ok(groups) => groups,
+        Err(err) => {
+            println!("{:?}", err);
+            natures_base.clone()
+        }
+    };
+
+    for nature_base in natures_base {
+        if !natures.contains(&nature_base) {
+            natures.push(nature_base);
+        }
+    }
+
+    natures.sort();
+
+    let nature_input = ComboBoxText::new();
+    for nature in natures {
+        nature_input.append(None, &nature);
+    }
+    nature_input.set_active(Some(0));
+
     let name_input = Entry::new();
     let title_input = Entry::new();
-    let nature_input = DropDown::from_strings(&[
-        "Casa",
-        "Alimentação",
-        "Transporte",
-        "Saúde",
-        "Lazer",
-        "Receita",
-        "Outros",
-    ]);
     let date_input = Calendar::new();
     let date_button = Button::new();
     let description_input = Entry::new();
@@ -161,6 +189,8 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         nature_input,
         move |_| {
+            let nature: String = nature_input.active_text().unwrap().to_string();
+
             let mut count = Count::from(
                 name_input.text().trim(),
                 title_input.text().trim(),
@@ -173,15 +203,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 )
                 .unwrap(),
                 installment_input.value() as u32,
-                match nature_input.selected() {
-                    0 => "Casa",
-                    1 => "Alimentação",
-                    2 => "Transporte",
-                    3 => "Saúde",
-                    4 => "Lazer",
-                    5 => "Receita",
-                    _ => "Outros",
-                },
+                nature.trim(),
             );
 
             if status_input.is_active() {
@@ -202,7 +224,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                         value_input.set_value(0.01);
                         date_input.clear_marks();
                         installment_input.set_value(1.0);
-                        nature_input.set_selected(0);
+                        nature_input.set_active(Some(0));
                     }
                     Err(err) => println!("{err}"),
                 };

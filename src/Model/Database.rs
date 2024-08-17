@@ -330,14 +330,19 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                let natures = [
-                    "Casa",
-                    "Transporte",
-                    "Saúde",
-                    "Lazer",
-                    "Alimentação",
-                    "Receita",
-                ];
+                // let natures: Vec<String> = vec![
+                //     String::from("Casa"),
+                //     String::from("Transporte"),
+                //     String::from("Saúde"),
+                //     String::from("Lazer"),
+                //     String::from("Alimentação"),
+                //     String::from("Receita"),
+                // ];
+
+                // let natures = match Box::pin(self.get(Data::Groups(natures, user.id))).await?{
+                //     Data::Groups(groups, _) => { groups },
+                //     _ => todo!()
+                // };
 
                 while let Ok(Some(row)) = rows.next() {
                     let count = Count {
@@ -449,30 +454,16 @@ impl DataBase {
                                 file: "Database.rs",
                             })
                         })? > 0,
-                        nature: if natures.contains(
-                            &row.get::<_, String>("nature")
-                                .map_err(|_| {
-                                    DataBaseError::GetCountsError(ErrorLog {
-                                        title: "Error to get nature value",
-                                        code: 500,
-                                        file: "Database.rs",
-                                    })
+                        nature: row
+                            .get::<_, String>("nature")
+                            .map_err(|_| {
+                                DataBaseError::GetCountsError(ErrorLog {
+                                    title: "Error to get nature value",
+                                    code: 500,
+                                    file: "Database.rs",
                                 })
-                                .unwrap()
-                                .trim(),
-                        ) {
-                            row.get::<_, String>("nature")
-                                .map_err(|_| {
-                                    DataBaseError::GetCountsError(ErrorLog {
-                                        title: "Error to get nature value",
-                                        code: 500,
-                                        file: "Database.rs",
-                                    })
-                                })
-                                .unwrap()
-                        } else {
-                            String::from("Outros")
-                        },
+                            })
+                            .unwrap(),
                     };
 
                     counts.insert(0, count);
@@ -513,6 +504,38 @@ impl DataBase {
                 l_counts.years = years;
 
                 Ok(Data::Years(l_counts, user))
+            }
+            Data::Groups(mut groups, user_id) => {
+                let mut stmt = self.pool.prepare("
+                        SELECT nature FROM counts WHERE user_id = ?1 GROUP BY nature ORDER BY nature;
+                    ")
+                    .map_err(|_|{
+                    DataBaseError::GetCountsError(ErrorLog { title: "Error to get groups", code: 500, file: "Database.rs" })  
+                    })?;
+
+                let mut rows = stmt.query(params![&user_id]).map_err(|_| {
+                    DataBaseError::GetCountsError(ErrorLog {
+                        title: "Error to get groups of natures",
+                        code: 500,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                while let Ok(Some(row)) = rows.next() {
+                    let value_row = row.get::<_, String>("nature").map_err(|_| {
+                        DataBaseError::GetCountsError(ErrorLog {
+                            title: "Error to get nature value on groups",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                    if !groups.contains(&value_row) {
+                        groups.push(value_row);
+                    }
+                }
+
+                Ok(Data::Groups(groups, user_id))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -675,4 +698,5 @@ pub enum Data {
     Years(ListCount, UserDb),
     Count(i32, i32),
     LastLogin(i32),
+    Groups(Vec<String>, i32),
 }

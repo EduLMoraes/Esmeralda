@@ -55,6 +55,13 @@ pub fn new_group_info(
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", nature));
 
+    if !icon_path.exists() {
+        icon_path = PathBuf::from(format!(
+            "{}info_icon/not_found.png",
+            var("ICON_PATH").unwrap()
+        ));
+    }
+
     let icon = Image::from_file(icon_path);
     icon.add_css_class("icon_group");
 
@@ -78,7 +85,7 @@ pub fn new_group_info(
         stack_home,
         move |_| {
             let _ = get_grid_infos(&stack, &stack_home, &infos);
-            stack.set_visible_child_name(&title.label());
+            stack.set_visible_child_name("details");
         }
     ));
 
