@@ -284,7 +284,7 @@ impl ListCount {
             .iter()
             .filter(|count| {
                 fuzzy_compare(&item, &count.debtor) > 0.5
-                    || fuzzy_compare(&item.to_lowercase(), &count.nature.to_lowercase()) > 0.5
+                    || fuzzy_compare(&item, &count.nature) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.title.to_lowercase()) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.5
                     || fuzzy_compare(&item, &count.date_in.to_string()) > 0.5
