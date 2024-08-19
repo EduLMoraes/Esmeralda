@@ -277,6 +277,16 @@ impl ListCount {
         debtors
     }
 
+    pub fn filter_by_nature(&self, item: &String) -> Vec<Count>{
+        self.list
+            .iter()
+            .filter(|count|{
+                &item.to_lowercase == &count.nature.to_lowercase()
+            })
+            .cloned()
+            .collect::<Vec<Count>>()
+    }
+
     pub fn search(&self, item: &String) -> Vec<Count> {
         use rust_fuzzy_search::fuzzy_compare;
 
