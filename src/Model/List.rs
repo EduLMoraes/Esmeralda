@@ -56,7 +56,7 @@ impl ListCount {
     pub fn get_total(&self) -> f32 {
         let mut sum = 0.0;
         for count in &self.list {
-            sum += count.value;
+            sum += count.value * count.paid_installments as f32;
         }
 
         sum
@@ -66,7 +66,7 @@ impl ListCount {
         let mut sum = 0.0;
         for count in &self.list {
             if !count.status {
-                sum += count.value;
+                sum += count.value * count.installments as f32;
             }
         }
 
@@ -78,9 +78,9 @@ impl ListCount {
 
         for c in &self.list {
             if c.nature == *"Receita" {
-                perfomance += c.value;
+                perfomance += c.value * c.paid_installments as f32;
             } else {
-                perfomance -= c.value;
+                perfomance -= c.value * c.installments as f32;
             }
         }
         perfomance
@@ -275,6 +275,16 @@ impl ListCount {
         debtors.sort_by_key(|debtor| debtor.get_id());
 
         debtors
+    }
+
+    pub fn filter_by_nature(&self, item: &String) -> Vec<Count>{
+        self.list
+            .iter()
+            .filter(|count|{
+                item.to_lowercase() == count.nature.to_lowercase()
+            })
+            .cloned()
+            .collect::<Vec<Count>>()
     }
 
     pub fn search(&self, item: &String) -> Vec<Count> {

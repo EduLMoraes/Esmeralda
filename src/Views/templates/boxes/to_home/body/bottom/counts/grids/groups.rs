@@ -31,7 +31,7 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
             &new_group_info(
                 &natures[i],
                 &natures[i].to_lowercase(),
-                &counts.search(&natures[i]),
+                &counts.filter_by_nature(&natures[i]),
                 stack,
                 stack_home,
             ),
