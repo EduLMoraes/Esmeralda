@@ -165,6 +165,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_installments.set_halign(gtk::Align::Start);
     box_value.set_halign(gtk::Align::Start);
     description_input.add_css_class("description_input");
+    new_nature_input.set_halign(gtk::Align::Start);
 
     box_name.append(&name_label);
     box_name.append(&name_input);
