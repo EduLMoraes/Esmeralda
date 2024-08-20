@@ -112,8 +112,16 @@ impl ListCount {
 
         for count in list.list {
             if !data.is_empty() && count.nature == data[cont].0 {
-                for month in (count.date_in.month() - 1)..count.date_out.month() {
-                    months[month as usize] += count.value;
+                if count.date_in.month0() < count.date_out.month0() {
+                    for month in count.date_in.month0()..count.date_out.month0() {
+                        months[month as usize] += count.value;
+                    }
+                } else if count.date_in.month0() > count.date_out.month0()
+                    && count.date_in.year() < count.date_out.year()
+                {
+                    for month in count.date_in.month0()..11 {
+                        months[month as usize] += count.value;
+                    }
                 }
             } else {
                 months = vec![0.0; 12];
@@ -277,12 +285,10 @@ impl ListCount {
         debtors
     }
 
-    pub fn filter_by_nature(&self, item: &String) -> Vec<Count>{
+    pub fn filter_by_nature(&self, item: &String) -> Vec<Count> {
         self.list
             .iter()
-            .filter(|count|{
-                item.to_lowercase() == count.nature.to_lowercase()
-            })
+            .filter(|count| item.to_lowercase() == count.nature.to_lowercase())
             .cloned()
             .collect::<Vec<Count>>()
     }
