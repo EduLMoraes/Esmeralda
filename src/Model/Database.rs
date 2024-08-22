@@ -332,17 +332,16 @@ impl DataBase {
                 let mut counts: Vec<Count> = Vec::new();
 
                 while let Ok(Some(row)) = rows.next() {
-
                     let nature = row
-                    .get::<_, String>("nature")
-                    .map_err(|_| {
-                        DataBaseError::GetCountsError(ErrorLog {
-                            title: "Error to get nature value",
-                            code: 500,
-                            file: "Database.rs",
+                        .get::<_, String>("nature")
+                        .map_err(|_| {
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get nature value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
                         })
-                    })
-                    .unwrap();
+                        .unwrap();
 
                     let count = Count {
                         id: row
@@ -453,11 +452,11 @@ impl DataBase {
                                 file: "Database.rs",
                             })
                         })? > 0,
-                        nature: if nature.is_empty(){
+                        nature: if nature.trim().is_empty() {
                             String::from("Outros")
-                        }else {
+                        } else {
                             nature
-                        }
+                        },
                     };
 
                     counts.insert(0, count);
@@ -524,7 +523,7 @@ impl DataBase {
                         })
                     })?;
 
-                    if !groups.contains(&value_row) {
+                    if !groups.contains(&value_row) && !value_row.trim().is_empty() {
                         groups.push(value_row);
                     }
                 }

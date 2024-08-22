@@ -84,6 +84,7 @@ impl Count {
         self.debtor.trim().is_empty()
             || Regex::new(r"[0-9]").unwrap().is_match(self.debtor.trim())
             || self.title.trim().is_empty()
+            || self.nature.trim().is_empty()
             || self.installments == 0
             || self.value == 0.0
     }

@@ -61,6 +61,8 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         }
     }
 
+    natures.sort();
+
     // Inputs of form.
     let name_in = Entry::new();
     let title_in = Entry::new();
@@ -80,8 +82,15 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         2,
     );
 
-    for nature in &natures{
+    for nature in &natures {
         nature_in.append(None, nature);
+    }
+
+    for i in 0..natures.len() {
+        nature_in.set_active(Some(i as u32));
+        if nature_in.active_text().unwrap() == count.nature {
+            break;
+        }
     }
 
     // Format of date and index to nature.
@@ -96,7 +105,6 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     name_in.set_text(&count.debtor);
     title_in.set_text(&count.title);
     description_in.buffer().set_text(&count.description);
-    nature_in.set_active(Some(1));
     installment_in.set_value(count.installments as f64);
     value_in.set_value(count.value as f64);
     status_in.set_active(count.status);
@@ -180,7 +188,7 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
 
         let description = description_in.buffer();
 
-        let mut count = Count::from(
+        let mut new_count = Count::from(
             name_in.text().trim(),
             title_in.text().trim(),
             description
@@ -198,13 +206,14 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         );
 
         if status_in.is_active() {
-            count.pay_all()
+            new_count.pay_all()
         }
 
         let mut tmp = get_counts_instance();
         for i in 0..tmp.list.len(){
             if tmp.list[i].id == count.id{
-                tmp.list[i] = count.clone();
+                tmp.list[i] = new_count.clone();
+                tmp.list[i].id = count.id;
                 break;
             }
         }
