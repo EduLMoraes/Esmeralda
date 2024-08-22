@@ -330,21 +330,20 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                // let natures: Vec<String> = vec![
-                //     String::from("Casa"),
-                //     String::from("Transporte"),
-                //     String::from("Saúde"),
-                //     String::from("Lazer"),
-                //     String::from("Alimentação"),
-                //     String::from("Receita"),
-                // ];
-
-                // let natures = match Box::pin(self.get(Data::Groups(natures, user.id))).await?{
-                //     Data::Groups(groups, _) => { groups },
-                //     _ => todo!()
-                // };
 
                 while let Ok(Some(row)) = rows.next() {
+
+                    let nature = row
+                    .get::<_, String>("nature")
+                    .map_err(|_| {
+                        DataBaseError::GetCountsError(ErrorLog {
+                            title: "Error to get nature value",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })
+                    .unwrap();
+
                     let count = Count {
                         id: row
                             .get::<_, i32>("count_id")
@@ -454,16 +453,11 @@ impl DataBase {
                                 file: "Database.rs",
                             })
                         })? > 0,
-                        nature: row
-                            .get::<_, String>("nature")
-                            .map_err(|_| {
-                                DataBaseError::GetCountsError(ErrorLog {
-                                    title: "Error to get nature value",
-                                    code: 500,
-                                    file: "Database.rs",
-                                })
-                            })
-                            .unwrap(),
+                        nature: if nature.is_empty(){
+                            String::from("Outros")
+                        }else {
+                            nature
+                        }
                     };
 
                     counts.insert(0, count);

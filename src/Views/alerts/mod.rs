@@ -1,7 +1,7 @@
 use super::*;
 use crate::chrono::Datelike;
 #[allow(deprecated)]
-use crate::gtk::{Adjustment, Calendar, CheckButton, DropDown, MessageDialog, SpinButton};
+use crate::gtk::{Adjustment, Calendar, CheckButton, ComboBoxText, MessageDialog, SpinButton};
 use crate::model::Count::Count;
 
 mod alert;
