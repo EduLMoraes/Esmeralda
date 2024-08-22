@@ -7,9 +7,12 @@ currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.2.2   | <input type="checkbox" checked> |
+| 1.2.1   | <input type="checkbox" checked> |
+| 1.2.0   | <input type="checkbox" checked> |
 | 1.1.0   | <input type="checkbox" checked> |
 | 1.0.0   | <input type="checkbox" checked> |
-| 0.1.6   | <input type="checkbox" checked> |
+| 0.1.6   | <input type="checkbox" unchecked> |
 | 0.1.5   | <input type="checkbox" unchacked> |
 | 0.1.4   | <input type="checkbox" unchacked> |
 | 0.1.3   | <input type="checkbox" unchacked> |
