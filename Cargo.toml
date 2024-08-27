@@ -15,23 +15,13 @@ long_description = """
 The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
 Its easy use and hight perfomance.
 """
+resources = ["src/Views/assets", "src/Views/styles"]
 
-[package.metadata.deb]
-name = "esmeralda"
-maintainer = "Eduardo Moraes <17eduardo05@gmail.com"
-extended-description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
-license-file = "./LICENSE"
-depends = "postgresql"
-copyright = "Copyright (c) 2024 Eduardo Moraes <17eduardo05@gmail.com>"
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-ar"
+rustflags = ["-C", "target-feature=+crt-static", "link-args=-Wl,--subsystem,windows"]
 
-[package.metadata.rpm]
-name = "esmeralda"
-vendor = "Eduardo Moraes <17eduardo05@gmail.com"
-description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
-license = "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
-version = "1.2.2"
-edition = "2023"
-group = "Utilities"
 
 [dependencies]
 charts-rs = "0.3.8"
