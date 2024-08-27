@@ -470,8 +470,14 @@ impl DataBase {
                     .pool
                     .prepare(
                         "SELECT 
-                        DISTINCT strftime('%Y', date_out) as date_out
+                        DISTINCT strftime('%Y', date_out) as years
                         FROM counts 
+                        WHERE
+                        user_id = ?1
+                        UNION
+                        SELECT
+                        DISTINCT strftime('%Y', date_in) as years
+                        FROM counts
                         WHERE
                         user_id = ?1",
                     )
@@ -483,7 +489,7 @@ impl DataBase {
 
                 while let Ok(Some(row)) = rows.next() {
                     years.push(
-                        row.get::<_, String>("date_out")
+                        row.get::<_, String>("years")
                             .unwrap()
                             .parse::<i16>()
                             .unwrap(),

@@ -7,7 +7,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32) -> Grid {
 
     let box_count = Box::new(Orientation::Vertical, 10);
 
-    let title = Label::new(Some("Total Movimentado"));
+    let title = Label::new(Some("Total movimentado no ano"));
     let text = Label::new(Some(&format!("R$ {:.2}", count)));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
@@ -19,7 +19,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32) -> Grid {
     box_debt.set_halign(gtk::Align::Start);
     box_debt.set_valign(gtk::Align::Start);
 
-    let title = Label::new(Some("Dívidas"));
+    let title = Label::new(Some("Total em dívidas abertas"));
     let text = Label::new(Some(&format!("R$ -{:.2}", debt)));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
@@ -32,7 +32,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32) -> Grid {
     box_paid.set_halign(gtk::Align::Start);
     box_paid.set_valign(gtk::Align::Start);
 
-    let title = Label::new(Some("Rendimento"));
+    let title = Label::new(Some("Saldo total"));
     let text = Label::new(Some(&format!("R$ {:.2}", paid)));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
