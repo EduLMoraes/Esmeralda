@@ -42,7 +42,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     let name_label = Label::new(Some("*Name:"));
     let title_label = Label::new(Some("*Título:"));
-    let nature_label = Label::new(Some("Natureza:"));
+    let nature_label = Label::new(Some("*Natureza:"));
     let date_label = Label::new(Some("Data inicial:"));
     let description_label = Label::new(Some("Descrição:"));
     let installments_label = Label::new(Some("Parcelas:"));
@@ -165,6 +165,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_installments.set_halign(gtk::Align::Start);
     box_value.set_halign(gtk::Align::Start);
     description_input.add_css_class("description_input");
+    new_nature_input.set_halign(gtk::Align::Start);
 
     box_name.append(&name_label);
     box_name.append(&name_input);
@@ -293,7 +294,8 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     Err(err) => println!("{err}"),
                 };
             } else {
-                println!("Faltam dados!");
+                use alerts::alert;
+                alert("Preencha todos os dados com '*'.", "Faltam dados!");
             }
         }
     ));

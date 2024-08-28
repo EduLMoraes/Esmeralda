@@ -1,3 +1,5 @@
+use gtk::TextView;
+
 use super::*;
 use crate::model::List::get_counts_instance;
 
@@ -34,23 +36,40 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     let value_label = Label::new(Some("R$:\n(por parcela)"));
 
     // Natures existents
-    let natures = vec![
-        "Casa",
-        "Alimentação",
-        "Transporte",
-        "Saúde",
-        "Lazer",
-        "Receita",
-        "Outros",
+    let natures_base = vec![
+        String::from("Casa"),
+        String::from("Transporte"),
+        String::from("Alimentação"),
+        String::from("Saúde"),
+        String::from("Lazer"),
+        String::from("Receita"),
+        String::from("Outros"),
     ];
+
+    let rnt = tokio::runtime::Runtime::new().unwrap();
+    let mut natures = match rnt.block_on(control::get_groups()) {
+        Ok(groups) => groups,
+        Err(err) => {
+            println!("{:?}", err);
+            natures_base.clone()
+        }
+    };
+
+    for nature_base in natures_base {
+        if !natures.contains(&nature_base) {
+            natures.push(nature_base);
+        }
+    }
+
+    natures.sort();
 
     // Inputs of form.
     let name_in = Entry::new();
     let title_in = Entry::new();
-    let nature_in = DropDown::from_strings(&natures);
+    let nature_in = ComboBoxText::new();
     let date_in = Calendar::new();
     let date_button = Button::new();
-    let description_in = Entry::new();
+    let description_in = TextView::new();
     let installment_in = SpinButton::new(
         Some(&Adjustment::new(0.0, 1.0, 999.0, 1.0, 0.1, 0.0)),
         1.0,
@@ -63,6 +82,17 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         2,
     );
 
+    for nature in &natures {
+        nature_in.append(None, nature);
+    }
+
+    for i in 0..natures.len() {
+        nature_in.set_active(Some(i as u32));
+        if nature_in.active_text().unwrap() == count.nature {
+            break;
+        }
+    }
+
     // Format of date and index to nature.
     let date_string = format!(
         "{:02}/{:02}/{:04}",
@@ -71,19 +101,10 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         &count.date_in.year()
     );
 
-    let mut i = 0;
-    for nat in &natures {
-        if nat == &count.nature {
-            break;
-        }
-        i += 1;
-    }
-
     // Set values of inputs with the data of count.
     name_in.set_text(&count.debtor);
     title_in.set_text(&count.title);
-    description_in.set_text(&count.description);
-    nature_in.set_selected(i);
+    description_in.buffer().set_text(&count.description);
     installment_in.set_value(count.installments as f64);
     value_in.set_value(count.value as f64);
     status_in.set_active(count.status);
@@ -163,25 +184,35 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     cancel.connect_clicked(clone!( @weak edit => move |_| edit.close()));
     confirm.connect_clicked(clone!( @weak edit, @strong count => move |_| {
         use crate::chrono::NaiveDate;
+        let nature = nature_in.active_text().unwrap().to_string();
 
-        let mut test = Count::from(
-            &name_in.text(),
-            &title_in.text(),
-            &description_in.text(),
+        let description = description_in.buffer();
+
+        let mut new_count = Count::from(
+            name_in.text().trim(),
+            title_in.text().trim(),
+            description
+                .text(&description.start_iter(), &description.end_iter(), true)
+                .as_str(),
             value_in.value() as f32,
-            NaiveDate::from_ymd_opt(date_in.year(), (date_in.month() + 1) as u32, date_in.day() as u32).unwrap(),
+            NaiveDate::from_ymd_opt(
+                date_in.year(),
+                (date_in.month() + 1) as u32,
+                date_in.day() as u32,
+            )
+            .unwrap(),
             installment_in.value() as u32,
-            natures[nature_in.selected() as usize]
+            nature.trim(),
         );
 
-        if status_in.is_active(){
-            test.pay_all();
+        if status_in.is_active() {
+            new_count.pay_all()
         }
 
         let mut tmp = get_counts_instance();
         for i in 0..tmp.list.len(){
             if tmp.list[i].id == count.id{
-                tmp.list[i] = test.clone();
+                tmp.list[i] = new_count.clone();
                 tmp.list[i].id = count.id;
                 break;
             }

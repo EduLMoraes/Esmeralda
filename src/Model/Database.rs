@@ -330,21 +330,19 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                // let natures: Vec<String> = vec![
-                //     String::from("Casa"),
-                //     String::from("Transporte"),
-                //     String::from("Saúde"),
-                //     String::from("Lazer"),
-                //     String::from("Alimentação"),
-                //     String::from("Receita"),
-                // ];
-
-                // let natures = match Box::pin(self.get(Data::Groups(natures, user.id))).await?{
-                //     Data::Groups(groups, _) => { groups },
-                //     _ => todo!()
-                // };
 
                 while let Ok(Some(row)) = rows.next() {
+                    let nature = row
+                        .get::<_, String>("nature")
+                        .map_err(|_| {
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get nature value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })
+                        .unwrap();
+
                     let count = Count {
                         id: row
                             .get::<_, i32>("count_id")
@@ -454,16 +452,11 @@ impl DataBase {
                                 file: "Database.rs",
                             })
                         })? > 0,
-                        nature: row
-                            .get::<_, String>("nature")
-                            .map_err(|_| {
-                                DataBaseError::GetCountsError(ErrorLog {
-                                    title: "Error to get nature value",
-                                    code: 500,
-                                    file: "Database.rs",
-                                })
-                            })
-                            .unwrap(),
+                        nature: if nature.trim().is_empty() {
+                            String::from("Outros")
+                        } else {
+                            nature
+                        },
                     };
 
                     counts.insert(0, count);
@@ -477,8 +470,14 @@ impl DataBase {
                     .pool
                     .prepare(
                         "SELECT 
-                        DISTINCT strftime('%Y', date_out) as date_out
+                        DISTINCT strftime('%Y', date_out) as years
                         FROM counts 
+                        WHERE
+                        user_id = ?1
+                        UNION
+                        SELECT
+                        DISTINCT strftime('%Y', date_in) as years
+                        FROM counts
                         WHERE
                         user_id = ?1",
                     )
@@ -490,7 +489,7 @@ impl DataBase {
 
                 while let Ok(Some(row)) = rows.next() {
                     years.push(
-                        row.get::<_, String>("date_out")
+                        row.get::<_, String>("years")
                             .unwrap()
                             .parse::<i16>()
                             .unwrap(),
@@ -530,7 +529,7 @@ impl DataBase {
                         })
                     })?;
 
-                    if !groups.contains(&value_row) {
+                    if !groups.contains(&value_row) && !value_row.trim().is_empty() {
                         groups.push(value_row);
                     }
                 }
