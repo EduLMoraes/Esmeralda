@@ -15,6 +15,7 @@ long_description = """
 The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
 Its easy use and hight perfomance.
 """
+resource= "src/Views/assets/*"
 
 [package.metadata.deb]
 name = "esmeralda"
