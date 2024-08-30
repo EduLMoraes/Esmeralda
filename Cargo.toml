@@ -17,12 +17,6 @@ Its easy use and hight perfomance.
 """
 resources = ["src/Views/assets", "src/Views/styles"]
 
-# [target.x86_64-pc-windows-gnu]
-# linker = "x86_64-w64-mingw32-gcc"
-# ar = "x86_64-w64-mingw32-ar"
-# rustflags = ["-C", "target-feature=+crt-static", "link-args=-Wl,--subsystem,windows"]
-
-
 [dependencies]
 charts-rs = "0.3.8"
 chrono = "0.4.31"
@@ -33,11 +27,12 @@ lazy_static = "1.4.0"
 libc = "0.2.153"
 logger = { git = "https://github.com/EduLMoraes/logger" }
 mailjet-rs = "0.3.0"
-nfd = "0.0.4"
+# nfd = "0.0.4"
 printpdf = "0.7.0"
 rand = "0.8.5"
 regex = "1.10.2"
 reqwest = "0.12.4"
+rfd = "0.14.1"
 rusqlite = {version = "0.32.1", features = ["bundled"]}
 rust-crypto = "0.2.36"
 rust-fuzzy-search = "0.1.1"
