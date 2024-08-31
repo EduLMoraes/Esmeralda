@@ -17,10 +17,10 @@ pub fn get_config() {
         "windows" => {
             if env::var("IS_DEV").is_err() {
                 let null_stdout = File::create("NUL").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
+                let stdout_fd = stdout().as_raw_handle() as i32;
+                let null_stdout_fd = null_stdout.as_raw_handle() as i32;
+                // let stdout_fd = stdout().as_raw_fd();
+                // let null_stdout_fd = null_stdout.as_raw_fd();
                 unsafe {
                     libc::dup2(null_stdout_fd, stdout_fd);
                 }
@@ -31,10 +31,10 @@ pub fn get_config() {
         _ => {
             if env::var("IS_DEV").is_err() {
                 let null_stdout = File::create("/dev/null").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
+                let stdout_fd = stdout().as_raw_handle() as i32;
+                let null_stdout_fd = null_stdout.as_raw_handle() as i32;
+                // let stdout_fd = stdout().as_raw_fd();
+                // let null_stdout_fd = null_stdout.as_raw_fd();
                 unsafe {
                     libc::dup2(null_stdout_fd, stdout_fd);
                 }
