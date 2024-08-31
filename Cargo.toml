@@ -1,7 +1,5 @@
-
-
 [package]
-name = "esmeralda"
+name = "Esmeralda"
 version = "1.2.3"
 edition = "2021"
 description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
@@ -17,7 +15,7 @@ long_description = """
 The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
 Its easy use and hight perfomance.
 """
-resources = ["src/Views/assets", "src/Views/styles"]
+resources = ["src/Views/assets", "src/Views/styles", "C:/msys64/mingw64/lib/pkgconfig"]
 
 [dependencies]
 charts-rs = "0.3.8"

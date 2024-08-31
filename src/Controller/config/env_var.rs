@@ -7,8 +7,8 @@ use std::fs;
 use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
-// use std::os::windows::io::AsRawHandle;
-use std::os::fd::AsRawFd;
+use std::os::windows::io::AsRawHandle;
+// use std::os::fd::AsRawFd;
 
 /// This gen the variables of ambient if she's not exists
 /// garant the functionality of system.
