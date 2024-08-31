@@ -20,9 +20,7 @@ release:
 	make test
 	cargo build --release
 	cargo bundle --release
-	cd src/Views
-	zip -o ./target/release/sources.zip assets/* assets/*/* assets/*/*/* styles/*
-	cd ../../
+	(cd src/Views && zip -o ../../target/release/sources.zip assets styles -r)
 	git add .
 	git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
 	git push
