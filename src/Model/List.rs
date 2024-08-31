@@ -112,32 +112,36 @@ impl ListCount {
 
         for count in list.list {
             if !data.is_empty() && count.nature == data[cont].0 {
-                if count.date_in.month0() < count.date_out.month0() {
-                    for month in count.date_in.month0()..count.date_out.month0() {
-                        months[month as usize] += count.value;
-                    }
-                } else if count.date_in.month0() > count.date_out.month0()
-                    && count.date_in.year() < count.date_out.year()
-                {
-                    for month in count.date_in.month0()..11 {
-                        months[month as usize] += count.value;
-                    }
-                }
+                self.group_data_months(&mut months, &count);
             } else {
                 months = vec![0.0; 12];
-                for month in (count.date_in.month() - 1)..count.date_out.month() {
-                    months[month as usize] += count.value;
-                }
+                self.group_data_months(&mut months, &count);
+
                 data.push((count.nature, months.clone()));
 
                 if data.len() > 1 {
                     cont += 1;
                 }
             }
+
             data[cont].1 = months.clone();
         }
 
         data
+    }
+
+    fn group_data_months(&self, months: &mut Vec<f32>, count: &Count) {
+        if count.date_in.month0() <= count.date_out.month0()
+            && count.date_in.year() == count.date_out.year()
+        {
+            for month in count.date_in.month0()..count.date_out.month0() {
+                months[month as usize] += count.value;
+            }
+        } else if count.date_in.year() < count.date_out.year() {
+            for month in count.date_in.month0()..12 {
+                months[month as usize] += count.value;
+            }
+        }
     }
 
     pub fn order_by_id(&mut self, crescent: bool) {
