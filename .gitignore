@@ -21,5 +21,5 @@ Cargo.lock
 /test.*
 
 log.txt
-/src/Model/SQL/esmeralda.db
+/src/Model/SQL/*.db
 esmeralda

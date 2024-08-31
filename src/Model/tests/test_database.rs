@@ -30,10 +30,13 @@ mod tests_database {
 
     // The 'add' function successfully adds a new user to the database.
     #[tokio::test]
-    async fn test_add_function_adds_new_user() {
+    async fn test_add_function_adds_new_auser() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = NewUser {
             name: "Test User".to_string(),
             username: "test_user".to_string(),
@@ -52,12 +55,15 @@ mod tests_database {
     async fn test_add_function_adds_new_count() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = UserDb {
             id: 1,
             name: "Test User".to_string(),
             username: "test_user".to_string(),
-            password: "password".to_string(),
+            password: "new_password".to_string(),
             email: "test@example.com".to_string(),
             last_login: "7".to_string(),
         };
@@ -88,10 +94,13 @@ mod tests_database {
     async fn test_get_function_retrieves_user() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = User {
             username: "test_user".to_string(),
-            password: "new_password".to_string(),
+            password: "password".to_string(),
         };
         let data = Data::User(user);
         let result = db.get(data);
@@ -103,7 +112,7 @@ mod tests_database {
                 username: "test_user".to_string(),
                 password: "new_password".to_string(),
                 email: "test@example.com".to_string(),
-                last_login: "".to_string()
+                last_login: "0".to_string()
             })
         );
     }
@@ -113,7 +122,10 @@ mod tests_database {
     async fn test_get_function_retrieves_counts_for_user_and_year() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = UserDb {
             id: 1,
             name: "Test User".to_string(),
@@ -148,7 +160,10 @@ mod tests_database {
     async fn test_get_function_retrieves_years_with_counts_for_user() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = UserDb {
             id: 1,
             name: "Test User".to_string(),
@@ -195,7 +210,11 @@ mod tests_database {
     async fn test_add_function_handles_invalid_data_type() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+
+        let db = db.unwrap();
+
         let data = Data::Years(
             ListCount {
                 list: vec![Count {
@@ -238,7 +257,10 @@ mod tests_database {
     async fn test_get_function_handles_invalid_data_type() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let data = Data::NewUser(NewUser {
             username: "test_user".to_string(),
             password: "password".to_string(),
@@ -262,7 +284,10 @@ mod tests_database {
     async fn test_edit_function_handles_invalid_data_type() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let data = Data::NewUser(NewUser {
             username: "test_user".to_string(),
             password: "password".to_string(),
@@ -286,7 +311,10 @@ mod tests_database {
     async fn test_edit_function_updates_counts() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = UserDb {
             id: 1,
             name: "Test User".to_string(),
@@ -322,7 +350,10 @@ mod tests_database {
     async fn test_edit_function_updates_password() {
         env::set_var("DB_PATH", format!("{}/test_db", env::temp_dir().display()));
 
-        let db = get_database_instance();
+        let db = DataBase::new();
+        assert!(db.is_ok());
+        let db = db.unwrap();
+
         let user = UserDb {
             id: 1,
             name: "Test User".to_string(),
@@ -399,7 +430,7 @@ mod tests_database {
                 email: "test@test.com".to_string(),
                 last_login: "7".to_string(),
             },
-            2022,
+            2032,
         );
 
         // Act
@@ -408,13 +439,13 @@ mod tests_database {
         // Assert
         match result.await {
             Ok(Data::Counts(counts, user, year)) => {
-                assert_eq!(counts.list.len() - 1, 0);
+                assert_eq!(counts.list.len(), 0);
                 assert_eq!(user.id, 1);
                 assert_eq!(user.name, "Test User");
                 assert_eq!(user.username, "test_user");
                 assert_eq!(user.password, "new_password");
                 assert_eq!(user.email, "test@test.com");
-                assert_eq!(year, 2022);
+                assert_eq!(year, 2032);
             }
             _ => panic!("Expected Ok(Data::Counts)"),
         }

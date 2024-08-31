@@ -1,7 +1,12 @@
 use super::*;
 use crate::chrono::NaiveDate;
-use gtk::{Adjustment, Calendar, CheckButton, SpinButton};
+// use glib::property::PropertyGet;
+use gtk::{Adjustment, Calendar, CheckButton, SpinButton, TextView};
 
+#[allow(deprecated)]
+use gtk::ComboBoxText;
+
+#[allow(deprecated)]
 pub fn get_add_box(stack: &Stack) -> Box {
     let box_add = Box::new(Orientation::Vertical, 10);
 
@@ -28,36 +33,69 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     let box_name = Box::new(Orientation::Vertical, 0);
     let box_title = Box::new(Orientation::Vertical, 0);
-    let box_nature = Box::new(Orientation::Horizontal, 5);
-    let box_date = Box::new(Orientation::Horizontal, 5);
+    let box_nature = Box::new(Orientation::Vertical, 5);
+    let box_date = Box::new(Orientation::Vertical, 5);
     let box_description = Box::new(Orientation::Vertical, 0);
-    let box_installments = Box::new(Orientation::Horizontal, 5);
+    let box_installments = Box::new(Orientation::Vertical, 5);
     let box_status = Box::new(Orientation::Horizontal, 5);
-    let box_value = Box::new(Orientation::Horizontal, 5);
+    let box_value = Box::new(Orientation::Vertical, 5);
 
     let name_label = Label::new(Some("*Name:"));
     let title_label = Label::new(Some("*Título:"));
-    let nature_label = Label::new(Some("Natureza:"));
-    let date_label = Label::new(Some("Data\ninicial:"));
+    let nature_label = Label::new(Some("*Natureza:"));
+    let date_label = Label::new(Some("Data inicial:"));
     let description_label = Label::new(Some("Descrição:"));
-    let installments_label = Label::new(Some("Nª de\nParcelas:"));
+    let installments_label = Label::new(Some("Parcelas:"));
     let status_label = Label::new(Some("Já tá paga?"));
-    let value_label = Label::new(Some("R$:\n(por parcela)"));
+    let value_label = Label::new(Some("R$ p/ parcela"));
 
+    name_label.set_halign(gtk::Align::Start);
+    title_label.set_halign(gtk::Align::Start);
+    nature_label.set_halign(gtk::Align::Start);
+    date_label.set_halign(gtk::Align::Start);
+    description_label.set_halign(gtk::Align::Start);
+    status_label.set_halign(gtk::Align::Start);
+    value_label.set_halign(gtk::Align::Start);
+
+    let rnt = tokio::runtime::Runtime::new().unwrap();
+    let natures_base = vec![
+        String::from("Casa"),
+        String::from("Transporte"),
+        String::from("Alimentação"),
+        String::from("Saúde"),
+        String::from("Lazer"),
+        String::from("Receita"),
+        String::from("Outros"),
+        String::from("+ Nova natureza"),
+    ];
+    let mut natures = match rnt.block_on(control::get_groups()) {
+        Ok(groups) => groups,
+        Err(err) => {
+            println!("{:?}", err);
+            natures_base.clone()
+        }
+    };
+
+    for nature_base in natures_base {
+        if !natures.contains(&nature_base) {
+            natures.push(nature_base);
+        }
+    }
+
+    natures.sort();
+
+    let nature_input = ComboBoxText::new();
+    for nature in natures {
+        nature_input.append(None, &nature);
+    }
+    nature_input.set_active(Some(1));
+
+    let new_nature_input = Entry::new();
     let name_input = Entry::new();
     let title_input = Entry::new();
-    let nature_input = DropDown::from_strings(&[
-        "Casa",
-        "Alimentação",
-        "Transporte",
-        "Saúde",
-        "Lazer",
-        "Receita",
-        "Outros",
-    ]);
     let date_input = Calendar::new();
     let date_button = Button::new();
-    let description_input = Entry::new();
+    let description_input = TextView::new();
     let installment_input = SpinButton::new(
         Some(&Adjustment::new(0.0, 1.0, 999.0, 1.0, 0.1, 0.0)),
         1.0,
@@ -77,12 +115,16 @@ pub fn get_add_box(stack: &Stack) -> Box {
         date_input.year()
     );
 
-    name_input.set_css_classes(&["input"]);
-    title_input.set_css_classes(&["input"]);
+    name_input.set_css_classes(&["input", "name_input"]);
+    title_input.set_css_classes(&["input", "title_input"]);
     date_input.set_css_classes(&["input", "date_input"]);
     date_button.set_css_classes(&["date_button", "input"]);
     date_input.set_visible(false);
     date_button.set_label(&date_string);
+
+    let buffer = description_input.buffer();
+    let start_iter = buffer.iter_at_offset(0);
+    buffer.place_cursor(&start_iter);
 
     date_input.set_size_request(10, 10);
 
@@ -117,8 +159,13 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     box_name.set_halign(gtk::Align::Start);
     box_title.set_halign(gtk::Align::Start);
+    box_date.set_halign(gtk::Align::Start);
     box_description.set_halign(gtk::Align::Start);
+    box_nature.set_halign(gtk::Align::Start);
+    box_installments.set_halign(gtk::Align::Start);
+    box_value.set_halign(gtk::Align::Start);
     description_input.add_css_class("description_input");
+    new_nature_input.set_halign(gtk::Align::Start);
 
     box_name.append(&name_label);
     box_name.append(&name_input);
@@ -126,6 +173,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_title.append(&title_input);
     box_nature.append(&nature_label);
     box_nature.append(&nature_input);
+    box_nature.append(&new_nature_input);
     box_date.append(&date_label);
     box_date.append(&date_button);
     box_date.append(&date_input);
@@ -137,6 +185,8 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_status.append(&status_input);
     box_value.append(&value_label);
     box_value.append(&value_input);
+
+    new_nature_input.set_visible(false);
 
     let button_append = Button::with_label("Adicionar");
     button_append.add_css_class("button");
@@ -160,11 +210,53 @@ pub fn get_add_box(stack: &Stack) -> Box {
         installment_input,
         #[weak]
         nature_input,
+        #[weak]
+        new_nature_input,
         move |_| {
+            let nature = if new_nature_input.text().to_string().is_empty() {
+                nature_input.active_text().unwrap().to_string()
+            } else {
+                new_nature_input.text().to_string()
+            };
+
+            let natures_base = vec![
+                String::from("Casa"),
+                String::from("Transporte"),
+                String::from("Alimentação"),
+                String::from("Saúde"),
+                String::from("Lazer"),
+                String::from("Receita"),
+                String::from("Outros"),
+                String::from("+ Nova natureza"),
+            ];
+
+            let mut natures = match rnt.block_on(control::get_groups()) {
+                Ok(groups) => groups,
+                Err(err) => {
+                    println!("{:?}", err);
+
+                    natures_base.clone()
+                }
+            };
+
+            for nature_base in natures_base {
+                if !natures.contains(&nature_base) {
+                    natures.push(nature_base);
+                }
+            }
+
+            if !natures.contains(&nature) {
+                nature_input.append(None, &nature);
+            }
+
+            let description = description_input.buffer();
+
             let mut count = Count::from(
                 name_input.text().trim(),
                 title_input.text().trim(),
-                description_input.text().as_str(),
+                description
+                    .text(&description.start_iter(), &description.end_iter(), true)
+                    .as_str(),
                 value_input.value() as f32,
                 NaiveDate::from_ymd_opt(
                     date_input.year(),
@@ -173,15 +265,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 )
                 .unwrap(),
                 installment_input.value() as u32,
-                match nature_input.selected() {
-                    0 => "Casa",
-                    1 => "Alimentação",
-                    2 => "Transporte",
-                    3 => "Saúde",
-                    4 => "Lazer",
-                    5 => "Receita",
-                    _ => "Outros",
-                },
+                nature.trim(),
             );
 
             if status_input.is_active() {
@@ -198,16 +282,20 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     Ok(_) => {
                         reload_home(None, Some(&stack));
                         title_input.set_text("");
-                        description_input.set_text("");
+                        description_input.buffer().set_text("");
                         value_input.set_value(0.01);
                         date_input.clear_marks();
                         installment_input.set_value(1.0);
-                        nature_input.set_selected(0);
+                        nature_input.set_active(Some(1));
+                        nature_input.set_visible(true);
+                        new_nature_input.set_visible(false);
+                        new_nature_input.set_text("");
                     }
                     Err(err) => println!("{err}"),
                 };
             } else {
-                println!("Faltam dados!");
+                use alerts::alert;
+                alert("Preencha todos os dados com '*'.", "Faltam dados!");
             }
         }
     ));
@@ -215,16 +303,30 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let grid = Grid::new();
     grid.set_column_homogeneous(true);
     grid.set_row_spacing(15);
+    grid.add_css_class("grid_add");
 
     grid.attach(&box_name, 0, 0, 1, 1);
-    grid.attach(&box_title, 0, 1, 1, 1);
-    grid.attach(&box_description, 0, 2, 1, 1);
-    grid.attach(&box_nature, 0, 3, 1, 1);
-    grid.attach(&box_value, 0, 4, 1, 1);
-    grid.attach(&box_installments, 0, 5, 1, 1);
-    grid.attach(&box_date, 0, 6, 1, 1);
-    grid.attach(&box_status, 0, 7, 1, 1);
-    grid.attach(&button_append, 0, 8, 1, 1);
+    grid.attach(&box_nature, 0, 1, 1, 1);
+    grid.attach(&box_date, 0, 3, 1, 1);
+    grid.attach(&box_installments, 1, 3, 1, 1);
+    grid.attach(&box_title, 0, 4, 1, 1);
+    grid.attach(&box_value, 1, 4, 1, 1);
+    grid.attach(&box_description, 0, 5, 2, 1);
+    grid.attach(&box_status, 0, 6, 1, 1);
+    grid.attach(&button_append, 1, 7, 1, 1);
+
+    nature_input.connect_changed(clone!(
+        #[weak]
+        nature_input,
+        #[weak]
+        new_nature_input,
+        move |input| {
+            if input.active_text().unwrap().to_string() == String::from("+ Nova natureza") {
+                new_nature_input.set_visible(true);
+                nature_input.set_visible(false);
+            }
+        }
+    ));
 
     box_form.append(&grid);
 

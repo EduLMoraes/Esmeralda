@@ -22,6 +22,13 @@ pub fn new_box_info(info: &Count) -> Box {
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", info.nature.to_lowercase()));
 
+    if !icon_path.exists() {
+        icon_path = PathBuf::from(format!(
+            "{}info_icon/not_found.png",
+            var("ICON_PATH").unwrap()
+        ));
+    }
+
     let icon = Image::from_file(icon_path);
     icon.add_css_class("icon_info");
 
@@ -188,6 +195,13 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     name.add_css_class("name_i");
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", info.nature.to_lowercase()));
+
+    if !icon_path.exists() {
+        icon_path = PathBuf::from(format!(
+            "{}info_icon/not_found.png",
+            var("ICON_PATH").unwrap()
+        ));
+    }
 
     let icon = Image::from_file(icon_path);
     icon.add_css_class("icon_info_box");

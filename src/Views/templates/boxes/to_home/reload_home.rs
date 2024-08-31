@@ -1,8 +1,6 @@
 use super::*;
 
 pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>) {
-    println!("reload_home()");
-
     let list_box = get_list_box();
 
     while list_box.first_child() != None {

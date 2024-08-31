@@ -19,6 +19,31 @@ pub async fn save() -> Result<(), ControlError> {
     Ok(())
 }
 
+pub async fn get_groups() -> Result<Vec<String>, ControlError> {
+    let db_instance = get_database_instance();
+
+    if let Some(user_logged) = get_user_instance().as_ref() {
+        let data = db_instance
+            .get(Data::Groups(Vec::new(), user_logged.id))
+            .await
+            .map_err(ControlError::ErrorExternDB)?;
+
+        return match data {
+            Data::Groups(groups, _) => Ok(groups),
+            _ => Err(ControlError::ErrorValueInvalid(ErrorLog {
+                title: "Data return is not valid!",
+                code: 306,
+                file: "data_controller.rs",
+            })),
+        };
+    }
+
+    Err(ControlError::ErrorAuthenticate(ErrorLog {
+        title: "No has user instance",
+        code: 306,
+        file: "data_controller.rs",
+    }))
+}
 /// This communicate with the database to edit
 /// the data.
 pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
@@ -98,7 +123,6 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
                 .iter_mut()
                 .map(|count| {
                     let count_id: String = count.id.to_string();
-                    println!("{}", count_id);
                     if count_id.len() > 1 {
                         let count_id = count_id.split_at(id_user_len);
                         count.id = count_id.1.trim().parse().unwrap();

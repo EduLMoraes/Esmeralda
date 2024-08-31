@@ -51,7 +51,6 @@ pub fn right() -> Box {
             _ => {}
         }
 
-        println!("aaa");
         reload_home(Some(&counts), None);
         std::mem::drop(counts);
     });

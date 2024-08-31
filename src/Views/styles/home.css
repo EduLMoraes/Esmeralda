@@ -3,7 +3,11 @@
     color: white;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
-
+.version{
+    font-size: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    opacity: 0.6;
+}
 .stack_switcher{
     padding: 0;
     background: transparent;
@@ -16,7 +20,7 @@
     background: transparent;
     background-color: transparent;
     border: transparent;
-    color: white;
+    /* color: white; */
 }
 
 .value_total{
@@ -97,11 +101,13 @@
     background-color: #fff;
     color: #000;
     min-width: 300px;
-    min-height: 30px;
+    min-height: 100px;
+    border: 1px white solid;
+    border-radius: 2px;
 }
 .date_input{
-    min-width: 100px;
-    min-height: 100px;
+    min-width: 50px;
+    min-height: 120px;
 }
 .icon_ml{
     min-width: 25px;
@@ -192,6 +198,10 @@
     font-size: 20px;
     color: #fff;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.grid_add{
+    background-color: transparent;
 }
 
 .box_ml{

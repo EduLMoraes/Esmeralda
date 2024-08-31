@@ -23,26 +23,10 @@ pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>) -> 
         }
     }
 
-    if stack.child_by_name("Casa").as_ref().is_some() {
-        let child = stack.child_by_name("Casa").unwrap();
-        stack.remove(&child);
-    } else if stack.child_by_name("Transporte").as_ref().is_some() {
-        let child = stack.child_by_name("Transporte").unwrap();
-        stack.remove(&child);
-    } else if stack.child_by_name("Lazer").as_ref().is_some() {
-        let child = stack.child_by_name("Lazer").unwrap();
-        stack.remove(&child);
-    } else if stack.child_by_name("Outros").as_ref().is_some() {
-        let child = stack.child_by_name("Outros").unwrap();
-        stack.remove(&child);
-    } else if stack.child_by_name("Saúde").as_ref().is_some() {
-        let child = stack.child_by_name("Saúde").unwrap();
-        stack.remove(&child);
-    } else if stack.child_by_name("Alimentação").as_ref().is_some() {
-        let child = stack.child_by_name("Alimentação").unwrap();
+    if let Some(child) = stack.child_by_name("details") {
         stack.remove(&child);
     }
 
-    stack.add_titled(&grid_infos, Some(&infos[0].nature), &infos[0].nature);
+    stack.add_titled(&grid_infos, Some("details"), &infos[0].nature);
     grid_infos
 }

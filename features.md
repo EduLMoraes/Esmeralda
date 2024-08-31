@@ -5,6 +5,19 @@
     <td> Descrição </td>
   </tr>
   <tr>
+    <td> v1.2.3 </td>
+    <td> 
+      Correção de bugs;<br>
+    </td>
+  </tr>
+  <tr>
+    <td> v1.2.2 </td>
+    <td> 
+      Nova funcionalidade de criar naturezas;<br>
+      Correção de bugs;<br>
+    </td>
+  </tr>
+  <tr>
    <td> v1.2.1</td>
    <td>
         Funcionalidades de deletar e editar contas.<br>

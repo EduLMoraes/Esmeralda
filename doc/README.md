@@ -3,19 +3,49 @@
 Link para documentação:
  - https://esmeralda-docs.vercel.app/
 
-## Diagramas:
+<!-- ## Diagramas:
 - Classe
 ![](class_diagram.png)
 
 - Caso de uso
-![](use_case.png)
+![](use_case.png) -->
 
 ## Requisitos
-v0.1.*
-
 ✅ - Concluído |
 ❌ - Não Concluído |
 ⏳ - Em andamento
+
+### v1.*
+1. Conectar com banco.
+    - Em avaliação...
+
+2. Exportação carnê leão.
+    - Em avaliação...
+
+3. Controle de metas.
+
+4. Notificação.
+
+5. Versão mobile.
+
+6. Conexão com versão mobile.
+
+7. Leitura de nota fiscal, via camêra do celular.
+    - Automação com código de consulta improvável, pois as APIs disponíveis são monetizadas.
+
+8. Criar/excluir grupos personalizados.
+
+9. Rendimento mensal.
+
+10. Calculadora IR.
+
+11. Conversão de moedas.
+
+12. Controle de investimentos.
+-----
+### v0.1.*
+
+
 
 Requisitos Funcionais:
 ✅ 1 - Autenticação:
@@ -67,3 +97,5 @@ Requisitos Não Funcionais:
 ✅ 5 - Desempenho:
 
     · Garantir agilidade no acesso e manipulação dos dados, considerando a natureza offline do sistema. ✅
+---
+

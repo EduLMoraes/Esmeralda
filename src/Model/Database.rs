@@ -12,6 +12,7 @@ use rusqlite::{params, Connection};
 use std::sync::Mutex;
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct DataBase {
     pub pool: Connection,
 }
@@ -329,16 +330,19 @@ impl DataBase {
                 })?;
 
                 let mut counts: Vec<Count> = Vec::new();
-                let natures = [
-                    "Casa",
-                    "Transporte",
-                    "Saúde",
-                    "Lazer",
-                    "Alimentação",
-                    "Receita",
-                ];
 
                 while let Ok(Some(row)) = rows.next() {
+                    let nature = row
+                        .get::<_, String>("nature")
+                        .map_err(|_| {
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get nature value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })
+                        .unwrap();
+
                     let count = Count {
                         id: row
                             .get::<_, i32>("count_id")
@@ -448,29 +452,10 @@ impl DataBase {
                                 file: "Database.rs",
                             })
                         })? > 0,
-                        nature: if natures.contains(
-                            &row.get::<_, String>("nature")
-                                .map_err(|_| {
-                                    DataBaseError::GetCountsError(ErrorLog {
-                                        title: "Error to get nature value",
-                                        code: 500,
-                                        file: "Database.rs",
-                                    })
-                                })
-                                .unwrap()
-                                .trim(),
-                        ) {
-                            row.get::<_, String>("nature")
-                                .map_err(|_| {
-                                    DataBaseError::GetCountsError(ErrorLog {
-                                        title: "Error to get nature value",
-                                        code: 500,
-                                        file: "Database.rs",
-                                    })
-                                })
-                                .unwrap()
-                        } else {
+                        nature: if nature.trim().is_empty() {
                             String::from("Outros")
+                        } else {
+                            nature
                         },
                     };
 
@@ -485,8 +470,14 @@ impl DataBase {
                     .pool
                     .prepare(
                         "SELECT 
-                        DISTINCT strftime('%Y', date_out) as date_out
+                        DISTINCT strftime('%Y', date_out) as years
                         FROM counts 
+                        WHERE
+                        user_id = ?1
+                        UNION
+                        SELECT
+                        DISTINCT strftime('%Y', date_in) as years
+                        FROM counts
                         WHERE
                         user_id = ?1",
                     )
@@ -498,7 +489,7 @@ impl DataBase {
 
                 while let Ok(Some(row)) = rows.next() {
                     years.push(
-                        row.get::<_, String>("date_out")
+                        row.get::<_, String>("years")
                             .unwrap()
                             .parse::<i16>()
                             .unwrap(),
@@ -512,6 +503,38 @@ impl DataBase {
                 l_counts.years = years;
 
                 Ok(Data::Years(l_counts, user))
+            }
+            Data::Groups(mut groups, user_id) => {
+                let mut stmt = self.pool.prepare("
+                        SELECT nature FROM counts WHERE user_id = ?1 GROUP BY nature ORDER BY nature;
+                    ")
+                    .map_err(|_|{
+                    DataBaseError::GetCountsError(ErrorLog { title: "Error to get groups", code: 500, file: "Database.rs" })  
+                    })?;
+
+                let mut rows = stmt.query(params![&user_id]).map_err(|_| {
+                    DataBaseError::GetCountsError(ErrorLog {
+                        title: "Error to get groups of natures",
+                        code: 500,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                while let Ok(Some(row)) = rows.next() {
+                    let value_row = row.get::<_, String>("nature").map_err(|_| {
+                        DataBaseError::GetCountsError(ErrorLog {
+                            title: "Error to get nature value on groups",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                    if !groups.contains(&value_row) && !value_row.trim().is_empty() {
+                        groups.push(value_row);
+                    }
+                }
+
+                Ok(Data::Groups(groups, user_id))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -674,4 +697,5 @@ pub enum Data {
     Years(ListCount, UserDb),
     Count(i32, i32),
     LastLogin(i32),
+    Groups(Vec<String>, i32),
 }

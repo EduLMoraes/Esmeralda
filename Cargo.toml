@@ -1,37 +1,30 @@
 [package]
 name = "esmeralda"
-version = "1.2.1"
+authors = ["Eduardo L. Moraes <lmoraeseduardo@gmail.com>"]
+version = "1.2.3"
 edition = "2021"
 description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
 resolver = "2"
+license = "GNU"
 
 [package.metadata.bundle]
-name = "Esmeralda"
-identifier = "github.com/edulmoraes/esmeralda"
-version = "1.2.1"
+name = "esmeralda"
+identifier = "io.github.edulmoraes.esmeralda"
+icon = ["src/Views/assets/icon/icon.ico"]
+resources = ["src/Views/assets", "src/Views/styles"]
+license="GNU"
 category = "Finance"
-short_description = "More control of your debs"
 long_description = """
 The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
 Its easy use and hight perfomance.
 """
 
-[package.metadata.deb]
-name = "esmeralda"
-maintainer = "Eduardo Moraes <17eduardo05@gmail.com"
-extended-description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
-license-file = "./LICENSE"
-depends = "postgresql"
-copyright = "Copyright (c) 2024 Eduardo Moraes <17eduardo05@gmail.com>"
+[package.metadata.bundle.windows]
+resources = ["./src/Views/assets", "./src/Views/styles", "C:/msys64/mingw64/lib/pkgconfig"]
+windows_use_terminal = false
 
-[package.metadata.rpm]
-name = "esmeralda"
-vendor = "Eduardo Moraes <17eduardo05@gmail.com"
-description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
-license = "GNU AFFERO GENERAL PUBLIC LICENSE Version 3"
-version = "1.2.1"
-edition = "2023"
-group = "Utilities"
+[build-dependencies]
+zip="2.1.0"
 
 [dependencies]
 charts-rs = "0.3.8"
@@ -43,11 +36,11 @@ lazy_static = "1.4.0"
 libc = "0.2.153"
 logger = { git = "https://github.com/EduLMoraes/logger" }
 mailjet-rs = "0.3.0"
-nfd = "0.0.4"
 printpdf = "0.7.0"
 rand = "0.8.5"
 regex = "1.10.2"
 reqwest = "0.12.4"
+rfd = "0.14.1"
 rusqlite = {version = "0.32.1", features = ["bundled"]}
 rust-crypto = "0.2.36"
 rust-fuzzy-search = "0.1.1"

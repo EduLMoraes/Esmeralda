@@ -9,7 +9,6 @@ pub fn ml_body(stack: &Stack) -> Box {
     box_body.add_css_class("box_body_ml");
 
     box_body.append(&links(stack));
-
     box_body.set_valign(gtk::Align::Center);
 
     box_body
