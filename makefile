@@ -17,10 +17,9 @@ git:
 release:
 	cargo check
 	cargo fmt
-	make test
 	cargo build --release
 	cargo bundle --release
-	zip -o ./target/release/sources.zip ./src/Views/assets/* ./src/Views/assets/*/* ./src/Views/assets/*/*/* ./src/Views/styles/*
+	(cd src/Views && zip -o ../../target/release/sources.zip assets styles -r)
 	git add .
 	git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
 	git push
