@@ -3,5 +3,12 @@
     color: white;
 }
 .box_calculator{
-    background-color: black;
+    min-width: 250px;
+}
+
+.input_calculator{ 
+    min-width: 20px;
+    background-color: #2f2f2f;
+    border-color: #3fff3f;
+    color: white;
 }

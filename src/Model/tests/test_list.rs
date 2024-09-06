@@ -6,11 +6,11 @@ use super::List::*;
 use super::NaiveDate;
 
 #[cfg(test)]
-mod tests_list{
+mod tests_list {
     use super::*;
 
     #[test]
-    fn test_filter_by_nature_correct(){
+    fn test_filter_by_nature_correct() {
         let count_1 = Count {
             id: 1,
             debtor: "Debtor".to_string(),
