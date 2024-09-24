@@ -39,11 +39,17 @@ mod tests_list {
         };
 
         let list_count = ListCount {
-            list: vec![count_1, count_2],
+            list: vec![count_1.clone(), count_2.clone()],
             years: vec![2022],
         };
 
-        assert_eq!(list_count.filter_by_nature("Nature"), vec![count_1]);
-        assert_eq!(list_count.filter_by_nature("Food"), vec![count_2]);
+        assert_eq!(
+            list_count.filter_by_nature(&String::from("Nature")),
+            vec![count_1]
+        );
+        assert_eq!(
+            list_count.filter_by_nature(&String::from("Food")),
+            vec![count_2]
+        );
     }
 }
