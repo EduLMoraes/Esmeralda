@@ -1,3 +1,4 @@
+workspace = { members = ["src/Utils/manager_db"] }
 [package]
 name = "esmeralda"
 authors = ["Eduardo L. Moraes <lmoraeseduardo@gmail.com>"]
