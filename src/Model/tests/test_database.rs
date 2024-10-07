@@ -73,7 +73,7 @@ mod tests_database {
             title: "Title".to_string(),
             description: "Description".to_string(),
             value: 100.0,
-            paid_installments: 0,
+            paid_installments: 1,
             installments: 1,
             date_in: NaiveDate::from_ymd_opt(2022, 1, 1).unwrap(),
             date_out: NaiveDate::from_ymd_opt(2022, 12, 31).unwrap(),

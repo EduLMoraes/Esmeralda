@@ -1,4 +1,5 @@
 use chrono::Local;
+use clap::parser::RawValues;
 use clap::{Arg, Command, Subcommand};
 use rusqlite::{params, Connection, Result};
 use std::fs;
@@ -11,7 +12,6 @@ mod delete;
 mod restore;
 mod update;
 
-const PATH: &str = "./database.db";
 
 fn main() {
     let matches = Command::new("GerenciadorDB")
@@ -20,11 +20,17 @@ fn main() {
         .arg_required_else_help(true)
         .subcommand(
             Command::new("create").about("Cria o banco de dados").arg(
-                Arg::new("last_version")
-                    .short('l')
-                    .long("last-version")
-                    .help("Cria o banco de dados na última versão"),
-            ),
+                Arg::new("version")
+                    .short('v')
+                    .long("version")
+                    .help("Cria o banco de dados."),
+                )
+                .arg(
+                    Arg::new("path")
+                    .short('p')
+                    .long("path")
+                    .help("Define caminho do banco de dados"),
+                )
         )
         .subcommand(
             Command::new("update")
@@ -62,15 +68,35 @@ fn main() {
         .subcommand(Command::new("delete").about("Deleta o banco de dados"))
         .get_matches();
 
-    let conn = Connection::open(PATH).unwrap_or_else(|_| {
+    let conn = Connection::open(
+        match matches.subcommand(){
+            Some((_, sub_m)) =>{
+                let path = sub_m
+                    .get_raw("path")
+                    .unwrap_or_default()
+                    .last()
+                    .unwrap_or_default()
+                    .to_str()
+                    .unwrap();
+                path
+            },
+            _ => {"./database.db"}
+        }
+    ).unwrap_or_else(|_| {
         println!("Erro ao abrir o banco de dados.");
         process::exit(1);
     });
 
     match matches.subcommand() {
         Some(("create", sub_m)) => {
-            let last_version = sub_m.contains_id("last_version");
-            create::create_database(&conn, last_version).unwrap();
+            let last_version = sub_m
+                .get_raw("version")
+                .unwrap_or_default()
+                .last()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap();
+            create::create_database(&conn, String::from(last_version)).unwrap();
         }
         Some(("update", sub_m)) => {
             let version = sub_m

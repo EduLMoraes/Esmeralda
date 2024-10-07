@@ -6,7 +6,7 @@ pub enum DbCommand {
     Create {
         /// Versão específica ou última versão
         #[arg(short, long)]
-        last_version: bool,
+        last_version: String,
     },
     /// Atualiza o banco de dados para uma nova versão
     Update {

@@ -115,25 +115,7 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
         .map_err(ControlError::ErrorExternDB)?;
 
     match recovered_data {
-        Data::Counts(mut data, _, _) => {
-            let id_user_len = user_logged.id.to_string().len();
-
-            let list: Vec<Count> = data
-                .list
-                .iter_mut()
-                .map(|count| {
-                    let count_id: String = count.id.to_string();
-                    if count_id.len() > 1 {
-                        let count_id = count_id.split_at(id_user_len);
-                        count.id = count_id.1.trim().parse().unwrap();
-                    }
-
-                    count.clone()
-                })
-                .collect();
-
-            data.list = list;
-
+        Data::Counts(data, _, _) => {
             get_counts_instance().deref_mut().list = data.list;
 
             Ok(())
