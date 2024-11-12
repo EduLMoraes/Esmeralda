@@ -12,25 +12,26 @@ mod delete;
 mod restore;
 mod update;
 
-
 fn main() {
     let matches = Command::new("GerenciadorDB")
         .about("Ferramenta para gerenciar o banco de dados Esmeralda")
         .subcommand_required(true)
         .arg_required_else_help(true)
         .subcommand(
-            Command::new("create").about("Cria o banco de dados").arg(
-                Arg::new("version")
-                    .short('v')
-                    .long("version")
-                    .help("Cria o banco de dados."),
+            Command::new("create")
+                .about("Cria o banco de dados")
+                .arg(
+                    Arg::new("version")
+                        .short('v')
+                        .long("version")
+                        .help("Cria o banco de dados."),
                 )
                 .arg(
                     Arg::new("path")
-                    .short('p')
-                    .long("path")
-                    .help("Define caminho do banco de dados"),
-                )
+                        .short('p')
+                        .long("path")
+                        .help("Define caminho do banco de dados"),
+                ),
         )
         .subcommand(
             Command::new("update")
@@ -68,21 +69,20 @@ fn main() {
         .subcommand(Command::new("delete").about("Deleta o banco de dados"))
         .get_matches();
 
-    let conn = Connection::open(
-        match matches.subcommand(){
-            Some((_, sub_m)) =>{
-                let path = sub_m
-                    .get_raw("path")
-                    .unwrap_or_default()
-                    .last()
-                    .unwrap_or_default()
-                    .to_str()
-                    .unwrap();
-                path
-            },
-            _ => {"./database.db"}
+    let conn = Connection::open(match matches.subcommand() {
+        Some((_, sub_m)) => {
+            let path = sub_m
+                .get_raw("path")
+                .unwrap_or_default()
+                .last()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap();
+            path
         }
-    ).unwrap_or_else(|_| {
+        _ => "./database.db",
+    })
+    .unwrap_or_else(|_| {
         println!("Erro ao abrir o banco de dados.");
         process::exit(1);
     });

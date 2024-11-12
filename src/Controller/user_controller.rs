@@ -7,7 +7,6 @@ lazy_static! {
 pub fn gen_user_instance(usr: UserDb) {
     *USER_LOGGED.lock().unwrap() = Some(UserDb {
         id: usr.id,
-        name: usr.name,
         username: usr.username,
         password: usr.password,
         email: usr.email,

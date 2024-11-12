@@ -30,8 +30,25 @@ impl DataBase {
                         file: "Database.rs",
                     })
                 })?
-                .execute_batch("SELECT * FROM users NATURAL JOIN counts")
-            {
+                .execute_batch(
+                    "
+                    SELECT * FROM
+                    users NATURAL JOIN counts 
+                    NATURAL JOIN history 
+                    NATURAL JOIN old_counts
+                    NATURAL JOIN people
+                    NATURAL JOIN address
+                    NATURAL JOIN property
+                    NATURAL JOIN receipts
+                    NATURAL JOIN bank
+                    NATURAL JOIN investments
+                    NATURAL JOIN investments_fiis_stock_exchange_shares
+                    NATURAL JOIN stock_exchange_shares
+                    NATURAL JOIN fiis
+                    NATURAL JOIN last_yields
+                    NATURAL JOIN dates_yield
+                    ",
+                ) {
                 Ok(_) => Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                     DataBaseError::CreatePoolError(ErrorLog {
                         title: "Error to connect database",
@@ -43,9 +60,8 @@ impl DataBase {
                     use std::process::Command;
                     let response = Command::new(env::var("MANAGER_PATH").unwrap())
                         .arg("create")
-                        .arg(format!("--path={}", env::var("DB_PATH")
-                            .unwrap())
-                        )
+                        .arg(format!("--path={}", env::var("DB_PATH").unwrap()))
+                        .arg("--version=1.3.0")
                         .output()
                         .expect("erro ao rodar script");
 
@@ -53,7 +69,7 @@ impl DataBase {
                     //     Ok(_) => {}
                     //     Err(e) => println!("Erro ao executar manager_db: {e:?}"),
                     // };
-                    
+
                     let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                         DataBaseError::CreatePoolError(ErrorLog {
                             title: "Error to connect database",
@@ -61,8 +77,6 @@ impl DataBase {
                             file: "Database.rs",
                         })
                     })?;
-
-                    
 
                     conn
                 }
@@ -87,38 +101,15 @@ impl DataBase {
                     .prepare("INSERT INTO Users (username, password, email) VALUES (?1, ?2, ?3) ")
                     .unwrap();
 
-                stmt.execute([
-                    user.username,
-                    user.password,
-                    user.email,
-                    // user.name,
-                    // user.wage.to_string(),
-                ])
-                .map_err(|err| {
-                    let _ = log(path.clone().into(), format!("{err:?}").trim());
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "User already existis",
-                        code: 500,
-                        file: "Database.rs",
-                    })
-                })?;
-
-                let mut stmt = self
-                    .pool
-                    .prepare("INSERT INTO People (name) VALUES (?1) ")
-                    .unwrap();
-
-                stmt.execute([
-                    user.name,
-                ])
-                .map_err(|err| {
-                    let _ = log(path.into(), format!("{err:?}").trim());
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "Error to add people",
-                        code: 500,
-                        file: "Database.rs",
-                    })
-                })?;
+                stmt.execute([user.username, user.password, user.email])
+                    .map_err(|err| {
+                        let _ = log(path.clone().into(), format!("{err:?}").trim());
+                        DataBaseError::AddUserError(ErrorLog {
+                            title: "User already existis",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
 
                 Ok(())
             }
@@ -194,7 +185,7 @@ impl DataBase {
             Data::User(user) => {
                 let mut stmt = self
                     .pool
-                    .prepare("SELECT id_user, username, name, password, email, coalesce(strftime('%m', last_login), '0') as last_login FROM users natural join people WHERE username = ?1 LIMIT 1")
+                    .prepare("SELECT id_user, username, password, email, coalesce(strftime('%m', last_login), '0') as last_login FROM users WHERE username = ?1 LIMIT 1")
                     .map_err( |_| {
                         match self.pool.execute_batch("
                             ALTER TABLE users ADD COLUMN last_login DATE;
@@ -225,16 +216,6 @@ impl DataBase {
                                     })
                                 })
                                 .unwrap(),
-                            name: row
-                            .get::<_, String>("name")
-                            .map_err(|_| {
-                                DataBaseError::GetUserError(ErrorLog {
-                                    title: "Error to get name value",
-                                    code: 500,
-                                    file: "Database.rs",
-                                })
-                            })
-                            .unwrap(),
                             username: row
                                 .get::<_, String>("username")
                                 .map_err(|_| {

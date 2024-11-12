@@ -11,6 +11,3 @@ BEGIN
          NULL, NULL
     );
 END;
-
--- INSERT INTO users VALUES(1, '1234', 'jhon@bol.com', 'Jhon', CURRENT_DATE);
--- select * from users NATURAL join People;
