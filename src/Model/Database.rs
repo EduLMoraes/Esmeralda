@@ -65,11 +65,6 @@ impl DataBase {
                         .output()
                         .expect("erro ao rodar script");
 
-                    // match response {
-                    //     Ok(_) => {}
-                    //     Err(e) => println!("Erro ao executar manager_db: {e:?}"),
-                    // };
-
                     let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                         DataBaseError::CreatePoolError(ErrorLog {
                             title: "Error to connect database",
@@ -624,13 +619,11 @@ impl DataBase {
                 Ok(())
             }
             Data::Count(id_count, id_user) => {
-                println!("Deletando conta {}{}...", id_user, id_count);
-
                 let _ = self
                     .pool
                     .prepare("DELETE FROM counts WHERE id_user = ?1 AND id_count = ?2")
                     .unwrap()
-                    .execute(params![id_user, format!("{}{}", id_user, id_count)])
+                    .execute(params![id_user, format!("{}", id_count)])
                     .map_err(|_| {
                         DataBaseError::DeleteCountError(ErrorLog {
                             title: "Error on delete count",

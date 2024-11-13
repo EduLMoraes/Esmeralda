@@ -10,18 +10,18 @@ pub fn get_sql() -> String {
 fn get_create_tables() -> &'static str {
     "
 CREATE TABLE IF NOT EXISTS Users (
-    id_user SERIAL PRIMARY KEY,
+    id_user INTEGER PRIMARY KEY,
     password varchar(200) NOT NULL,
     email varchar(100) NOT NULL UNIQUE,
     username varchar(100) NOT NULL UNIQUE,
     last_login date
 );
 CREATE TABLE IF NOT EXISTS Stock_Exchange_Shares (
-    id_SES BIGSERIAL PRIMARY KEY,
+    id_SES BIGINT PRIMARY KEY,
     value float
 );
 CREATE TABLE IF NOT EXISTS Old_Counts (
-    id_old_count BIGSERIAL PRIMARY KEY,
+    id_old_count BIGINT PRIMARY KEY,
     column varchar(20),
     old_value text,
     new_value text
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS dates_yield (
 );
 
 CREATE TABLE IF NOT EXISTS FIIs (
-    id_fii BIGSERIAL PRIMARY KEY,
+    id_fii BIGINT PRIMARY KEY,
     last_yields_PK integer REFERENCES last_yields(last_yields_PK) ON DELETE CASCADE,
     dates_yield_PK integer REFERENCES dates_yield(dates_yield_PK) ON DELETE CASCADE,
     value float,
@@ -66,14 +66,14 @@ CREATE TABLE IF NOT EXISTS Counts (
     description text
 );
 CREATE TABLE IF NOT EXISTS History (
-    id_history BIGSERIAL PRIMARY KEY,
+    id_history BIGINT PRIMARY KEY,
     id_old_count integer REFERENCES Old_Counts(id_old_count) ON DELETE CASCADE,
     id_count integer REFERENCES Counts(id_count) ON DELETE CASCADE,
     id_user integer REFERENCES Users(id_user) ON DELETE CASCADE,
     date timestamp
 );
 CREATE TABLE IF NOT EXISTS Address (
-    id_addres BIGSERIAL PRIMARY KEY,
+    id_addres BIGINT PRIMARY KEY,
     uid_property varchar(44) REFERENCES Property(uid_property) ON DELETE CASCADE,
     type varchar(30),
     public_place varchar(200),
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS Address (
 );
 CREATE TABLE IF NOT EXISTS People (
     uid_people varchar(44) PRIMARY KEY,
-    id_addres integer REFERENCES Address(id_addres) ON DELETE CASCADE,
+    id_addres integer REFERENCES Address(id_addres),
     id_user integer REFERENCES Users(id_user) ON DELETE CASCADE,
     provider varchar(44),
     wage float,
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS People (
     surname varchar(100)
 );
 CREATE TABLE IF NOT EXISTS Investments (
-    id_invest BIGSERIAL PRIMARY KEY,
+    id_invest BIGINT PRIMARY KEY,
     uid_people varchar(44) REFERENCES People(uid_people) ON DELETE CASCADE,
     type_invest varchar(30),
     value_apply float,
