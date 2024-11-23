@@ -14,4 +14,7 @@ pub mod List;
 
 #[allow(non_snake_case)]
 pub mod User;
+
+#[allow(non_snake_case)]
+pub mod People;
 pub mod errors;

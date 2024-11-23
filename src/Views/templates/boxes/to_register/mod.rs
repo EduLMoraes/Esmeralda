@@ -2,7 +2,6 @@ use std::borrow::Borrow;
 
 use super::*;
 use crate::control::add_user;
-use crate::control::is_alpha;
 use crate::control::is_email;
 use crate::env::var;
 use crate::model::User::NewUser;

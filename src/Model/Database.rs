@@ -58,7 +58,7 @@ impl DataBase {
                 })?,
                 Err(_) => {
                     use std::process::Command;
-                    let response = Command::new(env::var("MANAGER_PATH").unwrap())
+                    let _ = Command::new(env::var("MANAGER_PATH").unwrap())
                         .arg("create")
                         .arg(format!("--path={}", env::var("DB_PATH").unwrap()))
                         .arg("--version=1.3.0")

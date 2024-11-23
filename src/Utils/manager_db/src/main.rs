@@ -1,7 +1,5 @@
-use chrono::Local;
-use clap::parser::RawValues;
 use clap::{Arg, Command, Subcommand};
-use rusqlite::{params, Connection, Result};
+use rusqlite::{Connection, Result};
 use std::fs;
 use std::process;
 
