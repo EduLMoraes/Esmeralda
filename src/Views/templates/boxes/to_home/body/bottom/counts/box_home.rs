@@ -68,6 +68,7 @@ pub fn get_home_box(stack: &Stack) -> Box {
         counts.get_total(),
         counts.get_total_debt(),
         counts.get_total_perfomance(),
+        counts.get_perfomance_months(),
     ));
     box_home.append(&box_button_lb);
     box_home.append(&scrolled);
