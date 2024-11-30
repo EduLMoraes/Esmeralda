@@ -42,6 +42,9 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
         text.add_css_class("status_negative");
     }
 
+    box_paid.append(&title);
+    box_paid.append(&text);
+
     let box_count_month = Box::new(Orientation::Vertical, 10);
 
     use chrono::Utc;
@@ -74,9 +77,6 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
 
     box_count_month.append(&title);
     box_count_month.append(&text);
-
-    box_paid.append(&title);
-    box_paid.append(&text);
 
     grid.attach(&box_count, 0, 0, 1, 1);
     grid.attach(&box_debt, 1, 0, 1, 1);

@@ -1,5 +1,8 @@
 #[cfg(test)]
 mod test_people {
+    use chrono::Utc;
+
+    use crate::model::errors::{ErrorLog, PeopleError};
     use crate::model::People::People;
 
     #[test]
@@ -61,5 +64,29 @@ mod test_people {
         assert!(!People::valid_cpf("001.000.000100"));
         assert!(!People::valid_cpf("001.000.000100"));
         assert!(!People::valid_cpf("02e.000.000-00"));
+    }
+
+    #[test]
+    pub fn test_create_people_err() {
+        let test_people = People::from(
+            String::from("abcd-4-jklm-pqrls-mw3f"),
+            String::from("Jhon"),
+            1.400,
+            String::from("(99) 99999-9999"),
+            Utc::now().date_naive(),
+            String::from("555555555555"),
+            String::from("000.000.000-01"),
+            String::from("Molton"),
+        );
+
+        assert!(test_people.is_err());
+        assert_eq!(
+            test_people.err(),
+            Some(PeopleError::CPFInvalid(ErrorLog {
+                title: "This cpf is invalid!",
+                code: 902,
+                file: "People.rs",
+            }))
+        );
     }
 }

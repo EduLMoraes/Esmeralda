@@ -1,5 +1,7 @@
 use chrono::NaiveDate;
 
+use super::errors::{ErrorLog, PeopleError};
+
 #[allow(unused)]
 pub struct People {
     id: String,
@@ -23,17 +25,24 @@ impl People {
         rg: String,
         cpf: String,
         surname: String,
-    ) -> People {
-        People {
-            id: id,
-            name: name,
-            wage: wage,
-            cell_phone: cell_phone,
-            birthday: birthday,
-            rg: rg,
-            cpf: cpf,
-            surname: surname,
+    ) -> Result<Self, PeopleError> {
+        if People::valid_cpf(&cpf) {
+            return Ok(People {
+                id: id,
+                name: name,
+                wage: wage,
+                cell_phone: cell_phone,
+                birthday: birthday,
+                rg: rg,
+                cpf: cpf,
+                surname: surname,
+            });
         }
+        Err(PeopleError::CPFInvalid(ErrorLog {
+            title: "This cpf is invalid!",
+            code: 902,
+            file: "People.rs",
+        }))
     }
 
     pub fn valid_cpf(cpf: &str) -> bool {

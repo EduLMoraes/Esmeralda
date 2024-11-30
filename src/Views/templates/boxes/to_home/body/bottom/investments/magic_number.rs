@@ -93,12 +93,9 @@ pub fn get_box() -> Box {
                 Ok((quote, Some(dividend))) => {
                     vpa_input.set_value(quote.close);
                     yield_tax_input.set_value((dividend.amount * 12.0 * 100.0) / quote.close);
-                    println!("{}", yield_tax_input.value());
                 }
                 Ok((quote, None)) => vpa_input.set_value(quote.close),
-                Err(yerror) => {
-                    println!("{}", yerror)
-                }
+                Err(_yerror) => {}
             };
         }
     ));
