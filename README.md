@@ -28,7 +28,7 @@ registrados, cadastro e login para acesso ao sistema.
 # *Detalhes*: <section id="details"/>
 
 ### *Versão* 🤖
-`v1.3.0`
+`v1.3.1`
 
 <h2> Tecnologias </h2>
 <p>

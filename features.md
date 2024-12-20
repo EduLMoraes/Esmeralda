@@ -5,6 +5,17 @@
     <td> Descrição </td>
   </tr>
   <tr>
+    <td> v1.3.1 </td>
+    <td> 
+      Novas telas;<br>
+      Correção de bugs;<br>
+    </td>
+  </tr>
+  <tr>
+    <td> Versão </td>
+    <td> Descrição </td>
+  </tr>
+  <tr>
     <td> v1.2.3 </td>
     <td> 
       Correção de bugs;<br>
