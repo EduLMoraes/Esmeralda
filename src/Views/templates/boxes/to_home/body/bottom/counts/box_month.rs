@@ -1,6 +1,6 @@
 use super::*;
 
-pub fn new_group_info(
+pub fn new_month_info(
     title: &str,
     nature: &str,
     infos: &Vec<Count>,

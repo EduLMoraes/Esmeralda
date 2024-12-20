@@ -2,7 +2,7 @@ use super::*;
 use crate::model::Count::Count;
 
 #[allow(dead_code)]
-pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>) -> Grid {
+pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>, title: &str) -> Grid {
     let grid_infos = Grid::new();
     grid_infos.set_halign(gtk::Align::Center);
     grid_infos.set_column_spacing(10);
@@ -27,6 +27,6 @@ pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>) -> 
         stack.remove(&child);
     }
 
-    stack.add_titled(&grid_infos, Some("details"), &infos[0].nature);
+    stack.add_titled(&grid_infos, Some("details"), &title);
     grid_infos
 }

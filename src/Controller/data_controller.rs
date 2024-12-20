@@ -44,6 +44,7 @@ pub async fn get_groups() -> Result<Vec<String>, ControlError> {
         file: "data_controller.rs",
     }))
 }
+
 /// This communicate with the database to edit
 /// the data.
 pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
