@@ -100,4 +100,10 @@ pub fn get_config() {
     if env::var("CSS_PATH").is_err() {
         env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path))
     }
+    if env::var("CARGO_PKG_VERSION").is_err() {
+        env::set_var("CARGO_PKG_VERSION", format!("1.2.3"))
+    }
+    if env::var("MANAGER_PATH").is_err() {
+        env::set_var("MANAGER_PATH", format!("{}/.esmeralda/manager_db", path));
+    }
 }

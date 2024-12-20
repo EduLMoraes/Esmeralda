@@ -12,6 +12,10 @@ use templates::{login_screen, rgter_screen};
 mod alerts;
 use alerts::*;
 
+#[path = "./templates/boxes/to_home/body/bottom/investments/mod.rs"]
+mod investments;
+
+// Descomentar tudo (menos relacionado a lost_pass_screen) após terminar de desenvolver tela de calculadoras.
 pub fn esmeralda(app: &Application) {
     let window = control::config::app::get_config(app);
 

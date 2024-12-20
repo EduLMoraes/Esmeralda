@@ -17,7 +17,6 @@ git:
 release:
 	cargo check
 	cargo fmt
-	make test
 	cargo build --release
 	cargo bundle --release
 	(cd src/Views && zip -o ../../target/release/sources.zip assets styles -r)

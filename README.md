@@ -28,7 +28,7 @@ registrados, cadastro e login para acesso ao sistema.
 # *Detalhes*: <section id="details"/>
 
 ### *Versão* 🤖
-`v1.2.3`
+`v1.3.1`
 
 <h2> Tecnologias </h2>
 <p>
@@ -38,6 +38,26 @@ registrados, cadastro e login para acesso ao sistema.
 <input type="checkbox" checked> CSS     <br>
 
 </p>
+
+## Requisitos Mínimos
+<table>
+  <tr>
+    <td> Núcleos de CPU </td>
+    <td> 2</td>
+  </tr>
+  <tr>
+    <td> Memória RAM </td>
+    <td> 2Gb</td>
+  </tr>
+  <tr>
+    <td> Armazenamento </td>
+    <td> 100mb</td>
+  </tr>
+  <tr>
+    <td> OS </td>
+    <td> Linux / Windows 10</td>
+  </tr>
+</table>
 
 ### *Referências*
 Todos os ícones são pertencentes à [Flaticon](https://www.flaticon.com/br/).

@@ -71,7 +71,7 @@ pub fn box_top(stack: &Stack) -> Box {
     button_ext.add_css_class("link_button");
 
     let username = get_user_instance().clone().unwrap();
-    let username = Label::new(Some(username.name.trim()));
+    let username = Label::new(Some(username.username.trim()));
     username.set_halign(gtk::Align::Center);
     username.set_valign(gtk::Align::Center);
     username.set_height_request(20);

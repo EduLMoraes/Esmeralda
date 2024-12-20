@@ -38,11 +38,9 @@ mod tests_database {
         let db = db.unwrap();
 
         let user = NewUser {
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
-            wage: 1000.0,
         };
         let data = Data::NewUser(user);
         let result = db.add(data);
@@ -61,7 +59,6 @@ mod tests_database {
 
         let user = UserDb {
             id: 1,
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "new_password".to_string(),
             email: "test@example.com".to_string(),
@@ -73,7 +70,7 @@ mod tests_database {
             title: "Title".to_string(),
             description: "Description".to_string(),
             value: 100.0,
-            paid_installments: 0,
+            paid_installments: 1,
             installments: 1,
             date_in: NaiveDate::from_ymd_opt(2022, 1, 1).unwrap(),
             date_out: NaiveDate::from_ymd_opt(2022, 12, 31).unwrap(),
@@ -108,7 +105,6 @@ mod tests_database {
             result.await.unwrap(),
             Data::UserDb(UserDb {
                 id: 1,
-                name: "Test User".to_string(),
                 username: "test_user".to_string(),
                 password: "new_password".to_string(),
                 email: "test@example.com".to_string(),
@@ -128,7 +124,6 @@ mod tests_database {
 
         let user = UserDb {
             id: 1,
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
@@ -166,7 +161,6 @@ mod tests_database {
 
         let user = UserDb {
             id: 1,
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
@@ -234,7 +228,6 @@ mod tests_database {
             },
             UserDb {
                 id: 1,
-                name: "Test User".to_string(),
                 username: "test_user".to_string(),
                 password: "password".to_string(),
                 email: "test@example.com".to_string(),
@@ -265,8 +258,6 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
-            name: "Test User".to_string(),
-            wage: 1000.0,
         });
         let result = db.get(data);
         assert_eq!(
@@ -292,8 +283,6 @@ mod tests_database {
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
-            name: "Test User".to_string(),
-            wage: 1000.0,
         });
         let result = db.edit(data);
         assert_eq!(
@@ -317,7 +306,6 @@ mod tests_database {
 
         let user = UserDb {
             id: 1,
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "password".to_string(),
             email: "test@example.com".to_string(),
@@ -356,7 +344,6 @@ mod tests_database {
 
         let user = UserDb {
             id: 1,
-            name: "Test User".to_string(),
             username: "test_user".to_string(),
             password: "new_password".to_string(),
             email: "test@example.com".to_string(),
@@ -424,7 +411,6 @@ mod tests_database {
             },
             UserDb {
                 id: 1,
-                name: "Test User".to_string(),
                 username: "test_user".to_string(),
                 password: "new_password".to_string(),
                 email: "test@test.com".to_string(),
@@ -441,7 +427,6 @@ mod tests_database {
             Ok(Data::Counts(counts, user, year)) => {
                 assert_eq!(counts.list.len(), 0);
                 assert_eq!(user.id, 1);
-                assert_eq!(user.name, "Test User");
                 assert_eq!(user.username, "test_user");
                 assert_eq!(user.password, "new_password");
                 assert_eq!(user.email, "test@test.com");

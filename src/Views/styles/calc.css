@@ -1,0 +1,20 @@
+.box_calculator_index{
+    background-color: transparent;
+    color: #fff;
+    padding: 10px;
+}
+.box_calculator{
+    min-width: 250px;
+}
+
+.input_calculator{ 
+    min-width: 20px;
+    background-color: #2f2f2f;
+    border-color: #3fff3f;
+    color: white;
+}
+
+cursor{
+    color: #fff;
+    background-color: #fff;
+}

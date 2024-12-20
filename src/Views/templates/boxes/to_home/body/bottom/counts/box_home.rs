@@ -44,6 +44,11 @@ pub fn get_home_box(stack: &Stack) -> Box {
         "Contas",
     );
     stack_infos.add_titled(&get_grid_debtors(), Some("debtors"), "Devedores");
+    stack_infos.add_titled(
+        &get_grid_months(&stack_infos, stack),
+        Some("months"),
+        "Meses",
+    );
     stack_infos.set_visible_child_name("groups");
 
     stack_switcher.set_stack(Some(&stack_infos));
@@ -68,6 +73,7 @@ pub fn get_home_box(stack: &Stack) -> Box {
         counts.get_total(),
         counts.get_total_debt(),
         counts.get_total_perfomance(),
+        counts.get_perfomance_months(),
     ));
     box_home.append(&box_button_lb);
     box_home.append(&scrolled);
