@@ -11,12 +11,18 @@ pub fn right() -> Box {
 
     let order_by = Label::new(Some("Ordernar por: "));
     let drop_order = DropDown::from_strings(&[
-        "Entrada",
-        "Data limite",
-        "Valor",
-        "Natureza",
-        "Status",
-        "Devedor",
+        "⤓ Entrada",
+        "⤒ Entrada",
+        "⤓ Data limite",
+        "⤒ Data limite",
+        "⤓ Valor",
+        "⤒ Valor",
+        "⤓ Natureza",
+        "⤒ Natureza",
+        "⤓ Status",
+        "⤒ Status",
+        "⤓ Devedor",
+        "⤒ Devedor",
     ]);
     drop_order.set_css_classes(&["dropdown_order_by"]);
 
@@ -38,16 +44,23 @@ pub fn right() -> Box {
     box_list_count.set_vexpand(true);
 
     let counts = get_counts_instance();
+
     drop_order.connect_selected_item_notify(move |drop_order| {
         let mut counts = get_counts_instance().clone();
 
         match drop_order.selected() {
             0 => counts.order_by_date(true, true),
-            1 => counts.order_by_date(false, false),
-            2 => counts.order_by_value(true),
-            3 => counts.order_alphabetical("nature", true),
-            4 => counts.order_by_status(true),
-            5 => counts.order_alphabetical("name", true),
+            1 => counts.order_by_date(true, false),
+            2 => counts.order_by_date(false, true),
+            3 => counts.order_by_date(false, false),
+            4 => counts.order_by_value(true),
+            5 => counts.order_by_value(false),
+            6 => counts.order_alphabetical("nature", true),
+            7 => counts.order_alphabetical("nature", false),
+            8 => counts.order_by_status(true),
+            9 => counts.order_by_status(false),
+            10 => counts.order_alphabetical("name", true),
+            11 => counts.order_alphabetical("name", false),
             _ => {}
         }
 

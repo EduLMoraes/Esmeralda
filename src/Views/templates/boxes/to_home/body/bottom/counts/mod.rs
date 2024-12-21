@@ -12,7 +12,6 @@ mod box_pay;
 
 mod grids;
 use grids::get_grid_infos;
-use grids::get_grid_months;
 
 pub use bottom_left::*;
 pub use bottom_right::*;
