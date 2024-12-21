@@ -13,6 +13,11 @@ pub fn get_box_body(stack: &Stack) -> Box {
 
     stack.add_titled(&box_count(), Some("Contas"), "Contas");
     stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
+    stack.add_titled(
+        &get_investments_box(),
+        Some("Investimentos"),
+        "Investimentos",
+    );
 
     box_body.append(&box_top(stack));
     box_body.append(stack);

@@ -7,6 +7,7 @@ mod box_debtor;
 mod box_group;
 mod box_home;
 mod box_info;
+mod box_month;
 mod box_pay;
 
 mod grids;
@@ -19,6 +20,7 @@ pub use box_debtor::*;
 pub use box_group::*;
 pub use box_home::*;
 pub use box_info::*;
+pub use box_month::*;
 pub use box_pay::*;
 
 pub fn box_count() -> Box {

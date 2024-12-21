@@ -89,3 +89,10 @@ pub enum ApiError {
     #[error("Error on router")]
     ErrorRouter(ErrorLog<'static>),
 }
+
+#[allow(dead_code)]
+#[derive(Error, Debug, PartialEq)]
+pub enum PeopleError {
+    #[error("CPF Invalid")]
+    CPFInvalid(ErrorLog<'static>),
+}

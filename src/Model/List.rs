@@ -297,6 +297,14 @@ impl ListCount {
             .collect::<Vec<Count>>()
     }
 
+    pub fn filter_by_month(&self, item: &u32) -> Vec<Count> {
+        self.list
+            .iter()
+            .filter(|count| item == &count.date_in.month0())
+            .cloned()
+            .collect::<Vec<Count>>()
+    }
+
     pub fn search(&self, item: &String) -> Vec<Count> {
         use rust_fuzzy_search::fuzzy_compare;
 

@@ -84,7 +84,7 @@ pub fn new_group_info(
         #[weak]
         stack_home,
         move |_| {
-            let _ = get_grid_infos(&stack, &stack_home, &infos);
+            let _ = get_grid_infos(&stack, &stack_home, &infos, &title.text());
             stack.set_visible_child_name("details");
         }
     ));
