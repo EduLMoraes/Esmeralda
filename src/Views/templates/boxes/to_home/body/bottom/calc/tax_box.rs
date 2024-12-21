@@ -103,8 +103,38 @@ pub fn get_box() -> Box {
         total_invest_input,
         #[weak]
         vpa_input,
+        #[weak]
+        yield_input,
         move |_| {
-            total_invest_input.set_value(&actions_input.value() * &vpa_input.value());
+            total_invest_input.set_value(&actions_input.value() * &vpa_input.value() - yield_input.value());
+        }
+    ));
+
+    actions_input.connect_value_changed(clone!(
+        #[weak]
+        actions_input,
+        #[weak]
+        total_invest_input,
+        #[weak]
+        vpa_input,
+        #[weak]
+        yield_input,
+        move |_| {
+            total_invest_input.set_value(&actions_input.value() * &vpa_input.value() - yield_input.value());
+        }
+    ));
+
+    yield_tax_input.connect_value_changed(clone!(
+        #[weak]
+        actions_input,
+        #[weak]
+        total_invest_input,
+        #[weak]
+        vpa_input,
+        #[weak]
+        yield_input,
+        move |_| {
+            total_invest_input.set_value(&actions_input.value() * &vpa_input.value() - yield_input.value());
         }
     ));
 
