@@ -8,7 +8,7 @@ mod top;
 pub use bottom::*;
 pub use top::*;
 
-pub fn get_box_body(stack: &Stack) -> Box {
+pub fn get_box_body(stack: &Stack, stack_master: &Stack) -> Box {
     let box_body = Box::new(Orientation::Vertical, 0);
 
     stack.add_titled(&box_count(), Some("Contas"), "Contas");
@@ -19,7 +19,7 @@ pub fn get_box_body(stack: &Stack) -> Box {
         "Investimentos",
     );
 
-    box_body.append(&box_top(stack));
+    box_body.append(&box_top(stack, &stack_master));
     box_body.append(stack);
 
     box_body.add_css_class("box_body");

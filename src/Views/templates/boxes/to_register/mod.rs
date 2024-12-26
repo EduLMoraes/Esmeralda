@@ -59,7 +59,7 @@ pub fn box_register(stack: &Stack) -> Box {
                         let run = tokio::runtime::Runtime::new().unwrap();
 
                         if run.block_on(control::login(user)).is_ok() {
-                            let home_screen = home_screen();
+                            let home_screen = home_screen(&stack);
                             stack.add_css_class("home_window");
                             stack.remove_css_class("register_window");
 
