@@ -1,5 +1,7 @@
 use super::*;
 
+#[deprecated]
+#[allow(unused)]
 pub fn is_alpha(text: &str) -> bool {
     is_alphabetic(text)
 }

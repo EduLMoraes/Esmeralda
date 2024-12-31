@@ -41,6 +41,15 @@ pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
             stack.remove(&tmp);
             stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
         }
+
+        if let Some(tmp) = stack.child_by_name("Investimentos") {
+            stack.remove(&tmp);
+            stack.add_titled(
+                &get_investments_box(),
+                Some("Investimentos"),
+                "Investimentos",
+            );
+        }
     }
 
     let _ = std::mem::drop(binding);

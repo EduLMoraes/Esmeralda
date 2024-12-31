@@ -10,7 +10,7 @@ use chrono::Datelike;
 use control::get_user_instance;
 use to_home::*;
 
-pub fn home_screen() -> Box {
+pub fn home_screen(screen_master: &Stack) -> Box {
     let screen = Box::new(Orientation::Horizontal, 0);
 
     let stack = Stack::new();
@@ -61,7 +61,7 @@ pub fn home_screen() -> Box {
     }
 
     let box_menu_left = get_box_menu_left(&stack);
-    let box_body = get_box_body(&stack);
+    let box_body = get_box_body(&stack, &screen_master);
 
     screen.append(&box_menu_left);
     screen.append(&box_body);

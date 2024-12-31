@@ -3,8 +3,6 @@ pub struct NewUser {
     pub username: String,
     pub password: String,
     pub email: String,
-    pub name: String,
-    pub wage: f32,
 }
 
 impl NewUser {
@@ -22,7 +20,6 @@ pub struct User {
 #[derive(Clone, PartialEq, Debug)]
 pub struct UserDb {
     pub id: i32,
-    pub name: String,
     pub username: String,
     pub password: String,
     pub email: String,

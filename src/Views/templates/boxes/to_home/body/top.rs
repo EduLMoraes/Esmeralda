@@ -2,9 +2,10 @@ use super::*;
 use crate::chrono::Utc;
 use crate::control::get_user_instance;
 use chrono::Datelike;
+use control::exit_user;
 use gtk::{DropDown, SearchEntry};
 
-pub fn box_top(stack: &Stack) -> Box {
+pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
     let box_top = Box::new(Orientation::Horizontal, 200);
     box_top.set_hexpand(true);
 
@@ -68,10 +69,33 @@ pub fn box_top(stack: &Stack) -> Box {
     ));
 
     let button_ext = Button::with_label("Sair");
+    button_ext.set_halign(gtk::Align::Center);
+    button_ext.set_valign(gtk::Align::Center);
     button_ext.add_css_class("link_button");
 
+    button_ext.connect_clicked(clone!(
+        #[weak]
+        stack_master,
+        move |_| {
+            let login_screen = login_screen(&stack_master);
+            let register_screen = rgter_screen(&stack_master);
+
+            stack_master.add_titled(&login_screen, Some("login"), "Login");
+            stack_master.add_titled(&register_screen, Some("register"), "Register");
+
+            stack_master.remove_css_class("home_window");
+            stack_master.add_css_class("login_window");
+            stack_master.set_visible_child_name("login");
+
+            let tmp = stack_master.child_by_name("home").unwrap();
+            stack_master.remove(&tmp);
+
+            exit_user();
+        }
+    ));
+
     let username = get_user_instance().clone().unwrap();
-    let username = Label::new(Some(username.name.trim()));
+    let username = Label::new(Some(username.username.trim()));
     username.set_halign(gtk::Align::Center);
     username.set_valign(gtk::Align::Center);
     username.set_height_request(20);
@@ -79,5 +103,6 @@ pub fn box_top(stack: &Stack) -> Box {
     box_top.append(&box_select);
     box_top.append(&search);
     box_top.append(&username);
+    box_top.append(&button_ext);
     box_top
 }

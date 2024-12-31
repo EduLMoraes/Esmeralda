@@ -1,5 +1,5 @@
 use crate::prelude::env::var;
-// use crate::prelude::log;
+use crate::prelude::log;
 use crate::prelude::model::{
     errors::{DataBaseError, ErrorLog},
     Count::Count,
@@ -9,6 +9,7 @@ use crate::prelude::model::{
 use chrono::{Datelike, NaiveDate};
 use lazy_static::lazy_static;
 use rusqlite::{params, Connection};
+use std::env;
 use std::sync::Mutex;
 
 #[allow(dead_code)]
@@ -29,8 +30,25 @@ impl DataBase {
                         file: "Database.rs",
                     })
                 })?
-                .execute_batch("SELECT * FROM users NATURAL JOIN counts")
-            {
+                .execute_batch(
+                    "
+                    SELECT * FROM
+                    users NATURAL JOIN counts 
+                    NATURAL JOIN history 
+                    NATURAL JOIN old_counts
+                    NATURAL JOIN people
+                    NATURAL JOIN address
+                    NATURAL JOIN property
+                    NATURAL JOIN receipts
+                    NATURAL JOIN bank
+                    NATURAL JOIN investments
+                    NATURAL JOIN investments_fiis_stock_exchange_shares
+                    NATURAL JOIN stock_exchange_shares
+                    NATURAL JOIN fiis
+                    NATURAL JOIN last_yields
+                    NATURAL JOIN dates_yield
+                    ",
+                ) {
                 Ok(_) => Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                     DataBaseError::CreatePoolError(ErrorLog {
                         title: "Error to connect database",
@@ -39,46 +57,18 @@ impl DataBase {
                     })
                 })?,
                 Err(_) => {
+                    use std::process::Command;
+                    let _ = Command::new(env::var("MANAGER_PATH").unwrap())
+                        .arg("create")
+                        .arg(format!("--path={}", env::var("DB_PATH").unwrap()))
+                        .arg("--version=1.3.0")
+                        .output()
+                        .expect("erro ao rodar script");
+
                     let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                         DataBaseError::CreatePoolError(ErrorLog {
                             title: "Error to connect database",
                             code: 812,
-                            file: "Database.rs",
-                        })
-                    })?;
-                    conn.execute_batch(
-                        "
-                        CREATE TABLE IF NOT EXISTS users (
-                            user_id INTEGER PRIMARY KEY,
-                            username VARCHAR(50) NOT NULL UNIQUE,
-                            email VARCHAR(100) NOT NULL UNIQUE,
-                            password VARCHAR(200) NOT NULL,
-                            name VARCHAR(100) NOT NULL,
-                            wage REAL NOT NULL,
-                            last_login DATE
-                        );
-                        
-                        CREATE TABLE IF NOT EXISTS counts (
-                            count_id INTEGER PRIMARY KEY,
-                            user_id INTEGER NOT NULL,
-                            debtor VARCHAR(100) NOT NULL,
-                            title VARCHAR(50) NOT NULL,
-                            description TEXT,
-                            value REAL NOT NULL,
-                            paid_installments INTEGER,
-                            installments INTEGER DEFAULT 1,
-                            date_in DATE NOT NULL,
-                            date_out DATE NOT NULL,
-                            status BOOLEAN NOT NULL,
-                            nature VARCHAR(15) NOT NULL,
-                            FOREIGN KEY (user_id) REFERENCES users
-                        ); 
-                    ",
-                    )
-                    .map_err(|_| {
-                        DataBaseError::CreatePoolError(ErrorLog {
-                            title: "Create tables failed!",
-                            code: 500,
                             file: "Database.rs",
                         })
                     })?;
@@ -101,33 +91,29 @@ impl DataBase {
 
         match data {
             Data::NewUser(user) => {
-                let mut stmt = self.pool
-                    .prepare("INSERT INTO users (username, password, email, name, wage) VALUES (?1, ?2, ?3, ?4, ?5) ")
+                let mut stmt = self
+                    .pool
+                    .prepare("INSERT INTO Users (username, password, email) VALUES (?1, ?2, ?3) ")
                     .unwrap();
 
-                stmt.execute([
-                    user.username,
-                    user.password,
-                    user.email,
-                    user.name,
-                    user.wage.to_string(),
-                ])
-                .map_err(|_err| {
-                    DataBaseError::AddUserError(ErrorLog {
-                        title: "User already existis",
-                        code: 500,
-                        file: "Database.rs",
-                    })
-                })?;
+                stmt.execute([user.username, user.password, user.email])
+                    .map_err(|err| {
+                        let _ = log(path.clone().into(), format!("{err:?}").trim());
+                        DataBaseError::AddUserError(ErrorLog {
+                            title: "User already existis",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
 
                 Ok(())
             }
             Data::Counts(counts, user, _year) => {
                 self.pool
                     .prepare(
-                        "INSERT INTO counts (
-                        count_id,
-                        user_id, 
+                        "INSERT INTO Counts (
+                        id_count,
+                        id_user,
                         debtor, 
                         title, 
                         description, 
@@ -136,23 +122,12 @@ impl DataBase {
                         installments, 
                         date_in, 
                         date_out, 
-                        status,
                         nature
                     ) VALUES (
-                        (
-                            select(
-                                    select user_id from users where user_id = ?1
-                                ) || coalesce((
-                                    max(
-                                        substr(count_id, 2)
-                                    +1)
-                                ), 1)
-                            from counts 
-                            where user_id = ?1
-                        ), 
-                    ?1, ?2, ?3, ?4, ?5, ?6, ?7, 
+                        (SELECT COALESCE(MAX(id_count), 0)+1 AS id_count2 FROM counts where id_user = ?1),
+                        ?1, ?2, ?3, ?4, ?5, ?6, ?7, 
                     strftime('%Y-%m-%d', ?8), strftime('%Y-%m-%d', ?9), 
-                    ?10, ?11) ",
+                    ?10) ",
                     )
                     .map_err(|er| {
                         println!("{er}");
@@ -172,7 +147,6 @@ impl DataBase {
                         counts.list[0].installments,
                         counts.list[0].date_in.to_string(),
                         counts.list[0].date_out.to_string(),
-                        counts.list[0].status,
                         counts.list[0].nature
                     ])
                     .map_err(|er| {
@@ -206,7 +180,7 @@ impl DataBase {
             Data::User(user) => {
                 let mut stmt = self
                     .pool
-                    .prepare("SELECT user_id, name, username, password, email, coalesce(strftime('%m', last_login), '0') as last_login FROM users WHERE username = ?1 LIMIT 1")
+                    .prepare("SELECT id_user, username, password, email, coalesce(strftime('%m', last_login), '0') as last_login FROM users WHERE username = ?1 LIMIT 1")
                     .map_err( |_| {
                         match self.pool.execute_batch("
                             ALTER TABLE users ADD COLUMN last_login DATE;
@@ -228,20 +202,10 @@ impl DataBase {
                     .query_row([user.username], |row| {
                         Ok(UserDb {
                             id: row
-                                .get::<_, i32>("user_id")
+                                .get::<_, i32>("id_user")
                                 .map_err(|_| {
                                     DataBaseError::GetUserError(ErrorLog {
                                         title: "Error to get id value",
-                                        code: 500,
-                                        file: "Database.rs",
-                                    })
-                                })
-                                .unwrap(),
-                            name: row
-                                .get::<_, String>("name")
-                                .map_err(|_| {
-                                    DataBaseError::GetUserError(ErrorLog {
-                                        title: "Error to get name value",
                                         code: 500,
                                         file: "Database.rs",
                                     })
@@ -302,15 +266,15 @@ impl DataBase {
             Data::Counts(mut l_counts, user, year) => {
                 let mut stmt = self.pool
                     .prepare(
-                        "SELECT count_id, user_id,
+                        "SELECT id_count, id_user,
                         strftime('%Y-%m-%d', date_in) AS date_in, strftime('%Y-%m-%d', date_out) AS date_out, 
-                        debtor, title, description, value, paid_installments, installments, status, nature
-                        FROM counts
-                        WHERE user_id = ?1
+                        debtor, title, description, value, paid_installments, installments, nature
+                        FROM Counts
+                        WHERE id_user = ?1
                         AND
                         ( strftime('%Y', date_in) like ?2
                         OR strftime('%Y', date_out) like ?2 )
-                        order by count_id",
+                        order by id_count",
                     )
                     .map_err(|_| {
                         DataBaseError::GetCountsError(ErrorLog {
@@ -345,7 +309,7 @@ impl DataBase {
 
                     let count = Count {
                         id: row
-                            .get::<_, i32>("count_id")
+                            .get::<_, i32>("id_count")
                             .map_err(|_| {
                                 DataBaseError::GetCountsError(ErrorLog {
                                     title: "Error to get id value",
@@ -444,14 +408,21 @@ impl DataBase {
                             .to_string()
                             .parse::<u32>()
                             .unwrap(),
-                        status: row.get::<_, i64>("status").map_err(|err| {
+                        status: row.get::<_, i64>("installments").map_err(|err| {
                             println!("{:?}", err);
                             DataBaseError::GetCountsError(ErrorLog {
                                 title: "Error to get status value",
                                 code: 500,
                                 file: "Database.rs",
                             })
-                        })? > 0,
+                        })? == row.get::<_, i64>("paid_installments").map_err(|err| {
+                            println!("{:?}", err);
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get status value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })?,
                         nature: if nature.trim().is_empty() {
                             String::from("Outros")
                         } else {
@@ -473,13 +444,13 @@ impl DataBase {
                         DISTINCT strftime('%Y', date_out) as years
                         FROM counts 
                         WHERE
-                        user_id = ?1
+                        id_user = ?1
                         UNION
                         SELECT
                         DISTINCT strftime('%Y', date_in) as years
                         FROM counts
                         WHERE
-                        user_id = ?1",
+                        id_user = ?1",
                     )
                     .unwrap();
 
@@ -504,15 +475,15 @@ impl DataBase {
 
                 Ok(Data::Years(l_counts, user))
             }
-            Data::Groups(mut groups, user_id) => {
+            Data::Groups(mut groups, id_user) => {
                 let mut stmt = self.pool.prepare("
-                        SELECT nature FROM counts WHERE user_id = ?1 GROUP BY nature ORDER BY nature;
+                        SELECT nature FROM counts WHERE id_user = ?1 GROUP BY nature ORDER BY nature;
                     ")
                     .map_err(|_|{
                     DataBaseError::GetCountsError(ErrorLog { title: "Error to get groups", code: 500, file: "Database.rs" })  
                     })?;
 
-                let mut rows = stmt.query(params![&user_id]).map_err(|_| {
+                let mut rows = stmt.query(params![&id_user]).map_err(|_| {
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "Error to get groups of natures",
                         code: 500,
@@ -534,7 +505,7 @@ impl DataBase {
                     }
                 }
 
-                Ok(Data::Groups(groups, user_id))
+                Ok(Data::Groups(groups, id_user))
             }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
@@ -566,16 +537,12 @@ impl DataBase {
                             installments = ?8, 
                             date_in = strftime('%Y-%m-%d', ?9), 
                             date_out = strftime('%Y-%m-%d', ?10), 
-                            status = ?11, 
-                            nature = ?12
-                            WHERE count_id = ?1 AND user_id = ?2",
+                            nature = ?11
+                            WHERE id_count = ?1 AND id_user = ?2",
                         )
                         .unwrap()
                         .execute(params![
-                            &format!("{}{}", user.id, counts.list[i].id)
-                                .trim()
-                                .parse::<i32>()
-                                .unwrap(),
+                            &counts.list[i].id,
                             &user.id,
                             &counts.list[i].debtor,
                             &counts.list[i].title,
@@ -585,7 +552,6 @@ impl DataBase {
                             &(counts.list[i].installments as i32),
                             &counts.list[i].date_in.to_string(),
                             &counts.list[i].date_out.to_string(),
-                            &counts.list[i].status,
                             &counts.list[i].nature,
                         ])
                         .map_err(|_| {
@@ -605,7 +571,7 @@ impl DataBase {
                     .prepare(
                         "UPDATE users SET
                             password = ?1
-                            WHERE user_id = ?2",
+                            WHERE id_user = ?2",
                     )
                     .unwrap();
 
@@ -619,7 +585,7 @@ impl DataBase {
                     .prepare(
                         "UPDATE users SET
                             last_login = CURRENT_DATE
-                            WHERE user_id = ?1",
+                            WHERE id_user = ?1",
                     )
                     .unwrap();
 
@@ -639,7 +605,7 @@ impl DataBase {
         match data {
             Data::UserDb(user) => {
                 self.pool
-                    .prepare("DELETE FROM users WHERE user_id = ?1")
+                    .prepare("DELETE FROM users WHERE id_user = ?1")
                     .unwrap()
                     .execute(params![user.id])
                     .map_err(|_| {
@@ -652,14 +618,12 @@ impl DataBase {
 
                 Ok(())
             }
-            Data::Count(count_id, user_id) => {
-                println!("Deletando conta {}{}...", user_id, count_id);
-
+            Data::Count(id_count, id_user) => {
                 let _ = self
                     .pool
-                    .prepare("DELETE FROM counts WHERE user_id = ?1 AND count_id = ?2")
+                    .prepare("DELETE FROM counts WHERE id_user = ?1 AND id_count = ?2")
                     .unwrap()
-                    .execute(params![user_id, format!("{}{}", user_id, count_id)])
+                    .execute(params![id_user, format!("{}", id_count)])
                     .map_err(|_| {
                         DataBaseError::DeleteCountError(ErrorLog {
                             title: "Error on delete count",

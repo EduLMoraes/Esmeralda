@@ -65,7 +65,7 @@ impl ListCount {
     pub fn get_total_debt(&self) -> f32 {
         let mut sum = 0.0;
         for count in &self.list {
-            if !count.status {
+            if !count.status && count.nature != "Investimentos" {
                 sum += count.value * count.installments as f32;
             }
         }
@@ -79,7 +79,7 @@ impl ListCount {
         for c in &self.list {
             if c.nature == *"Receita" {
                 perfomance += c.value * c.paid_installments as f32;
-            } else {
+            } else if c.nature != "Investimentos" {
                 perfomance -= c.value * c.installments as f32;
             }
         }
@@ -92,7 +92,7 @@ impl ListCount {
         for count in &self.list {
             if count.nature == *"Receita" {
                 months[(count.date_in.month() - 1) as usize] += count.value;
-            } else {
+            } else if count.nature != "Investimentos" {
                 months[(count.date_in.month() - 1) as usize] -= count.value;
             }
         }
@@ -293,6 +293,14 @@ impl ListCount {
         self.list
             .iter()
             .filter(|count| item.to_lowercase() == count.nature.to_lowercase())
+            .cloned()
+            .collect::<Vec<Count>>()
+    }
+
+    pub fn filter_by_month(&self, item: &u32) -> Vec<Count> {
+        self.list
+            .iter()
+            .filter(|count| item == &count.date_in.month0())
             .cloned()
             .collect::<Vec<Count>>()
     }
