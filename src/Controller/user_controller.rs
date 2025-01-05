@@ -18,6 +18,10 @@ pub fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
     USER_LOGGED.lock().unwrap()
 }
 
+pub fn exit_user() {
+    std::mem::drop(get_user_instance());
+}
+
 pub async fn login(mut user: User) -> Result<(), ControlError> {
     let start = Instant::now();
 

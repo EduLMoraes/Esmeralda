@@ -26,6 +26,14 @@
     font-size: 32px;
 }
 
+.link_button{
+    background: transparent;
+    color: #fff;
+    min-width: 40px;
+    min-height: 20px;
+    border: transparent;
+}
+
 .link_details, .link_return{
     background: transparent;
     border: transparent;
