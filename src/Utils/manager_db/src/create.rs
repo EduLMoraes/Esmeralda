@@ -1,4 +1,4 @@
-use std::os::unix::fs::PermissionsExt;
+// use std::os::unix::fs::PermissionsExt;
 #[path = "./versions/mod.rs"]
 mod versions;
 use super::*;
@@ -9,9 +9,9 @@ pub fn create_database(conn: &Connection, last_version: String) -> Result<()> {
         _ => conn.execute_batch(&versions::v1_3_0::get_sql()),
     };
 
-    use fs::Permissions;
-    let permissions = Permissions::from_mode(0o600);
-    fs::set_permissions(conn.path().unwrap(), permissions).unwrap();
+    //    use fs::Permissions;
+    //  let permissions = Permissions::from_mode(0o600);
+    //fs::set_permissions(conn.path().unwrap(), permissions).unwrap();
 
     Ok(())
 }

@@ -37,13 +37,13 @@
 .login_title{
     font-size: 80px;
     color: #00B477;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: Arial;
 }
 
 .login_subtitle{
     margin-top: -15px;
     font-size: 25px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
 }
 
 .login_link{
