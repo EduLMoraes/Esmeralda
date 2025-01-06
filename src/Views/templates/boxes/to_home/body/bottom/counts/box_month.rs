@@ -8,16 +8,12 @@ pub fn new_month_info(
     stack_home: &Stack,
 ) -> Box {
     let mut soma: f32 = 0.0;
-    let mut status: bool = true;
 
     for info in infos {
-        soma += info.value;
-    }
-
-    for info in infos {
-        if !info.status {
-            status = false;
-            break;
+        if info.nature.to_lowercase() == "receita" {
+            soma += info.value;
+        } else if info.nature.to_lowercase() != "investimentos" {
+            soma -= info.value;
         }
     }
 
@@ -75,7 +71,7 @@ pub fn new_month_info(
     let icon = Image::from_file(icon_path);
     icon.add_css_class("icon_group");
 
-    if status {
+    if soma >= 0.0 {
         icon.remove_css_class("negative");
         icon.add_css_class("positive");
     } else {

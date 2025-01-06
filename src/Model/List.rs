@@ -297,12 +297,52 @@ impl ListCount {
             .collect::<Vec<Count>>()
     }
 
-    pub fn filter_by_month(&self, item: &u32) -> Vec<Count> {
-        self.list
-            .iter()
-            .filter(|count| item >= &count.date_in.month0() && item <= &count.date_out.month0())
-            .cloned()
-            .collect::<Vec<Count>>()
+    pub fn filter_by_month(
+        &self,
+        mut months: Vec<(String, Vec<Count>)>,
+    ) -> Vec<(String, Vec<Count>)> {
+        for count in &self.list {
+            if count
+                .date_in
+                .format("%Y")
+                .to_string()
+                .parse::<i16>()
+                .unwrap()
+                == count
+                    .date_out
+                    .format("%Y")
+                    .to_string()
+                    .parse::<i16>()
+                    .unwrap()
+            {
+                for i in count.date_in.month0()..=count.date_out.month0() {
+                    months[i as usize].1.push(count.clone());
+                }
+            } else if count
+                .date_in
+                .format("%Y")
+                .to_string()
+                .parse::<i16>()
+                .unwrap()
+                == count
+                    .date_out
+                    .format("%Y")
+                    .to_string()
+                    .parse::<i16>()
+                    .unwrap()
+                    - 1
+            {
+                for i in 0..=count.date_out.month0() {
+                    months[i as usize].1.push(count.clone());
+                }
+            } else {
+                for i in 0..12 {
+                    months[i as usize].1.push(count.clone());
+                }
+            }
+        }
+
+        months
     }
 
     pub fn search(&self, item: &String) -> Vec<Count> {
@@ -342,7 +382,7 @@ pub fn get_counts_instance() -> std::sync::MutexGuard<'static, ListCount> {
     GLOBAL_COUNTS.lock().unwrap()
 }
 
-use std::fmt;
+use std::fmt::{self, Debug};
 impl fmt::Display for ListCount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {

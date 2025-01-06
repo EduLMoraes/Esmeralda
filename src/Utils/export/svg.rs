@@ -79,8 +79,6 @@ fn p_bar(series: Vec<Series>) {
 fn to_save(svg: String, name: &str) {
     use std::fs::File;
 
-    println!("{}", env::temp_dir().display());
-
     let mut file = File::create(format!("{}/{name}.svg", env::temp_dir().display())).unwrap();
     let _ = file.write_all(svg.as_bytes());
 }
