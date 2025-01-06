@@ -300,7 +300,7 @@ impl ListCount {
     pub fn filter_by_month(&self, item: &u32) -> Vec<Count> {
         self.list
             .iter()
-            .filter(|count| item == &count.date_in.month0())
+            .filter(|count| item >= &count.date_in.month0() && item <= &count.date_out.month0())
             .cloned()
             .collect::<Vec<Count>>()
     }
