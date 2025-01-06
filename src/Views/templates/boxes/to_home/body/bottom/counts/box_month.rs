@@ -53,14 +53,14 @@ pub fn new_month_info(
     box_left_g.append(&n_items);
 
     let box_right_g = Box::builder()
-    .orientation(Orientation::Vertical)
-    .spacing(2)
-    .hexpand(true)
-    .vexpand(true)
-    .halign(gtk::Align::End)
-    .valign(gtk::Align::Center)
-    .css_classes(["box_right_g"])
-    .build();
+        .orientation(Orientation::Vertical)
+        .spacing(2)
+        .hexpand(true)
+        .vexpand(true)
+        .halign(gtk::Align::End)
+        .valign(gtk::Align::Center)
+        .css_classes(["box_right_g"])
+        .build();
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", nature));

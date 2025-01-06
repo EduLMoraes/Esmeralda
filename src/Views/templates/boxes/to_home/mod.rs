@@ -16,9 +16,9 @@ use get_list_box::get_list_box;
 pub use reload_home::*;
 
 mod body;
-mod menu_left;
 mod config_page;
+mod menu_left;
 
 pub use body::*;
-pub use menu_left::*;
 pub use config_page::*;
+pub use menu_left::*;

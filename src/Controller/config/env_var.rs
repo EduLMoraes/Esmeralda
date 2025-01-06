@@ -90,7 +90,7 @@ pub fn get_config() {
         env::set_var("YEAR_SELECTED", "0")
     }
     env::set_var("GSK_RENDERER", "cairo");
-    
+
     if env::var("IMG_PATH").is_err() {
         env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
     }

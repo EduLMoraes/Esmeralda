@@ -3,11 +3,11 @@ use super::*;
 #[allow(dead_code)]
 pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Grid {
     let grid = Grid::builder()
-    .halign(gtk::Align::Center)
-    .column_homogeneous(true)
-    .row_spacing(10)
-    .hexpand(true)
-    .build();
+        .halign(gtk::Align::Center)
+        .column_homogeneous(true)
+        .row_spacing(10)
+        .hexpand(true)
+        .build();
 
     let box_count = Box::new(Orientation::Vertical, 10);
 

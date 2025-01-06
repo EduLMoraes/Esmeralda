@@ -3,13 +3,12 @@ use super::*;
 #[allow(dead_code)]
 pub fn get_grid_debtors() -> Grid {
     let grid_debtors = Grid::builder()
-    .halign(gtk::Align::Fill)
-    .column_homogeneous(true)
-    .row_homogeneous(true)
-    .column_spacing(10)
-    .hexpand(true)
-    .vexpand(true)
-    .build();
+        .halign(gtk::Align::Fill)
+        .column_homogeneous(true)
+        .column_spacing(10)
+        .hexpand(true)
+        .vexpand(true)
+        .build();
 
     let binding = get_counts_instance();
     let counts = binding.borrow();

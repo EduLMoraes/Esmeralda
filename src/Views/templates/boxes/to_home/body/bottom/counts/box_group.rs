@@ -23,17 +23,17 @@ pub fn new_group_info(
 
     let value_total = soma;
 
-    let box_group = Box::new(Orientation::Horizontal, 0);
-    box_group.add_css_class("box_group");
-    box_group.set_hexpand(true);
-    box_group.set_vexpand(true);
-
-    box_group.set_valign(gtk::Align::Start);
+    let box_group = Box::builder()
+        .orientation(Orientation::Horizontal)
+        .css_classes(["box_group"])
+        .hexpand(true)
+        .vexpand(true)
+        .valign(gtk::Align::Start)
+        .build();
 
     let box_left_g = Box::new(Orientation::Vertical, 2);
     box_left_g.add_css_class("box_left_g");
     box_left_g.set_hexpand(true);
-
 
     let value = format!("R${:.2}", value_total);
     let value = Label::new(Some(&value));
@@ -52,7 +52,6 @@ pub fn new_group_info(
 
     let box_right_g = Box::new(Orientation::Vertical, 2);
     box_right_g.add_css_class("box_right_g");
-
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", nature));

@@ -15,9 +15,9 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
     let mut actual_year: u32 = 0;
     let select_year = {
         let ref_counts = get_counts_instance();
-        
-        for i in 0..ref_counts.years.len()  {
-            if ref_counts.years[i] == chrono::Utc::now().year() as i16{
+
+        for i in 0..ref_counts.years.len() {
+            if ref_counts.years[i] == chrono::Utc::now().year() as i16 {
                 actual_year = i as u32;
                 break;
             }
@@ -31,7 +31,7 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
         let tmp: Vec<&str> = tmp.iter().map(|y| y.trim()).collect();
         DropDown::from_strings(&tmp)
     };
-    
+
     select_year.set_selected(actual_year);
     select_year.add_css_class("dropdown_select_year");
 
@@ -110,10 +110,14 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
     button_config.set_halign(gtk::Align::Center);
     button_config.set_valign(gtk::Align::Center);
 
-    button_config.connect_clicked(clone!(#[weak] stack, move |_| {
-        stack.add_titled(&get_box_config(), Some("config"), "Config");
-        stack.set_visible_child_name("config");
-    }));
+    button_config.connect_clicked(clone!(
+        #[weak]
+        stack,
+        move |_| {
+            stack.add_titled(&get_box_config(), Some("config"), "Config");
+            stack.set_visible_child_name("config");
+        }
+    ));
 
     let username = get_user_instance().clone().unwrap();
     let username = Label::new(Some(username.username.trim()));

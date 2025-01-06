@@ -4,11 +4,11 @@ use super::*;
 pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
     let grid_groups = Grid::builder()
         .halign(gtk::Align::Fill)
+        .valign(gtk::Align::Start)
         .column_homogeneous(true)
-        .row_homogeneous(true)
         .column_spacing(10)
+        .row_spacing(10)
         .hexpand(true)
-        .vexpand(true)
         .build();
 
     let counts = get_counts_instance();

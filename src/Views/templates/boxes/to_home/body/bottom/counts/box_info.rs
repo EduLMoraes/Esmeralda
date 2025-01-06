@@ -184,11 +184,13 @@ pub fn new_box_info(info: &Count) -> Box {
 pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
-    box_info.set_hexpand(true);
-    box_info.set_halign(gtk::Align::Center);
 
     let box_top = Box::new(Orientation::Horizontal, 0);
+    box_top.set_halign(gtk::Align::Fill);
+    box_top.set_hexpand(true);
     let box_body = Box::new(Orientation::Horizontal, 0);
+    box_body.set_halign(gtk::Align::Fill);
+    box_body.set_hexpand(true);
 
     let box_left_i = Box::new(Orientation::Vertical, 2);
     box_left_i.add_css_class("box_left_info");

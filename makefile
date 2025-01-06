@@ -31,7 +31,6 @@ test:
 clean:
 	rm /tmp/test_db
 	rm /tmp/*.csv --force
-	rm /tmp/*.pdf
 	rm /tmp/*.html
 	rm /tmp/non_existent_directory/*
 	rm /tmp/nonexistent_directory/*

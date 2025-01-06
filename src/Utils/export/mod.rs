@@ -3,7 +3,6 @@ use std::fs::create_dir_all;
 use std::fs::File;
 use std::io::Write;
 
-
 use crate::prelude::model::List::ListCount;
 
 pub mod csv;

@@ -3,13 +3,13 @@ use super::*;
 #[allow(dead_code)]
 pub fn get_grid_months(stack: &Stack, stack_home: &Stack) -> Grid {
     let grid_months = Grid::builder()
-    .halign(gtk::Align::Fill)
-    .column_homogeneous(true)
-    .row_homogeneous(true)
-    .column_spacing(10)
-    .hexpand(true)
-    .vexpand(true)
-    .build();
+        .halign(gtk::Align::Fill)
+        .column_homogeneous(true)
+        .column_spacing(10)
+        .row_spacing(10)
+        .hexpand(true)
+        .vexpand(true)
+        .build();
 
     let counts = get_counts_instance();
 

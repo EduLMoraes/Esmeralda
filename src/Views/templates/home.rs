@@ -16,14 +16,10 @@ pub fn home_screen(screen_master: &Stack) -> Box {
     let stack = Stack::new();
 
     let run = tokio::runtime::Runtime::new().unwrap();
-    if let Ok(years) = run.block_on(recover_years()) {
-        if !years.is_empty() {
-            run.block_on(recover(years[0])).unwrap();
-        } else {
-            let _ = run
-                .block_on(recover(crate::chrono::Utc::now().year() as i16))
-                .map_err(|err| println!("{}", err));
-        }
+    if let Ok(_years) = run.block_on(recover_years()) {
+        let _ = run
+            .block_on(recover(crate::chrono::Utc::now().year() as i16))
+            .map_err(|err| println!("{}", err));
     }
 
     let today = chrono::Utc::now();
