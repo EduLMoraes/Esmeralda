@@ -63,6 +63,9 @@ pub fn home_screen(screen_master: &Stack) -> Box {
     let box_menu_left = get_box_menu_left(&stack);
     let box_body = get_box_body(&stack, &screen_master);
 
+    screen.set_valign(gtk::Align::Center);
+    screen.set_halign(gtk::Align::Center);
+
     screen.append(&box_menu_left);
     screen.append(&box_body);
 

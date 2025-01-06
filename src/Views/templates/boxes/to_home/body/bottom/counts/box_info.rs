@@ -45,6 +45,7 @@ pub fn new_box_info(info: &Count) -> Box {
     let box_center_i = Box::new(Orientation::Vertical, 2);
     box_center_i.add_css_class("box_center_i");
     box_center_i.set_valign(gtk::Align::Center);
+    box_center_i.set_hexpand(true);
 
     let value = if info.nature == *"Receita" {
         format!("R$ +{:.2}", info.value)
@@ -166,7 +167,7 @@ pub fn new_box_info(info: &Count) -> Box {
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
-    box_right_i.set_valign(gtk::Align::Center);
+    box_right_i.set_valign(gtk::Align::End);
 
     box_body.append(&box_left_i);
     box_body.append(&box_center_i);
@@ -183,6 +184,8 @@ pub fn new_box_info(info: &Count) -> Box {
 pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_info = Box::new(Orientation::Vertical, 0);
     box_info.add_css_class("box_info");
+    box_info.set_hexpand(true);
+    box_info.set_halign(gtk::Align::Center);
 
     let box_top = Box::new(Orientation::Horizontal, 0);
     let box_body = Box::new(Orientation::Horizontal, 0);
@@ -219,6 +222,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_center_i = Box::new(Orientation::Vertical, 2);
     box_center_i.add_css_class("box_center_info");
     box_center_i.set_valign(gtk::Align::Center);
+    box_center_i.set_hexpand(true);
 
     let value = format!("R$ {:.2}", info.value);
     let label_value = Label::new(Some(&value));
@@ -275,7 +279,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
-    box_right_i.set_valign(gtk::Align::Center);
+    box_right_i.set_valign(gtk::Align::End);
 
     if info.status {
         label_status.set_label("Paga");

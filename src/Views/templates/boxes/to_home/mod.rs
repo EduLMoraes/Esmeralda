@@ -17,6 +17,8 @@ pub use reload_home::*;
 
 mod body;
 mod menu_left;
+mod config_page;
 
 pub use body::*;
 pub use menu_left::*;
+pub use config_page::*;

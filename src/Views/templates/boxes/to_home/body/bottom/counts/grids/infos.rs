@@ -3,10 +3,12 @@ use crate::model::Count::Count;
 
 #[allow(dead_code)]
 pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>, title: &str) -> Grid {
-    let grid_infos = Grid::new();
-    grid_infos.set_halign(gtk::Align::Center);
-    grid_infos.set_column_spacing(10);
-    grid_infos.set_row_spacing(10);
+    let grid_infos = Grid::builder()
+    .halign(gtk::Align::Fill)
+    .column_homogeneous(true)
+    .column_spacing(10)
+    .hexpand(true)
+    .build();
 
     let mut x = 0;
     let mut y = 0;

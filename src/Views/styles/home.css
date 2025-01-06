@@ -61,7 +61,7 @@
 }
 
 .button_add, .button_payment{
-    min-width: 120px;
+    min-width: 20px;
     min-height: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -117,28 +117,22 @@
     min-width: 50px;
     min-height: 120px;
 }
-.icon_ml{
-    min-width: 25px;
-    min-height: 25px;
+.icon_ml, .icon_info, .icon_group, .icon_info_box, ico{
+    min-width: 1.5em;
+    min-height: 1.5em;
 }
 
 .icon_info{
-    min-width: 2.7em;
-    min-height: 2.7em;
     border-radius: 100px;
     border: 1px #fff solid;
     padding: 0.5em;
 }
 .icon_info_box{
-    min-width: 1.5em;
-    min-height: 1.5em;
     border-radius: 100px;
     border: 1px #fff solid;
     padding: 0.5em;
 }
 .icon_group{
-    min-width: 2.5em;
-    min-height: 2.5em;
     border-radius: 100px;
     border: 1px #fff solid;
     padding: 0.5em;
@@ -214,13 +208,11 @@
 
 .box_ml{
     background-color: #1F1F1F;
-    min-width: 220px;
     border-right: 1px solid #3B3B3B;
 }
 
 .box_body{
     background-color: #1F1F1F;
-    min-width: 1060px;
 }
 
 .box_head_ml{
@@ -238,15 +230,12 @@
     background-color: #1F1F1F;
     padding-top: 20px;
     padding-left: 20px;
-    min-height: 580px;
-    min-width: 220px;
     font-size: 18px;
     color: #fff;
 }
 
 .box_links_ml{
     background-color: #1F1F1F;
-    min-height: 430px;
 }
 
 .box_top_b{
@@ -275,17 +264,14 @@
 
 .box_bottom_b{
     background-color: #1F1F1F;
-    min-height: 620px;
 }
 
 .box_left_bb{
     background-color: #1F1F1F;
-    min-width: 680px;
 }
 
 .box_right_bb{
     background-color: #1F1F1F;
-    min-width: 400px;
     border-left: 1px solid #3B3B3B;
 }
 
@@ -296,7 +282,6 @@
 .box_new_info{
     background-color: #1F1F1F;
     min-height: 90px;
-    min-width: 250px;
     border-color: #333;
     border-radius: 10px;
     border-width: 1px;
@@ -311,13 +296,9 @@
 
 .box_center_i{
     background-color: #1F1F1F;
-    min-width: 200px;
-
 }
 .box_info{
     background-color: #1F1F1F;
-    min-height: 50px;
-    min-width: 100px;
     border-color: #333;
     border-radius: 10px;
     border-width: 1px;
@@ -331,14 +312,11 @@
 
 .box_center_info{
     background-color: #1F1F1F;
-    min-width: 80px;
     padding: 5px;
 }
 
 .box_group{
     background-color: #1F1F1F;
-    min-height: 120px;
-    min-width: 300px;
     border-color: #333;
     border-radius: 10px;
     border-width: 1px;
@@ -348,10 +326,8 @@
 
 .box_left_g{
     background-color: #1F1F1F;
-    min-width: 200px;
 }
 
 .list_info_history{
     background-color: #1F1F1F;
-    min-height: 570px;
 }

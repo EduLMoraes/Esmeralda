@@ -26,11 +26,14 @@ pub fn new_group_info(
     let box_group = Box::new(Orientation::Horizontal, 0);
     box_group.add_css_class("box_group");
     box_group.set_hexpand(true);
+    box_group.set_vexpand(true);
+
+    box_group.set_valign(gtk::Align::Start);
 
     let box_left_g = Box::new(Orientation::Vertical, 2);
     box_left_g.add_css_class("box_left_g");
-    box_left_g.set_valign(gtk::Align::Center);
-    box_left_g.set_halign(gtk::Align::Start);
+    box_left_g.set_hexpand(true);
+
 
     let value = format!("R${:.2}", value_total);
     let value = Label::new(Some(&value));
@@ -43,14 +46,13 @@ pub fn new_group_info(
     let n_items = Label::new(Some(&n_items));
     n_items.add_css_class("name_i");
 
-    box_left_g.append(&value);
     box_left_g.append(&title);
+    box_left_g.append(&value);
     box_left_g.append(&n_items);
 
     let box_right_g = Box::new(Orientation::Vertical, 2);
     box_right_g.add_css_class("box_right_g");
-    box_right_g.set_valign(gtk::Align::Center);
-    box_right_g.set_halign(gtk::Align::Center);
+
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
     icon_path.push(format!("{}.png", nature));
@@ -96,6 +98,5 @@ pub fn new_group_info(
 
     box_group.append(&box_left_g);
     box_group.append(&box_right_g);
-
     box_group
 }

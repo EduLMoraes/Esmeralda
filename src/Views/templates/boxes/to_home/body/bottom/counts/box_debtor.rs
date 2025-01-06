@@ -47,6 +47,8 @@ pub fn new_debtor_info(debtor: &Debtor) -> Box {
     grid.attach(&income_value, 1, 5, 1, 1);
 
     box_debtors.append(&grid);
+    box_debtors.set_hexpand(true);
+    box_debtors.set_halign(gtk::Align::Fill);
 
     box_debtors
 }

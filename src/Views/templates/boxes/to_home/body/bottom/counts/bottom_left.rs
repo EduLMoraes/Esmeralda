@@ -5,6 +5,7 @@ pub fn left() -> Box {
     box_left.add_css_class("box_left_bb");
     box_left.set_hexpand(true);
     box_left.set_vexpand(true);
+    box_left.set_halign(gtk::Align::Fill);
 
     let stack_left = Stack::new();
     stack_left.add_titled(&get_home_box(&stack_left), Some("home"), "home");

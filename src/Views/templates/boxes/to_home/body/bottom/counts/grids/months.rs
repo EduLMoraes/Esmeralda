@@ -2,10 +2,14 @@ use super::*;
 
 #[allow(dead_code)]
 pub fn get_grid_months(stack: &Stack, stack_home: &Stack) -> Grid {
-    let grid_months = Grid::new();
-    grid_months.set_halign(gtk::Align::Center);
-    grid_months.set_column_spacing(10);
-    grid_months.set_row_spacing(10);
+    let grid_months = Grid::builder()
+    .halign(gtk::Align::Fill)
+    .column_homogeneous(true)
+    .row_homogeneous(true)
+    .column_spacing(10)
+    .hexpand(true)
+    .vexpand(true)
+    .build();
 
     let counts = get_counts_instance();
 
