@@ -6,6 +6,7 @@
 #define MyAppPublisher "Eduardo Moraes."
 #define MyAppURL "https://github.com/EduLMoraes/Esmeralda"
 #define MyAppExeName "esmeralda.exe"
+#define AppTarget="target\release"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -28,12 +29,12 @@ ArchitecturesAllowed=x64compatible
 ; the 64-bit view of the registry.
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\17edu\Documents\Projetos\Esmeralda\LICENSE
+LicenseFile=.\LICENSE
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-OutputDir=C:\Users\17edu\Documents\Projetos
+OutputDir=..\
 OutputBaseFilename=Esmeralda-installer
-SetupIconFile=C:\Users\17edu\Documents\Projetos\Esmeralda\src\Views\assets\icon\icon.ico
+SetupIconFile=.\src\Views\assets\icon\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -45,11 +46,11 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\17edu\.esmeralda\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\17edu\.esmeralda\manager_db.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\17edu\.esmeralda\assets\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\17edu\.esmeralda\styles\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\17edu\.esmeralda\dlls\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppTarget}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppTarget}\manager_db.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "src\Views\assets\*"; DestDir: "{app}\assets\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "src\Views\styles\*"; DestDir: "{app}\styles\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\dlls\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

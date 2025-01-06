@@ -81,6 +81,7 @@ pub fn get_config() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
+
     match env::var("UPDT_PATH") {
         Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
         _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
@@ -88,6 +89,8 @@ pub fn get_config() {
     if env::var("YEAR_SELECTED").is_err() {
         env::set_var("YEAR_SELECTED", "0")
     }
+    env::set_var("GSK_RENDERER", "cairo");
+    
     if env::var("IMG_PATH").is_err() {
         env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
     }
