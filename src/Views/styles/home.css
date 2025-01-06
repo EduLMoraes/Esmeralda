@@ -1,11 +1,11 @@
 .home_window{
     background-color: #1F1F1F;
     color: white;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: Arial;
 }
 .version{
     font-size: 8px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
     opacity: 0.6;
 }
 .stack_switcher{
@@ -20,7 +20,6 @@
     background: transparent;
     background-color: transparent;
     border: transparent;
-    /* color: white; */
 }
 
 .value_total{
@@ -66,6 +65,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
+    font-family: Arial;
     border: transparent;
     color: #fff;
 }
@@ -170,7 +170,7 @@
 .label_value_i{
     color: #fff;
     font-size: 24px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: Arial;
 }
 
 .title_i, .date_i, .name_i{
@@ -189,7 +189,7 @@
 
 .section_ml{
     color: #777;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: Arial;
     margin-top: 10px;
     margin-right: 130px;
 }
@@ -199,7 +199,7 @@
     background-color: transparent;
     font-size: 20px;
     color: #fff;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: Arial;
 }
 
 .grid_add{
@@ -250,7 +250,7 @@
     border: transparent;
     color: #fff;
     font-size: 20px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: Arial;
     margin-left: 20px;
     min-height: 10px;
 }

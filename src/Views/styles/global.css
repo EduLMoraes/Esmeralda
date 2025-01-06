@@ -45,3 +45,7 @@ dropdown{
     background: transparent;
     color: blue;
 }
+
+button, label, link, dropdown{
+    font-family: Arial;
+}

@@ -10,7 +10,7 @@ pub async fn save_in_file(path: &str, data: &ListCount) -> Result<String, Contro
 
     let response = match extend[1] {
         "csv" => export_csv(path, data).await,
-        "pdf" => export_pdf(path, data),
+        // "pdf" => export_pdf(path, data),
         "html" => export_html(path, data).await,
         _ => {
             return Err(ControlError::ErrorValueInvalid(ErrorLog {

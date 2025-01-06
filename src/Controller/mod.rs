@@ -19,7 +19,7 @@ use crate::prelude::log;
 use crate::prelude::model::{errors::*, Database::*, List::ListCount, User::*};
 use crate::prelude::segurance::*;
 use crate::prelude::utils::{
-    export::csv::export_csv, export::html::export_html, export::pdf::export_pdf,
+    export::csv::export_csv, export::html::export_html,
     validate::alphabetic::is_alphabetic, validate::email_valid,
 };
 use crate::prelude::Instant;

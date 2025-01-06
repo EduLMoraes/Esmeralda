@@ -7,8 +7,8 @@ use std::fs;
 use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
-// use std::os::windows::io::AsRawHandle;
-use std::os::fd::AsRawFd;
+use std::os::windows::io::AsRawHandle;
+// use std::os::fd::AsRawFd;
 
 /// This gen the variables of ambient if she's not exists
 /// garant the functionality of system.
@@ -17,10 +17,10 @@ pub fn get_config() {
         "windows" => {
             if env::var("IS_DEV").is_err() {
                 let null_stdout = File::create("NUL").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
+                let stdout_fd = stdout().as_raw_handle() as i32;
+                let null_stdout_fd = null_stdout.as_raw_handle() as i32;
+                // let stdout_fd = stdout().as_raw_fd();
+                // let null_stdout_fd = null_stdout.as_raw_fd();
                 unsafe {
                     libc::dup2(null_stdout_fd, stdout_fd);
                 }
@@ -31,10 +31,10 @@ pub fn get_config() {
         _ => {
             if env::var("IS_DEV").is_err() {
                 let null_stdout = File::create("/dev/null").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
+                let stdout_fd = stdout().as_raw_handle() as i32;
+                let null_stdout_fd = null_stdout.as_raw_handle() as i32;
+                // let stdout_fd = stdout().as_raw_fd();
+                // let null_stdout_fd = null_stdout.as_raw_fd();
                 unsafe {
                     libc::dup2(null_stdout_fd, stdout_fd);
                 }
@@ -81,6 +81,7 @@ pub fn get_config() {
             env::set_var("KEYESMERALD", key_env);
         }
     }
+
     match env::var("UPDT_PATH") {
         Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
         _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
@@ -88,6 +89,8 @@ pub fn get_config() {
     if env::var("YEAR_SELECTED").is_err() {
         env::set_var("YEAR_SELECTED", "0")
     }
+    env::set_var("GSK_RENDERER", "cairo");
+    
     if env::var("IMG_PATH").is_err() {
         env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
     }
