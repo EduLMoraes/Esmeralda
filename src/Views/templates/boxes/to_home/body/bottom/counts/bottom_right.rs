@@ -40,11 +40,13 @@ pub fn right() -> Box {
 
     let scrolled = ScrolledWindow::new();
     scrolled.add_css_class("list_info_history");
+    scrolled.set_vexpand(true);
     scrolled.set_hexpand(true);
 
     let box_list_count = get_list_box();
     box_list_count.add_css_class("list_info_history");
     box_list_count.set_vexpand(true);
+    box_list_count.set_hexpand(true);
 
     let counts = get_counts_instance();
 

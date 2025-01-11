@@ -9,6 +9,7 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
         .column_spacing(10)
         .row_spacing(10)
         .hexpand(true)
+        .vexpand(true)
         .build();
 
     let counts = get_counts_instance();
