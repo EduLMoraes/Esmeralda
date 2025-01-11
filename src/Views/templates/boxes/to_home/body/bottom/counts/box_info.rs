@@ -74,11 +74,11 @@ pub fn new_box_info(info: &Count) -> Box {
         label_status.set_label("Devendo");
         label_status.add_css_class("status_negative");
         let now = chrono::Utc::now().ordinal0();
-        let mut days_to_pay = 0;
 
+        let mut _days_to_pay = 0;
         if &info.date_out.ordinal0() >= &now {
-            days_to_pay = &info.date_out.ordinal0() - now;
-            if days_to_pay == 0 {
+            _days_to_pay = &info.date_out.ordinal0() - now;
+            if _days_to_pay == 0 {
                 alert(
                     &format!(
                         "A conta {} vence hoje. Atente-se à data de pagamento.",
@@ -86,21 +86,21 @@ pub fn new_box_info(info: &Count) -> Box {
                     ),
                     "Data limite chegando!",
                 );
-            } else if days_to_pay <= 10 {
+            } else if _days_to_pay <= 10 {
                 alert(
                     &format!(
                         "A conta {} vence em {} dias. Atente-se à data de pagamento.",
-                        &info.title, days_to_pay
+                        &info.title, _days_to_pay
                     ),
                     "Data limite chegando!",
                 );
             }
         } else {
-            days_to_pay = now - &info.date_out.ordinal0();
+            _days_to_pay = now - &info.date_out.ordinal0();
             alert(
                 &format!(
                     "A conta {} está atrasada a {} dias. Atente-se à data de pagamento.",
-                    &info.title, days_to_pay
+                    &info.title, _days_to_pay
                 ),
                 "Data limite chegando!",
             );
