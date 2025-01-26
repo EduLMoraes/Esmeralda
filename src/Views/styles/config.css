@@ -1,0 +1,33 @@
+.title_configs{
+    font-size: 24px;
+    font-family: sans-serif;
+    color: #666;
+    font-style: italic;
+}
+
+.subtitle_people_config{
+    font-size: 16px;
+    font-family: sans-serif;
+    color: #666;
+    font-style: italic;
+}
+
+.input_configs{
+    background-color: transparent;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: #444 1px solid;
+    color: #fff;
+}
+
+.label_configs{
+    color: #555;
+    font-style: italic;
+}
+
+.box_configure_user{
+    padding: 2em;
+    background-color: rgba(0, 0, 0, 0.418);
+}
+

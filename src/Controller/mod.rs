@@ -4,6 +4,9 @@ pub mod tests;
 mod user_controller;
 pub use user_controller::*;
 
+mod people_controller;
+pub use people_controller::*;
+
 mod data_controller;
 pub use data_controller::*;
 

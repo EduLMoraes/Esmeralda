@@ -20,6 +20,7 @@ pub fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
 
 pub fn exit_user() {
     std::mem::drop(get_user_instance());
+    std::mem::drop(get_peoples_instance());
 }
 
 pub async fn login(mut user: User) -> Result<(), ControlError> {
@@ -67,6 +68,10 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
                 db.edit(Data::LastLogin(data.id))
                     .await
                     .map_err(|err| ControlError::ErrorExternDB(err))?;
+
+                let peoples = get_peoples(&data.id, db).await?;
+                dbg!(&peoples);
+                gen_peoples_instance(peoples);
 
                 gen_user_instance(data);
 
@@ -129,6 +134,17 @@ pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
             .map_err(ControlError::ErrorExternDB)?;
         Ok(())
     }
+}
+
+pub async fn edit_user(user: UserDb) -> Result<(), ControlError> {
+    let db = get_database_instance();
+
+    db.edit(Data::UserDb(user)).await.map_err(|err| {
+        dbg!(&err);
+        ControlError::ErrorExternDB(err)
+    })?;
+
+    Ok(())
 }
 
 #[allow(deprecated, unused)]

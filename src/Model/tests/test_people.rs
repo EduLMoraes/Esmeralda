@@ -44,26 +44,26 @@ mod test_people {
                 cpf[10]
             );
 
-            assert!(People::valid_cpf(&cpf_test));
+            assert!(People::validate_cpf(&cpf_test));
         }
     }
 
     #[test]
     pub fn test_cpf_invalid() {
-        assert!(!People::valid_cpf("000000000000000"));
-        assert!(!People::valid_cpf("0000.000.000-00"));
-        assert!(!People::valid_cpf("000.000.000-00"));
-        assert!(!People::valid_cpf("000@000.000-00"));
-        assert!(!People::valid_cpf("000@000@000-00"));
-        assert!(!People::valid_cpf("000@000-000-00"));
-        assert!(!People::valid_cpf("0001000-000-00"));
-        assert!(!People::valid_cpf("000e000-000-00"));
-        assert!(!People::valid_cpf("000e000e000e00"));
-        assert!(!People::valid_cpf("000.000e000e00"));
-        assert!(!People::valid_cpf("000.000.000e00"));
-        assert!(!People::valid_cpf("001.000.000100"));
-        assert!(!People::valid_cpf("001.000.000100"));
-        assert!(!People::valid_cpf("02e.000.000-00"));
+        assert!(!People::validate_cpf("000000000000000"));
+        assert!(!People::validate_cpf("0000.000.000-00"));
+        assert!(!People::validate_cpf("000.000.000-00"));
+        assert!(!People::validate_cpf("000@000.000-00"));
+        assert!(!People::validate_cpf("000@000@000-00"));
+        assert!(!People::validate_cpf("000@000-000-00"));
+        assert!(!People::validate_cpf("0001000-000-00"));
+        assert!(!People::validate_cpf("000e000-000-00"));
+        assert!(!People::validate_cpf("000e000e000e00"));
+        assert!(!People::validate_cpf("000.000e000e00"));
+        assert!(!People::validate_cpf("000.000.000e00"));
+        assert!(!People::validate_cpf("001.000.000100"));
+        assert!(!People::validate_cpf("001.000.000100"));
+        assert!(!People::validate_cpf("02e.000.000-00"));
     }
 
     #[test]
@@ -77,6 +77,9 @@ mod test_people {
             String::from("555555555555"),
             String::from("000.000.000-01"),
             String::from("Molton"),
+            String::new(),
+            String::from("Jhon"),
+            String::new(),
         );
 
         assert!(test_people.is_err());

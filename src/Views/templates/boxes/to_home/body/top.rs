@@ -114,10 +114,19 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
         #[weak]
         stack,
         move |_| {
-            stack.add_titled(&get_box_config(), Some("config"), "Config");
-            stack.set_visible_child_name("config");
+            match stack.child_by_name("config") {
+                Some(_) => {
+                    stack.set_visible_child_name("config");
+                }
+                None => {
+                    stack.add_titled(&get_config_box(), Some("config"), "Config");
+                    stack.set_visible_child_name("config");
+                }
+            }
         }
     ));
+    stack.add_titled(&get_config_box(), Some("config"), "Config");
+    stack.set_visible_child_name("config");
 
     let username = get_user_instance().clone().unwrap();
     let username = Label::new(Some(username.username.trim()));

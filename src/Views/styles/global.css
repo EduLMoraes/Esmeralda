@@ -3,6 +3,7 @@
 @import url("./home.css");
 @import url("./plots.css");
 @import url("./calc.css");
+@import url("./config.css");
 .window{
     background-repeat: no-repeat;
     background-size: cover;

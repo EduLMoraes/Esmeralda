@@ -2,16 +2,19 @@ use chrono::NaiveDate;
 
 use super::errors::{ErrorLog, PeopleError};
 
-#[allow(unused)]
+#[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub struct People {
-    id: String,
-    name: String,
-    wage: f32,
-    cell_phone: String,
-    birthday: NaiveDate,
-    rg: String,
-    cpf: String,
-    surname: String,
+    pub id: String,
+    pub addres: String,
+    pub name: String,
+    pub wage: f32,
+    pub cell_phone: String,
+    pub birthday: NaiveDate,
+    pub rg: String,
+    pub cpf: String,
+    pub surname: String,
+    pub voter_registration: String,
+    pub provider: String,
 }
 
 #[allow(unused)]
@@ -25,8 +28,11 @@ impl People {
         rg: String,
         cpf: String,
         surname: String,
+        voter_registration: String,
+        provider: String,
+        address: String,
     ) -> Result<Self, PeopleError> {
-        if People::valid_cpf(&cpf) {
+        if People::validate_cpf(&cpf) || cpf.is_empty() {
             return Ok(People {
                 id: id,
                 name: name,
@@ -36,6 +42,9 @@ impl People {
                 rg: rg,
                 cpf: cpf,
                 surname: surname,
+                voter_registration: voter_registration,
+                provider: provider,
+                addres: address,
             });
         }
         Err(PeopleError::CPFInvalid(ErrorLog {
@@ -45,7 +54,7 @@ impl People {
         }))
     }
 
-    pub fn valid_cpf(cpf: &str) -> bool {
+    pub fn validate_cpf(cpf: &str) -> bool {
         let cpf_regex: Regex = regex::Regex::new(r"^\d{3}\.\d{3}\.\d{3}-\d{2}").unwrap();
 
         if !cpf_regex.is_match(cpf) {
