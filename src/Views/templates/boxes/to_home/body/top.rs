@@ -1,6 +1,9 @@
+use std::env;
+
 use super::*;
-use crate::chrono::Utc;
 use crate::control::get_user_instance;
+use crate::prelude::control::get_peoples_instance;
+use crate::{chrono::Utc, prelude::control::get_peoples};
 use chrono::Datelike;
 use control::exit_user;
 use gtk::{DropDown, SearchEntry};
@@ -106,9 +109,16 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
 
     let box_user = Box::new(Orientation::Horizontal, 1);
 
-    let button_config = Button::new();
-    button_config.set_halign(gtk::Align::Center);
-    button_config.set_valign(gtk::Align::Center);
+    let icon_config =
+        Image::from_file(format!("{}perfil-photo.png", env::var("IMG_PATH").unwrap()));
+    icon_config.set_hexpand(true);
+    icon_config.set_vexpand(true);
+    let button_config = Button::builder()
+        .halign(gtk::Align::Center)
+        .valign(gtk::Align::Center)
+        .css_classes(["button_to_config"])
+        .child(&icon_config)
+        .build();
 
     button_config.connect_clicked(clone!(
         #[weak]
@@ -125,16 +135,13 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
             }
         }
     ));
-    stack.add_titled(&get_config_box(), Some("config"), "Config");
-    stack.set_visible_child_name("config");
+    let name = get_peoples_instance().clone();
+    let name = Label::new(Some(&name[0].name));
+    name.set_halign(gtk::Align::Center);
+    name.set_valign(gtk::Align::Center);
+    name.set_height_request(20);
 
-    let username = get_user_instance().clone().unwrap();
-    let username = Label::new(Some(username.username.trim()));
-    username.set_halign(gtk::Align::Center);
-    username.set_valign(gtk::Align::Center);
-    username.set_height_request(20);
-
-    box_user.append(&username);
+    box_user.append(&name);
     box_user.append(&button_config);
 
     box_top.append(&box_select);

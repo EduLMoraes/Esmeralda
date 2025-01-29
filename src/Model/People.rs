@@ -19,6 +19,22 @@ pub struct People {
 
 #[allow(unused)]
 impl People {
+    pub fn new(name: &String) -> People {
+        People {
+            id: Default::default(),
+            name: name.clone(),
+            wage: Default::default(),
+            cell_phone: String::new(),
+            birthday: NaiveDate::default(),
+            rg: Default::default(),
+            cpf: Default::default(),
+            surname: Default::default(),
+            voter_registration: Default::default(),
+            provider: Default::default(),
+            addres: Default::default(),
+        }
+    }
+
     pub fn from(
         id: String,
         name: String,

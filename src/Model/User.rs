@@ -38,8 +38,4 @@ impl UserDb {
     pub fn get_email(&self) -> &str {
         &self.email
     }
-
-    pub fn get_last_login(&self) -> &str {
-        &self.last_login
-    }
 }

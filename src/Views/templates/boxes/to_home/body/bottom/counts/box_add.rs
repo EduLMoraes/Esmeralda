@@ -1,5 +1,11 @@
 use super::*;
-use crate::chrono::NaiveDate;
+use crate::{
+    chrono::NaiveDate,
+    prelude::{
+        control::{add_people, get_peoples_instance},
+        model::People::People,
+    },
+};
 // use glib::property::PropertyGet;
 use gtk::{Adjustment, Calendar, CheckButton, SpinButton, TextView};
 
@@ -88,10 +94,19 @@ pub fn get_add_box(stack: &Stack) -> Box {
     for nature in natures {
         nature_input.append(None, &nature);
     }
+
     nature_input.set_active(Some(1));
 
+    let name_input = ComboBoxText::new();
+    for people in get_peoples_instance().iter() {
+        name_input.append(None, &people.name);
+    }
+
+    name_input.set_active(Some(0));
+    name_input.append(None, "+ Novo devedor");
+
     let new_nature_input = Entry::new();
-    let name_input = Entry::new();
+    let new_name_input = Entry::new();
     let title_input = Entry::new();
     let date_input = Calendar::new();
     let date_button = Button::new();
@@ -127,6 +142,32 @@ pub fn get_add_box(stack: &Stack) -> Box {
     buffer.place_cursor(&start_iter);
 
     date_input.set_size_request(10, 10);
+
+    nature_input.connect_changed(clone!(
+        #[weak]
+        nature_input,
+        #[weak]
+        new_nature_input,
+        move |input| {
+            if input.active_text().unwrap().to_string() == String::from("+ Nova natureza") {
+                new_nature_input.set_visible(true);
+                nature_input.set_visible(false);
+            }
+        }
+    ));
+
+    name_input.connect_changed(clone!(
+        #[weak]
+        name_input,
+        #[weak]
+        new_name_input,
+        move |input| {
+            if input.active_text().unwrap().to_string() == String::from("+ Novo devedor") {
+                new_name_input.set_visible(true);
+                name_input.set_visible(false);
+            }
+        }
+    ));
 
     date_input.connect_day_selected(clone!(
         #[weak]
@@ -169,6 +210,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
     box_name.append(&name_label);
     box_name.append(&name_input);
+    box_name.append(&new_name_input);
     box_title.append(&title_label);
     box_title.append(&title_input);
     box_nature.append(&nature_label);
@@ -187,6 +229,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     box_value.append(&value_input);
 
     new_nature_input.set_visible(false);
+    new_name_input.set_visible(false);
 
     let button_append = Button::with_label("Adicionar");
     button_append.add_css_class("button");
@@ -217,6 +260,27 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 nature_input.active_text().unwrap().to_string()
             } else {
                 new_nature_input.text().to_string()
+            };
+
+            let name = if new_name_input.text().to_string().is_empty() {
+                name_input.active_text().unwrap().to_string()
+            } else {
+                let new_people = People::new(&new_name_input.text().to_string());
+                let response = rnt.block_on(add_people(&new_people));
+                if response.is_err() {
+                    alert(
+                        "Erro ao tentar adicionar nova pessoa",
+                        "Falha ao adicionar pessoa",
+                    );
+                }
+
+                let names = get_peoples_instance();
+
+                if !names.contains(&new_people) {
+                    name_input.append(None, &new_people.name);
+                }
+
+                new_people.name
             };
 
             let natures_base = vec![
@@ -252,7 +316,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
             let description = description_input.buffer();
 
             let mut count = Count::from(
-                name_input.text().trim(),
+                name.trim(),
                 title_input.text().trim(),
                 description
                     .text(&description.start_iter(), &description.end_iter(), true)
@@ -314,19 +378,6 @@ pub fn get_add_box(stack: &Stack) -> Box {
     grid.attach(&box_description, 0, 5, 2, 1);
     grid.attach(&box_status, 0, 6, 1, 1);
     grid.attach(&button_append, 1, 7, 1, 1);
-
-    nature_input.connect_changed(clone!(
-        #[weak]
-        nature_input,
-        #[weak]
-        new_nature_input,
-        move |input| {
-            if input.active_text().unwrap().to_string() == String::from("+ Nova natureza") {
-                new_nature_input.set_visible(true);
-                nature_input.set_visible(false);
-            }
-        }
-    ));
 
     box_form.append(&grid);
 

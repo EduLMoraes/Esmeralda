@@ -96,7 +96,14 @@
 .button_payment:hover{
     animation: hover_payment 3 forwards;
 }
+.button_to_config{
+    background: transparent;
+    padding: 0%;
+    margin: 0%;
+    border: 0px transparent;
+    border-radius: 100%;
 
+}
 @keyframes hover_payment {
     0%{
         background-image: linear-gradient(90deg, #00c, #CB6CE6);
