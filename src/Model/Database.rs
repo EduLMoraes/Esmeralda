@@ -331,6 +331,7 @@ impl DataBase {
                         order by id_count",
                     )
                     .map_err(|err| {
+                        dbg!(err);
                         DataBaseError::GetCountsError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,

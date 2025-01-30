@@ -1,5 +1,6 @@
 use super::*;
 
+#[allow(static_mut_refs)]
 pub fn get_list_box() -> &'static mut ListBox {
     let list_box = unsafe { LISTBOX.get_mut() };
 

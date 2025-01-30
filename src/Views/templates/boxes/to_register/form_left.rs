@@ -1,7 +1,8 @@
+use super::*;
+use glib::clone;
 use std::borrow::BorrowMut;
 
-use super::*;
-
+#[allow(static_mut_refs)]
 pub fn form_left() -> Box {
     let form = Box::new(Orientation::Vertical, 12);
     form.add_css_class("bf_left");

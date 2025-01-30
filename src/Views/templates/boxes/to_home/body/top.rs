@@ -1,11 +1,13 @@
 use std::env;
 
 use super::*;
-use crate::control::get_user_instance;
+// use crate::control::get_user_instance;
+use crate::chrono::Utc;
+use crate::model::List::get_counts_instance;
 use crate::prelude::control::get_peoples_instance;
-use crate::{chrono::Utc, prelude::control::get_peoples};
 use chrono::Datelike;
 use control::exit_user;
+use glib::clone;
 use gtk::{DropDown, SearchEntry};
 
 pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {

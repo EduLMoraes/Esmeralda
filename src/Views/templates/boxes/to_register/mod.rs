@@ -6,6 +6,7 @@ use crate::control::is_email;
 use crate::env::var;
 use crate::model::User::NewUser;
 use crate::model::User::User;
+use glib::clone;
 
 static mut NEWUSER: NewUser = NewUser {
     username: String::new(),
@@ -19,6 +20,7 @@ mod form_right;
 pub use form_left::*;
 pub use form_right::*;
 
+#[allow(static_mut_refs)]
 pub fn box_register(stack: &Stack) -> Box {
     let box_register = Box::new(Orientation::Vertical, 26);
 
