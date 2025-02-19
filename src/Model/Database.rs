@@ -187,7 +187,7 @@ impl DataBase {
                             file: "Database.rs",
                         })
                     })?;
-                while let Some(people) = (&peoples).into_iter().next() {
+                for people in peoples {
                     stmt.execute(params![
                         &id_user,
                         people.provider,

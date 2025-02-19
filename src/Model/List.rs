@@ -315,8 +315,12 @@ impl ListCount {
                     .parse::<i16>()
                     .unwrap()
             {
-                for i in count.date_in.month0()..=count.date_out.month0() {
-                    months[i as usize].1.push(count.clone());
+                if count.date_in.month0() +1 == count.date_out.month0(){
+                    months[count.date_out.month0() as usize].1.push(count.clone());
+                }else{
+                    for i in count.date_in.month0()..=count.date_out.month0() {
+                        months[i as usize].1.push(count.clone());
+                    }
                 }
             } else if count
                 .date_in

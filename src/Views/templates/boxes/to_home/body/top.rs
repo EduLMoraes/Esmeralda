@@ -137,8 +137,13 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
             }
         }
     ));
-    let name = get_peoples_instance().clone();
-    let name = Label::new(Some(&name[0].name));
+    let peoples = get_peoples_instance().clone();
+    let mut name = "";
+    if peoples.len() != 0{
+        name = &peoples[0].name;
+    }
+    
+    let name = Label::new(Some(name));
     name.set_halign(gtk::Align::Center);
     name.set_valign(gtk::Align::Center);
     name.set_height_request(20);
