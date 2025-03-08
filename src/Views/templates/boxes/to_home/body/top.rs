@@ -39,7 +39,6 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
 
     select_year.set_selected(actual_year);
     select_year.add_css_class("dropdown_select_year");
-
     select_year.connect_selected_item_notify(clone!(
         #[weak]
         stack,
@@ -73,13 +72,15 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
     search.connect_changed(clone!(
         #[weak]
         search,
+        #[weak]
+        stack,
         move |_| {
             let result = ListCount {
                 list: get_counts_instance().search(&search.text().to_string()),
                 years: vec![0],
             };
 
-            reload_home(Some(&result), None);
+            reload_home(Some(&result), Some(&stack));
         }
     ));
 
@@ -110,11 +111,13 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
     ));
 
     let box_user = Box::new(Orientation::Horizontal, 1);
+    box_user.set_hexpand(false);
 
     let icon_config =
         Image::from_file(format!("{}perfil-photo.png", env::var("IMG_PATH").unwrap()));
     icon_config.set_hexpand(true);
     icon_config.set_vexpand(true);
+
     let button_config = Button::builder()
         .halign(gtk::Align::Center)
         .valign(gtk::Align::Center)
@@ -126,23 +129,25 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
         #[weak]
         stack,
         move |_| {
+            reload_home(None, Some(&stack));
             match stack.child_by_name("config") {
                 Some(_) => {
                     stack.set_visible_child_name("config");
                 }
                 None => {
-                    stack.add_titled(&get_config_box(), Some("config"), "Config");
+                    stack.add_titled(&get_config_box(&stack), Some("config"), "Config");
                     stack.set_visible_child_name("config");
                 }
             }
         }
     ));
+
     let peoples = get_peoples_instance().clone();
     let mut name = "";
-    if peoples.len() != 0{
+    if peoples.len() != 0 {
         name = &peoples[0].name;
     }
-    
+
     let name = Label::new(Some(name));
     name.set_halign(gtk::Align::Center);
     name.set_valign(gtk::Align::Center);

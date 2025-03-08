@@ -32,7 +32,7 @@ pub async fn save_in_file(path: &str, data: &ListCount) -> Result<String, Contro
 
             path.push_str("/.esmeralda/log.log");
 
-            let _ = log(path.clone().into(), &format!("[CONTROL] {err:?}\n"));
+            tracing::info!("{:?}", err);
             Err(ControlError::ErrorExtern(ErrorLog {
                 title: "Error in module export",
                 code: 500,

@@ -1,8 +1,8 @@
 use self::control::edit;
 use super::*;
-use crate::gtk::{
+use crate::{gtk::{
     gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu, ResponseType,
-};
+}, prelude::control::update_counts_with_db};
 use alerts::{confirm, edit_count};
 
 pub fn new_box_info(info: &Count) -> Box {
@@ -295,6 +295,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
             rn.block_on(edit(&ref_counts)).unwrap();
 
+            rn.block_on(update_counts_with_db()).ok();
             reload_home(None, Some(&stack));
         }
     ));

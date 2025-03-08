@@ -6,6 +6,6 @@ pub fn backup_database(path: &str) -> std::io::Result<()> {
     // Fazendo uma cópia do arquivo de banco de dados (assumindo que seja um SQLite)
     fs::copy("database.db", backup_filename.clone())?;
 
-    println!("Backup realizado em: {}", backup_filename);
+    tracing::error!("Backup realizado em: {}", backup_filename);
     Ok(())
 }

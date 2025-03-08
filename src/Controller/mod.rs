@@ -18,7 +18,6 @@ pub use file_controller::*;
 
 use crate::apis::send_email;
 use crate::prelude::env::var;
-use crate::prelude::log;
 use crate::prelude::model::{errors::*, Database::*, List::ListCount, User::*};
 use crate::prelude::segurance::*;
 use crate::prelude::utils::{

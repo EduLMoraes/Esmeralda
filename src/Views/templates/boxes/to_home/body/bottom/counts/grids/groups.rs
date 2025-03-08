@@ -18,7 +18,7 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
     let natures = match rnt.block_on(control::get_groups()) {
         Ok(groups) => groups,
         Err(err) => {
-            println!("{:?}", err);
+            tracing::error!("{:?}", err);
             vec![
                 String::from("Casa"),
                 String::from("Transporte"),

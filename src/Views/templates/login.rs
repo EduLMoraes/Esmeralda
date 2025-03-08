@@ -68,8 +68,6 @@ pub fn login_screen(stack: &Stack) -> Box {
         #[weak]
         stack,
         #[weak]
-        screen,
-        #[weak]
         pass_entry,
         #[weak]
         user_entry,
@@ -81,6 +79,8 @@ pub fn login_screen(stack: &Stack) -> Box {
             let run = tokio::runtime::Runtime::new().unwrap();
 
             if run.block_on(control::login(user)).is_ok() {
+                tracing::info!("user logged!");
+
                 let home_screen = home_screen(&stack);
                 stack.add_css_class("home_window");
                 stack.remove_css_class("login_window");
@@ -94,9 +94,13 @@ pub fn login_screen(stack: &Stack) -> Box {
                 let tmp = stack.child_by_name("register").unwrap();
                 stack.remove(&tmp);
             } else {
-                let error = Label::new(Some("Senha ou usuário incorreto! Tente novamente"));
                 pass_entry.set_text("");
-                screen.append(&error);
+
+                tracing::error!("login failed by password or username invalid");
+                alert(
+                    "Senha ou usuário incorreto! Tente novamente",
+                    "Falha ao logar",
+                );
             }
         }
     ));

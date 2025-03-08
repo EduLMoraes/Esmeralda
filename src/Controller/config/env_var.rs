@@ -1,55 +1,40 @@
+use tracing_subscriber::fmt;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+
 use crate::env;
-use crate::log;
 use crate::segurance::criptography::gen_string;
 use crate::File;
-use libc;
 use std::fs;
-use std::io::stdout;
 use std::io::Read;
 use std::io::Write;
-// use std::os::windows::io::AsRawHandle;
-use std::os::fd::AsRawFd;
 
 /// This gen the variables of ambient if she's not exists
 /// garant the functionality of system.
 pub fn get_config() {
+    dotenvy::dotenv().ok();
+    let log_file = File::create("app.log").unwrap();
+
+    let file_layer = fmt::layer()
+        .with_writer(log_file)
+        .with_ansi(false)
+        .with_target(true); // Inclui o alvo do log (opcional)
+
+    let stdout_layer = fmt::layer().with_ansi(true);
+
+    tracing_subscriber::registry()
+        .with(file_layer)
+        .with(stdout_layer)
+        .init();
+
     let path = match std::env::consts::OS {
-        "windows" => {
-            if env::var("IS_DEV").is_err() {
-                let null_stdout = File::create("NUL").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
-                unsafe {
-                    libc::dup2(null_stdout_fd, stdout_fd);
-                }
-            }
-
-            env::var("HOMEPATH").unwrap()
-        }
-        _ => {
-            if env::var("IS_DEV").is_err() {
-                let null_stdout = File::create("/dev/null").unwrap();
-                // let stdout_fd = stdout().as_raw_handle() as i32;
-                // let null_stdout_fd = null_stdout.as_raw_handle() as i32;
-                let stdout_fd = stdout().as_raw_fd();
-                let null_stdout_fd = null_stdout.as_raw_fd();
-                unsafe {
-                    libc::dup2(null_stdout_fd, stdout_fd);
-                }
-            }
-
-            env::var("HOME").unwrap()
-        }
+        "windows" => env::var("HOMEPATH").unwrap(),
+        _ => env::var("HOME").unwrap(),
     };
 
     match env::var("KEYESMERALD") {
         Ok(_) => {
-            let _ = log(
-                format!("{path}/.esmeralda/log.log").into(),
-                "[MAIN] Variabel of environment already exists\n",
-            );
+            tracing::info!("Variabel of environment already exists",);
         }
         Err(_) => {
             let mut file = match File::open(format!("{path}/.key")) {

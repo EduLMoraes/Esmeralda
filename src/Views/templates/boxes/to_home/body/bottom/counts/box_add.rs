@@ -7,7 +7,7 @@ use crate::{
     },
 };
 // use glib::property::PropertyGet;
-use gtk::{Adjustment, Calendar, CheckButton, SpinButton, TextView};
+use gtk::{prelude::EntryExt, Adjustment, Calendar, CheckButton, SpinButton, TextView};
 
 #[allow(deprecated)]
 use gtk::ComboBoxText;
@@ -77,7 +77,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
     let mut natures = match rnt.block_on(control::get_groups()) {
         Ok(groups) => groups,
         Err(err) => {
-            println!("{:?}", err);
+            tracing::error!("{:?}", err);
             natures_base.clone()
         }
     };
@@ -256,31 +256,18 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         new_nature_input,
         move |_| {
-            let nature = if new_nature_input.text().to_string().is_empty() {
+            let nature = if nature_input.active_text().unwrap().to_string() != "+ Nova natureza".to_string()
+            {
                 nature_input.active_text().unwrap().to_string()
             } else {
                 new_nature_input.text().to_string()
             };
 
-            let name = if new_name_input.text().to_string().is_empty() {
+            let name = if name_input.active_text().unwrap().to_string() != "+ Novo devedor".to_string()
+            {
                 name_input.active_text().unwrap().to_string()
             } else {
-                let new_people = People::new(&new_name_input.text().to_string());
-                let response = rnt.block_on(add_people(&new_people));
-                if response.is_err() {
-                    alert(
-                        "Erro ao tentar adicionar nova pessoa",
-                        "Falha ao adicionar pessoa",
-                    );
-                }
-
-                let names = get_peoples_instance();
-
-                if !names.contains(&new_people) {
-                    name_input.append(None, &new_people.name);
-                }
-
-                new_people.name
+                new_name_input.text().to_string()
             };
 
             let natures_base = vec![
@@ -297,7 +284,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
             let mut natures = match rnt.block_on(control::get_groups()) {
                 Ok(groups) => groups,
                 Err(err) => {
-                    println!("{:?}", err);
+                    tracing::error!("{:?}", err);
 
                     natures_base.clone()
                 }
@@ -314,10 +301,18 @@ pub fn get_add_box(stack: &Stack) -> Box {
             }
 
             let description = description_input.buffer();
+            let title = title_input.text();
+
+            // (value, input)
+            let data: Vec<(&str, &str)> = vec![
+                (title.trim(), "Título"),
+                (nature.trim(), "Natureza"),
+                (name.trim(), "Nome"),
+            ];
 
             let mut count = Count::from(
                 name.trim(),
-                title_input.text().trim(),
+                title.trim(),
                 description
                     .text(&description.start_iter(), &description.end_iter(), true)
                     .as_str(),
@@ -344,6 +339,19 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
                 match rnt.block_on(control::save()) {
                     Ok(_) => {
+                        let new_people = People::new(&name);
+                        let peoples = get_peoples_instance();
+
+                        if !peoples.contains(&new_people) {
+                            let response = rnt.block_on(add_people(&new_people));
+                            name_input.append(None, &new_people.name);
+                            if response.is_err() {
+                                alert(
+                                    "Erro ao tentar adicionar nova pessoa",
+                                    "Falha ao adicionar pessoa",
+                                );
+                            }
+                        }
                         reload_home(None, Some(&stack));
                         title_input.set_text("");
                         description_input.buffer().set_text("");
@@ -354,12 +362,25 @@ pub fn get_add_box(stack: &Stack) -> Box {
                         nature_input.set_visible(true);
                         new_nature_input.set_visible(false);
                         new_nature_input.set_text("");
+                        name_input.set_active(Some(0));
+                        name_input.set_visible(true);
+                        new_name_input.set_visible(false);
+                        new_name_input.set_text("");
                     }
-                    Err(err) => println!("{err}"),
+                    Err(err) => tracing::error!("{err}"),
                 };
+
+                
             } else {
-                use alerts::alert;
-                alert("Preencha todos os dados com '*'.", "Faltam dados!");
+                for (value, input) in data {
+                    if value.is_empty() {
+                        use alerts::alert;
+                        alert(
+                            &format!("Campo obrigatório {} está vazio.", input),
+                            "Faltam dados!",
+                        );
+                    }
+                }
             }
         }
     ));

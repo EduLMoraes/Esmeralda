@@ -2,7 +2,7 @@ use chrono::NaiveDate;
 
 use super::errors::{ErrorLog, PeopleError};
 
-#[derive(PartialEq, PartialOrd, Debug, Clone)]
+#[derive(PartialOrd, Debug, Clone)]
 pub struct People {
     pub id: String,
     pub addres: String,
@@ -127,5 +127,19 @@ impl People {
         }
 
         true
+    }
+}
+
+impl PartialEq for People {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+            && self.wage == other.wage
+            && self.cell_phone == other.cell_phone
+            && self.birthday == other.birthday
+            && self.rg == other.rg
+            && self.surname == other.surname
+            && self.cpf == other.cpf
+            && self.voter_registration == other.voter_registration
+            && self.provider == other.provider
     }
 }

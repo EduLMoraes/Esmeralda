@@ -1,4 +1,6 @@
-use std::sync::MutexGuard;
+use std::{str::FromStr, sync::MutexGuard};
+
+use chrono::NaiveDate;
 
 use super::*;
 use crate::prelude::model::People::People;
@@ -23,7 +25,8 @@ pub async fn get_peoples(
     let data_peoples = Data::People(user_id.clone() as u16, peoples);
 
     let db_peoples = db.get(data_peoples).await.map_err(|err| {
-        dbg!(&err);
+        tracing::error!("{:?}", err);
+
         ControlError::ErrorExternDB(err)
     })?;
 
@@ -53,7 +56,6 @@ pub async fn add_people(new_people: &People) -> Result<(), ControlError> {
 
 pub async fn edit_people(peoples: Vec<People>) -> Result<(), ControlError> {
     let db = get_database_instance();
-
     let user_id = get_user_instance().clone().map(|user_db| user_db.get_id());
 
     if let Some(id) = user_id {
@@ -61,11 +63,37 @@ pub async fn edit_people(peoples: Vec<People>) -> Result<(), ControlError> {
             db.edit(Data::People(id as u16, peoples))
                 .await
                 .map_err(|err| {
-                    dbg!(&err);
+                    tracing::error!("{:?}", err);
+
                     ControlError::ErrorExternDB(err)
                 })?;
         }
     }
 
+    Ok(())
+}
+
+#[allow(unreachable_code, unused)]
+pub async fn delete_people(uid: String) -> Result<(), ControlError> {
+    let db = get_database_instance();
+
+    let people = People {
+        id: uid,
+        addres: String::new(),
+        name: String::new(),
+        wage: 0.0,
+        cell_phone: String::new(),
+        birthday: NaiveDate::from_str("1970-01-01").unwrap(),
+        rg: String::new(),
+        cpf: String::new(),
+        surname: String::new(),
+        voter_registration: String::new(),
+        provider: String::new(),
+    };
+    let user_id = get_user_instance().clone().unwrap().id;
+    let data = Data::People(user_id as u16, vec![people]);
+
+    db.delete(data).await.map_err(ControlError::ErrorExternDB)?;
+    gen_peoples_instance(get_peoples(&user_id, db).await?);
     Ok(())
 }

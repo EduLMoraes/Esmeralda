@@ -1,22 +1,25 @@
-use std::str::FromStr;
+use std::{env, str::FromStr};
 
-use crate::utils::validate::date_valid;
+use crate::{prelude::control::{delete_people, update_counts_with_db}, utils::validate::date_valid};
 
 use super::*;
 use chrono::NaiveDate;
 use control::{edit_people, edit_user, get_peoples_instance};
-use gtk::{Align, Entry};
+use gtk::{Align, Entry, ResponseType};
 
-pub fn get_box() -> Box {
-    let box_index = Box::new(Orientation::Horizontal, 2);
+pub fn get_box(stack: &Stack) -> Box {
+    let box_index = Box::new(Orientation::Vertical, 2);
     box_index.add_css_class("box_config");
+    box_index.set_hexpand(true);
+    box_index.set_vexpand(true);
 
     let user_instance = get_user_instance().clone().unwrap();
     let peoples_instance = get_peoples_instance();
 
     let grid = Grid::new();
-    grid.set_column_homogeneous(true);
+    grid.set_column_homogeneous(false);
     grid.set_row_homogeneous(false);
+    grid.set_column_spacing(100);
 
     let title = Label::new(Some("Configurações de usuário"));
     title.set_halign(Align::Center);
@@ -25,20 +28,58 @@ pub fn get_box() -> Box {
     grid.attach(&title, 0, 0, 2, 1);
 
     let box_username = BoxConfigUser::new("Username: ", Some(&user_instance.username));
+    box_username.input.set_editable(false);
+
     let box_email = BoxConfigUser::new("Email: ", Some(&user_instance.email));
 
     grid.attach(&box_username.box_config, 0, 1, 1, 1);
     grid.attach(&box_email.box_config, 1, 1, 1, 1);
 
+    box_index.append(&grid);
+
+    let grid = Grid::new();
+    grid.set_column_homogeneous(false);
+    grid.set_row_homogeneous(false);
+    grid.set_column_spacing(100);
+    grid.set_row_spacing(20);
+
     for n in 0..peoples_instance.len() {
         let box_people_n = Box::new(Orientation::Vertical, 1);
-        let subtitle = Label::new(Some(&format!("Pessoa nª: {}", n + 1)));
+        box_people_n.add_css_class("people_box");
+
+        let box_header = Box::new(Orientation::Horizontal, 1);
+        box_header.set_hexpand(false);
+        box_header.set_vexpand(false);
+
+        let subtitle = if n == 0 {
+            Label::new(Some("Seus dados"))
+        } else {
+            Label::new(Some(&format!("Pessoa nª: {}", n + 1)))
+        };
         subtitle.add_css_class("subtitle_people_config");
+        subtitle.set_halign(gtk::Align::Center);
+        subtitle.set_valign(gtk::Align::Center);
+
+        let icon_delete = Image::from_file(format!("{}delete.png", env::var("ICON_PATH").unwrap()));
+        icon_delete.set_hexpand(true);
+        icon_delete.set_vexpand(true);
+
+        let button_delete = Button::builder()
+            .halign(gtk::Align::End)
+            .valign(gtk::Align::End)
+            .css_classes(["button_delete"])
+            .child(&icon_delete)
+            .build();
+
+        let people_uid = Label::new(Some(&format!("{}", peoples_instance[n].id)));
+        people_uid.set_visible(false);
+
         let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&peoples_instance[n].name));
         let box_surname =
             BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&peoples_instance[n].surname));
         let box_cell_phone =
             BoxConfigUser::new_with_index(n, "Celular: ", Some(&peoples_instance[n].cell_phone));
+
         let box_birthday = BoxConfigUser::new_with_index(
             n,
             "Nascimento: ",
@@ -62,7 +103,7 @@ pub fn get_box() -> Box {
                 let rnt = tokio::runtime::Runtime::new().unwrap();
                 let _ = rnt
                     .block_on(edit_people(peoples.to_vec()))
-                    .map_err(|err| dbg!(err));
+                    .map_err(|err| tracing::error!("{:?}", err));
 
                 alert("Nome alterado com sucesso!", "Sucesso");
             }
@@ -80,7 +121,7 @@ pub fn get_box() -> Box {
                 let rnt = tokio::runtime::Runtime::new().unwrap();
                 let _ = rnt
                     .block_on(edit_people(peoples.to_vec()))
-                    .map_err(|err| dbg!(err));
+                    .map_err(|err| tracing::error!("{:?}", err));
 
                 alert("Celular alterado com sucesso!", "Sucesso");
             }
@@ -136,7 +177,7 @@ pub fn get_box() -> Box {
                     month.unwrap(),
                     day.unwrap()
                 ))
-                .map_err(|e| dbg!(e));
+                .map_err(|err| tracing::error!("{}", err));
 
                 if new_date.is_err() {
                     alert(
@@ -150,7 +191,7 @@ pub fn get_box() -> Box {
                 let rnt = tokio::runtime::Runtime::new().unwrap();
                 let _ = rnt
                     .block_on(edit_people(peoples.to_vec()))
-                    .map_err(|err| dbg!(err));
+                    .map_err(|err| tracing::error!("{:?}", err));
 
                 input.set_text(&format!(
                     "{:02}/{:02}/{:04}",
@@ -175,19 +216,57 @@ pub fn get_box() -> Box {
                 let rnt = tokio::runtime::Runtime::new().unwrap();
                 let _ = rnt
                     .block_on(edit_people(peoples.to_vec()))
-                    .map_err(|err| dbg!(err));
+                    .map_err(|err| tracing::error!("{:?}", err));
 
                 alert("Sobrenome alterado com sucesso!", "Sucesso");
             }
         });
 
-        box_people_n.append(&subtitle);
+        button_delete.connect_clicked(clone!(
+            #[weak]
+            people_uid,
+            #[weak]
+            stack,
+            move |_| {
+                #[allow(deprecated)]
+                if let Some(msg) = confirm("Isso irá deletar o debtor e suas contas atreladas, tem certeza que deseja deleta-lo?", "Deletar debtor"){
+                    msg.show();
+
+                    msg.connect_response(clone!(#[weak] people_uid, move |msg, res|{
+                        let rnt = tokio::runtime::Runtime::new().unwrap();
+                        if res == ResponseType::Yes{
+                            rnt.block_on(delete_people(people_uid.text().to_string()))
+                                .map_err(|err| tracing::error!("{:?}", err)).ok();
+
+                            alert("Debtor deletado com sucesso!", "Sucesso");
+                        }
+
+                        msg.close();
+                        rnt.block_on(update_counts_with_db()).ok();
+                        reload_home(None, Some(&stack));
+                    }));
+
+                };
+
+
+            }
+        ));
+
+        box_header.append(&subtitle);
+        box_header.append(&people_uid);
+        if n != 0 {
+            box_header.append(&button_delete);
+        }
+
+        box_people_n.append(&box_header);
         box_people_n.append(&box_name.box_config);
         box_people_n.append(&box_surname.box_config);
         box_people_n.append(&box_cell_phone.box_config);
         box_people_n.append(&box_birthday.box_config);
 
-        grid.attach(&box_people_n, (n as i32) % 2, ((n as i32) % 2) + 2, 1, 1);
+        let column = (n as i32) % 2;
+        let row = n as i32 - column;
+        grid.attach(&box_people_n, column, row, 1, 1);
     }
 
     box_username.input.connect_activate(move |input| {
@@ -200,7 +279,9 @@ pub fn get_box() -> Box {
         } else {
             user.username = input.text().to_string();
             let rnt = tokio::runtime::Runtime::new().unwrap();
-            let _ = rnt.block_on(edit_user(user)).map_err(|err| dbg!(err));
+            let _ = rnt
+                .block_on(edit_user(user))
+                .map_err(|err| tracing::error!("{:?}", err));
 
             alert("Username alterado com sucesso!", "Sucesso");
         }
@@ -216,13 +297,21 @@ pub fn get_box() -> Box {
         } else {
             user.email = input.text().to_string();
             let rnt = tokio::runtime::Runtime::new().unwrap();
-            let _ = rnt.block_on(edit_user(user)).map_err(|err| dbg!(err));
+            let _ = rnt
+                .block_on(edit_user(user))
+                .map_err(|err| tracing::error!("{:?}", err));
 
             alert("email alterado com sucesso!", "Sucesso");
         }
     });
 
-    box_index.append(&grid);
+    let scrolled = ScrolledWindow::new();
+    scrolled.add_css_class("list_people");
+    scrolled.set_vexpand(true);
+    scrolled.set_hexpand(false);
+
+    scrolled.set_child(Some(&grid));
+    box_index.append(&scrolled);
     box_index
 }
 
@@ -239,7 +328,7 @@ impl BoxConfigUser {
         label.set_halign(Align::Start);
 
         let box_default = Box::builder()
-            .orientation(Orientation::Horizontal)
+            .orientation(Orientation::Vertical)
             .spacing(0)
             .css_classes(["box_input"])
             .halign(Align::Start)

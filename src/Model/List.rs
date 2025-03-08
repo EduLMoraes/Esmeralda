@@ -1,6 +1,6 @@
 use chrono::Datelike;
 
-use crate::control::delete;
+use crate::{control::delete, prelude::control::update_counts_with_db};
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
 use std::cmp::Reverse;
@@ -315,9 +315,11 @@ impl ListCount {
                     .parse::<i16>()
                     .unwrap()
             {
-                if count.date_in.month0() +1 == count.date_out.month0(){
-                    months[count.date_out.month0() as usize].1.push(count.clone());
-                }else{
+                if count.date_in.month0() + 1 == count.date_out.month0() {
+                    months[count.date_out.month0() as usize]
+                        .1
+                        .push(count.clone());
+                } else {
                     for i in count.date_in.month0()..=count.date_out.month0() {
                         months[i as usize].1.push(count.clone());
                     }

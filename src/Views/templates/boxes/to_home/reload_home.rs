@@ -1,3 +1,7 @@
+use gtk::accessible::State;
+
+use crate::prelude::control::update_counts_with_db;
+
 use super::*;
 
 pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>) {
@@ -40,6 +44,11 @@ pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
         if let Some(tmp) = stack.child_by_name("Graficos") {
             stack.remove(&tmp);
             stack.add_titled(&box_graph(), Some("Graficos"), "Graficos");
+        }
+
+        if let Some(tmp) = stack.child_by_name("config") {
+            stack.remove(&tmp);
+            stack.add_titled(&get_config_box(stack), Some("config"), "Config");
         }
 
         if let Some(tmp) = stack.child_by_name("Investimentos") {

@@ -98,11 +98,10 @@
 }
 .button_to_config{
     background: transparent;
-    padding: 0%;
-    margin: 0%;
+    padding: 0px;
+    margin: 0px;
     border: 0px transparent;
-    border-radius: 100%;
-
+    border-radius: 10px;
 }
 @keyframes hover_payment {
     0%{

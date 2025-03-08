@@ -20,6 +20,7 @@ pub fn confirm(message: &str, title: &str) -> Option<MessageDialog> {
 
             Some(dialog)
         } else {
+            tracing::error!("Failed to create confirm alert");
             None
         }
     }
