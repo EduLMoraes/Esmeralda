@@ -13,19 +13,10 @@ use std::io::Write;
 /// garant the functionality of system.
 pub fn get_config() {
     dotenvy::dotenv().ok();
-    let log_file = File::create("app.log").unwrap();
-
-    let file_layer = fmt::layer()
-        .with_writer(log_file)
-        .with_ansi(false)
-        .with_target(true); // Inclui o alvo do log (opcional)
 
     let stdout_layer = fmt::layer().with_ansi(true);
 
-    tracing_subscriber::registry()
-        .with(file_layer)
-        .with(stdout_layer)
-        .init();
+    tracing_subscriber::registry().with(stdout_layer).init();
 
     let path = match std::env::consts::OS {
         "windows" => env::var("HOMEPATH").unwrap(),

@@ -1,6 +1,9 @@
 use std::{env, str::FromStr};
 
-use crate::{prelude::control::{delete_people, update_counts_with_db}, utils::validate::date_valid};
+use crate::{
+    prelude::control::{delete_people, update_counts_with_db},
+    utils::validate::date_valid,
+};
 
 use super::*;
 use chrono::NaiveDate;

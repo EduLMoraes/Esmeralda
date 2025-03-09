@@ -6,8 +6,7 @@ use crate::{
         model::People::People,
     },
 };
-// use glib::property::PropertyGet;
-use gtk::{prelude::EntryExt, Adjustment, Calendar, CheckButton, SpinButton, TextView};
+use gtk::{Adjustment, Calendar, CheckButton, SpinButton, TextView};
 
 #[allow(deprecated)]
 use gtk::ComboBoxText;
@@ -256,19 +255,20 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         new_nature_input,
         move |_| {
-            let nature = if nature_input.active_text().unwrap().to_string() != "+ Nova natureza".to_string()
+            let nature = if nature_input.active_text().unwrap().to_string()
+                != "+ Nova natureza".to_string()
             {
                 nature_input.active_text().unwrap().to_string()
             } else {
                 new_nature_input.text().to_string()
             };
 
-            let name = if name_input.active_text().unwrap().to_string() != "+ Novo devedor".to_string()
-            {
-                name_input.active_text().unwrap().to_string()
-            } else {
-                new_name_input.text().to_string()
-            };
+            let name =
+                if name_input.active_text().unwrap().to_string() != "+ Novo devedor".to_string() {
+                    name_input.active_text().unwrap().to_string()
+                } else {
+                    new_name_input.text().to_string()
+                };
 
             let natures_base = vec![
                 String::from("Casa"),
@@ -369,8 +369,6 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     }
                     Err(err) => tracing::error!("{err}"),
                 };
-
-                
             } else {
                 for (value, input) in data {
                     if value.is_empty() {

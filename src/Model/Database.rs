@@ -6,7 +6,6 @@ use crate::prelude::model::{
     User::*,
 };
 use chrono::{Datelike, NaiveDate};
-use glib::ffi::G_REGEX_ERROR_INCONSISTENT_NEWLINE_OPTIONS;
 use lazy_static::lazy_static;
 use rusqlite::{params, Connection};
 use std::env;
@@ -819,7 +818,8 @@ impl DataBase {
             }
             Data::People(id_user, peoples) => {
                 for people in peoples {
-                    let mut stmt = self.pool
+                    let mut stmt = self
+                        .pool
                         .prepare("SELECT uid_people, name FROM people WHERE uid_people = ?1")
                         .map_err(|err| {
                             tracing::error!("{:?}", err);
@@ -829,20 +829,17 @@ impl DataBase {
                                 file: "database.rs",
                             })
                         })?;
-                    
-                    let mut rows = stmt
-                        .query(params![people.id])
-                        .map_err(|err| {
-                            tracing::error!("{:?}", err);
-                            DataBaseError::DeleteUserError(ErrorLog {
-                                title: "People not found!",
-                                code: 804,
-                                file: "Database.rs",
-                            })
-                        })?;
 
-                    
-                    if let Ok(Some(row)) = rows.next(){
+                    let mut rows = stmt.query(params![people.id]).map_err(|err| {
+                        tracing::error!("{:?}", err);
+                        DataBaseError::DeleteUserError(ErrorLog {
+                            title: "People not found!",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                    if let Ok(Some(row)) = rows.next() {
                         let debtor = row.get::<_, String>("name").map_err(|err| {
                             tracing::error!("{:?}", err);
                             DataBaseError::GetCountsError(ErrorLog {
@@ -865,7 +862,11 @@ impl DataBase {
                             .execute(params![debtor, id_user])
                             .map_err(|err| {
                                 tracing::error!("{:?}", err);
-                                DataBaseError::DeletePeopleError(ErrorLog { title: "Failed to delete count of people", code: 804, file: "database.rs" })
+                                DataBaseError::DeletePeopleError(ErrorLog {
+                                    title: "Failed to delete count of people",
+                                    code: 804,
+                                    file: "database.rs",
+                                })
                             })?;
                     }
 
@@ -881,8 +882,6 @@ impl DataBase {
                             })
                         })?;
                 }
-
-                
 
                 Ok(())
             }

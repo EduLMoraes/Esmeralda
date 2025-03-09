@@ -129,7 +129,24 @@ pub async fn recover(year: i16) -> Result<(), ControlError> {
     }
 }
 
-pub async fn update_counts_with_db() -> Result<(), ControlError>{
-    let year = env::var("YEAR_SELECTED").map_err(|err| {tracing::error!("YEAR_SELECTED not defined: {:?}", err); ControlError::ErrorExtern(ErrorLog { title: "env YEAR_SELECTED is'n defined", code: 306, file: "control.rs" })})?.parse::<i16>().map_err(|err| {tracing::error!("Failed to parse year: {:?}", err); ControlError::ErrorExtern(ErrorLog { title: "Failed to parse year", code: 306, file: "control.rs" })})?;
+pub async fn update_counts_with_db() -> Result<(), ControlError> {
+    let year = env::var("YEAR_SELECTED")
+        .map_err(|err| {
+            tracing::error!("YEAR_SELECTED not defined: {:?}", err);
+            ControlError::ErrorExtern(ErrorLog {
+                title: "env YEAR_SELECTED is'n defined",
+                code: 306,
+                file: "control.rs",
+            })
+        })?
+        .parse::<i16>()
+        .map_err(|err| {
+            tracing::error!("Failed to parse year: {:?}", err);
+            ControlError::ErrorExtern(ErrorLog {
+                title: "Failed to parse year",
+                code: 306,
+                file: "control.rs",
+            })
+        })?;
     recover(year).await
 }

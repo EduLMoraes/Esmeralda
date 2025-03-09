@@ -1,7 +1,3 @@
-use gtk::accessible::State;
-
-use crate::prelude::control::update_counts_with_db;
-
 use super::*;
 
 pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>) {

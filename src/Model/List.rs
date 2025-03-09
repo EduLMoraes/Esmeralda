@@ -1,6 +1,6 @@
 use chrono::Datelike;
 
-use crate::{control::delete, prelude::control::update_counts_with_db};
+use crate::control::delete;
 use crate::prelude::model::Count::Count;
 use crate::prelude::model::Debtor::Debtor;
 use std::cmp::Reverse;

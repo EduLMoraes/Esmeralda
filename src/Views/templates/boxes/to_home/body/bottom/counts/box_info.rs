@@ -1,8 +1,12 @@
 use self::control::edit;
 use super::*;
-use crate::{gtk::{
-    gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu, ResponseType,
-}, prelude::control::update_counts_with_db};
+use crate::{
+    gtk::{
+        gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu,
+        ResponseType,
+    },
+    prelude::control::update_counts_with_db,
+};
 use alerts::{confirm, edit_count};
 
 pub fn new_box_info(info: &Count) -> Box {

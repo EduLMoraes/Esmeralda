@@ -43,14 +43,13 @@ pub async fn get_peoples(
 pub async fn add_people(new_people: &People) -> Result<(), ControlError> {
     let db = get_database_instance();
 
-    let data_peoples = Data::People(
-        get_user_instance().clone().unwrap().id as u16,
-        vec![new_people.clone()],
-    );
+    let user_id = get_user_instance().clone().unwrap().id;
+    let data_peoples = Data::People(user_id as u16, vec![new_people.clone()]);
 
     db.add(data_peoples)
         .await
         .map_err(ControlError::ErrorExternDB)?;
+
     Ok(())
 }
 
