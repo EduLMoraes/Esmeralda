@@ -261,13 +261,13 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 new_nature_input.text().to_string()
             };
 
+            let mut is_new_people = false;
             let name = if name_input.active_text().unwrap() != "+ Novo devedor" {
                 name_input.active_text().unwrap().to_string()
             } else {
+                is_new_people = true;
                 new_name_input.text().to_string()
             };
-
-            tracing::info!("debtor {:?}", name);
 
             let natures_base = vec![
                 String::from("Casa"),
@@ -330,6 +330,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                 count.pay_all()
             }
 
+            tracing::info!("count is empty? {}", count.is_empty());
             if !count.is_empty() {
                 use tokio::runtime::Runtime;
                 let rnt = Runtime::new().unwrap();
@@ -338,19 +339,23 @@ pub fn get_add_box(stack: &Stack) -> Box {
 
                 match rnt.block_on(control::save()) {
                     Ok(_) => {
-                        let new_people = People::new(&name);
-                        let peoples = get_peoples_instance();
+                        if is_new_people {
+                            let new_people = People::new(&name);
+                            let peoples = get_peoples_instance();
 
-                        if !peoples.contains(&new_people) {
-                            let response = rnt.block_on(add_people(&new_people));
-                            name_input.append(None, &new_people.name);
-                            if response.is_err() {
-                                alert(
-                                    "Erro ao tentar adicionar nova pessoa",
-                                    "Falha ao adicionar pessoa",
-                                );
+                            if !peoples.contains(&new_people) {
+                                let response = rnt.block_on(add_people(&new_people));
+
+                                name_input.append(None, &new_people.name);
+                                if response.is_err() {
+                                    alert(
+                                        "Erro ao tentar adicionar nova pessoa",
+                                        "Falha ao adicionar pessoa",
+                                    );
+                                }
                             }
                         }
+                        
                         reload_home(None, Some(&stack));
                         title_input.set_text("");
                         description_input.buffer().set_text("");

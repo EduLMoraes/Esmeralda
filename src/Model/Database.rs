@@ -213,13 +213,11 @@ impl DataBase {
 
                 Ok(())
             }
-            _ => {
-                Err(DataBaseError::DataTypeInvalid(ErrorLog {
-                    title: "Type of data is invalid to add",
-                    code: 816,
-                    file: "Database.rs",
-                }))
-            }
+            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                title: "Type of data is invalid to add",
+                code: 816,
+                file: "Database.rs",
+            })),
         }
     }
 
@@ -617,20 +615,25 @@ impl DataBase {
                         }
                     };
 
-                    if !peoples.contains(&people_db) {
+                    let mut contains = false;
+                    for people in &peoples {
+                        if people.id.eq(&people_db.id) {
+                            contains = true;
+                        }
+                    }
+
+                    if !contains {
                         peoples.push(people_db);
                     }
                 }
 
                 Ok(Data::People(id_user, peoples))
             }
-            _ => {
-                Err(DataBaseError::DataTypeInvalid(ErrorLog {
-                    title: "Type of data is invalid to add",
-                    code: 816,
-                    file: "Database.rs",
-                }))
-            }
+            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                title: "Type of data is invalid to add",
+                code: 816,
+                file: "Database.rs",
+            })),
         }
     }
 

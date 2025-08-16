@@ -46,7 +46,7 @@ pub fn get_box(stack: &Stack) -> Box {
     grid.set_column_spacing(100);
     grid.set_row_spacing(20);
 
-    for n in 0..peoples_instance.len() {
+    for (n, people) in peoples_instance.iter().enumerate() {
         let box_people_n = Box::new(Orientation::Vertical, 1);
         box_people_n.add_css_class("people_box");
 
@@ -74,23 +74,23 @@ pub fn get_box(stack: &Stack) -> Box {
             .child(&icon_delete)
             .build();
 
-        let people_uid = Label::new(Some(&peoples_instance[n].id.to_string()));
+        let people_uid = Label::new(Some(&people.id.to_string()));
         people_uid.set_visible(false);
 
-        let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&peoples_instance[n].name));
+        let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&people.name));
         let box_surname =
-            BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&peoples_instance[n].surname));
+            BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&people.surname));
         let box_cell_phone =
-            BoxConfigUser::new_with_index(n, "Celular: ", Some(&peoples_instance[n].cell_phone));
+            BoxConfigUser::new_with_index(n, "Celular: ", Some(&people.cell_phone));
 
         let box_birthday = BoxConfigUser::new_with_index(
             n,
             "Nascimento: ",
             Some(&format!(
                 "{:02}/{:02}/{:04}",
-                &peoples_instance[n].birthday.day0() + 1,
-                &peoples_instance[n].birthday.month0() + 1,
-                &peoples_instance[n].birthday.year()
+                &people.birthday.day0() + 1,
+                &people.birthday.month0() + 1,
+                &people.birthday.year()
             )),
         );
 

@@ -26,7 +26,6 @@ pub async fn get_peoples(
 
     let db_peoples = db.get(data_peoples).await.map_err(|err| {
         tracing::error!("{:?}", err);
-
         ControlError::ErrorExternDB(err)
     })?;
 

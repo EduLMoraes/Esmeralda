@@ -63,7 +63,7 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
 /// This is to recover the years of the payment of database.
 pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     let data = ListCount::new();
-    let mut recovered_data;
+    let recovered_data;
     
     {
         let db_instance = get_database_instance();
