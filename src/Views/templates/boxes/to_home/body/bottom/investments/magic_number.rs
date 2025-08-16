@@ -2,10 +2,11 @@ use super::*;
 use crate::apis::get_quote;
 use glib::clone;
 use gtk::{Adjustment, CheckButton, SpinButton};
-use std::f64::{MAX, MIN};
 
-const MAX_UPPER: f64 = MAX;
-const MIN_LOWER: f64 = MIN;
+const MAX_UPPER: f64 = f64::MAX;
+const MIN_LOWER: f64 = f64::MIN;
+const BASES_POINT: f64 = 100.0;
+const NUM_MONTH_IN_YEAR: f64 = 12.0;
 
 /// this calcule a preview of "magic number"
 /// magic number is quantity of action to value of yield = value per action
@@ -112,7 +113,7 @@ pub fn get_box() -> Box {
                         coin.push_str("BRL=X");
 
                         match get_quote(&coin.to_uppercase()){
-                            Ok((quote_brl, _)) =>{ quote_receive.close = quote_brl.close * quote_receive.close; }
+                            Ok((quote_brl, _)) =>{ quote_receive.close *= quote_brl.close;}
                             Err(_) => alert(
                                 "Falha ao buscar valor do valor em BRL! O valor será apresentado na moeda posta com '-'.", 
                                 "BRL não encontrado!"
@@ -281,11 +282,11 @@ fn auto_complete(
         #[weak]
         is_month,
         move |_| {
-            let yield_year = &value.value() * (&yields_tax.value() / 100.0);
-            let yield_month = yield_year / 12.0;
+            let yield_year = value.value() * (yields_tax.value() / BASES_POINT);
+            let yield_month = yield_year / NUM_MONTH_IN_YEAR;
 
             if yields_tax.value() > 0.0 && value.value() > 0.0 {
-                magic.set_value(&value.value() / yield_month + 1.0);
+                magic.set_value(value.value() / yield_month + 1.0);
             }
 
             if is_month.is_active() {
@@ -295,9 +296,9 @@ fn auto_complete(
             }
 
             if total.value() < value.value() && actions.value() < 1.0 {
-                actions.set_value(&total.value() / &value.value());
+                actions.set_value(total.value() / value.value());
             } else {
-                total.set_value(&actions.value() * &value.value());
+                total.set_value(actions.value() * value.value());
             }
         }
     ));

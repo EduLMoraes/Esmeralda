@@ -30,12 +30,12 @@ pub fn get_grid_months(stack: &Stack, stack_home: &Stack) -> Grid {
 
     months = counts.filter_by_month(months);
 
-    for i in 0..months.len() {
+    for (i, month) in months.iter().enumerate() {
         grid_months.attach(
             &new_month_info(
-                &months[i].0,
-                &months[i].0.to_lowercase(),
-                &months[i].1,
+                &month.0,
+                &month.0.to_lowercase(),
+                &month.1,
                 stack,
                 stack_home,
             ),

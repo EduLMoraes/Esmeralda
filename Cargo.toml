@@ -1,6 +1,6 @@
+
 workspace = { members = ["src/Utils/manager_db"] }
-[native]
-path = "./manager_db"
+
 
 [package]
 name = "esmeralda"
@@ -36,7 +36,7 @@ chrono = "0.4.31"
 diacritics = "0.2.0"
 dotenvy = "0.15.7"
 glib = "0.20.0"
-gtk = { package = "gtk4", version = "0.9", features = ["v4_12"] }
+gtk = { package = "gtk4", version = "0.9", features = ["v4_10"] }
 lazy_static = "1.4.0"
 mailjet-rs = "0.3.0"
 rand = "0.8.5"

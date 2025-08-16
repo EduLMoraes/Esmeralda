@@ -31,12 +31,12 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
         }
     };
 
-    for i in 0..natures.len() {
+    for (i, nature) in natures.iter().enumerate() {
         grid_groups.attach(
             &new_group_info(
-                &natures[i],
-                &natures[i].to_lowercase(),
-                &counts.filter_by_nature(&natures[i]),
+                nature,
+                &nature.to_lowercase(),
+                &counts.filter_by_nature(nature),
                 stack,
                 stack_home,
             ),

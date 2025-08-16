@@ -58,7 +58,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             } else if data.password == user.password {
                 db.edit(Data::LastLogin(data.id))
                     .await
-                    .map_err(|err| ControlError::ErrorExternDB(err))?;
+                    .map_err(ControlError::ErrorExternDB)?;
 
                 let peoples = get_peoples(&data.id, db).await?;
                 gen_peoples_instance(peoples);

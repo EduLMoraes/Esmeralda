@@ -74,7 +74,7 @@ pub fn get_box(stack: &Stack) -> Box {
             .child(&icon_delete)
             .build();
 
-        let people_uid = Label::new(Some(&format!("{}", peoples_instance[n].id)));
+        let people_uid = Label::new(Some(&peoples_instance[n].id.to_string()));
         people_uid.set_visible(false);
 
         let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&peoples_instance[n].name));
@@ -100,7 +100,6 @@ pub fn get_box(stack: &Stack) -> Box {
             if input.text().is_empty() {
                 alert("Esse campo não pode estar vazio.", "Entrada inválida");
                 input.set_text(&peoples[box_name.index].name);
-                return;
             } else {
                 peoples[box_name.index].name = input.text().to_string();
                 let rnt = tokio::runtime::Runtime::new().unwrap();
@@ -118,7 +117,6 @@ pub fn get_box(stack: &Stack) -> Box {
             if input.text().is_empty() {
                 alert("Esse campo não pode estar vazio.", "Entrada inválida");
                 input.set_text(&peoples[box_cell_phone.index].cell_phone);
-                return;
             } else {
                 peoples[box_cell_phone.index].cell_phone = input.text().to_string();
                 let rnt = tokio::runtime::Runtime::new().unwrap();
@@ -141,7 +139,6 @@ pub fn get_box(stack: &Stack) -> Box {
                     &peoples[box_birthday.index].birthday.month0() + 1,
                     &peoples[box_birthday.index].birthday.year()
                 ));
-                return;
             } else {
                 let mut text = input.text().to_string();
                 if (text.contains("/") && !date_valid::validate(&text))
@@ -213,7 +210,6 @@ pub fn get_box(stack: &Stack) -> Box {
             if input.text().is_empty() {
                 alert("Esse campo não pode estar vazio.", "Entrada inválida");
                 input.set_text(&peoples[box_surname.index].surname);
-                return;
             } else {
                 peoples[box_surname.index].surname = input.text().to_string();
                 let rnt = tokio::runtime::Runtime::new().unwrap();
@@ -278,7 +274,6 @@ pub fn get_box(stack: &Stack) -> Box {
         if input.text().is_empty() {
             alert("Esse campo não pode estar vazio.", "Entrada inválida");
             input.set_text(user.get_username());
-            return;
         } else {
             user.username = input.text().to_string();
             let rnt = tokio::runtime::Runtime::new().unwrap();
@@ -296,7 +291,6 @@ pub fn get_box(stack: &Stack) -> Box {
         if input.text().is_empty() {
             alert("Esse campo não pode estar vazio.", "Entrada inválida");
             input.set_text(user.get_email());
-            return;
         } else {
             user.email = input.text().to_string();
             let rnt = tokio::runtime::Runtime::new().unwrap();

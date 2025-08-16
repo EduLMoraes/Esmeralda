@@ -59,7 +59,7 @@ pub fn get_config() {
     }
 
     match env::var("UPDT_PATH") {
-        Err(_) => env::set_var("UPDT_PATH", format!("{}/.esmeralda/", path)),
+        Err(_) => env::set_var("UPDT_PATH", format!("{path}/.esmeralda/")),
         _ => env::set_var("UPDT_PATH", format!("{}/", env::temp_dir().display())),
     }
     if env::var("YEAR_SELECTED").is_err() {
@@ -69,21 +69,21 @@ pub fn get_config() {
     env::set_var("GSK_RENDERER", "cairo");
 
     if env::var("IMG_PATH").is_err() {
-        env::set_var("IMG_PATH", format!("{}/.esmeralda/assets/img/", path))
+        env::set_var("IMG_PATH", format!("{path}/.esmeralda/assets/img/"))
     }
     if env::var("DB_PATH").is_err() {
-        env::set_var("DB_PATH", format!("{}/.esmeralda/esmeralda.db", path))
+        env::set_var("DB_PATH", format!("{path}/.esmeralda/esmeralda.db"))
     }
     if env::var("ICON_PATH").is_err() {
-        env::set_var("ICON_PATH", format!("{}/.esmeralda/assets/icon/", path))
+        env::set_var("ICON_PATH", format!("{path}/.esmeralda/assets/icon/"))
     }
     if env::var("CSS_PATH").is_err() {
-        env::set_var("CSS_PATH", format!("{}/.esmeralda/styles/global.css", path))
+        env::set_var("CSS_PATH", format!("{path}/.esmeralda/styles/global.css"))
     }
     if env::var("CARGO_PKG_VERSION").is_err() {
         env::set_var("CARGO_PKG_VERSION", format!("1.2.3"))
     }
     if env::var("MANAGER_PATH").is_err() {
-        env::set_var("MANAGER_PATH", format!("{}/.esmeralda/manager_db", path));
+        env::set_var("MANAGER_PATH", format!("{path}/.esmeralda/manager_db"));
     }
 }

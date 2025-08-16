@@ -2,10 +2,10 @@ use chrono::NaiveDate;
 
 use super::errors::{ErrorLog, PeopleError};
 
-#[derive(PartialOrd, Debug, Clone)]
+#[derive(PartialOrd, Debug, Clone, Default)]
 pub struct People {
     pub id: String,
-    pub addres: String,
+    pub address: String,
     pub name: String,
     pub wage: f32,
     pub cell_phone: String,
@@ -19,49 +19,16 @@ pub struct People {
 
 #[allow(unused)]
 impl People {
-    pub fn new(name: &String) -> People {
+    pub fn new(name: &str) -> People {
         People {
-            id: Default::default(),
-            name: name.clone(),
-            wage: Default::default(),
-            cell_phone: String::new(),
-            birthday: NaiveDate::default(),
-            rg: Default::default(),
-            cpf: Default::default(),
-            surname: Default::default(),
-            voter_registration: Default::default(),
-            provider: Default::default(),
-            addres: Default::default(),
+            name: name.to_string(),
+            ..Default::default()
         }
     }
 
-    pub fn from(
-        id: String,
-        name: String,
-        wage: f32,
-        cell_phone: String,
-        birthday: NaiveDate,
-        rg: String,
-        cpf: String,
-        surname: String,
-        voter_registration: String,
-        provider: String,
-        address: String,
-    ) -> Result<Self, PeopleError> {
-        if People::validate_cpf(&cpf) || cpf.is_empty() {
-            return Ok(People {
-                id: id,
-                name: name,
-                wage: wage,
-                cell_phone: cell_phone,
-                birthday: birthday,
-                rg: rg,
-                cpf: cpf,
-                surname: surname,
-                voter_registration: voter_registration,
-                provider: provider,
-                addres: address,
-            });
+    pub fn from(people: People) -> Result<Self, PeopleError> {
+        if People::validate_cpf(&people.cpf) || people.cpf.is_empty() {
+            return Ok(people);
         }
         Err(PeopleError::CPFInvalid(ErrorLog {
             title: "This cpf is invalid!",
@@ -90,8 +57,8 @@ impl People {
         use regex::Regex;
 
         let mut multply: i32 = 10;
-        for letter in 0..(cpf.len() - 2) {
-            dig_valid += cpf[letter].to_digit(10).unwrap() * multply as u32;
+        for letter in cpf.iter().take(cpf.len() - 2) {
+            dig_valid += letter.to_digit(10).unwrap() * multply as u32;
             multply -= 1;
         }
 
@@ -109,8 +76,8 @@ impl People {
 
         let mut multply: i32 = 11;
         dig_valid = 0;
-        for letter in 0..(cpf.len() - 1) {
-            dig_valid += cpf[letter].to_digit(10).unwrap() * multply as u32;
+        for letter in cpf.iter().take(cpf.len() - 1) {
+            dig_valid += letter.to_digit(10).unwrap() * multply as u32;
             multply -= 1;
         }
 

@@ -148,7 +148,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         new_nature_input,
         move |input| {
-            if input.active_text().unwrap().to_string() == String::from("+ Nova natureza") {
+            if input.active_text().unwrap() == "+ Nova natureza" {
                 new_nature_input.set_visible(true);
                 nature_input.set_visible(false);
             }
@@ -161,7 +161,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         new_name_input,
         move |input| {
-            if input.active_text().unwrap().to_string() == String::from("+ Novo devedor") {
+            if input.active_text().unwrap() == "+ Novo devedor" {
                 new_name_input.set_visible(true);
                 name_input.set_visible(false);
             }
@@ -255,20 +255,19 @@ pub fn get_add_box(stack: &Stack) -> Box {
         #[weak]
         new_nature_input,
         move |_| {
-            let nature = if nature_input.active_text().unwrap().to_string()
-                != "+ Nova natureza".to_string()
-            {
+            let nature = if nature_input.active_text().unwrap() != "+ Nova natureza" {
                 nature_input.active_text().unwrap().to_string()
             } else {
                 new_nature_input.text().to_string()
             };
 
-            let name =
-                if name_input.active_text().unwrap().to_string() != "+ Novo devedor".to_string() {
-                    name_input.active_text().unwrap().to_string()
-                } else {
-                    new_name_input.text().to_string()
-                };
+            let name = if name_input.active_text().unwrap() != "+ Novo devedor" {
+                name_input.active_text().unwrap().to_string()
+            } else {
+                new_name_input.text().to_string()
+            };
+
+            tracing::info!("debtor {:?}", name);
 
             let natures_base = vec![
                 String::from("Casa"),
@@ -374,7 +373,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                     if value.is_empty() {
                         use alerts::alert;
                         alert(
-                            &format!("Campo obrigatório {} está vazio.", input),
+                            &format!("Campo obrigatório {input} está vazio."),
                             "Faltam dados!",
                         );
                     }

@@ -19,7 +19,7 @@ pub fn get_box_body(stack: &Stack, stack_master: &Stack) -> Box {
         "Investimentos",
     );
 
-    box_body.append(&box_top(stack, &stack_master));
+    box_body.append(&box_top(stack, stack_master));
     box_body.append(stack);
 
     box_body.add_css_class("box_body");

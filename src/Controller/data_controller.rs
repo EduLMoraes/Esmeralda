@@ -63,15 +63,18 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
 /// This is to recover the years of the payment of database.
 pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     let data = ListCount::new();
-    let db_instance = get_database_instance();
+    let mut recovered_data;
+    
+    {
+        let db_instance = get_database_instance();
 
-    let user_logged = get_user_instance().as_ref().unwrap().clone();
+        let user_logged = get_user_instance().as_ref().unwrap().clone();
 
-    let recovered_data = db_instance
-        .get(Data::Years(data, user_logged.clone()))
-        .await
-        .map_err(ControlError::ErrorExternDB)?;
-
+        recovered_data = db_instance
+            .get(Data::Years(data, user_logged.clone()))
+            .await
+            .map_err(ControlError::ErrorExternDB)?;
+    }
     match recovered_data {
         Data::Years(data, _) => {
             get_counts_instance().years = data.years.clone();
@@ -89,11 +92,12 @@ pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
 pub async fn delete(id: &i32) -> Result<(), ControlError> {
     let user_id = get_user_instance().as_ref().unwrap().id;
 
-    get_database_instance()
-        .delete(Data::Count(id.clone(), user_id))
-        .await
-        .map_err(|err| ControlError::ErrorExternDB(err))?;
-
+    {
+        get_database_instance()
+            .delete(Data::Count(*id, user_id))
+            .await
+            .map_err(ControlError::ErrorExternDB)?;
+    }
     Ok(())
 }
 /// This recover all payments and counts of the year existent

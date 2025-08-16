@@ -34,7 +34,7 @@ pub fn new_group_info(
     box_left_g.add_css_class("box_left_g");
     box_left_g.set_hexpand(true);
 
-    let value = format!("R${:.2}", value_total);
+    let value = format!("R${value_total:.2}");
     let value = Label::new(Some(&value));
     value.add_css_class("label_value_i");
 
@@ -53,7 +53,7 @@ pub fn new_group_info(
     box_right_g.add_css_class("box_right_g");
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
-    icon_path.push(format!("{}.png", nature));
+    icon_path.push(format!("{nature}.png"));
 
     if !icon_path.exists() {
         icon_path = PathBuf::from(format!(

@@ -12,7 +12,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
     let box_count = Box::new(Orientation::Vertical, 10);
 
     let title = Label::new(Some("Total movimentado no ano"));
-    let text = Label::new(Some(&format!("R$ {:.2}", count)));
+    let text = Label::new(Some(&format!("R$ {count:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
 
@@ -24,7 +24,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
     box_debt.set_valign(gtk::Align::Center);
 
     let title = Label::new(Some("Total em dívidas abertas"));
-    let text = Label::new(Some(&format!("R$ -{:.2}", debt)));
+    let text = Label::new(Some(&format!("R$ -{debt:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
     text.add_css_class("status_negative");
@@ -37,7 +37,7 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
     box_paid.set_valign(gtk::Align::Center);
 
     let title = Label::new(Some("Saldo total"));
-    let text = Label::new(Some(&format!("R$ {:.2}", paid)));
+    let text = Label::new(Some(&format!("R$ {paid:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
     if paid > 0.0 {

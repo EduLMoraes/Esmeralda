@@ -76,7 +76,7 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
         stack,
         move |_| {
             let result = ListCount {
-                list: get_counts_instance().search(&search.text().to_string()),
+                list: get_counts_instance().search(search.text().as_ref()),
                 years: vec![0],
             };
 
@@ -144,7 +144,7 @@ pub fn box_top(stack: &Stack, stack_master: &Stack) -> Box {
 
     let peoples = get_peoples_instance().clone();
     let mut name = "";
-    if peoples.len() != 0 {
+    if !peoples.is_empty() {
         name = &peoples[0].name;
     }
 

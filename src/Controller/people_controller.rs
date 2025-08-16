@@ -78,7 +78,7 @@ pub async fn delete_people(uid: String) -> Result<(), ControlError> {
 
     let people = People {
         id: uid,
-        addres: String::new(),
+        address: String::new(),
         name: String::new(),
         wage: 0.0,
         cell_phone: String::new(),

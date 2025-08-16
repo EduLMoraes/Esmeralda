@@ -33,7 +33,7 @@ pub fn new_month_info(
         .css_classes(["box_left_g"])
         .build();
 
-    let value = format!("R${:.2}", value_total);
+    let value = format!("R${value_total:.2}");
     let value = Label::new(Some(&value));
     value.add_css_class("label_value_i");
 
@@ -59,7 +59,7 @@ pub fn new_month_info(
         .build();
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
-    icon_path.push(format!("{}.png", nature));
+    icon_path.push(format!("{nature}.png"));
 
     if !icon_path.exists() {
         icon_path = PathBuf::from(format!(

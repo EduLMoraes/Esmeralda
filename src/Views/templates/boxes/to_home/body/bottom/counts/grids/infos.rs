@@ -31,6 +31,6 @@ pub fn get_grid_infos(stack: &Stack, stack_home: &Stack, infos: &Vec<Count>, tit
         stack.remove(&child);
     }
 
-    stack.add_titled(&grid_infos, Some("details"), &title);
+    stack.add_titled(&grid_infos, Some("details"), title);
     grid_infos
 }

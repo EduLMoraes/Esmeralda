@@ -1,10 +1,8 @@
-use std::sync::Mutex;
-
 use self::control::edit;
 use super::*;
 use crate::{
     gtk::{
-        gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu,
+        gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu,
         ResponseType,
     },
     prelude::control::update_counts_with_db,

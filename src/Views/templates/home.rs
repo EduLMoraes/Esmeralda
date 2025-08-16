@@ -24,7 +24,7 @@ pub fn home_screen(screen_master: &Stack) -> Box {
     if let Ok(_years) = run.block_on(recover_years()) {
         let _ = run
             .block_on(recover(crate::chrono::Utc::now().year() as i16))
-            .map_err(|err| println!("{}", err));
+            .map_err(|err| println!("{err}"));
     }
 
     let today = chrono::Utc::now();
@@ -62,7 +62,7 @@ pub fn home_screen(screen_master: &Stack) -> Box {
     }
 
     #[allow(const_item_mutation)]
-    if let Some(is_alerted) = IS_ALERTED.get_mut().ok() {
+    if let Ok(is_alerted) = IS_ALERTED.get_mut() {
         if !*is_alerted {
             let counts = &get_counts_instance().list;
             let now = chrono::Utc::now().date_naive();
@@ -75,9 +75,9 @@ pub fn home_screen(screen_master: &Stack) -> Box {
                     let month_pay =
                         (count.date_in.month() + count.paid_installments + 1) as i32 % 12;
                     let months_to_pay = month_pay - now.month() as i32;
-                    let days_to_pay = (count.date_out.day0() as i32 + (months_to_pay * 30) as i32)
-                        - now.day0() as i32;
-                    let years_to_pay = count.date_out.year() as i32 - now.year() as i32;
+                    let days_to_pay =
+                        (count.date_out.day0() as i32 + (months_to_pay * 30)) - now.day0() as i32;
+                    let years_to_pay = count.date_out.year() - now.year();
                     let is_late = months_to_pay <= 0 && days_to_pay < 0 && years_to_pay <= 0;
 
                     if !is_late {
@@ -122,8 +122,8 @@ pub fn home_screen(screen_master: &Stack) -> Box {
                 let count = defeated[0];
                 let month_pay = (count.date_in.month() + count.paid_installments + 1) as i32 % 12;
                 let months_to_pay = month_pay - now.month() as i32;
-                let days_to_pay = (count.date_out.day0() as i32 + (months_to_pay * 30) as i32)
-                    - now.day0() as i32;
+                let days_to_pay =
+                    (count.date_out.day0() as i32 + (months_to_pay * 30)) - now.day0() as i32;
 
                 alert(
                     &format!(
@@ -146,8 +146,8 @@ pub fn home_screen(screen_master: &Stack) -> Box {
                 let count = defeated[0];
                 let month_pay = (count.date_in.month() + count.paid_installments + 1) as i32 % 12;
                 let months_to_pay = month_pay - now.month() as i32;
-                let days_to_pay = (count.date_out.day0() as i32 + (months_to_pay * 30) as i32)
-                    - now.day0() as i32;
+                let days_to_pay =
+                    (count.date_out.day0() as i32 + (months_to_pay * 30)) - now.day0() as i32;
 
                 alert(
                     &format!(
@@ -161,7 +161,7 @@ pub fn home_screen(screen_master: &Stack) -> Box {
     }
 
     let box_menu_left = get_box_menu_left(&stack);
-    let box_body = get_box_body(&stack, &screen_master);
+    let box_body = get_box_body(&stack, screen_master);
 
     screen.set_valign(gtk::Align::Center);
     screen.set_halign(gtk::Align::Center);

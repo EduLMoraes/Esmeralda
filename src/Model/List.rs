@@ -130,7 +130,7 @@ impl ListCount {
         data
     }
 
-    fn group_data_months(&self, months: &mut Vec<f32>, count: &Count) {
+    fn group_data_months(&self, months: &mut [f32], count: &Count) {
         if count.date_in.month0() <= count.date_out.month0()
             && count.date_in.year() == count.date_out.year()
         {
@@ -289,7 +289,7 @@ impl ListCount {
         debtors
     }
 
-    pub fn filter_by_nature(&self, item: &String) -> Vec<Count> {
+    pub fn filter_by_nature(&self, item: &str) -> Vec<Count> {
         self.list
             .iter()
             .filter(|count| item.to_lowercase() == count.nature.to_lowercase())
@@ -351,19 +351,19 @@ impl ListCount {
         months
     }
 
-    pub fn search(&self, item: &String) -> Vec<Count> {
+    pub fn search(&self, item: &str) -> Vec<Count> {
         use rust_fuzzy_search::fuzzy_compare;
 
         self.list
             .iter()
             .filter(|count| {
-                fuzzy_compare(&item, &count.debtor) > 0.5
-                    || fuzzy_compare(&item, &count.nature) > 0.5
+                fuzzy_compare(item, &count.debtor) > 0.5
+                    || fuzzy_compare(item, &count.nature) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.title.to_lowercase()) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.5
-                    || fuzzy_compare(&item, &count.date_in.to_string()) > 0.5
-                    || fuzzy_compare(&item, &count.date_out.to_string()) > 0.5
-                    || item == &count.id.to_string()
+                    || fuzzy_compare(item, &count.date_in.to_string()) > 0.5
+                    || fuzzy_compare(item, &count.date_out.to_string()) > 0.5
+                    || item == count.id.to_string()
             })
             .cloned()
             .collect::<Vec<Count>>()

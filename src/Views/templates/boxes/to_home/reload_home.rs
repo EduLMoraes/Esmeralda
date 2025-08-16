@@ -3,7 +3,7 @@ use super::*;
 pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>) {
     let list_box = get_list_box();
 
-    while list_box.first_child() != None {
+    while list_box.first_child().is_some() {
         let first_child = list_box.first_child().unwrap();
         list_box.remove(&first_child);
     }
@@ -57,5 +57,5 @@ pub fn reload_home(list: Option<&ListCount>, stack: std::option::Option<&Stack>)
         }
     }
 
-    let _ = std::mem::drop(binding);
+    std::mem::drop(binding);
 }

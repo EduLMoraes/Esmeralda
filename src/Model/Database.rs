@@ -67,15 +67,13 @@ impl DataBase {
                         .output()
                         .expect("erro ao rodar script");
 
-                    let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                    Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                         DataBaseError::CreatePoolError(ErrorLog {
                             title: "Error to connect database",
                             code: 812,
                             file: "Database.rs",
                         })
-                    })?;
-
-                    conn
+                    })?
                 }
             },
         };
@@ -215,11 +213,13 @@ impl DataBase {
 
                 Ok(())
             }
-            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
-                title: "Type of data is invalid to add",
-                code: 816,
-                file: "Database.rs",
-            })),
+            _ => {
+                Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                    title: "Type of data is invalid to add",
+                    code: 816,
+                    file: "Database.rs",
+                }))
+            }
         }
     }
 
@@ -588,33 +588,34 @@ impl DataBase {
                 })?;
 
                 while let Ok(Some(row)) = rows.next() {
-                    let people_db = People::from(
-                        row.get::<_, String>("uid_people").unwrap_or(String::new()),
-                        row.get::<_, String>("name").unwrap_or(String::new()),
-                        row.get::<_, f32>("wage").unwrap_or(0.0),
-                        row.get::<_, String>("cell_phone").unwrap_or(String::new()),
-                        NaiveDate::from_str(
+                    let people_db = match People::from(People {
+                        id: row.get::<_, String>("uid_people").unwrap_or_default(),
+                        name: row.get::<_, String>("name").unwrap_or_default(),
+                        wage: row.get::<_, f32>("wage").unwrap_or(0.0),
+                        cell_phone: row.get::<_, String>("cell_phone").unwrap_or_default(),
+                        birthday: NaiveDate::from_str(
                             &row.get::<_, String>("date_of_birth")
-                                .unwrap_or(NaiveDate::default().to_string()),
+                                .unwrap_or_else(|_| NaiveDate::default().to_string()),
                         )
                         .unwrap_or(NaiveDate::default()),
-                        row.get::<_, String>("rg").unwrap_or(String::new()),
-                        row.get::<_, String>("cpf").unwrap_or(String::new()),
-                        row.get::<_, String>("surname").unwrap_or(String::new()),
-                        row.get::<_, String>("voter_registration")
-                            .unwrap_or(String::new()),
-                        row.get::<_, String>("provider").unwrap_or(String::new()),
-                        row.get::<_, String>("id_addres").unwrap_or(String::new()),
-                    )
-                    .map_err(|err| {
-                        tracing::error!("{:?}", err);
-
-                        DataBaseError::GetPeopleError(ErrorLog {
-                            title: "Error to get people of db",
-                            code: 500,
-                            file: "Database.rs",
-                        })
-                    })?;
+                        rg: row.get::<_, String>("rg").unwrap_or_default(),
+                        cpf: row.get::<_, String>("cpf").unwrap_or_default(),
+                        surname: row.get::<_, String>("surname").unwrap_or_default(),
+                        voter_registration: row
+                            .get::<_, String>("voter_registration")
+                            .unwrap_or_default(),
+                        provider: row.get::<_, String>("provider").unwrap_or_default(),
+                        address: row.get::<_, String>("id_addres").unwrap_or_default(),
+                    }) {
+                        Ok(val) => val,
+                        Err(_err) => {
+                            return Err(DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to convert People",
+                                code: 500,
+                                file: "Database.rs",
+                            }))
+                        }
+                    };
 
                     if !peoples.contains(&people_db) {
                         peoples.push(people_db);
@@ -623,11 +624,13 @@ impl DataBase {
 
                 Ok(Data::People(id_user, peoples))
             }
-            _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
-                title: "Type of data is invalid to add",
-                code: 816,
-                file: "Database.rs",
-            })),
+            _ => {
+                Err(DataBaseError::DataTypeInvalid(ErrorLog {
+                    title: "Type of data is invalid to add",
+                    code: 816,
+                    file: "Database.rs",
+                }))
+            }
         }
     }
 
@@ -728,7 +731,7 @@ impl DataBase {
                 Ok(())
             }
             Data::People(_id, peoples) => {
-                for i in 0..peoples.len() {
+                for people in &peoples {
                     self.pool
                         .prepare(
                             "UPDATE people SET 
@@ -752,16 +755,16 @@ impl DataBase {
                             })
                         })?
                         .execute([
-                            &peoples[i].provider,
-                            &peoples[i].wage.to_string(),
-                            &peoples[i].name,
-                            &peoples[i].birthday.to_string(),
-                            &peoples[i].cell_phone,
-                            &peoples[i].voter_registration,
-                            &peoples[i].rg,
-                            &peoples[i].cpf,
-                            &peoples[i].surname,
-                            &peoples[i].id,
+                            people.provider.clone(),
+                            people.wage.to_string(),
+                            people.name.clone(),
+                            people.birthday.to_string(),
+                            people.cell_phone.clone(),
+                            people.voter_registration.clone(),
+                            people.rg.clone(),
+                            people.cpf.clone(),
+                            people.surname.clone(),
+                            people.id.clone(),
                         ])
                         .map_err(|err| {
                             tracing::error!("{:?}", err);
