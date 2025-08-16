@@ -2,9 +2,9 @@ echo "Download de arquivos..."
 cd $HOME
 mkdir .esmeralda
 cd .esmeralda
-wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.1.0/esmeralda
+wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.4.0/esmeralda
 chmod +x ./esmeralda
-wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.1.0/sources.zip
+wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.4.0/sources.zip
 
 echo "Descompactando..."
 unzip sources.zip

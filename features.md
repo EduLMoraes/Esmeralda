@@ -5,6 +5,12 @@
     <td> Descrição </td>
   </tr>
   <tr>
+    <td> v1.4.0 </td>
+    <td> 
+      Correção de bugs;<br>
+    </td>
+  </tr>
+  <tr>
     <td> v1.3.3 </td>
     <td> 
       Botão para configurações do usuário;<br>
