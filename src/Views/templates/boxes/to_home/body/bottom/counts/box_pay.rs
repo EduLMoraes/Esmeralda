@@ -3,6 +3,7 @@ use super::*;
 pub fn get_pay_box(stack: &Stack) -> Box {
     let box_pay = Box::new(Orientation::Vertical, 10);
     box_pay.set_halign(gtk::Align::Center);
+    box_pay.set_hexpand(true);
 
     let box_title = Box::new(Orientation::Horizontal, 10);
     box_title.add_css_class("title_i");

@@ -5,6 +5,10 @@ use grids::*;
 pub fn get_home_box(stack: &Stack) -> Box {
     let box_home = Box::new(Orientation::Vertical, 10);
     box_home.add_css_class("box_left_bb");
+    box_home.set_hexpand(true);
+    box_home.set_vexpand(true);
+    box_home.set_valign(gtk::Align::Fill);
+    box_home.set_halign(gtk::Align::Fill);
 
     let box_button_lb = Box::new(Orientation::Horizontal, 10);
     box_button_lb.set_halign(gtk::Align::Center);
@@ -60,11 +64,10 @@ pub fn get_home_box(stack: &Stack) -> Box {
     box_stack.append(&box_head_stack);
     box_stack.append(&stack_infos);
 
-    box_stack.set_halign(gtk::Align::Center);
-
     let scrolled = ScrolledWindow::new();
     scrolled.set_child(Some(&box_stack));
-    scrolled.set_height_request(500);
+    scrolled.set_hexpand(true);
+    scrolled.set_vexpand(true);
 
     let mut binding = get_counts_instance();
     let counts = binding.borrow_mut();

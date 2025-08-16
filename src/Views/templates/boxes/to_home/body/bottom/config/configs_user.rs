@@ -1,19 +1,365 @@
+use std::{env, str::FromStr};
+
+use crate::{
+    prelude::control::{delete_people, update_counts_with_db},
+    utils::validate::date_valid,
+};
+
 use super::*;
-use crate::apis::get_quote;
-use gtk::{Adjustment, CheckButton, SpinButton};
+use chrono::NaiveDate;
+use control::{edit_people, edit_user, get_peoples_instance};
+use gtk::{Align, Entry, ResponseType};
 
-pub fn get_box() -> Box {
-    let box_index = Box::new(Orientation::Horizontal, 2);
+pub fn get_box(stack: &Stack) -> Box {
+    let box_index = Box::new(Orientation::Vertical, 2);
     box_index.add_css_class("box_config");
+    box_index.set_hexpand(true);
+    box_index.set_vexpand(true);
 
-    
+    let user_instance = get_user_instance().clone().unwrap();
+    let peoples_instance = get_peoples_instance();
 
     let grid = Grid::new();
-    grid.set_column_homogeneous(true);
-    grid.set_row_homogeneous(true);
+    grid.set_column_homogeneous(false);
+    grid.set_row_homogeneous(false);
+    grid.set_column_spacing(100);
 
+    let title = Label::new(Some("Configurações de usuário"));
+    title.set_halign(Align::Center);
+    title.set_css_classes(&["title_configs"]);
 
+    grid.attach(&title, 0, 0, 2, 1);
+
+    let box_username = BoxConfigUser::new("Username: ", Some(&user_instance.username));
+    box_username.input.set_editable(false);
+
+    let box_email = BoxConfigUser::new("Email: ", Some(&user_instance.email));
+
+    grid.attach(&box_username.box_config, 0, 1, 1, 1);
+    grid.attach(&box_email.box_config, 1, 1, 1, 1);
 
     box_index.append(&grid);
+
+    let grid = Grid::new();
+    grid.set_column_homogeneous(false);
+    grid.set_row_homogeneous(false);
+    grid.set_column_spacing(100);
+    grid.set_row_spacing(20);
+
+    for (n, people) in peoples_instance.iter().enumerate() {
+        let box_people_n = Box::new(Orientation::Vertical, 1);
+        box_people_n.add_css_class("people_box");
+
+        let box_header = Box::new(Orientation::Horizontal, 1);
+        box_header.set_hexpand(false);
+        box_header.set_vexpand(false);
+
+        let subtitle = if n == 0 {
+            Label::new(Some("Seus dados"))
+        } else {
+            Label::new(Some(&format!("Pessoa nª: {}", n + 1)))
+        };
+        subtitle.add_css_class("subtitle_people_config");
+        subtitle.set_halign(gtk::Align::Center);
+        subtitle.set_valign(gtk::Align::Center);
+
+        let icon_delete = Image::from_file(format!("{}delete.png", env::var("ICON_PATH").unwrap()));
+        icon_delete.set_hexpand(true);
+        icon_delete.set_vexpand(true);
+
+        let button_delete = Button::builder()
+            .halign(gtk::Align::End)
+            .valign(gtk::Align::End)
+            .css_classes(["button_delete"])
+            .child(&icon_delete)
+            .build();
+
+        let people_uid = Label::new(Some(&people.id.to_string()));
+        people_uid.set_visible(false);
+
+        let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&people.name));
+        let box_surname =
+            BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&people.surname));
+        let box_cell_phone =
+            BoxConfigUser::new_with_index(n, "Celular: ", Some(&people.cell_phone));
+
+        let box_birthday = BoxConfigUser::new_with_index(
+            n,
+            "Nascimento: ",
+            Some(&format!(
+                "{:02}/{:02}/{:04}",
+                &people.birthday.day0() + 1,
+                &people.birthday.month0() + 1,
+                &people.birthday.year()
+            )),
+        );
+
+        box_name.input.connect_activate(move |input| {
+            let mut peoples = get_peoples_instance();
+
+            if input.text().is_empty() {
+                alert("Esse campo não pode estar vazio.", "Entrada inválida");
+                input.set_text(&peoples[box_name.index].name);
+            } else {
+                peoples[box_name.index].name = input.text().to_string();
+                let rnt = tokio::runtime::Runtime::new().unwrap();
+                let _ = rnt
+                    .block_on(edit_people(peoples.to_vec()))
+                    .map_err(|err| tracing::error!("{:?}", err));
+
+                alert("Nome alterado com sucesso!", "Sucesso");
+            }
+        });
+
+        box_cell_phone.input.connect_activate(move |input| {
+            let mut peoples = get_peoples_instance();
+
+            if input.text().is_empty() {
+                alert("Esse campo não pode estar vazio.", "Entrada inválida");
+                input.set_text(&peoples[box_cell_phone.index].cell_phone);
+            } else {
+                peoples[box_cell_phone.index].cell_phone = input.text().to_string();
+                let rnt = tokio::runtime::Runtime::new().unwrap();
+                let _ = rnt
+                    .block_on(edit_people(peoples.to_vec()))
+                    .map_err(|err| tracing::error!("{:?}", err));
+
+                alert("Celular alterado com sucesso!", "Sucesso");
+            }
+        });
+
+        box_birthday.input.connect_activate(move |input| {
+            let mut peoples = get_peoples_instance();
+
+            if input.text().is_empty() {
+                alert("Esse campo não pode estar vazio.", "Entrada inválida");
+                input.set_text(&format!(
+                    "{:02}/{:02}/{:04}",
+                    &peoples[box_birthday.index].birthday.day0() + 1,
+                    &peoples[box_birthday.index].birthday.month0() + 1,
+                    &peoples[box_birthday.index].birthday.year()
+                ));
+            } else {
+                let mut text = input.text().to_string();
+                if (text.contains("/") && !date_valid::validate(&text))
+                    || (!text.contains("/") && text.len() != 8)
+                {
+                    alert(
+                        "Revise o formato da data e se ela está correta.",
+                        "Data inválida",
+                    );
+                    return;
+                }
+
+                while let Some(idx) = text.find("/") {
+                    text.remove(idx);
+                }
+
+                let day = &text[0..2];
+                let month = &text[2..4];
+                let year = &text[4..8];
+
+                let day = day.parse::<u16>();
+                let month = month.parse::<u16>();
+                let year = year.parse::<u16>();
+
+                if day.is_err() || month.is_err() || year.is_err() {
+                    alert(
+                        "Revise o formato da data e se ela está correta.",
+                        "Data inválida",
+                    );
+                    return;
+                }
+
+                let new_date = NaiveDate::from_str(&format!(
+                    "{}-{}-{}",
+                    year.unwrap(),
+                    month.unwrap(),
+                    day.unwrap()
+                ))
+                .map_err(|err| tracing::error!("{}", err));
+
+                if new_date.is_err() {
+                    alert(
+                        "Revise o formato da data e se ela está correta.",
+                        "Data inválida",
+                    );
+                    return;
+                }
+
+                peoples[box_birthday.index].birthday = new_date.unwrap();
+                let rnt = tokio::runtime::Runtime::new().unwrap();
+                let _ = rnt
+                    .block_on(edit_people(peoples.to_vec()))
+                    .map_err(|err| tracing::error!("{:?}", err));
+
+                input.set_text(&format!(
+                    "{:02}/{:02}/{:04}",
+                    &peoples[box_birthday.index].birthday.day0() + 1,
+                    &peoples[box_birthday.index].birthday.month0() + 1,
+                    &peoples[box_birthday.index].birthday.year()
+                ));
+
+                alert("Nascimento alterado com sucesso!", "Sucesso");
+            }
+        });
+
+        box_surname.input.connect_activate(move |input| {
+            let mut peoples = get_peoples_instance();
+
+            if input.text().is_empty() {
+                alert("Esse campo não pode estar vazio.", "Entrada inválida");
+                input.set_text(&peoples[box_surname.index].surname);
+            } else {
+                peoples[box_surname.index].surname = input.text().to_string();
+                let rnt = tokio::runtime::Runtime::new().unwrap();
+                let _ = rnt
+                    .block_on(edit_people(peoples.to_vec()))
+                    .map_err(|err| tracing::error!("{:?}", err));
+
+                alert("Sobrenome alterado com sucesso!", "Sucesso");
+            }
+        });
+
+        button_delete.connect_clicked(clone!(
+            #[weak]
+            people_uid,
+            #[weak]
+            stack,
+            move |_| {
+                #[allow(deprecated)]
+                if let Some(msg) = confirm("Isso irá deletar o debtor e suas contas atreladas, tem certeza que deseja deleta-lo?", "Deletar debtor"){
+                    msg.show();
+
+                    msg.connect_response(clone!(#[weak] people_uid, move |msg, res|{
+                        let rnt = tokio::runtime::Runtime::new().unwrap();
+                        if res == ResponseType::Yes{
+                            rnt.block_on(delete_people(people_uid.text().to_string()))
+                                .map_err(|err| tracing::error!("{:?}", err)).ok();
+
+                            alert("Debtor deletado com sucesso!", "Sucesso");
+                        }
+
+                        msg.close();
+                        rnt.block_on(update_counts_with_db()).ok();
+                        reload_home(None, Some(&stack));
+                    }));
+
+                };
+
+
+            }
+        ));
+
+        box_header.append(&subtitle);
+        box_header.append(&people_uid);
+        if n != 0 {
+            box_header.append(&button_delete);
+        }
+
+        box_people_n.append(&box_header);
+        box_people_n.append(&box_name.box_config);
+        box_people_n.append(&box_surname.box_config);
+        box_people_n.append(&box_cell_phone.box_config);
+        box_people_n.append(&box_birthday.box_config);
+
+        let column = (n as i32) % 2;
+        let row = n as i32 - column;
+        grid.attach(&box_people_n, column, row, 1, 1);
+    }
+
+    box_username.input.connect_activate(move |input| {
+        let mut user = get_user_instance().clone().unwrap();
+
+        if input.text().is_empty() {
+            alert("Esse campo não pode estar vazio.", "Entrada inválida");
+            input.set_text(user.get_username());
+        } else {
+            user.username = input.text().to_string();
+            let rnt = tokio::runtime::Runtime::new().unwrap();
+            let _ = rnt
+                .block_on(edit_user(user))
+                .map_err(|err| tracing::error!("{:?}", err));
+
+            alert("Username alterado com sucesso!", "Sucesso");
+        }
+    });
+
+    box_email.input.connect_activate(move |input| {
+        let mut user = get_user_instance().clone().unwrap();
+
+        if input.text().is_empty() {
+            alert("Esse campo não pode estar vazio.", "Entrada inválida");
+            input.set_text(user.get_email());
+        } else {
+            user.email = input.text().to_string();
+            let rnt = tokio::runtime::Runtime::new().unwrap();
+            let _ = rnt
+                .block_on(edit_user(user))
+                .map_err(|err| tracing::error!("{:?}", err));
+
+            alert("email alterado com sucesso!", "Sucesso");
+        }
+    });
+
+    let scrolled = ScrolledWindow::new();
+    scrolled.add_css_class("list_people");
+    scrolled.set_vexpand(true);
+    scrolled.set_hexpand(false);
+
+    scrolled.set_child(Some(&grid));
+    box_index.append(&scrolled);
     box_index
+}
+
+struct BoxConfigUser {
+    index: usize,
+    box_config: Box,
+    input: Entry,
+}
+
+impl BoxConfigUser {
+    pub fn new(label: &str, value: Option<&str>) -> Self {
+        let label = Label::new(Some(label));
+        label.set_css_classes(&["label_configs"]);
+        label.set_halign(Align::Start);
+
+        let box_default = Box::builder()
+            .orientation(Orientation::Vertical)
+            .spacing(0)
+            .css_classes(["box_input"])
+            .halign(Align::Start)
+            .valign(Align::Fill)
+            .hexpand(false)
+            .vexpand(false)
+            .build();
+
+        let input_default = Entry::builder()
+            .hexpand(false)
+            .vexpand(false)
+            .halign(Align::End)
+            .valign(Align::Fill)
+            .css_classes(["input_configs"])
+            .text(value.unwrap_or(""))
+            .build();
+
+        box_default.append(&label);
+        box_default.append(&input_default);
+
+        Self {
+            index: 0,
+            box_config: box_default,
+            input: input_default,
+        }
+    }
+
+    pub fn new_with_index(idx: usize, label: &str, value: Option<&str>) -> Self {
+        let mut bx = Self::new(label, value);
+        bx.set_index(idx);
+        bx
+    }
+
+    pub fn set_index(&mut self, idx: usize) {
+        self.index = idx;
+    }
 }

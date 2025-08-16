@@ -2,10 +2,15 @@ use super::*;
 
 #[allow(dead_code)]
 pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
-    let grid_groups = Grid::new();
-    grid_groups.set_halign(gtk::Align::Center);
-    grid_groups.set_column_spacing(10);
-    grid_groups.set_row_spacing(10);
+    let grid_groups = Grid::builder()
+        .halign(gtk::Align::Fill)
+        .valign(gtk::Align::Start)
+        .column_homogeneous(true)
+        .column_spacing(10)
+        .row_spacing(10)
+        .hexpand(true)
+        .vexpand(true)
+        .build();
 
     let counts = get_counts_instance();
 
@@ -13,7 +18,7 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
     let natures = match rnt.block_on(control::get_groups()) {
         Ok(groups) => groups,
         Err(err) => {
-            println!("{:?}", err);
+            tracing::error!("{:?}", err);
             vec![
                 String::from("Casa"),
                 String::from("Transporte"),
@@ -26,12 +31,12 @@ pub fn get_grid_groups(stack: &Stack, stack_home: &Stack) -> Grid {
         }
     };
 
-    for i in 0..natures.len() {
+    for (i, nature) in natures.iter().enumerate() {
         grid_groups.attach(
             &new_group_info(
-                &natures[i],
-                &natures[i].to_lowercase(),
-                &counts.filter_by_nature(&natures[i]),
+                nature,
+                &nature.to_lowercase(),
+                &counts.filter_by_nature(nature),
                 stack,
                 stack_home,
             ),

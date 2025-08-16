@@ -8,31 +8,32 @@ pub fn new_month_info(
     stack_home: &Stack,
 ) -> Box {
     let mut soma: f32 = 0.0;
-    let mut status: bool = true;
 
     for info in infos {
-        soma += info.value;
-    }
-
-    for info in infos {
-        if !info.status {
-            status = false;
-            break;
+        if info.nature.to_lowercase() == "receita" {
+            soma += info.value;
+        } else if info.nature.to_lowercase() != "investimentos" {
+            soma -= info.value;
         }
     }
 
     let value_total = soma;
 
-    let box_group = Box::new(Orientation::Horizontal, 0);
+    let box_group = Box::new(Orientation::Horizontal, 20);
     box_group.add_css_class("box_group");
     box_group.set_hexpand(true);
 
-    let box_left_g = Box::new(Orientation::Vertical, 2);
-    box_left_g.add_css_class("box_left_g");
-    box_left_g.set_valign(gtk::Align::Center);
-    box_left_g.set_halign(gtk::Align::Start);
+    let box_left_g = Box::builder()
+        .orientation(Orientation::Vertical)
+        .spacing(2)
+        .hexpand(true)
+        .vexpand(true)
+        .halign(gtk::Align::Center)
+        .valign(gtk::Align::Center)
+        .css_classes(["box_left_g"])
+        .build();
 
-    let value = format!("R${:.2}", value_total);
+    let value = format!("R${value_total:.2}");
     let value = Label::new(Some(&value));
     value.add_css_class("label_value_i");
 
@@ -43,17 +44,22 @@ pub fn new_month_info(
     let n_items = Label::new(Some(&n_items));
     n_items.add_css_class("name_i");
 
-    box_left_g.append(&value);
     box_left_g.append(&title);
+    box_left_g.append(&value);
     box_left_g.append(&n_items);
 
-    let box_right_g = Box::new(Orientation::Vertical, 2);
-    box_right_g.add_css_class("box_right_g");
-    box_right_g.set_valign(gtk::Align::Center);
-    box_right_g.set_halign(gtk::Align::Center);
+    let box_right_g = Box::builder()
+        .orientation(Orientation::Vertical)
+        .spacing(2)
+        .hexpand(true)
+        .vexpand(true)
+        .halign(gtk::Align::End)
+        .valign(gtk::Align::Center)
+        .css_classes(["box_right_g"])
+        .build();
 
     let mut icon_path = PathBuf::from(format!("{}info_icon", var("ICON_PATH").unwrap()));
-    icon_path.push(format!("{}.png", nature));
+    icon_path.push(format!("{nature}.png"));
 
     if !icon_path.exists() {
         icon_path = PathBuf::from(format!(
@@ -65,7 +71,7 @@ pub fn new_month_info(
     let icon = Image::from_file(icon_path);
     icon.add_css_class("icon_group");
 
-    if status {
+    if soma >= 0.0 {
         icon.remove_css_class("negative");
         icon.add_css_class("positive");
     } else {

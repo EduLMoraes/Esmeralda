@@ -1,5 +1,4 @@
 use crate::prelude::env::var;
-use crate::prelude::log;
 use crate::prelude::model::{
     errors::{DataBaseError, ErrorLog},
     Count::Count,
@@ -10,7 +9,10 @@ use chrono::{Datelike, NaiveDate};
 use lazy_static::lazy_static;
 use rusqlite::{params, Connection};
 use std::env;
+use std::str::FromStr;
 use std::sync::Mutex;
+
+use super::People::People;
 
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -65,15 +67,13 @@ impl DataBase {
                         .output()
                         .expect("erro ao rodar script");
 
-                    let conn = Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
+                    Connection::open(var("DB_PATH").unwrap()).map_err(|_| {
                         DataBaseError::CreatePoolError(ErrorLog {
                             title: "Error to connect database",
                             code: 812,
                             file: "Database.rs",
                         })
-                    })?;
-
-                    conn
+                    })?
                 }
             },
         };
@@ -98,7 +98,7 @@ impl DataBase {
 
                 stmt.execute([user.username, user.password, user.email])
                     .map_err(|err| {
-                        let _ = log(path.clone().into(), format!("{err:?}").trim());
+                        tracing::info!("{:?}", err);
                         DataBaseError::AddUserError(ErrorLog {
                             title: "User already existis",
                             code: 500,
@@ -129,8 +129,9 @@ impl DataBase {
                     strftime('%Y-%m-%d', ?8), strftime('%Y-%m-%d', ?9), 
                     ?10) ",
                     )
-                    .map_err(|er| {
-                        println!("{er}");
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+
                         DataBaseError::AddCountError(ErrorLog {
                             title: "Error to prepare statement",
                             code: 301,
@@ -149,14 +150,66 @@ impl DataBase {
                         counts.list[0].date_out.to_string(),
                         counts.list[0].nature
                     ])
-                    .map_err(|er| {
-                        println!("{er}");
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+
                         DataBaseError::AddCountError(ErrorLog {
                             title: "Error to prepare statement",
                             code: 301,
                             file: "database.rs",
                         })
                     })?;
+
+                Ok(())
+            }
+            Data::People(id_user, peoples) => {
+                let mut stmt = self
+                    .pool
+                    .prepare(
+                        "INSERT INTO People 
+                        (
+                            uid_people, id_user, id_addres, provider,
+                            wage, name, date_of_birth, cell_phone,
+                            voter_registration, rg, cpf, surname
+                        )
+                        VALUES(
+                            (SELECT * FROM gen_uid),
+                            ?1, NULL, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 
+                            ?9, ?10
+                        )",
+                    )
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+
+                        DataBaseError::AddPeopleError(ErrorLog {
+                            title: "Error to prepare add people on database",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
+                for people in peoples {
+                    stmt.execute(params![
+                        &id_user,
+                        people.provider,
+                        people.wage,
+                        people.name,
+                        people.birthday.to_string(),
+                        people.cell_phone,
+                        people.voter_registration,
+                        people.rg,
+                        people.cpf,
+                        people.surname
+                    ])
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+
+                        DataBaseError::AddPeopleError(ErrorLog {
+                            title: "Error to execute add people on database",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
+                }
 
                 Ok(())
             }
@@ -276,7 +329,9 @@ impl DataBase {
                         OR strftime('%Y', date_out) like ?2 )
                         order by id_count",
                     )
-                    .map_err(|_| {
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+
                         DataBaseError::GetCountsError(ErrorLog {
                             title: "Error to prepare query to get user",
                             code: 804,
@@ -284,8 +339,9 @@ impl DataBase {
                         })
                     })?;
 
-                let mut rows = stmt.query([&user.id, &(year as i32)]).map_err(|e| {
-                    println!("{e}");
+                let mut rows = stmt.query([&user.id, &(year as i32)]).map_err(|err| {
+                    tracing::error!("{:?}", err);
+
                     DataBaseError::GetCountsError(ErrorLog {
                         title: "Query to counts not working!",
                         code: 804,
@@ -409,14 +465,15 @@ impl DataBase {
                             .parse::<u32>()
                             .unwrap(),
                         status: row.get::<_, i64>("installments").map_err(|err| {
-                            println!("{:?}", err);
+                            tracing::error!("{:?}", err);
+
                             DataBaseError::GetCountsError(ErrorLog {
                                 title: "Error to get status value",
                                 code: 500,
                                 file: "Database.rs",
                             })
                         })? == row.get::<_, i64>("paid_installments").map_err(|err| {
-                            println!("{:?}", err);
+                            tracing::error!("{:?}", err);
                             DataBaseError::GetCountsError(ErrorLog {
                                 title: "Error to get status value",
                                 code: 500,
@@ -507,6 +564,71 @@ impl DataBase {
 
                 Ok(Data::Groups(groups, id_user))
             }
+            Data::People(id_user, mut peoples) => {
+                let mut stmt = self.pool.prepare("
+                        SELECT uid_people, id_addres, 
+                            provider, wage, name, strftime('%Y-%m-%d', date_of_birth) AS date_of_birth, 
+                            cell_phone, voter_registration, rg, cpf, surname 
+                        FROM people WHERE id_user = ?1;
+                    ")
+                    .map_err(|err|{
+                        tracing::error!("{:?}", err);
+
+                    DataBaseError::GetCountsError(ErrorLog { title: "Error to get peoples", code: 500, file: "Database.rs" })  
+                })?;
+
+                let mut rows = stmt.query(params![&id_user]).map_err(|_| {
+                    DataBaseError::GetCountsError(ErrorLog {
+                        title: "Error to get peoples",
+                        code: 500,
+                        file: "Database.rs",
+                    })
+                })?;
+
+                while let Ok(Some(row)) = rows.next() {
+                    let people_db = match People::from(People {
+                        id: row.get::<_, String>("uid_people").unwrap_or_default(),
+                        name: row.get::<_, String>("name").unwrap_or_default(),
+                        wage: row.get::<_, f32>("wage").unwrap_or(0.0),
+                        cell_phone: row.get::<_, String>("cell_phone").unwrap_or_default(),
+                        birthday: NaiveDate::from_str(
+                            &row.get::<_, String>("date_of_birth")
+                                .unwrap_or_else(|_| NaiveDate::default().to_string()),
+                        )
+                        .unwrap_or(NaiveDate::default()),
+                        rg: row.get::<_, String>("rg").unwrap_or_default(),
+                        cpf: row.get::<_, String>("cpf").unwrap_or_default(),
+                        surname: row.get::<_, String>("surname").unwrap_or_default(),
+                        voter_registration: row
+                            .get::<_, String>("voter_registration")
+                            .unwrap_or_default(),
+                        provider: row.get::<_, String>("provider").unwrap_or_default(),
+                        address: row.get::<_, String>("id_addres").unwrap_or_default(),
+                    }) {
+                        Ok(val) => val,
+                        Err(_err) => {
+                            return Err(DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to convert People",
+                                code: 500,
+                                file: "Database.rs",
+                            }))
+                        }
+                    };
+
+                    let mut contains = false;
+                    for people in &peoples {
+                        if people.id.eq(&people_db.id) {
+                            contains = true;
+                        }
+                    }
+
+                    if !contains {
+                        peoples.push(people_db);
+                    }
+                }
+
+                Ok(Data::People(id_user, peoples))
+            }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to add",
                 code: 816,
@@ -570,12 +692,30 @@ impl DataBase {
                     .pool
                     .prepare(
                         "UPDATE users SET
-                            password = ?1
-                            WHERE id_user = ?2",
+                            username = ?1,
+                            password = ?2,
+                            email = ?3
+                            WHERE id_user = ?4",
                     )
-                    .unwrap();
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
 
-                stmt.execute(params![user.password, user.id]).unwrap();
+                        DataBaseError::EditUserError(ErrorLog {
+                            title: "Failed on create stmt to edit user",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                stmt.execute(params![user.username, user.password, user.email, user.id])
+                    .map_err(|err| {
+                        tracing::error!("{:?}", err);
+                        DataBaseError::EditUserError(ErrorLog {
+                            title: "Failed on execute stmt to edit user",
+                            code: 500,
+                            file: "Database.rs",
+                        })
+                    })?;
 
                 Ok(())
             }
@@ -590,6 +730,54 @@ impl DataBase {
                     .unwrap();
 
                 stmt.execute(params![id]).unwrap();
+
+                Ok(())
+            }
+            Data::People(_id, peoples) => {
+                for people in &peoples {
+                    self.pool
+                        .prepare(
+                            "UPDATE people SET 
+                                provider = ?1,
+                                wage = ?2,
+                                name = ?3,
+                                date_of_birth = strftime('%Y-%m-%d', ?4),
+                                cell_phone = ?5,
+                                voter_registration = ?6,
+                                rg = ?7,
+                                cpf = ?8,
+                                surname = ?9
+                            WHERE uid_people = ?10",
+                        )
+                        .map_err(|err| {
+                            tracing::error!("{:?}", err);
+                            DataBaseError::EditPeopleError(ErrorLog {
+                                title: "Failed to create stmt to edit people",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })?
+                        .execute([
+                            people.provider.clone(),
+                            people.wage.to_string(),
+                            people.name.clone(),
+                            people.birthday.to_string(),
+                            people.cell_phone.clone(),
+                            people.voter_registration.clone(),
+                            people.rg.clone(),
+                            people.cpf.clone(),
+                            people.surname.clone(),
+                            people.id.clone(),
+                        ])
+                        .map_err(|err| {
+                            tracing::error!("{:?}", err);
+                            DataBaseError::EditPeopleError(ErrorLog {
+                                title: "Failed on execute stmt the edit people",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })?;
+                }
 
                 Ok(())
             }
@@ -634,6 +822,75 @@ impl DataBase {
 
                 Ok(())
             }
+            Data::People(id_user, peoples) => {
+                for people in peoples {
+                    let mut stmt = self
+                        .pool
+                        .prepare("SELECT uid_people, name FROM people WHERE uid_people = ?1")
+                        .map_err(|err| {
+                            tracing::error!("{:?}", err);
+                            DataBaseError::DeletePeopleError(ErrorLog {
+                                title: "Failed to prepare delete counts of people",
+                                code: 804,
+                                file: "database.rs",
+                            })
+                        })?;
+
+                    let mut rows = stmt.query(params![people.id]).map_err(|err| {
+                        tracing::error!("{:?}", err);
+                        DataBaseError::DeleteUserError(ErrorLog {
+                            title: "People not found!",
+                            code: 804,
+                            file: "Database.rs",
+                        })
+                    })?;
+
+                    if let Ok(Some(row)) = rows.next() {
+                        let debtor = row.get::<_, String>("name").map_err(|err| {
+                            tracing::error!("{:?}", err);
+                            DataBaseError::GetCountsError(ErrorLog {
+                                title: "Error to get debtor value",
+                                code: 500,
+                                file: "Database.rs",
+                            })
+                        })?;
+
+                        self.pool
+                            .prepare("DELETE FROM counts WHERE debtor = ?1 AND id_user = ?2")
+                            .map_err(|err| {
+                                tracing::error!("{:?}", err);
+                                DataBaseError::DeletePeopleError(ErrorLog {
+                                    title: "Failed to prepare delete counts of people",
+                                    code: 500,
+                                    file: "database.rs",
+                                })
+                            })?
+                            .execute(params![debtor, id_user])
+                            .map_err(|err| {
+                                tracing::error!("{:?}", err);
+                                DataBaseError::DeletePeopleError(ErrorLog {
+                                    title: "Failed to delete count of people",
+                                    code: 804,
+                                    file: "database.rs",
+                                })
+                            })?;
+                    }
+
+                    self.pool
+                        .prepare("DELETE FROM people WHERE uid_people = ?1 AND id_user = ?2")
+                        .unwrap()
+                        .execute(params![people.id, id_user])
+                        .map_err(|_| {
+                            DataBaseError::DeleteUserError(ErrorLog {
+                                title: "User not found!",
+                                code: 804,
+                                file: "Database.rs",
+                            })
+                        })?;
+                }
+
+                Ok(())
+            }
             _ => Err(DataBaseError::DataTypeInvalid(ErrorLog {
                 title: "Type of data is invalid to delete",
                 code: 817,
@@ -662,4 +919,5 @@ pub enum Data {
     Count(i32, i32),
     LastLogin(i32),
     Groups(Vec<String>, i32),
+    People(u16, Vec<People>),
 }

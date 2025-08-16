@@ -65,7 +65,7 @@ impl ListCount {
     pub fn get_total_debt(&self) -> f32 {
         let mut sum = 0.0;
         for count in &self.list {
-            if !count.status {
+            if !count.status && count.nature != "Investimentos" {
                 sum += count.value * count.installments as f32;
             }
         }
@@ -79,7 +79,7 @@ impl ListCount {
         for c in &self.list {
             if c.nature == *"Receita" {
                 perfomance += c.value * c.paid_installments as f32;
-            } else {
+            } else if c.nature != "Investimentos" {
                 perfomance -= c.value * c.installments as f32;
             }
         }
@@ -92,7 +92,7 @@ impl ListCount {
         for count in &self.list {
             if count.nature == *"Receita" {
                 months[(count.date_in.month() - 1) as usize] += count.value;
-            } else {
+            } else if count.nature != "Investimentos" {
                 months[(count.date_in.month() - 1) as usize] -= count.value;
             }
         }
@@ -130,7 +130,7 @@ impl ListCount {
         data
     }
 
-    fn group_data_months(&self, months: &mut Vec<f32>, count: &Count) {
+    fn group_data_months(&self, months: &mut [f32], count: &Count) {
         if count.date_in.month0() <= count.date_out.month0()
             && count.date_in.year() == count.date_out.year()
         {
@@ -289,7 +289,7 @@ impl ListCount {
         debtors
     }
 
-    pub fn filter_by_nature(&self, item: &String) -> Vec<Count> {
+    pub fn filter_by_nature(&self, item: &str) -> Vec<Count> {
         self.list
             .iter()
             .filter(|count| item.to_lowercase() == count.nature.to_lowercase())
@@ -297,27 +297,73 @@ impl ListCount {
             .collect::<Vec<Count>>()
     }
 
-    pub fn filter_by_month(&self, item: &u32) -> Vec<Count> {
-        self.list
-            .iter()
-            .filter(|count| item == &count.date_in.month0())
-            .cloned()
-            .collect::<Vec<Count>>()
+    pub fn filter_by_month(
+        &self,
+        mut months: Vec<(String, Vec<Count>)>,
+    ) -> Vec<(String, Vec<Count>)> {
+        for count in &self.list {
+            if count
+                .date_in
+                .format("%Y")
+                .to_string()
+                .parse::<i16>()
+                .unwrap()
+                == count
+                    .date_out
+                    .format("%Y")
+                    .to_string()
+                    .parse::<i16>()
+                    .unwrap()
+            {
+                if count.date_in.month0() + 1 == count.date_out.month0() {
+                    months[count.date_out.month0() as usize]
+                        .1
+                        .push(count.clone());
+                } else {
+                    for i in count.date_in.month0()..=count.date_out.month0() {
+                        months[i as usize].1.push(count.clone());
+                    }
+                }
+            } else if count
+                .date_in
+                .format("%Y")
+                .to_string()
+                .parse::<i16>()
+                .unwrap()
+                == count
+                    .date_out
+                    .format("%Y")
+                    .to_string()
+                    .parse::<i16>()
+                    .unwrap()
+                    - 1
+            {
+                for i in 0..=count.date_out.month0() {
+                    months[i as usize].1.push(count.clone());
+                }
+            } else {
+                for i in 0..12 {
+                    months[i as usize].1.push(count.clone());
+                }
+            }
+        }
+
+        months
     }
 
-    pub fn search(&self, item: &String) -> Vec<Count> {
+    pub fn search(&self, item: &str) -> Vec<Count> {
         use rust_fuzzy_search::fuzzy_compare;
 
         self.list
             .iter()
             .filter(|count| {
-                fuzzy_compare(&item, &count.debtor) > 0.5
-                    || fuzzy_compare(&item, &count.nature) > 0.5
+                fuzzy_compare(item, &count.debtor) > 0.5
+                    || fuzzy_compare(item, &count.nature) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.title.to_lowercase()) > 0.5
                     || fuzzy_compare(&item.to_lowercase(), &count.description.to_lowercase()) > 0.5
-                    || fuzzy_compare(&item, &count.date_in.to_string()) > 0.5
-                    || fuzzy_compare(&item, &count.date_out.to_string()) > 0.5
-                    || item == &count.id.to_string()
+                    || fuzzy_compare(item, &count.date_in.to_string()) > 0.5
+                    || fuzzy_compare(item, &count.date_out.to_string()) > 0.5
+                    || item == count.id.to_string()
             })
             .cloned()
             .collect::<Vec<Count>>()
@@ -342,7 +388,7 @@ pub fn get_counts_instance() -> std::sync::MutexGuard<'static, ListCount> {
     GLOBAL_COUNTS.lock().unwrap()
 }
 
-use std::fmt;
+use std::fmt::{self, Debug};
 impl fmt::Display for ListCount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {

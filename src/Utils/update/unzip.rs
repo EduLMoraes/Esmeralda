@@ -11,7 +11,7 @@ pub fn unzip(file_path: &str, destination: &str) -> Result<(), Box<dyn std::erro
         {
             let comment = file.comment();
             if !comment.is_empty() {
-                println!("File {} comment: {}", i, comment);
+                tracing::error!("File {} comment: {}", i, comment);
             }
         }
 

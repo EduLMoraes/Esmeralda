@@ -25,3 +25,17 @@ pub struct UserDb {
     pub email: String,
     pub last_login: String,
 }
+
+impl UserDb {
+    pub fn get_id(&self) -> i32 {
+        self.id
+    }
+
+    pub fn get_username(&self) -> &str {
+        &self.username
+    }
+
+    pub fn get_email(&self) -> &str {
+        &self.email
+    }
+}

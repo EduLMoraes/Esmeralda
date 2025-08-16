@@ -50,7 +50,7 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     let mut natures = match rnt.block_on(control::get_groups()) {
         Ok(groups) => groups,
         Err(err) => {
-            println!("{:?}", err);
+            tracing::error!("{:?}", err);
             natures_base.clone()
         }
     };
@@ -222,7 +222,7 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
 
         match rnt.block_on(control::edit(&tmp)){
             Ok(_) => {},
-            Err(err) => println!("{err}")
+            Err(err) => tracing::error!("{err}")
         };
 
         edit.destroy()

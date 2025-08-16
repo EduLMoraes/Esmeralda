@@ -53,7 +53,7 @@ fn p_line(year: i16, series: Vec<Series>) {
     plot.y_axis_configs.push(plot.y_axis_configs[0].clone());
     plot.y_axis_configs[0].axis_formatter = Some("R$ {c}".to_string());
 
-    plot.width = 1920.0;
+    plot.width = 1080.0;
     plot.height = 460.0;
 
     to_save(plot.svg().unwrap(), "plot_1B");

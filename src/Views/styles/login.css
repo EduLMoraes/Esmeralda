@@ -18,8 +18,6 @@
     background-color: rgba(0, 0, 0, 0.80);
     font-size: larger;
     color: white;
-    min-height: 400px;
-    min-width: 400px;
     border-radius: 40px;
     box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.50),
         -3px -3px 20px rgba(255, 255, 255, 0.10);
@@ -37,13 +35,13 @@
 .login_title{
     font-size: 80px;
     color: #00B477;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: Arial;
 }
 
 .login_subtitle{
     margin-top: -15px;
     font-size: 25px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
 }
 
 .login_link{

@@ -81,7 +81,7 @@ fn main() {
         _ => "./database.db",
     })
     .unwrap_or_else(|_| {
-        println!("Erro ao abrir o banco de dados.");
+        tracing::error!("Erro ao abrir o banco de dados.");
         process::exit(1);
     });
 

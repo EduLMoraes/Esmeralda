@@ -18,3 +18,6 @@ pub mod User;
 #[allow(non_snake_case)]
 pub mod People;
 pub mod errors;
+
+#[allow(non_snake_case, unused)]
+pub mod Investiment;

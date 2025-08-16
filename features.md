@@ -5,6 +5,20 @@
     <td> Descrição </td>
   </tr>
   <tr>
+    <td> v1.3.3 </td>
+    <td> 
+      Botão para configurações do usuário;<br>
+      Correção de bugs;<br>
+    </td>
+  </tr>
+   <tr>
+    <td> v1.3.2 </td>
+    <td> 
+      Botão para deslogar do usuário;<br>
+      Correção de bugs;<br>
+    </td>
+  </tr>
+  <tr>
     <td> v1.3.1 </td>
     <td> 
       Novas telas;<br>

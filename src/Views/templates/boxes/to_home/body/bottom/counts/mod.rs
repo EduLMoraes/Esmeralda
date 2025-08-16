@@ -23,6 +23,7 @@ pub use box_info::*;
 pub use box_month::*;
 pub use box_pay::*;
 
+#[allow(static_mut_refs)]
 pub fn box_count() -> Box {
     let box_count = unsafe { BOXHOME.get_mut() };
     let box_count = match box_count {

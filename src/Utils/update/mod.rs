@@ -34,7 +34,7 @@ pub fn update_sys() {
     if let Some(caps) = re.captures(&stderr) {
         if let Some(version) = caps.get(1) {
             if has_new_version() {
-                println!("Versão mais recente: {}", version.as_str());
+                tracing::error!("Versão mais recente: {}", version.as_str());
 
                 let zip_file_path = format!("{}sources.zip", env::var("UPDT_PATH").unwrap());
                 let output_directory = env::var("UPDT_PATH").unwrap().to_string();
@@ -49,13 +49,13 @@ pub fn update_sys() {
                 );
 
                 if let Err(e) = unzip(&zip_file_path, &output_directory) {
-                    eprintln!("Failed to unzip file: {}", e);
+                    tracing::error!("Failed to unzip file: {}", e);
                 }
             }
         } else {
-            println!("Versão não encontrada");
+            tracing::error!("Versão não encontrada");
         }
     } else {
-        println!("URL de redirecionamento não encontrada");
+        tracing::error!("URL de redirecionamento não encontrada");
     }
 }

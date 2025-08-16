@@ -21,29 +21,41 @@ use crate::prelude::Error;
 #[derive(Error, Debug, PartialEq)]
 #[allow(dead_code)]
 pub enum DataBaseError {
-    #[error("Error to get config")]
-    GetConfigError(ErrorLog<'static>),
-
     #[error("Error to create pool")]
     CreatePoolError(ErrorLog<'static>),
 
     #[error("Error to add user")]
     AddUserError(ErrorLog<'static>),
 
-    #[error("Error to add user")]
+    #[error("Error to add count")]
     AddCountError(ErrorLog<'static>),
+
+    #[error("Error to add peoples")]
+    AddPeopleError(ErrorLog<'static>),
 
     #[error("Error to get user from db")]
     GetUserError(ErrorLog<'static>),
 
-    #[error("Error to get user from db")]
+    #[error("Error to get config")]
+    GetConfigError(ErrorLog<'static>),
+
+    #[error("Error to get counts from db")]
     GetCountsError(ErrorLog<'static>),
 
-    #[error("Error to get user from db")]
+    #[error("Error to get peoples from db")]
+    GetPeopleError(ErrorLog<'static>),
+
+    #[error("Error to edit peoples from db")]
+    EditPeopleError(ErrorLog<'static>),
+
+    #[error("Error to edit counts from db")]
     EditCountsError(ErrorLog<'static>),
 
-    #[error("Error to get user from db")]
+    #[error("Error to edit user from db")]
     EditUserError(ErrorLog<'static>),
+
+    #[error("Error to delete people from db")]
+    DeletePeopleError(ErrorLog<'static>),
 
     #[error("Error to delete user from db")]
     DeleteUserError(ErrorLog<'static>),

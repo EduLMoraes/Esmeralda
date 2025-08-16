@@ -2,13 +2,17 @@ use super::*;
 
 #[allow(dead_code)]
 pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Grid {
-    let grid = Grid::new();
-    grid.set_column_homogeneous(true);
+    let grid = Grid::builder()
+        .halign(gtk::Align::Center)
+        .column_homogeneous(true)
+        .row_spacing(10)
+        .hexpand(true)
+        .build();
 
     let box_count = Box::new(Orientation::Vertical, 10);
 
     let title = Label::new(Some("Total movimentado no ano"));
-    let text = Label::new(Some(&format!("R$ {:.2}", count)));
+    let text = Label::new(Some(&format!("R$ {count:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
 
@@ -16,11 +20,11 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
     box_count.append(&text);
 
     let box_debt = Box::new(Orientation::Vertical, 10);
-    box_debt.set_halign(gtk::Align::Start);
-    box_debt.set_valign(gtk::Align::Start);
+    box_debt.set_halign(gtk::Align::Center);
+    box_debt.set_valign(gtk::Align::Center);
 
     let title = Label::new(Some("Total em dívidas abertas"));
-    let text = Label::new(Some(&format!("R$ -{:.2}", debt)));
+    let text = Label::new(Some(&format!("R$ -{debt:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
     text.add_css_class("status_negative");
@@ -29,11 +33,11 @@ pub fn get_grid_values(count: f32, debt: f32, paid: f32, month: Vec<f32>) -> Gri
     box_debt.append(&text);
 
     let box_paid = Box::new(Orientation::Vertical, 10);
-    box_paid.set_halign(gtk::Align::Start);
-    box_paid.set_valign(gtk::Align::Start);
+    box_paid.set_halign(gtk::Align::Center);
+    box_paid.set_valign(gtk::Align::Center);
 
     let title = Label::new(Some("Saldo total"));
-    let text = Label::new(Some(&format!("R$ {:.2}", paid)));
+    let text = Label::new(Some(&format!("R$ {paid:.2}")));
     title.add_css_class("name_i");
     text.add_css_class("value_total");
     if paid > 0.0 {

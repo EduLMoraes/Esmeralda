@@ -2,34 +2,40 @@ use super::*;
 
 #[allow(dead_code)]
 pub fn get_grid_months(stack: &Stack, stack_home: &Stack) -> Grid {
-    let grid_months = Grid::new();
-    grid_months.set_halign(gtk::Align::Center);
-    grid_months.set_column_spacing(10);
-    grid_months.set_row_spacing(10);
+    let grid_months = Grid::builder()
+        .halign(gtk::Align::Fill)
+        .column_homogeneous(true)
+        .column_spacing(10)
+        .row_spacing(10)
+        .hexpand(true)
+        .vexpand(true)
+        .build();
 
     let counts = get_counts_instance();
 
-    let months = vec![
-        String::from("Janeiro"),
-        String::from("Fevereiro"),
-        String::from("Março"),
-        String::from("Abril"),
-        String::from("Maio"),
-        String::from("Junho"),
-        String::from("Julho"),
-        String::from("Agosto"),
-        String::from("Setembro"),
-        String::from("Outubro"),
-        String::from("Novembro"),
-        String::from("Dezembro"),
+    let mut months: Vec<(String, Vec<Count>)> = vec![
+        (String::from("Janeiro"), Vec::new()),
+        (String::from("Fevereiro"), Vec::new()),
+        (String::from("Março"), Vec::new()),
+        (String::from("Abril"), Vec::new()),
+        (String::from("Maio"), Vec::new()),
+        (String::from("Junho"), Vec::new()),
+        (String::from("Julho"), Vec::new()),
+        (String::from("Agosto"), Vec::new()),
+        (String::from("Setembro"), Vec::new()),
+        (String::from("Outubro"), Vec::new()),
+        (String::from("Novembro"), Vec::new()),
+        (String::from("Dezembro"), Vec::new()),
     ];
 
-    for i in 0..months.len() {
+    months = counts.filter_by_month(months);
+
+    for (i, month) in months.iter().enumerate() {
         grid_months.attach(
             &new_month_info(
-                &months[i],
-                &months[i].to_lowercase(),
-                &counts.filter_by_month(&(i as u32)),
+                &month.0,
+                &month.0.to_lowercase(),
+                &month.1,
                 stack,
                 stack_home,
             ),

@@ -1,7 +1,9 @@
 use super::*;
+use glib::clone;
 use gtk::CheckButton;
 use std::borrow::BorrowMut;
 
+#[allow(static_mut_refs)]
 pub fn form_right() -> Box {
     let form = Box::new(Orientation::Vertical, 12);
     form.add_css_class("bf_right");

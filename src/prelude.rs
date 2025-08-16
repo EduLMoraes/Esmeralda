@@ -3,7 +3,6 @@ pub use chrono;
 pub use gtk;
 pub use gtk::prelude::*;
 pub use gtk::{gdk::Display, Application};
-pub use logger::log;
 pub use std;
 pub use thiserror::Error;
 pub use tokio;

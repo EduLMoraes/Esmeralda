@@ -1,7 +1,11 @@
 use self::control::edit;
 use super::*;
-use crate::gtk::{
-    gdk::BUTTON_SECONDARY, /*prelude::GtkWindowExt,*/ GestureClick, PopoverMenu, ResponseType,
+use crate::{
+    gtk::{
+        gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu,
+        ResponseType,
+    },
+    prelude::control::update_counts_with_db,
 };
 use alerts::{confirm, edit_count};
 
@@ -45,6 +49,7 @@ pub fn new_box_info(info: &Count) -> Box {
     let box_center_i = Box::new(Orientation::Vertical, 2);
     box_center_i.add_css_class("box_center_i");
     box_center_i.set_valign(gtk::Align::Center);
+    box_center_i.set_hexpand(true);
 
     let value = if info.nature == *"Receita" {
         format!("R$ +{:.2}", info.value)
@@ -166,7 +171,7 @@ pub fn new_box_info(info: &Count) -> Box {
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
-    box_right_i.set_valign(gtk::Align::Center);
+    box_right_i.set_valign(gtk::Align::End);
 
     box_body.append(&box_left_i);
     box_body.append(&box_center_i);
@@ -185,7 +190,11 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     box_info.add_css_class("box_info");
 
     let box_top = Box::new(Orientation::Horizontal, 0);
+    box_top.set_halign(gtk::Align::Fill);
+    box_top.set_hexpand(true);
     let box_body = Box::new(Orientation::Horizontal, 0);
+    box_body.set_halign(gtk::Align::Fill);
+    box_body.set_hexpand(true);
 
     let box_left_i = Box::new(Orientation::Vertical, 2);
     box_left_i.add_css_class("box_left_info");
@@ -219,6 +228,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
     let box_center_i = Box::new(Orientation::Vertical, 2);
     box_center_i.add_css_class("box_center_info");
     box_center_i.set_valign(gtk::Align::Center);
+    box_center_i.set_hexpand(true);
 
     let value = format!("R$ {:.2}", info.value);
     let label_value = Label::new(Some(&value));
@@ -257,6 +267,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
             rn.block_on(edit(&ref_counts)).unwrap();
 
+            rn.block_on(update_counts_with_db()).ok();
             reload_home(None, Some(&stack));
         }
     ));
@@ -275,7 +286,7 @@ pub fn box_info(info: &Count, stack: &Stack) -> Box {
 
     box_right_i.append(&label_status);
     box_right_i.append(&date);
-    box_right_i.set_valign(gtk::Align::Center);
+    box_right_i.set_valign(gtk::Align::End);
 
     if info.status {
         label_status.set_label("Paga");

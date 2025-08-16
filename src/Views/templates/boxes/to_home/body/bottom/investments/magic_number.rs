@@ -1,6 +1,12 @@
 use super::*;
 use crate::apis::get_quote;
+use glib::clone;
 use gtk::{Adjustment, CheckButton, SpinButton};
+
+const MAX_UPPER: f64 = f64::MAX;
+const MIN_LOWER: f64 = f64::MIN;
+const BASES_POINT: f64 = 100.0;
+const NUM_MONTH_IN_YEAR: f64 = 12.0;
 
 /// this calcule a preview of "magic number"
 /// magic number is quantity of action to value of yield = value per action
@@ -20,35 +26,37 @@ pub fn get_box() -> Box {
 
     let name_input = Entry::new();
     let vpa_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 0.01, 0.1, 0.0)),
+        Some(&Adjustment::new(0.0, 0.0, MAX_UPPER, 0.01, 0.1, 0.0)),
         1.0,
         2,
     );
     let actions_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 1.0, 0.1, 0.0)),
+        Some(&Adjustment::new(
+            0.0, MIN_LOWER, MAX_UPPER, 1.0, 0.1, MIN_LOWER,
+        )),
         1.0,
-        0,
+        1_000_000_000,
     );
 
     let yield_tax_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 1.0, 0.1, 0.0)),
+        Some(&Adjustment::new(0.0, 0.0, MAX_UPPER, 1.0, 0.1, 0.0)),
         1.0,
         2,
     );
     let magic_number_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 1.0, 1.0, 0.0)),
+        Some(&Adjustment::new(0.0, 0.0, MAX_UPPER, 1.0, 1.0, 0.0)),
         1.0,
         0,
     );
     let check_month_input = CheckButton::new();
     let check_year_input = CheckButton::new();
     let yield_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 0.01, 0.1, 0.0)),
+        Some(&Adjustment::new(0.0, 0.0, MAX_UPPER, 0.01, 0.1, 0.0)),
         1.0,
         2,
     );
     let total_invest_input = SpinButton::new(
-        Some(&Adjustment::new(0.0, 0.0, 9999999.0, 0.01, 0.1, 0.0)),
+        Some(&Adjustment::new(0.0, 0.0, MAX_UPPER, 0.01, 0.1, 0.0)),
         1.0,
         2,
     );
@@ -89,14 +97,54 @@ pub fn get_box() -> Box {
         #[weak]
         yield_tax_input,
         move |_| {
-            match get_quote(format!("{}.sa", &name_input.text()).to_uppercase().trim()) {
+            let mut quote = name_input.text().to_string();
+            if quote.contains("11"){
+                quote.push_str(".sa");
+            }
+
+            match get_quote(&quote.to_uppercase()) {
                 Ok((quote, Some(dividend))) => {
                     vpa_input.set_value(quote.close);
                     yield_tax_input.set_value((dividend.amount * 12.0 * 100.0) / quote.close);
                 }
-                Ok((quote, None)) => vpa_input.set_value(quote.close),
-                Err(_yerror) => {}
+                Ok((mut quote_receive, None)) =>{
+                    if quote.contains("-"){
+                        let mut coin = quote[quote.len()-3..quote.len()].to_string();
+                        coin.push_str("BRL=X");
+
+                        match get_quote(&coin.to_uppercase()){
+                            Ok((quote_brl, _)) =>{ quote_receive.close *= quote_brl.close;}
+                            Err(_) => alert(
+                                "Falha ao buscar valor do valor em BRL! O valor será apresentado na moeda posta com '-'.", 
+                                "BRL não encontrado!"
+                            ),
+                        }
+                    }
+
+                    vpa_input.set_value(quote_receive.close);
+                },
+                Err(_) => {alert(&format!("Não foi possível encontrar {}, verifique se digitou corretamente e tente novamente.", &quote), "Erro na consulta");}
             };
+        }
+    ));
+
+    check_year_input.connect_toggled(clone!(
+        #[weak]
+        yield_input,
+        move |check| {
+            if check.is_active() {
+                yield_input.set_value(0.0); // if the value change, auto_complete is activate and calculate the real value.
+            }
+        }
+    ));
+
+    check_month_input.connect_toggled(clone!(
+        #[weak]
+        yield_input,
+        move |check| {
+            if check.is_active() {
+                yield_input.set_value(0.0);
+            }
         }
     ));
 
@@ -132,6 +180,16 @@ pub fn get_box() -> Box {
     );
     auto_complete(
         &actions_input,
+        &actions_input,
+        &vpa_input,
+        &total_invest_input,
+        &yield_input,
+        &magic_number_input,
+        &yield_tax_input,
+        &check_month_input,
+    );
+    auto_complete(
+        &total_invest_input,
         &actions_input,
         &vpa_input,
         &total_invest_input,
@@ -224,11 +282,11 @@ fn auto_complete(
         #[weak]
         is_month,
         move |_| {
-            let yield_year = &value.value() * (&yields_tax.value() / 100.0);
-            let yield_month = yield_year / 12.0;
+            let yield_year = value.value() * (yields_tax.value() / BASES_POINT);
+            let yield_month = yield_year / NUM_MONTH_IN_YEAR;
 
             if yields_tax.value() > 0.0 && value.value() > 0.0 {
-                magic.set_value(&value.value() / yield_month + 1.0);
+                magic.set_value(value.value() / yield_month + 1.0);
             }
 
             if is_month.is_active() {
@@ -237,7 +295,11 @@ fn auto_complete(
                 yields.set_value(actions.value() * yield_year);
             }
 
-            total.set_value(&actions.value() * &value.value());
+            if total.value() < value.value() && actions.value() < 1.0 {
+                actions.set_value(total.value() / value.value());
+            } else {
+                total.set_value(actions.value() * value.value());
+            }
         }
     ));
 }

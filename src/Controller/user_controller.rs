@@ -18,6 +18,11 @@ pub fn get_user_instance() -> std::sync::MutexGuard<'static, Option<UserDb>> {
     USER_LOGGED.lock().unwrap()
 }
 
+pub fn exit_user() {
+    std::mem::drop(get_user_instance());
+    std::mem::drop(get_peoples_instance());
+}
+
 pub async fn login(mut user: User) -> Result<(), ControlError> {
     let start = Instant::now();
 
@@ -35,13 +40,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
     let data_user = Data::User(user.clone());
 
     let db_user = db.get(data_user).await.map_err(|err| {
-        let _ = log(
-            path.clone().into(),
-            &format!(
-                "\n[CONTROL] {err:?}\n[CONTROL] Time to login --- {:.3?}\n",
-                start.elapsed()
-            ),
-        );
+        tracing::info!("{:?}Time to login --- {:.3?}", &err, start.elapsed());
 
         ControlError::ErrorExternDB(err)
     })?;
@@ -49,10 +48,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
     match db_user {
         Data::UserDb(data) => {
             if data.username.is_empty() {
-                let _ = log(
-                    path.clone().into(),
-                    "[CONTROL] Error to find user in system\n",
-                );
+                tracing::info!("[ Error to find user in system\n",);
 
                 Err(ControlError::UserNotExists(ErrorLog {
                     title: "User not exists on system",
@@ -62,22 +58,17 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             } else if data.password == user.password {
                 db.edit(Data::LastLogin(data.id))
                     .await
-                    .map_err(|err| ControlError::ErrorExternDB(err))?;
+                    .map_err(ControlError::ErrorExternDB)?;
+
+                let peoples = get_peoples(&data.id, db).await?;
+                gen_peoples_instance(peoples);
 
                 gen_user_instance(data);
-
-                let _ = log(
-                    path.clone().into(),
-                    &format!("[CONTROL] Login successful in {:.3?}\n", start.elapsed()),
-                );
                 Ok(())
             } else {
-                let _ = log(
-                    path.clone().into(),
-                    &format!(
-                        "[CONTROL] Password incorrect --- time of end: {:.3?}\n",
-                        start.elapsed()
-                    ),
+                tracing::info!(
+                    "[ Password incorrect --- time of end: {:.3?}\n",
+                    start.elapsed()
                 );
 
                 Err(ControlError::ErrorAuthenticate(ErrorLog {
@@ -88,12 +79,9 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
             }
         }
         _ => {
-            let _ = log(
-                path.clone().into(),
-                &format!(
-                    "[CONTROL] Database not accept this format of data --- time of end: {:.3?}\n",
-                    start.elapsed()
-                ),
+            tracing::info!(
+                "Database not accept this format of data --- time of end: {:.3?}",
+                start.elapsed()
             );
 
             Err(ControlError::ErrorAuthenticate(ErrorLog {
@@ -125,6 +113,18 @@ pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
             .map_err(ControlError::ErrorExternDB)?;
         Ok(())
     }
+}
+
+pub async fn edit_user(user: UserDb) -> Result<(), ControlError> {
+    let db = get_database_instance();
+
+    db.edit(Data::UserDb(user)).await.map_err(|err| {
+        tracing::error!("{:?}", err);
+
+        ControlError::ErrorExternDB(err)
+    })?;
+
+    Ok(())
 }
 
 #[allow(deprecated, unused)]
