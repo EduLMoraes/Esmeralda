@@ -78,8 +78,7 @@ pub fn get_box(stack: &Stack) -> Box {
         people_uid.set_visible(false);
 
         let box_name = BoxConfigUser::new_with_index(n, "Nome: ", Some(&people.name));
-        let box_surname =
-            BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&people.surname));
+        let box_surname = BoxConfigUser::new_with_index(n, "Sobrenome: ", Some(&people.surname));
         let box_cell_phone =
             BoxConfigUser::new_with_index(n, "Celular: ", Some(&people.cell_phone));
 

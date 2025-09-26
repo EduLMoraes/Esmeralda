@@ -64,7 +64,7 @@ pub async fn edit(data: &ListCount) -> Result<(), ControlError> {
 pub async fn recover_years() -> Result<Vec<i16>, ControlError> {
     let data = ListCount::new();
     let recovered_data;
-    
+
     {
         let db_instance = get_database_instance();
 

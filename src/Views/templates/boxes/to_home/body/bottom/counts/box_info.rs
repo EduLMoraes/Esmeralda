@@ -1,10 +1,7 @@
 use self::control::edit;
 use super::*;
 use crate::{
-    gtk::{
-        gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu,
-        ResponseType,
-    },
+    gtk::{gdk::BUTTON_SECONDARY, GestureClick, PopoverMenu, ResponseType},
     prelude::control::update_counts_with_db,
 };
 use alerts::{confirm, edit_count};

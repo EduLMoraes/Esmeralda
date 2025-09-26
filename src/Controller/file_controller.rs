@@ -8,7 +8,6 @@ use super::*;
 pub async fn save_in_file(path: &str, data: &ListCount) -> Result<String, ControlError> {
     let extend: Vec<&str> = path.split('.').collect();
 
-    tokio::spawn(async move {});
     let response = match extend[1] {
         "csv" => export_csv(path, data).await,
         // "pdf" => export_pdf(path, data),
@@ -24,6 +23,29 @@ pub async fn save_in_file(path: &str, data: &ListCount) -> Result<String, Contro
 
     match response {
         Ok(path) => Ok(path),
+        Err(err) => {
+            let mut path = match std::env::consts::OS {
+                "windows" => var("HOMEPATH").unwrap(),
+                _ => var("HOME").unwrap(),
+            };
+
+            path.push_str("/.esmeralda/log.log");
+
+            tracing::info!("{:?}", err);
+            Err(ControlError::ErrorExtern(ErrorLog {
+                title: "Error in module export",
+                code: 500,
+                file: "controller.rs",
+            }))
+        }
+    }
+}
+
+pub async fn read_of_file(path: &str, data: &mut ListCount) -> Result<(), ControlError> {
+    tracing::info!("Importing file: {}", path);
+    let response = read_csv(path, data).await;
+    match response {
+        Ok(_) => Ok(()),
         Err(err) => {
             let mut path = match std::env::consts::OS {
                 "windows" => var("HOMEPATH").unwrap(),
