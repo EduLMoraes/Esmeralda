@@ -34,5 +34,5 @@ pub mod utils;
 #[path = "Views/mod.rs"]
 pub mod views;
 
-#[path = "Views/styles/sty.rs"]
+#[path = "Views/styles/mod.rs"]
 pub mod sty;
