@@ -1,43 +1,69 @@
-echo "Download de arquivos..."
-cd $HOME
-mkdir .esmeralda
-cd .esmeralda
+#!/bin/bash
+
+echo "Iniciando o download dos arquivos..."
+cd "$HOME" || exit
+
+mkdir -p .esmeralda
+cd .esmeralda || exit
+
 wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.4.0/esmeralda
-chmod +x ./esmeralda
+wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.4.0/manager_db
 wget https://github.com/EduLMoraes/Esmeralda/releases/download/v1.4.0/sources.zip
 
-echo "Descompactando..."
-unzip sources.zip
+echo "Configurando permissões..."
+chmod +x ./esmeralda
+chmod +x ./manager_db
+
+echo "Descompactando recursos..."
+unzip -o sources.zip 
 rm sources.zip
 
-echo "Criando atalho..."
-NOME="Esmeralda"
-COMENTARIO="The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
-EXEC="$HOME/.esmeralda/esmeralda"
-ICON="$HOME/.esmeralda/assets/icon/icon.png"
-FILE_DESKTOP="$HOME/Área\ de\ trabalho/esmeralda.desktop"
+echo "Criando atalhos na Área de Trabalho..."
 
-if [[ ! -f "$EXEC" ]]; then
-    echo "Erro: Arquivo executável não encontrado em $EXEC"
+BASE_DIR="$HOME/.esmeralda"
+DESKTOP_DIR="$HOME/Área de trabalho"
+ICON_PATH="$BASE_DIR/assets/icon/icon.png"
+
+if [[ ! -f "$ICON_PATH" ]]; then
+    echo "Erro: Ícone não encontrado em $ICON_PATH"
     exit 1
 fi
 
-if [[ ! -f "$ICON" ]]; then
-    echo "Erro: Ícone não encontrado em $ICON"
+EXEC_ESMERALDA="$BASE_DIR/esmeralda"
+FILE_DESKTOP_ESMERALDA="$DESKTOP_DIR/esmeralda.desktop"
+
+if [[ ! -f "$EXEC_ESMERALDA" ]]; then
+    echo "Erro: Arquivo executável 'esmeralda' não encontrado em $EXEC_ESMERALDA"
     exit 1
 fi
 
-touch $FILE_DESKTOP
-cat <<EOF >> "$FILE_DESKTOP"
+cat <<EOF > "$FILE_DESKTOP_ESMERALDA"
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=$NOME
-Comment=$COMENTARIO
-Exec=$EXEC
-Icon=$ICON
+Name=Esmeralda
+Comment=Ajuda a controlar gastos e dinheiro, sabendo para onde vai o dinheiro.
+Exec=$EXEC_ESMERALDA
+Icon=$ICON_PATH
 Terminal=false
+Categories=Office;Finance;
 EOF
 
-chmod +x "$FILE_DESKTOP"
-echo "Instalação concluída com sucesso!."
+chmod +x "$FILE_DESKTOP_ESMERALDA"
+echo "Atalho 'Esmeralda' criado."
+
+EXEC_MANAGER_DB="$BASE_DIR/manager_db"
+FILE_DESKTOP_MANAGER_DB="$DESKTOP_DIR/esmeralda_db_manager.desktop"
+
+if [[ ! -f "$EXEC_MANAGER_DB" ]]; then
+    echo "Erro: Arquivo executável 'manager_db' não encontrado em $EXEC_MANAGER_DB"
+    exit 1
+fi
+
+chmod +x "$FILE_DESKTOP_MANAGER_DB"
+
+echo ""
+echo "Instalação concluída com sucesso!"
+echo "atalho criado na sua Área de Trabalho."
+
+# --- Fim do Script ---

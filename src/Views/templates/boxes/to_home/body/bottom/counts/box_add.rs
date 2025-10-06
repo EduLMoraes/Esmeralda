@@ -355,7 +355,7 @@ pub fn get_add_box(stack: &Stack) -> Box {
                                 }
                             }
                         }
-                        
+
                         reload_home(None, Some(&stack));
                         title_input.set_text("");
                         description_input.buffer().set_text("");
