@@ -1,6 +1,5 @@
-use clap::{Arg, Command, Subcommand};
-use rusqlite::{Connection, Result};
-use std::fs;
+use clap::{Arg, Command};
+use rusqlite::Connection;
 use std::process;
 
 mod backup;

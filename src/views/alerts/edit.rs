@@ -1,6 +1,15 @@
-use super::*;
-use crate::model::List::get_counts_instance;
-use gtk::TextView;
+#![allow(deprecated)]
+use crate::{
+    controller::data_controller::{edit as edit_account, get_groups},
+    model::{count::Count, list::get_counts_instance},
+    views::alerts::HAS_MESSAGE_DIALOG,
+};
+use chrono::{Datelike, NaiveDate};
+use glib::clone;
+use gtk::{
+    prelude::*, Adjustment, Box, Button, Calendar, CheckButton, ComboBoxText, Entry, Label,
+    MessageDialog, Orientation, SpinButton, TextView,
+};
 
 #[allow(deprecated)]
 pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
@@ -46,7 +55,7 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
     ];
 
     let rnt = tokio::runtime::Runtime::new().unwrap();
-    let mut natures = match rnt.block_on(control::get_groups()) {
+    let mut natures = match rnt.block_on(get_groups()) {
         Ok(groups) => groups,
         Err(err) => {
             tracing::error!("{:?}", err);
@@ -180,52 +189,61 @@ pub fn edit_count(title: &str, count: &Count) -> Option<MessageDialog> {
         .overflow(gtk::Overflow::Visible)
         .build();
 
-    cancel.connect_clicked(clone!( @weak edit => move |_| edit.close()));
-    confirm.connect_clicked(clone!( @weak edit, @strong count => move |_| {
-        use crate::chrono::NaiveDate;
-        let nature = nature_in.active_text().unwrap().to_string();
+    cancel.connect_clicked(clone!(
+        #[weak]
+        edit,
+        move |_| edit.close()
+    ));
+    confirm.connect_clicked(clone!(
+        #[weak]
+        edit,
+        #[strong]
+        count,
+        move |_| {
+            let nature = nature_in.active_text().unwrap().to_string();
 
-        let description = description_in.buffer();
+            let description = description_in.buffer();
 
-        let mut new_count = Count::from(
-            name_in.text().trim(),
-            title_in.text().trim(),
-            description
-                .text(&description.start_iter(), &description.end_iter(), true)
-                .as_str(),
-            value_in.value() as f32,
-            NaiveDate::from_ymd_opt(
-                date_in.year(),
-                (date_in.month() + 1) as u32,
-                date_in.day() as u32,
-            )
-            .unwrap(),
-            installment_in.value() as u32,
-            nature.trim(),
-        );
+            let mut new_count = Count::from(
+                name_in.text().trim(),
+                title_in.text().trim(),
+                description
+                    .text(&description.start_iter(), &description.end_iter(), true)
+                    .as_str(),
+                value_in.value() as f32,
+                NaiveDate::from_ymd_opt(
+                    date_in.year(),
+                    (date_in.month() + 1) as u32,
+                    date_in.day() as u32,
+                )
+                .unwrap(),
+                installment_in.value() as u32,
+                nature.trim(),
+            );
 
-        if status_in.is_active() {
-            new_count.pay_all()
-        }
-
-        let mut tmp = get_counts_instance();
-        for i in 0..tmp.list.len(){
-            if tmp.list[i].id == count.id{
-                tmp.list[i] = new_count.clone();
-                tmp.list[i].id = count.id;
-                break;
+            if status_in.is_active() {
+                new_count.pay_all()
             }
+
+            let mut tmp = get_counts_instance();
+            for i in 0..tmp.list.len() {
+                if tmp.list[i].id == count.id {
+                    tmp.list[i] = new_count.clone();
+                    tmp.list[i].id = count.id;
+                    break;
+                }
+            }
+            use tokio::runtime::Runtime;
+            let rnt = Runtime::new().unwrap();
+
+            match rnt.block_on(edit_account(&tmp)) {
+                Ok(_) => {}
+                Err(err) => tracing::error!("{err:?}"),
+            };
+
+            edit.destroy()
         }
-        use tokio::runtime::Runtime;
-        let rnt = Runtime::new().unwrap();
-
-        match rnt.block_on(control::edit(&tmp)){
-            Ok(_) => {},
-            Err(err) => tracing::error!("{err}")
-        };
-
-        edit.destroy()
-    }));
+    ));
 
     unsafe {
         edit.connect_destroy(|_| {

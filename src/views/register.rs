@@ -1,14 +1,20 @@
 use crate::{
-    controller::{add_user, is_email, login},
-    model::User::{NewUser, User},
+    controller::{
+        user_controller::{add_user, login},
+        view_controller::is_email,
+    },
+    model::user::{NewUser, User},
     views::{alerts::alert, view_home::HomeView},
 };
 use glib::clone;
 use gtk::{
-    prelude::{BoxExt, WidgetExt},
-    Box, Button, CheckButton, Entry, Image, Label, LinkButton, Orientation, Stack,
+    prelude::*, Box, Button, CheckButton, Entry, Image, Label, LinkButton, Orientation, Stack,
 };
-use std::env::var;
+use std::{
+    borrow::{Borrow, BorrowMut},
+    cell::RefCell,
+    env::var,
+};
 use tokio::runtime::Runtime;
 
 static mut NEWUSER: NewUser = NewUser {
@@ -18,17 +24,20 @@ static mut NEWUSER: NewUser = NewUser {
 };
 static mut ACCEPT: bool = false;
 
-pub struct ViewRegister<'a> {
-    pub stack: &'a Stack,
+#[derive(Clone)]
+pub struct ViewRegister {
+    pub stack: RefCell<Stack>,
 }
 
-impl<'a> ViewRegister<'a> {
-    pub fn new(stack: &Stack) -> Self {
+impl ViewRegister {
+    pub fn new(stack: RefCell<Stack>) -> Self {
         Self { stack }
     }
 
     pub fn rgter_screen(&self) -> Box {
-        self.stack.set_css_classes(&["register_window", "window"]);
+        self.stack
+            .borrow()
+            .set_css_classes(&["register_window", "window"]);
         let screen = Box::new(Orientation::Vertical, 26);
 
         let box_register = self.box_register();
@@ -48,11 +57,15 @@ impl<'a> ViewRegister<'a> {
         screen.append(&box_return);
         screen.append(&box_register);
 
-        return_button.connect_clicked(move |_| {
-            self.stack.remove_css_class("register_window");
-            self.stack.add_css_class("login_window");
-            self.stack.set_visible_child_name("login");
-        });
+        return_button.connect_clicked(clone!(
+            #[strong(rename_to=slf)]
+            self,
+            move |_| {
+                slf.stack.borrow().remove_css_class("register_window");
+                slf.stack.borrow().add_css_class("login_window");
+                slf.stack.borrow().set_visible_child_name("login");
+            },
+        ));
 
         screen
     }
@@ -77,54 +90,61 @@ impl<'a> ViewRegister<'a> {
 
         let login_button = Button::with_label("Confirmar");
 
-        login_button.connect_clicked(move |_| {
-            let new_u = unsafe { NEWUSER.borrow() };
-            let accept = unsafe { ACCEPT.borrow() };
+        login_button.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                let new_u = unsafe { NEWUSER.borrow() };
+                let accept = unsafe { ACCEPT.borrow() };
 
-            if *accept && !new_u.is_empty() {
-                let rnt = Runtime::new().unwrap();
+                if *accept && !new_u.is_empty() {
+                    let rnt = Runtime::new().unwrap();
 
-                match rnt.block_on(add_user(new_u.clone())) {
-                    Ok(_) => {
-                        let user = User {
-                            username: String::from(&new_u.username),
-                            password: String::from(&new_u.password),
-                        };
-                        let run = tokio::runtime::Runtime::new().unwrap();
-                        if run.block_on(login(user)).is_ok() {
-                            let home_view = HomeView::new(&self.stack);
-                            self.stack
-                                .add_titled(&home_view.home_screen(), Some("home"), "Home");
-                            self.stack.set_visible_child_name("home");
+                    match rnt.block_on(add_user(new_u.clone())) {
+                        Ok(_) => {
+                            let user = User {
+                                username: String::from(&new_u.username),
+                                password: String::from(&new_u.password),
+                            };
+                            let run = tokio::runtime::Runtime::new().unwrap();
+                            if run.block_on(login(user)).is_ok() {
+                                let home_view = HomeView::new(slf.stack.clone());
+                                slf.stack.borrow().add_titled(
+                                    &home_view.home_screen(),
+                                    Some("home"),
+                                    "Home",
+                                );
+                                slf.stack.borrow().set_visible_child_name("home");
 
-                            let tmp = self.stack.child_by_name("login").unwrap();
-                            self.stack.remove(&tmp);
+                                let tmp = slf.stack.borrow().child_by_name("login").unwrap();
+                                slf.stack.borrow().remove(&tmp);
 
-                            let tmp = self.stack.child_by_name("register").unwrap();
-                            self.stack.remove(&tmp);
+                                let tmp = slf.stack.borrow().child_by_name("register").unwrap();
+                                slf.stack.borrow().remove(&tmp);
+                            }
+                            else {
+                                alert(
+                                    "Tente novamente pela tela de login!",
+                                    "Falha ao realizar login",
+                                );
+                            }
                         }
-                        else {
+                        Err(_) => {
                             alert(
-                                "Tente novamente pela tela de login!",
-                                "Falha ao realizar login",
+                                "Login ou email de usuário já existente!",
+                                "Falha ao cadastrar-se",
                             );
                         }
-                    }
-                    Err(_) => {
-                        alert(
-                            "Login ou email de usuário já existente!",
-                            "Falha ao cadastrar-se",
-                        );
-                    }
-                };
+                    };
+                }
+                else {
+                    alert(
+                        "Por favor, preencha corretamente o formulário.",
+                        "Entradas inválidas",
+                    );
+                }
             }
-            else {
-                alert(
-                    "Por favor, preencha corretamente o formulário.",
-                    "Entradas inválidas",
-                );
-            }
-        });
+        ));
 
         box_register.set_halign(gtk::Align::Center);
         box_register.set_valign(gtk::Align::Center);

@@ -1,23 +1,12 @@
 mod tests;
 
-#[allow(non_snake_case)]
-pub mod Database;
-
-#[allow(non_snake_case)]
-pub mod Debtor;
-
-#[allow(non_snake_case)]
-pub mod Count;
-
-#[allow(non_snake_case)]
-pub mod List;
-
-#[allow(non_snake_case)]
-pub mod User;
-
-#[allow(non_snake_case)]
-pub mod People;
+pub mod debtor;
+pub mod people;
+pub mod user;
+pub mod count;
+pub mod database;
 pub mod errors;
+pub mod list;
 
 #[allow(non_snake_case, unused)]
-pub mod Investiment;
+pub mod investiment;

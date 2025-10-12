@@ -1,11 +1,15 @@
-use super::*;
+use crypto::{
+    aes::{cbc_encryptor, KeySize},
+    buffer::{BufferResult, ReadBuffer, RefReadBuffer, RefWriteBuffer, WriteBuffer},
+};
+use std::env;
 
 pub fn encrpt(msg: String) -> String {
     let iv = [0u8; 16];
     let key = env::var("KEYESMERALD").unwrap();
 
     let mut encryptor = cbc_encryptor(
-        KeySize256,
+        KeySize::KeySize256,
         key.as_bytes(),
         &iv,
         crypto::blockmodes::PkcsPadding,

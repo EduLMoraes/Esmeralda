@@ -1,24 +1,27 @@
 use crate::{
     controller::{
-        delete_people, edit_people, edit_user, get_peoples_instance, get_user_instance,
-        update_counts_with_db,
+        data_controller::update_counts_with_db,
+        people_controller::{delete_people, edit_people, get_peoples_instance},
+        user_controller::{edit_user, get_user_instance},
     },
     utils::validate::date_valid,
     views::alerts::{alert, confirm},
 };
-use chrono::NaiveDate;
+use chrono::{Datelike, NaiveDate};
 use glib::clone;
 use gtk::{
-    Align, Box, Button, Entry, Grid, Image, Label, Orientation, ResponseType, ScrolledWindow, Stack,
+    prelude::*, Align, Box, Button, Entry, Grid, Image, Label, Orientation, ResponseType,
+    ScrolledWindow, Stack,
 };
-use std::env;
+use std::{env, str::FromStr};
+
 pub struct BoxUser<'a> {
     stack: &'a Stack,
 }
-impl BoxUser<'_> {
+impl<'a> BoxUser<'a> {
     const TITLE: &'static str = "user";
 
-    pub fn new(stack: &Stack) -> Self {
+    pub fn new(stack: &'a Stack) -> Self {
         Self { stack }
     }
 
@@ -194,7 +197,7 @@ impl BoxUser<'_> {
                         month.unwrap(),
                         day.unwrap()
                     ))
-                    .map_err(|err| tracing::error!("{}", err));
+                    .map_err(|err| tracing::error!("{:?}", err));
 
                     if new_date.is_err() {
                         alert(

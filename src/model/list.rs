@@ -1,9 +1,6 @@
-use crate::{
-    control::delete,
-    prelude::model::{Count::Count, Debtor::Debtor},
-};
 use chrono::Datelike;
-use std::{cmp::Reverse, collections::HashMap};
+use std::{cmp::Reverse, collections::HashMap, sync::Mutex};
+use tokio::runtime::Runtime;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct ListCount {
@@ -36,7 +33,7 @@ impl ListCount {
     }
 
     pub fn remove(&mut self, id_count: &i32) -> bool {
-        let rnt = crate::tokio::runtime::Runtime::new().unwrap();
+        let rnt = Runtime::new().unwrap();
 
         if rnt.block_on(delete(id_count)).is_ok() {
             for i in 0..self.list.len() {
@@ -265,40 +262,40 @@ impl ListCount {
         }
     }
 
-    #[allow(unused_assignments)]
     pub fn filter_debtors(&self) -> Vec<Debtor> {
         let mut debtors_map: HashMap<String, Debtor> = HashMap::new();
 
-        for Count in &self.list {
-            let name = Count.debtor.trim().to_string();
+        for count in &self.list {
+            let name = count.debtor.trim().to_string();
             let debtor = debtors_map.entry(name.clone()).or_insert(Debtor::new(
-                Count.id,
+                count.id,
                 name.clone().trim(),
                 0.0,
                 0.0,
                 0.0,
             ));
 
-            if Count.nature == "Receita" {
-                debtor.add_receipt(Count.value * Count.paid_installments as f32);
+            if count.nature == "Receita" {
+                debtor.add_receipt(count.value * count.paid_installments as f32);
             }
             else {
+                #[allow(unused_assignments)]
                 let mut value = 0.0;
 
-                if Count.installments != Count.paid_installments {
-                    let remaining_installments = Count.installments - Count.paid_installments;
+                if count.installments != count.paid_installments {
+                    let remaining_installments = count.installments - count.paid_installments;
 
-                    value = Count.value * remaining_installments as f32;
+                    value = count.value * remaining_installments as f32;
                 }
                 else {
-                    value = Count.value * Count.paid_installments as f32;
+                    value = count.value * count.paid_installments as f32;
                 }
 
-                if Count.status {
+                if count.status {
                     debtor.add_value(value);
                 }
                 else {
-                    debtor.add_value(Count.value * Count.paid_installments as f32);
+                    debtor.add_value(count.value * count.paid_installments as f32);
                     debtor.add_debt(value);
                 }
             }
@@ -402,7 +399,6 @@ impl ListCount {
     }
 }
 
-use crate::std::sync::Mutex;
 use lazy_static::lazy_static;
 lazy_static! {
     static ref GLOBAL_COUNTS: Mutex<ListCount> = Mutex::new(ListCount::new());
@@ -412,6 +408,10 @@ pub fn get_counts_instance() -> std::sync::MutexGuard<'static, ListCount> {
     GLOBAL_COUNTS.lock().unwrap()
 }
 
+use crate::{
+    controller::data_controller::delete,
+    model::{count::Count, debtor::Debtor},
+};
 use std::fmt::{self, Debug};
 impl fmt::Display for ListCount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

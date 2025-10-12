@@ -1,16 +1,11 @@
-use crate::{
-    env,
-    regex::Regex,
-    std::process::{Command, Stdio},
-};
-use reqwest::Client;
-use std::{error::Error, fs::File, io::Write, path::Path};
-use tokio;
-use zip::read::ZipArchive;
-
 mod download;
 mod unzip;
 use download::*;
+use regex::Regex;
+use std::{
+    env,
+    process::{Command, Stdio},
+};
 use unzip::*;
 mod version;
 use version::has_new_version;

@@ -17,94 +17,47 @@ impl<'a> fmt::Display for ErrorLog<'a> {
     }
 }
 
-use crate::prelude::Error;
-#[derive(Error, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 #[allow(dead_code)]
 pub enum DataBaseError {
-    #[error("Error to create pool")]
     CreatePoolError(ErrorLog<'static>),
-
-    #[error("Error to add user")]
     AddUserError(ErrorLog<'static>),
-
-    #[error("Error to add count")]
     AddCountError(ErrorLog<'static>),
-
-    #[error("Error to add peoples")]
     AddPeopleError(ErrorLog<'static>),
-
-    #[error("Error to get user from db")]
     GetUserError(ErrorLog<'static>),
-
-    #[error("Error to get config")]
     GetConfigError(ErrorLog<'static>),
-
-    #[error("Error to get counts from db")]
     GetCountsError(ErrorLog<'static>),
-
-    #[error("Error to get peoples from db")]
     GetPeopleError(ErrorLog<'static>),
-
-    #[error("Error to edit peoples from db")]
     EditPeopleError(ErrorLog<'static>),
-
-    #[error("Error to edit counts from db")]
     EditCountsError(ErrorLog<'static>),
-
-    #[error("Error to edit user from db")]
     EditUserError(ErrorLog<'static>),
-
-    #[error("Error to delete people from db")]
     DeletePeopleError(ErrorLog<'static>),
-
-    #[error("Error to delete user from db")]
     DeleteUserError(ErrorLog<'static>),
-
-    #[error("Errror to delete count from db")]
     DeleteCountError(ErrorLog<'static>),
-
-    #[error("Error in data type receive")]
     DataTypeInvalid(ErrorLog<'static>),
 }
 
 #[allow(dead_code)]
-#[derive(Error, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum ControlError {
-    #[error("Error of module extern")]
     ErrorExternDB(DataBaseError),
-
-    #[error("Add user error")]
     ErrorExtern(ErrorLog<'static>),
-
-    #[error("Add user error")]
     ErrorToAddUser(ErrorLog<'static>),
-
-    #[error("Error of user trying loggin not exists")]
     UserNotExists(ErrorLog<'static>),
-
-    #[error("Authenticate error")]
     ErrorAuthenticate(ErrorLog<'static>),
-
-    #[error("Error of value invalid")]
     ErrorValueInvalid(ErrorLog<'static>),
-
-    #[error("Error to save")]
     ErrorNotSave(ErrorLog<'static>),
 }
 
 #[allow(dead_code)]
-#[derive(Error, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum ApiError {
-    #[error("Error to send email")]
     ErrorMailjet(ErrorLog<'static>),
-
-    #[error("Error on router")]
     ErrorRouter(ErrorLog<'static>),
 }
 
 #[allow(dead_code)]
-#[derive(Error, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum PeopleError {
-    #[error("CPF Invalid")]
     CPFInvalid(ErrorLog<'static>),
 }

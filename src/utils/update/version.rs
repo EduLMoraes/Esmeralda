@@ -1,4 +1,8 @@
-use super::*;
+use std::{env, process::{Command, Stdio}};
+
+use regex::Regex;
+
+ 
 
 pub fn has_new_version() -> bool {
     let output = Command::new("wget")

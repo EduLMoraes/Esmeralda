@@ -1,4 +1,4 @@
-use crate::model::Debtor::Debtor;
+use crate::model::debtor::Debtor;
 use charts_rs::{Box, HorizontalBarChart, LineChart, PieChart, Series, THEME_GRAFANA};
 use std::{env, io::Write};
 

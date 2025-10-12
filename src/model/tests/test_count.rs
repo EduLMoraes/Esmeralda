@@ -1,7 +1,6 @@
-#[allow(unused_imports)]
-use super::Count::Count;
-#[allow(unused_imports)]
+#![allow(unused_imports)]
 use super::NaiveDate;
+use crate::model::count::Count;
 
 // Creating a new Count with valid parameters should return a Count object with
 // the correct values.

@@ -3,7 +3,7 @@ use std::{
 };
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::segurance::criptography::gen_string;
+use crate::segurance::criptography::gen_string::gen_string;
 
 /// This gen the variables of ambient if she's not exists
 /// garant the functionality of system.

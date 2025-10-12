@@ -1,8 +1,8 @@
-use super::*;
-use crate::prelude::model::People::People;
 use chrono::NaiveDate;
-use std::{str::FromStr, sync::MutexGuard};
+use std::{str::FromStr, sync::{Mutex, MutexGuard}};
+use lazy_static::lazy_static;
 
+use crate::{controller::user_controller::get_user_instance, model::{database::{get_database_instance, Data, DataBase}, errors::{ControlError, ErrorLog}, people::People}};
 lazy_static! {
     static ref PEOPLES: Mutex<Vec<People>> = Mutex::new(Vec::new());
 }
@@ -86,10 +86,10 @@ pub async fn delete_people(uid: String) -> Result<(), ControlError> {
         voter_registration: String::new(),
         provider: String::new(),
     };
-    let user_id = get_user_instance().clone().unwrap().id;
+    let user_id = crate::controller::user_controller::get_user_instance().clone().unwrap().id;
     let data = Data::People(user_id as u16, vec![people]);
 
-    db.delete(data).await.map_err(ControlError::ErrorExternDB)?;
+    db.delete(data).await.map_err(crate::model::errors::ControlError::ErrorExternDB)?;
     gen_peoples_instance(get_peoples(&user_id, db).await?);
     Ok(())
 }

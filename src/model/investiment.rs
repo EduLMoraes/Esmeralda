@@ -1,4 +1,4 @@
-use super::People::People;
+use super::people::People;
 use chrono::NaiveDate;
 
 #[derive(Clone, Debug)]

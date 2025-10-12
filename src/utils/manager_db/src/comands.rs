@@ -1,4 +1,4 @@
-use super::*;
+use clap::Subcommand;
 
 #[derive(Subcommand)]
 pub enum DbCommand {

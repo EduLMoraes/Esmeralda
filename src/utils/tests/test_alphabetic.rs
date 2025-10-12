@@ -1,5 +1,5 @@
-#[allow(unused_imports)]
-use super::validate::alphabetic::is_alphabetic;
+#![allow(unused)]
+use crate::utils::validate::alphabetic::is_alphabetic;
 
 #[test]
 fn test_string_only_alphabetic() {

@@ -1,21 +1,25 @@
 use crate::{
-    controller::login,
-    model::User::User,
+    controller::user_controller::login,
+    model::user::User,
     views::{alerts::alert, view_home::HomeView},
 };
 use glib::clone;
-use gtk::{prelude::WidgetExt, Box, Button, Entry, Label, Orientation, Stack};
+use gtk::{prelude::*, Box, Button, Entry, Label, Orientation, Stack};
+use std::cell::RefCell;
 
-pub struct ViewLogin<'a> {
-    pub stack: &'a Stack,
+#[derive(Clone)]
+pub struct ViewLogin {
+    pub stack: RefCell<Stack>,
 }
-impl<'a> ViewLogin<'a> {
-    pub fn new(stack: &Stack) -> Self {
+impl ViewLogin {
+    pub fn new(stack: RefCell<Stack>) -> Self {
         Self { stack }
     }
 
     pub fn login_screen(&self) -> Box {
-        self.stack.set_css_classes(&["login_window", "window"]);
+        self.stack
+            .borrow()
+            .set_css_classes(&["login_window", "window"]);
         let screen = Box::new(Orientation::Vertical, 26);
 
         let box_title = Box::new(Orientation::Vertical, 0);
@@ -79,6 +83,8 @@ impl<'a> ViewLogin<'a> {
         ));
 
         pass_entry.connect_activate(clone!(
+            #[strong(rename_to = slf)]
+            self,
             #[weak]
             pass_entry,
             #[weak]
@@ -93,16 +99,17 @@ impl<'a> ViewLogin<'a> {
                 if run.block_on(login(user)).is_ok() {
                     tracing::info!("user logged!");
 
-                    let home_view = HomeView::new(&self.stack);
-                    self.stack
+                    let home_view = HomeView::new(slf.stack.clone());
+                    slf.stack
+                        .borrow()
                         .add_titled(&home_view.home_screen(), Some("home"), "Home");
-                    self.stack.set_visible_child_name("home");
+                    slf.stack.borrow().set_visible_child_name("home");
 
-                    let tmp = self.stack.child_by_name("login").unwrap();
-                    self.stack.remove(&tmp);
+                    let tmp = slf.stack.borrow().child_by_name("login").unwrap();
+                    slf.stack.borrow().remove(&tmp);
 
-                    let tmp = self.stack.child_by_name("register").unwrap();
-                    self.stack.remove(&tmp);
+                    let tmp = slf.stack.borrow().child_by_name("register").unwrap();
+                    slf.stack.borrow().remove(&tmp);
                 }
                 else {
                     pass_entry.set_text("");
@@ -116,15 +123,21 @@ impl<'a> ViewLogin<'a> {
             }
         ));
 
-        newu_link.connect_clicked(move |_| {
-            self.stack.remove_css_class("login_window");
-            self.stack.add_css_class("register_window");
-            self.stack.set_visible_child_name("register");
-        });
+        newu_link.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                slf.stack.borrow().remove_css_class("login_window");
+                slf.stack.borrow().add_css_class("register_window");
+                slf.stack.borrow().set_visible_child_name("register");
+            }
+        ));
 
         login_button.connect_clicked(clone!(
             #[weak]
             screen,
+            #[strong(rename_to = slf)]
+            self,
             move |_| {
                 let user = User {
                     username: String::from(user_entry.text()),
@@ -133,16 +146,17 @@ impl<'a> ViewLogin<'a> {
                 let run = tokio::runtime::Runtime::new().unwrap();
 
                 if run.block_on(login(user)).is_ok() {
-                    let home_view = HomeView::new(&self.stack);
-                    self.stack
+                    let home_view = HomeView::new(slf.stack.clone());
+                    slf.stack
+                        .borrow()
                         .add_titled(&home_view.home_screen(), Some("home"), "Home");
-                    self.stack.set_visible_child_name("home");
+                    slf.stack.borrow().set_visible_child_name("home");
 
-                    let tmp = self.stack.child_by_name("login").unwrap();
-                    self.stack.remove(&tmp);
+                    let tmp = slf.stack.borrow().child_by_name("login").unwrap();
+                    slf.stack.borrow().remove(&tmp);
 
-                    let tmp = self.stack.child_by_name("register").unwrap();
-                    self.stack.remove(&tmp);
+                    let tmp = slf.stack.borrow().child_by_name("register").unwrap();
+                    slf.stack.borrow().remove(&tmp);
                 }
                 else {
                     let error = Label::new(Some("Senha ou usuário incorreto! Tente novamente"));
@@ -152,11 +166,15 @@ impl<'a> ViewLogin<'a> {
             }
         ));
 
-        newu_link.connect_clicked(move |_| {
-            self.stack.remove_css_class("login_window");
-            self.stack.add_css_class("register_window");
-            self.stack.set_visible_child_name("register");
-        });
+        newu_link.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                slf.stack.borrow().remove_css_class("login_window");
+                slf.stack.borrow().add_css_class("register_window");
+                slf.stack.borrow().set_visible_child_name("register");
+            }
+        ));
 
         screen.add_css_class("login_box");
         title.add_css_class("login_title");

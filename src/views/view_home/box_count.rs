@@ -1,40 +1,49 @@
 #![allow(deprecated)]
 use crate::{
-    controller::{edit, get_peoples_instance, update_counts_with_db},
-    model::{Count::Count, Debtor::Debtor, List::get_counts_instance},
+    controller::{
+        data_controller::{edit, get_groups, save, update_counts_with_db},
+        people_controller::{add_people, get_peoples_instance},
+    },
+    model::{
+        count::Count,
+        debtor::Debtor,
+        list::{get_counts_instance, ListCount},
+        people::People,
+    },
     views::{
         alerts::{alert, confirm, edit_count},
-        view_home::HomeView,
+        view_home::{HomeView, IsBoxView},
     },
 };
+use chrono::{Datelike, NaiveDate};
 use glib::clone;
 use gtk::{
-    gdk::BUTTON_SECONDARY,
-    prelude::{BoxExt, ButtonExt, ComboBoxExtManual, GestureSingleExt, PopoverExt, WidgetExt},
-    Adjustment, Box, Button, Calendar, CheckButton, ComboBoxText, DropDown, Entry, GestureClick,
-    Grid, Image, Label, Orientation, PopoverMenu, ResponseType, ScrolledWindow, SpinButton, Stack,
-    StackSwitcher, TextView,
+    gdk::BUTTON_SECONDARY, prelude::*, Adjustment, Box, Button, Calendar, CheckButton,
+    ComboBoxText, DropDown, Entry, GestureClick, Grid, Image, Label, Orientation, PopoverMenu,
+    ResponseType, ScrolledWindow, SpinButton, Stack, StackSwitcher, TextView,
 };
-use std::{env::var, path::PathBuf};
+use std::{
+    borrow::{Borrow, BorrowMut},
+    cell::RefCell,
+    env::var,
+    path::PathBuf,
+};
 use tokio::runtime::Runtime;
 
-pub struct BoxCount<'a, T> {
-    home: HomeView<'a, T>,
+#[derive(Clone)]
+pub struct BoxCount {
+    home: RefCell<HomeView>,
+    stack: Stack,
 }
 
-impl<'a, T> BoxCount<'a, T> {
+impl BoxCount {
     const TITLE: &'static str = "counts";
 
-    pub fn new(home: HomeView<'a, T>) -> Self {
-        Self { home }
-    }
-
-    pub fn get_box(&self) -> Box {
-        let box_count = Box::new(Orientation::Horizontal, 0);
-        box_count.append(&self.left());
-        box_count.append(&self.right());
-        box_count.add_css_class("box_bottom_b");
-        box_count
+    pub fn new(home: RefCell<HomeView>) -> Self {
+        Self {
+            home,
+            stack: Stack::new(),
+        }
     }
 
     pub fn new_box_info(&self, info: &Count) -> Box {
@@ -126,6 +135,8 @@ impl<'a, T> BoxCount<'a, T> {
         gesture.set_button(BUTTON_SECONDARY);
 
         gesture.connect_pressed(clone!(
+            #[strong(rename_to=slf)]
+            self,
             #[strong]
             info,
             #[weak]
@@ -142,6 +153,8 @@ impl<'a, T> BoxCount<'a, T> {
 
                 button_del.connect_clicked(clone!(
                     #[strong]
+                    slf,
+                    #[strong]
                     info,
                     #[weak]
                     options,
@@ -155,24 +168,30 @@ impl<'a, T> BoxCount<'a, T> {
                             alert_confirm.present();
 
                             #[allow(deprecated)]
-                            alert_confirm.connect_response(clone!(move |_, res| {
-                                match res {
-                                    ResponseType::Yes => {
-                                        if !get_counts_instance().remove(&info.id) {
-                                            alert("Ocorreu um erro ao tentar", "Erro!");
+                            alert_confirm.connect_response(clone!(
+                                #[strong]
+                                slf,
+                                move |_, res| {
+                                    match res {
+                                        ResponseType::Yes => {
+                                            if !get_counts_instance().remove(&info.id) {
+                                                alert("Ocorreu um erro ao tentar", "Erro!");
+                                            }
+                                            else {
+                                                slf.home.borrow_mut().reload_home();
+                                            }
                                         }
-                                        else {
-                                            self.home.reload_home();
-                                        }
+                                        _ => {}
                                     }
-                                    _ => {}
                                 }
-                            }));
+                            ));
                         }
                     }
                 ));
 
                 button_edt.connect_clicked(clone!(
+                    #[strong]
+                    slf,
                     #[strong]
                     info,
                     #[weak]
@@ -184,9 +203,13 @@ impl<'a, T> BoxCount<'a, T> {
                         if form.is_some() {
                             let form = form.unwrap();
 
-                            form.connect_destroy(|_| {
-                                self.home.reload_home();
-                            });
+                            form.connect_destroy(clone!(
+                                #[strong]
+                                slf,
+                                move |_| {
+                                    slf.home.borrow_mut().reload_home();
+                                }
+                            ));
 
                             form.present();
                         }
@@ -283,6 +306,8 @@ impl<'a, T> BoxCount<'a, T> {
         button_status.add_css_class("button");
 
         button_status.connect_clicked(clone!(
+            #[strong (rename_to=slf)]
+            self,
             #[strong]
             info,
             move |_| {
@@ -294,7 +319,7 @@ impl<'a, T> BoxCount<'a, T> {
                 rn.block_on(edit(&ref_counts)).unwrap();
 
                 rn.block_on(update_counts_with_db()).ok();
-                self.home.reload_home();
+                slf.home.borrow_mut().reload_home();
             }
         ));
 
@@ -329,6 +354,8 @@ impl<'a, T> BoxCount<'a, T> {
         gesture.set_button(BUTTON_SECONDARY);
 
         gesture.connect_pressed(clone!(
+            #[strong(rename_to=slf)]
+            self,
             #[strong]
             info,
             #[weak]
@@ -345,6 +372,8 @@ impl<'a, T> BoxCount<'a, T> {
 
                 button_del.connect_clicked(clone!(
                     #[strong]
+                    slf,
+                    #[strong]
                     info,
                     #[weak]
                     options,
@@ -358,24 +387,30 @@ impl<'a, T> BoxCount<'a, T> {
                             alert_confirm.present();
 
                             #[allow(deprecated)]
-                            alert_confirm.connect_response(clone!(move |_, res| {
-                                match res {
-                                    ResponseType::Yes => {
-                                        if !get_counts_instance().remove(&info.id) {
-                                            alert("Ocorreu um erro ao tentar", "Erro!");
+                            alert_confirm.connect_response(clone!(
+                                #[strong]
+                                slf,
+                                move |_, res| {
+                                    match res {
+                                        ResponseType::Yes => {
+                                            if !get_counts_instance().remove(&info.id) {
+                                                alert("Ocorreu um erro ao tentar", "Erro!");
+                                            }
+                                            else {
+                                                slf.home.borrow_mut().reload_home();
+                                            }
                                         }
-                                        else {
-                                            self.home.reload_home();
-                                        }
+                                        _ => {}
                                     }
-                                    _ => {}
                                 }
-                            }));
+                            ));
                         }
                     }
                 ));
 
                 button_edt.connect_clicked(clone!(
+                    #[strong]
+                    slf,
                     #[strong]
                     info,
                     #[weak]
@@ -387,9 +422,13 @@ impl<'a, T> BoxCount<'a, T> {
                         if form.is_some() {
                             let form = form.unwrap();
 
-                            form.connect_destroy(move |_| {
-                                self.home.reload_home();
-                            });
+                            form.connect_destroy(clone!(
+                                #[strong]
+                                slf,
+                                move |_| {
+                                    slf.home.borrow_mut().reload_home();
+                                }
+                            ));
 
                             form.present();
                         }
@@ -411,7 +450,7 @@ impl<'a, T> BoxCount<'a, T> {
         box_info
     }
 
-    pub fn get_home_box(&self, left_stack: &Stack) -> Box {
+    pub fn get_home_box(&self) -> Box {
         let box_home = Box::new(Orientation::Vertical, 10);
         box_home.add_css_class("box_left_bb");
         box_home.set_hexpand(true);
@@ -429,18 +468,18 @@ impl<'a, T> BoxCount<'a, T> {
         button_payment.add_css_class("button_payment");
 
         button_add.connect_clicked(clone!(
-            #[weak]
-            left_stack,
+            #[strong(rename_to=slf)]
+            self,
             move |_| {
-                left_stack.set_visible_child_name("addition");
+                slf.stack.set_visible_child_name("addition");
             }
         ));
 
         button_payment.connect_clicked(clone!(
-            #[weak]
-            left_stack,
+            #[strong(rename_to=slf)]
+            self,
             move |_| {
-                left_stack.set_visible_child_name("payment");
+                slf.stack.set_visible_child_name("payment");
             }
         ));
 
@@ -452,13 +491,13 @@ impl<'a, T> BoxCount<'a, T> {
         stack_switcher.add_css_class("stack_switcher");
 
         stack_infos.add_titled(
-            &self.get_grid_groups(&stack_infos, left_stack),
+            &self.get_grid_groups(&stack_infos, &self.stack),
             Some("groups"),
             "Contas",
         );
         stack_infos.add_titled(&self.get_grid_debtors(), Some("debtors"), "Devedores");
         stack_infos.add_titled(
-            &self.get_grid_months(&stack_infos, left_stack),
+            &self.get_grid_months(&stack_infos, &self.stack),
             Some("months"),
             "Meses",
         );
@@ -572,6 +611,8 @@ impl<'a, T> BoxCount<'a, T> {
         details.set_css_classes(&["link_details"]);
 
         details.connect_clicked(clone!(
+            #[strong(rename_to=slf)]
+            self,
             #[weak]
             stack,
             #[strong]
@@ -579,7 +620,7 @@ impl<'a, T> BoxCount<'a, T> {
             #[weak]
             stack_home,
             move |_| {
-                let _ = get_grid_infos(&stack, &stack_home, &infos, &title.text());
+                let _ = slf.get_grid_infos(&stack, &infos, &title.text());
                 stack.set_visible_child_name("details");
             }
         ));
@@ -646,7 +687,7 @@ impl<'a, T> BoxCount<'a, T> {
         box_debtors
     }
 
-    pub fn get_add_box(&self, stack: &Stack) -> Box {
+    pub fn get_add_box(&self) -> Box {
         let box_add = Box::new(Orientation::Vertical, 10);
 
         let box_top = Box::new(Orientation::Horizontal, 10);
@@ -657,10 +698,10 @@ impl<'a, T> BoxCount<'a, T> {
 
         button_return.set_label("Retornar");
         button_return.connect_clicked(clone!(
-            #[weak]
-            stack,
+            #[strong(rename_to=slf)]
+            self,
             move |_| {
-                stack.set_visible_child_name("home");
+                slf.stack.set_visible_child_name("home");
             }
         ));
 
@@ -707,7 +748,7 @@ impl<'a, T> BoxCount<'a, T> {
             String::from("Outros"),
             String::from("+ Nova natureza"),
         ];
-        let mut natures = match rnt.block_on(control::get_groups()) {
+        let mut natures = match rnt.block_on(get_groups()) {
             Ok(groups) => groups,
             Err(err) => {
                 tracing::error!("{:?}", err);
@@ -868,8 +909,8 @@ impl<'a, T> BoxCount<'a, T> {
         button_append.add_css_class("button");
 
         button_append.connect_clicked(clone!(
-            #[weak]
-            stack,
+            #[strong(rename_to=slf)]
+            self,
             #[weak]
             name_input,
             #[weak]
@@ -916,7 +957,7 @@ impl<'a, T> BoxCount<'a, T> {
                     String::from("+ Nova natureza"),
                 ];
 
-                let mut natures = match rnt.block_on(control::get_groups()) {
+                let mut natures = match rnt.block_on(get_groups()) {
                     Ok(groups) => groups,
                     Err(err) => {
                         tracing::error!("{:?}", err);
@@ -968,12 +1009,11 @@ impl<'a, T> BoxCount<'a, T> {
 
                 tracing::info!("count is empty? {}", count.is_empty());
                 if !count.is_empty() {
-                    use tokio::runtime::Runtime;
                     let rnt = Runtime::new().unwrap();
 
                     get_counts_instance().put(count);
 
-                    match rnt.block_on(control::save()) {
+                    match rnt.block_on(save()) {
                         Ok(_) => {
                             if is_new_people {
                                 let new_people = People::new(&name);
@@ -992,7 +1032,7 @@ impl<'a, T> BoxCount<'a, T> {
                                 }
                             }
 
-                            reload_home(None, Some(&stack));
+                            slf.home.borrow_mut().reload_home();
                             title_input.set_text("");
                             description_input.buffer().set_text("");
                             value_input.set_value(0.01);
@@ -1007,13 +1047,12 @@ impl<'a, T> BoxCount<'a, T> {
                             new_name_input.set_visible(false);
                             new_name_input.set_text("");
                         }
-                        Err(err) => tracing::error!("{err}"),
+                        Err(err) => tracing::error!("{err:?}"),
                     };
                 }
                 else {
                     for (value, input) in data {
                         if value.is_empty() {
-                            use alerts::alert;
                             alert(
                                 &format!("Campo obrigatório {input} está vazio."),
                                 "Faltam dados!",
@@ -1060,9 +1099,13 @@ impl<'a, T> BoxCount<'a, T> {
         button_return.add_css_class("link_return");
 
         button_return.set_label("Retornar");
-        button_return.connect_clicked(move |_| {
-            self.stack.set_visible_child_name("home");
-        });
+        button_return.connect_clicked(clone!(
+            #[strong(rename_to=slf)]
+            self,
+            move |_| {
+                slf.stack.set_visible_child_name("home");
+            }
+        ));
 
         box_title.append(&Label::new(Some("Pagando conta")));
         box_title.append(&button_return);
@@ -1082,7 +1125,7 @@ impl<'a, T> BoxCount<'a, T> {
         if !infos.list.is_empty() {
             for info in &infos.list {
                 if !info.status {
-                    let group = box_info(info, stack);
+                    let group = self.box_info(info);
                     grid.attach(&group, x, y, 1, 1);
 
                     if x < 1 {
@@ -1194,6 +1237,8 @@ impl<'a, T> BoxCount<'a, T> {
         details.set_css_classes(&["link_details"]);
 
         details.connect_clicked(clone!(
+            #[strong(rename_to=slf)]
+            self,
             #[weak]
             stack,
             #[strong]
@@ -1201,7 +1246,7 @@ impl<'a, T> BoxCount<'a, T> {
             #[weak]
             stack_home,
             move |_| {
-                let _ = get_grid_infos(&stack, &stack_home, &infos, &title.text());
+                let _ = slf.get_grid_infos(&stack, &infos, &title.text());
                 stack.set_visible_child_name("details");
             }
         ));
@@ -1217,7 +1262,7 @@ impl<'a, T> BoxCount<'a, T> {
         box_group
     }
 
-    pub fn right(&self) -> Box {
+    pub fn right(&mut self) -> Box {
         let box_right = Box::new(Orientation::Vertical, 20);
         box_right.set_hexpand(true);
         box_right.set_vexpand(true);
@@ -1225,9 +1270,7 @@ impl<'a, T> BoxCount<'a, T> {
         box_right.add_css_class("box_right_bb");
 
         let history = Label::new(Some("Histórico"));
-
         let order_by = Label::new(Some("Ordernar por: "));
-
         let drop_order = DropDown::from_strings(&[
             "Entrada",
             "Data limite",
@@ -1236,6 +1279,26 @@ impl<'a, T> BoxCount<'a, T> {
             "Status",
             "Devedor",
         ]);
+
+        drop_order.connect_selected_item_notify(clone!(
+            #[strong (rename_to = slf)]
+            self,
+            move |drop_order| {
+                let mut counts = get_counts_instance().clone();
+
+                match drop_order.selected() {
+                    0 => counts.order_by_date(true, true),
+                    1 => counts.order_by_date(false, true),
+                    2 => counts.order_by_value(true),
+                    3 => counts.order_alphabetical("nature", true),
+                    4 => counts.order_by_status(true),
+                    5 => counts.order_alphabetical("name", true),
+                    _ => {}
+                }
+
+                slf.home.borrow_mut().reload_home();
+            }
+        ));
 
         drop_order.set_css_classes(&["dropdown_order_by"]);
 
@@ -1250,64 +1313,50 @@ impl<'a, T> BoxCount<'a, T> {
         box_head.add_css_class("box_head_bbr");
         box_head.set_hexpand(true);
         box_head.set_halign(gtk::Align::Center);
+        box_right.append(&box_head);
 
         let scrolled = ScrolledWindow::new();
         scrolled.add_css_class("list_info_history");
         scrolled.set_vexpand(true);
         scrolled.set_hexpand(true);
 
-        let box_list_count = Self::get_list_box();
+        let box_list_count = self.get_list_box();
         box_list_count.add_css_class("list_info_history");
         box_list_count.set_vexpand(true);
         box_list_count.set_hexpand(true);
 
         let counts = get_counts_instance();
 
-        drop_order.connect_selected_item_notify(move |drop_order| {
-            let mut counts = get_counts_instance().clone();
-
-            match drop_order.selected() {
-                0 => counts.order_by_date(true, true),
-                1 => counts.order_by_date(false, true),
-                2 => counts.order_by_value(true),
-                3 => counts.order_alphabetical("nature", true),
-                4 => counts.order_by_status(true),
-                5 => counts.order_alphabetical("name", true),
-                _ => {}
-            }
-
-            self.home.reload_home();
-        });
-
         for count in &counts.list {
             box_list_count.append(&self.new_box_info(count));
         }
 
-        scrolled.set_child(Some(box_list_count));
-        box_right.append(&box_head);
+        scrolled.set_child(Some(&box_list_count));
         box_right.append(&scrolled);
         box_right
     }
 
-    pub fn left(&self) -> Box {
+    pub fn get_list_box(&self) -> Box {
+        Box::new(Orientation::Vertical, 0)
+    }
+
+    pub fn left(&mut self) -> Box {
         let box_left = Box::new(Orientation::Vertical, 10);
         box_left.add_css_class("box_left_bb");
         box_left.set_hexpand(true);
         box_left.set_vexpand(true);
         box_left.set_halign(gtk::Align::Fill);
 
-        let stack_left = Stack::new();
-        stack_left.add_titled(&Self::get_home_box(&stack_left), Some("home"), "home");
-        stack_left.add_titled(
-            &Self::get_add_box(&stack_left),
-            Some("addition"),
-            "addition",
-        );
-        stack_left.add_titled(&Self::get_pay_box(&stack_left), Some("payment"), "payment");
-        stack_left.set_vexpand(true);
-        stack_left.set_hexpand(true);
+        self.stack
+            .add_titled(&self.get_home_box(), Some("home"), "home");
+        self.stack
+            .add_titled(&self.get_add_box(), Some("addition"), "addition");
+        self.stack
+            .add_titled(&self.get_pay_box(), Some("payment"), "payment");
+        self.stack.set_vexpand(true);
+        self.stack.set_hexpand(true);
 
-        box_left.append(&stack_left);
+        box_left.append(&self.stack);
         box_left
     }
 
@@ -1328,7 +1377,7 @@ impl<'a, T> BoxCount<'a, T> {
         let mut y = 0;
 
         for debtor in &debtors {
-            grid_debtors.attach(&new_debtor_info(debtor), x, y, 1, 1);
+            grid_debtors.attach(&self.new_debtor_info(debtor), x, y, 1, 1);
 
             if x < 1 {
                 x += 1;
@@ -1356,7 +1405,7 @@ impl<'a, T> BoxCount<'a, T> {
         let counts = get_counts_instance();
 
         let rnt = tokio::runtime::Runtime::new().unwrap();
-        let natures = match rnt.block_on(control::get_groups()) {
+        let natures = match rnt.block_on(get_groups()) {
             Ok(groups) => groups,
             Err(err) => {
                 tracing::error!("{:?}", err);
@@ -1374,7 +1423,7 @@ impl<'a, T> BoxCount<'a, T> {
 
         for (i, nature) in natures.iter().enumerate() {
             grid_groups.attach(
-                &new_group_info(
+                &self.new_group_info(
                     nature,
                     &nature.to_lowercase(),
                     &counts.filter_by_nature(nature),
@@ -1391,13 +1440,7 @@ impl<'a, T> BoxCount<'a, T> {
         grid_groups
     }
 
-    fn get_grid_infos(
-        &self,
-        stack: &Stack,
-        stack_home: &Stack,
-        infos: &Vec<Count>,
-        title: &str,
-    ) -> Grid {
+    fn get_grid_infos(&self, stack: &Stack, infos: &Vec<Count>, title: &str) -> Grid {
         let grid_infos = Grid::builder()
             .halign(gtk::Align::Fill)
             .valign(gtk::Align::Start)
@@ -1411,7 +1454,7 @@ impl<'a, T> BoxCount<'a, T> {
         let mut y = 0;
 
         for info in infos {
-            let group = box_info(info, stack_home);
+            let group = self.box_info(info);
             grid_infos.attach(&group, x, y, 1, 1);
 
             if x < 1 {
@@ -1462,7 +1505,7 @@ impl<'a, T> BoxCount<'a, T> {
 
         for (i, month) in months.iter().enumerate() {
             grid_months.attach(
-                &new_month_info(
+                &self.new_month_info(
                     &month.0,
                     &month.0.to_lowercase(),
                     &month.1,
@@ -1549,11 +1592,11 @@ impl<'a, T> BoxCount<'a, T> {
 
         let title = Label::new(Some(&format!(
             "Perfomance em {}",
-            months[month_index.month0() as usize]
+            months[month_index.month() as usize]
         )));
         let text = Label::new(Some(&format!(
             "R$ {:.2}",
-            month[month_index.month0() as usize]
+            month[month_index.month() as usize]
         )));
         title.add_css_class("name_i");
         text.add_css_class("value_total");
@@ -1568,5 +1611,19 @@ impl<'a, T> BoxCount<'a, T> {
         grid.attach(&box_count_month, 1, 1, 1, 1);
 
         grid
+    }
+}
+
+impl IsBoxView for BoxCount {
+    fn get_box(&mut self) -> Box {
+        let box_count = Box::new(Orientation::Horizontal, 0);
+        box_count.append(&self.left());
+        box_count.append(&self.right());
+        box_count.add_css_class("box_bottom_b");
+        box_count
+    }
+
+    fn get_title(&self) -> &'static str {
+        Self::TITLE
     }
 }

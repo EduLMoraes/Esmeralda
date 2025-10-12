@@ -1,5 +1,6 @@
-use super::*;
-use crate::model::{errors::{ControlError, ErrorLog}, Database::{get_database_instance, Data}, List::{get_counts_instance, ListCount}};
+use crate::{controller::user_controller::get_user_instance, model::{
+    database::{get_database_instance, Data}, errors::{ControlError, ErrorLog}, list::{get_counts_instance, ListCount}
+}};
 use std::{env, ops::DerefMut};
 
 /// This communicate with the database to save

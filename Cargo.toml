@@ -1,3 +1,7 @@
+
+workspace = { members = ["src/utils/manager_db"] }
+
+
 [package]
 name = "esmeralda"
 authors = ["Eduardo L. Moraes <lmoraeseduardo@gmail.com>"]
@@ -10,9 +14,9 @@ license = "GNU"
 [package.metadata.bundle]
 name = "esmeralda"
 identifier = "io.github.edulmoraes.esmeralda"
-icon = ["src/Views/assets/icon/icon.ico"]
-resources = ["src/Views/assets", "src/Views/styles"]
-license = "GNU"
+icon = ["src/views/assets/icon/icon.ico"]
+resources = ["src/views/assets", "src/views/styles"]
+license="GNU"
 category = "Finance"
 long_description = """
 The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
@@ -20,15 +24,11 @@ Its easy use and hight perfomance.
 """
 
 [package.metadata.bundle.windows]
-resources = [
-    "./src/Views/assets",
-    "./src/Views/styles",
-    "C:/msys64/mingw64/lib/pkgconfig",
-]
+resources = ["./src/views/assets", "./src/views/styles", "C:/msys64/mingw64/lib/pkgconfig"]
 windows_use_terminal = false
 
 [build-dependencies]
-zip = "2.1.0"
+zip="2.1.0"
 
 [dependencies]
 charts-rs = "0.3.8"
@@ -44,7 +44,7 @@ rand = "0.8.5"
 regex = "1.10.2"
 reqwest = "0.12.7"
 rfd = "0.14.1"
-rusqlite = { version = "0.32.1", features = ["bundled"] }
+rusqlite = {version = "0.32.1", features = ["bundled"]}
 rust-crypto = "0.2.36"
 rust-fuzzy-search = "0.1.1"
 serde = { version = "1.0.193", features = ["derive"] }
@@ -52,5 +52,5 @@ thiserror = "1.0.50"
 tokio = { features = ["full"], version = "1.34.0" }
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"
-yahoo_finance_api = { version = "2.2.1", features = ["blocking"] }
+yahoo_finance_api = {version = "2.2.1", features = ["blocking"]}
 zip = "2.1.0"

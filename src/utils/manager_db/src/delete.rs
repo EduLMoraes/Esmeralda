@@ -1,4 +1,6 @@
-use super::*;
+use std::fs;
+
+ 
 
 pub fn delete_database() -> std::io::Result<()> {
     if fs::remove_file("database.db").is_ok() {

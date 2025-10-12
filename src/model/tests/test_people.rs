@@ -1,7 +1,7 @@
 #[allow(unused)]
 use crate::model::errors::{ErrorLog, PeopleError};
 #[allow(unused)]
-use crate::model::People::People;
+use crate::model::people::People;
 #[allow(unused)]
 use chrono::Utc;
 

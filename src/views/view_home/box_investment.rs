@@ -1,6 +1,7 @@
 use crate::{apis::yahoo_finance::get_quote, views::alerts::alert};
 use glib::clone;
 use gtk::{Adjustment, Box, CheckButton, Entry, Grid, Label, Orientation, SpinButton};
+use gtk::prelude::*;
 const MAX_UPPER: f64 = f64::MAX;
 const MIN_LOWER: f64 = f64::MIN;
 const BASES_POINT: f64 = 100.0;

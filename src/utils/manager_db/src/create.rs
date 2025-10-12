@@ -1,9 +1,11 @@
+use rusqlite::Connection;
+
 // use std::os::unix::fs::PermissionsExt;
 #[path = "./versions/mod.rs"]
 mod versions;
-use super::*;
+ 
 
-pub fn create_database(conn: &Connection, last_version: String) -> Result<()> {
+pub fn create_database(conn: &Connection, last_version: String) -> Result<(), String> {
     let _ = match last_version.trim() {
         "1.2.3" => conn.execute_batch(&versions::v1_2_3::get_sql()),
         _ => conn.execute_batch(&versions::v1_3_0::get_sql()),

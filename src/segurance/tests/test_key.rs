@@ -1,5 +1,5 @@
-#[allow(unused_imports)]
-use super::gen_string;
+#![allow(unused)]
+use crate::segurance::criptography::gen_string::gen_string;
 
 #[test]
 fn test_generate_key_length() {

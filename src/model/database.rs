@@ -1,17 +1,18 @@
-use super::People::People;
-use crate::prelude::{
-    env::var,
-    model::{
-        errors::{DataBaseError, ErrorLog},
-        Count::Count,
-        List::ListCount,
-        User::*,
-    },
+use crate::model::{
+    count::Count,
+    errors::{DataBaseError, ErrorLog},
+    list::ListCount,
+    people::People,
+    user::{NewUser, User, UserDb},
 };
 use chrono::{Datelike, NaiveDate};
 use lazy_static::lazy_static;
 use rusqlite::{params, Connection};
-use std::{env, str::FromStr, sync::Mutex};
+use std::{
+    env::{self, var},
+    str::FromStr,
+    sync::Mutex,
+};
 
 #[allow(dead_code)]
 #[derive(Debug)]

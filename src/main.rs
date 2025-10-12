@@ -2,7 +2,10 @@ use crate::{
     controller::config::env_var::get_config,
     views::{app::esmeralda, styles::load_style},
 };
-use gtk::Application;
+use gtk::{
+    gio::prelude::{ApplicationExt, ApplicationExtManual},
+    Application,
+};
 
 mod apis;
 mod controller;

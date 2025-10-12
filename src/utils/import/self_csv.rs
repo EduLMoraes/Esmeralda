@@ -1,4 +1,4 @@
-use crate::model::{Count::Count, List::ListCount};
+use crate::model::{count::Count, list::ListCount};
 
 pub async fn read_csv(path: &str, data: &mut ListCount) -> Result<(), String> {
     let mut reader = csv::Reader::from_path(path).map_err(|e| e.to_string())?;

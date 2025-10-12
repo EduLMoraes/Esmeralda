@@ -1,8 +1,3 @@
-use super::*;
-#[allow(deprecated)]
-use crate::gtk::{Adjustment, Calendar, CheckButton, ComboBoxText, MessageDialog, SpinButton};
-use crate::{chrono::Datelike, model::Count::Count};
-
 mod alert;
 mod confirm;
 mod edit;

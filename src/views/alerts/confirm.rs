@@ -1,4 +1,6 @@
-use super::*;
+#![allow(deprecated)]
+use crate::views::alerts::HAS_MESSAGE_DIALOG;
+use gtk::{MessageDialog, prelude::*};
 
 #[allow(deprecated)]
 pub fn confirm(message: &str, title: &str) -> Option<MessageDialog> {

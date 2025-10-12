@@ -1,25 +1,27 @@
 #![allow(deprecated)]
 use crate::{
-    controller::save_in_file,
-    model::List::get_counts_instance,
+    controller::file_controller::save_in_file,
+    model::list::get_counts_instance,
     views::{
         alerts::alert,
-        view_home::{box_count::BoxCount, box_investment::Investments, box_plot::Plot, HomeView},
+        view_home::{HomeView, PageHome},
     },
 };
-use gtk::{Box, Button, FileChooserDialog, Image, Label, Orientation, ResponseType};
-use std::env::var;
+use glib::clone;
+use gtk::{prelude::*, Box, Button, FileChooserDialog, Image, Label, Orientation, ResponseType};
+use std::{borrow::Borrow, cell::RefCell, env::var};
 use tokio::runtime::Runtime;
 
-pub struct LeftMenu<'a, T> {
-    home: HomeView<'a, T>,
+#[derive(Clone)]
+pub struct LeftMenu {
+    home: RefCell<HomeView>,
 }
-impl<'a, T> LeftMenu<'a, T> {
-    pub fn new(home: HomeView<'a, T>) -> Self {
+impl LeftMenu {
+    pub fn new(home: RefCell<HomeView>) -> Self {
         Self { home }
     }
 
-    pub fn get_box(&self) -> Box {
+    pub fn get_box(&mut self) -> Box {
         let box_ml = Box::new(Orientation::Vertical, 0);
 
         box_ml.append(&self.box_head());
@@ -29,7 +31,7 @@ impl<'a, T> LeftMenu<'a, T> {
         box_ml
     }
 
-    pub fn box_body(&self) -> Box {
+    pub fn box_body(&mut self) -> Box {
         let box_body = Box::new(Orientation::Vertical, 5);
         box_body.add_css_class("box_body_ml");
 
@@ -39,7 +41,7 @@ impl<'a, T> LeftMenu<'a, T> {
         box_body
     }
 
-    pub fn box_head(&self) -> Box {
+    pub fn box_head(&mut self) -> Box {
         let box_head = Box::new(Orientation::Vertical, 0);
         box_head.add_css_class("box_head_ml");
         let version = Label::new(Some(&format!(
@@ -72,11 +74,11 @@ impl<'a, T> LeftMenu<'a, T> {
         box_head
     }
 
-    pub fn links(&self) -> Box {
+    pub fn links(&mut self) -> Box {
         let box_links = Box::new(Orientation::Vertical, 20);
 
         box_links.append(&self.box_count_link());
-        box_links.append(&self.box_graph_link());
+        box_links.append(&self.box_plot_link());
         box_links.append(&self.box_investments_link());
         box_links.append(&self.box_export_link());
 
@@ -90,9 +92,13 @@ impl<'a, T> LeftMenu<'a, T> {
         let link = Button::with_label("Contas");
         link.set_css_classes(&["link_view"]);
 
-        link.connect_clicked(move |_| {
-            self.home.load_page(BoxCount::new());
-        });
+        link.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                slf.home.borrow_mut().load_page(PageHome::Count);
+            }
+        ));
 
         icon.add_css_class("icon_ml");
 
@@ -103,15 +109,19 @@ impl<'a, T> LeftMenu<'a, T> {
         option_box
     }
 
-    pub fn box_plot_link(&self) -> Box {
+    pub fn box_plot_link(&mut self) -> Box {
         let option_box = Box::new(Orientation::Horizontal, 0);
         let icon = Image::from_file(format!("{}graph.png", var("ICON_PATH").unwrap()));
         let link = Button::with_label("Gráficos");
         link.set_css_classes(&["link_view"]);
 
-        link.connect_clicked(move |_| {
-            self.home.load_page(Plot::new());
-        });
+        link.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                slf.home.borrow_mut().load_page(PageHome::Plot);
+            }
+        ));
 
         icon.add_css_class("icon_ml");
 
@@ -122,15 +132,19 @@ impl<'a, T> LeftMenu<'a, T> {
         option_box
     }
 
-    pub fn box_investments_link(&self) -> Box {
+    pub fn box_investments_link(&mut self) -> Box {
         let option_box = Box::new(Orientation::Horizontal, 0);
         let icon = Image::from_file(format!("{}investments.png", var("ICON_PATH").unwrap()));
         let link = Button::with_label("Investimentos");
         link.set_css_classes(&["link_view"]);
 
-        link.connect_clicked(move |_| {
-            self.home.load_page(Investments::new());
-        });
+        link.connect_clicked(clone!(
+            #[strong(rename_to = slf)]
+            self,
+            move |_| {
+                slf.home.borrow_mut().load_page(PageHome::Investments);
+            }
+        ));
 
         icon.add_css_class("icon_ml");
 
@@ -141,7 +155,7 @@ impl<'a, T> LeftMenu<'a, T> {
         option_box
     }
 
-    pub fn box_export_link(&self) -> Box {
+    pub fn box_export_link(&mut self) -> Box {
         let fbox_count = Box::new(Orientation::Horizontal, 0);
         let count_icon = Image::from_file(format!("{}export.png", var("ICON_PATH").unwrap()));
         let count_link = Button::with_label("Exportar");

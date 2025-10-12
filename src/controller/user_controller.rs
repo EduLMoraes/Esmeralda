@@ -1,4 +1,14 @@
-use super::*;
+use crate::{
+    controller::people_controller::{gen_peoples_instance, get_peoples, get_peoples_instance},
+    model::{
+        database::{get_database_instance, Data},
+        errors::{ControlError, ErrorLog},
+        user::{NewUser, User, UserDb},
+    },
+    segurance::criptography::encrypt::encrpt,
+};
+use lazy_static::lazy_static;
+use std::{env::var, sync::Mutex, time::Instant};
 
 lazy_static! {
     static ref USER_LOGGED: Mutex<Option<UserDb>> = Mutex::new(None);
@@ -35,7 +45,7 @@ pub async fn login(mut user: User) -> Result<(), ControlError> {
 
     let db = get_database_instance();
 
-    user.password = criptography::encrpt(user.password);
+    user.password = encrpt(user.password);
 
     let data_user = Data::User(user.clone());
 
@@ -107,7 +117,7 @@ pub async fn add_user(new_user: NewUser) -> Result<(), ControlError> {
         let db = get_database_instance();
 
         let mut new_user = new_user;
-        new_user.password = criptography::encrpt(new_user.password);
+        new_user.password = encrpt(new_user.password);
 
         let new_user: Data = Data::NewUser(new_user);
 
@@ -130,40 +140,41 @@ pub async fn edit_user(user: UserDb) -> Result<(), ControlError> {
     Ok(())
 }
 
-#[allow(deprecated, unused)]
-pub async fn restore_password(user: User) -> Result<(), ControlError> {
-    let db = get_database_instance();
+// #[allow(deprecated, unused)]
+// pub async fn restore_password(user: User) -> Result<(), ControlError> {
+//     let db = get_database_instance();
 
-    let db_user = db
-        .get(Data::User(user))
-        .await
-        .map_err(ControlError::ErrorExternDB)?;
+//     let db_user = db
+//         .get(Data::User(user))
+//         .await
+//         .map_err(ControlError::ErrorExternDB)?;
 
-    match db_user {
-        Data::UserDb(mut user_data) => {
-            let new_pass = criptography::gen_string(8, &[65, 122]);
-            user_data.password = criptography::encrpt(String::from(&new_pass));
-            db.edit(Data::UserDb(user_data.clone()))
-                .await
-                .map_err(ControlError::ErrorExternDB)?;
+//     match db_user {
+//         Data::UserDb(mut user_data) => {
+//             let new_pass = criptography::gen_string(8, &[65, 122]);
+//             user_data.password = encrpt(String::from(&new_pass));
+//             db.edit(Data::UserDb(user_data.clone()))
+//                 .await
+//                 .map_err(ControlError::ErrorExternDB)?;
 
-            std::mem::drop(tokio::task::spawn(async move {
-                let _ = send_email(
-                    "esmeralda.restorepass@gmail.com",
-                    &user_data.email,
-                    "Recuperação de senha Esmeralda",
-                    format!("Caso não tenha sido você, apenas ignore este e-mail.\n Sua senha agora é: {}", new_pass),
-                    String::from("Foi solicitada uma recuperação de senha com seu e-mail")
-                    ).await;
-            }));
-        }
-        _ => {
-            return Err(ControlError::UserNotExists(ErrorLog {
-                title: "User with this email not exists",
-                code: 305,
-                file: "user_controller.rs",
-            }))
-        }
-    }
-    Ok(())
-}
+//             std::mem::drop(tokio::task::spawn(async move {
+//                 let _ = send_email(
+//                     "esmeralda.restorepass@gmail.com",
+//                     &user_data.email,
+//                     "Recuperação de senha Esmeralda",
+//                     format!("Caso não tenha sido você, apenas ignore este
+// e-mail.\n Sua senha agora é: {}", new_pass),                     
+// String::from("Foi solicitada uma recuperação de senha com seu e-mail")
+//                     ).await;
+//             }));
+//         }
+//         _ => {
+//             return Err(ControlError::UserNotExists(ErrorLog {
+//                 title: "User with this email not exists",
+//                 code: 305,
+//                 file: "user_controller.rs",
+//             }))
+//         }
+//     }
+//     Ok(())
+// }

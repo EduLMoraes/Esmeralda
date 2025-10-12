@@ -1,6 +1,6 @@
-#[allow(unused_imports)]
-use super::gen_string;
+#![allow(unused)]
 
+use crate::segurance::criptography::gen_string::gen_string;
 #[test]
 fn test_generate_password_length() {
     let password = gen_string(8, &[65, 122]);
