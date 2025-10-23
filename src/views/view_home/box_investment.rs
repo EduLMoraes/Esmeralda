@@ -1,7 +1,9 @@
-use crate::{apis::yahoo_finance::get_quote, views::alerts::alert};
+use crate::{
+    apis::yahoo_finance::get_quote,
+    views::{alerts::alert, view_home::IsBoxView},
+};
 use glib::clone;
-use gtk::{Adjustment, Box, CheckButton, Entry, Grid, Label, Orientation, SpinButton};
-use gtk::prelude::*;
+use gtk::{prelude::*, Adjustment, Box, CheckButton, Entry, Grid, Label, Orientation, SpinButton};
 const MAX_UPPER: f64 = f64::MAX;
 const MIN_LOWER: f64 = f64::MIN;
 const BASES_POINT: f64 = 100.0;
@@ -11,16 +13,66 @@ pub struct Investments {}
 impl Investments {
     const TITLE: &'static str = "invest";
 
-    pub fn new() -> Box {
-        let box_index = Box::new(Orientation::Vertical, 0);
-        box_index.add_css_class("box_calculator_index");
-        box_index.append(&Self::get_box());
-        box_index
+    pub fn new() -> Self {
+        Self {}
     }
 
-    pub fn get_box() -> Box {
+    fn auto_complete(
+        input: &SpinButton,
+        actions: &SpinButton,
+        value: &SpinButton,
+        total: &SpinButton,
+        yields: &SpinButton,
+        magic: &SpinButton,
+        yields_tax: &SpinButton,
+        is_month: &CheckButton,
+    ) {
+        input.connect_value_changed(clone!(
+            #[weak]
+            actions,
+            #[weak]
+            total,
+            #[weak]
+            value,
+            #[weak]
+            magic,
+            #[weak]
+            yields,
+            #[weak]
+            yields_tax,
+            #[weak]
+            is_month,
+            move |_| {
+                let yield_year = value.value() * (yields_tax.value() / BASES_POINT);
+                let yield_month = yield_year / NUM_MONTH_IN_YEAR;
+
+                if yields_tax.value() > 0.0 && value.value() > 0.0 {
+                    magic.set_value(value.value() / yield_month + 1.0);
+                }
+
+                if is_month.is_active() {
+                    yields.set_value(actions.value() * yield_month);
+                }
+                else {
+                    yields.set_value(actions.value() * yield_year);
+                }
+
+                if total.value() < value.value() && actions.value() < 1.0 {
+                    actions.set_value(total.value() / value.value());
+                }
+                else {
+                    total.set_value(actions.value() * value.value());
+                }
+            }
+        ));
+    }
+}
+
+impl IsBoxView for Investments {
+    fn get_box(&mut self) -> Box {
         let box_index = Box::new(Orientation::Horizontal, 2);
         box_index.add_css_class("box_calculator");
+        box_index.add_css_class("box_calculator_index");
 
         let name_label = Label::new(Some("Cota:"));
         let vpa_label = Label::new(Some("Valor p/ Cota(R$):"));
@@ -266,53 +318,7 @@ impl Investments {
         box_index
     }
 
-    fn auto_complete(
-        input: &SpinButton,
-        actions: &SpinButton,
-        value: &SpinButton,
-        total: &SpinButton,
-        yields: &SpinButton,
-        magic: &SpinButton,
-        yields_tax: &SpinButton,
-        is_month: &CheckButton,
-    ) {
-        input.connect_value_changed(clone!(
-            #[weak]
-            actions,
-            #[weak]
-            total,
-            #[weak]
-            value,
-            #[weak]
-            magic,
-            #[weak]
-            yields,
-            #[weak]
-            yields_tax,
-            #[weak]
-            is_month,
-            move |_| {
-                let yield_year = value.value() * (yields_tax.value() / BASES_POINT);
-                let yield_month = yield_year / NUM_MONTH_IN_YEAR;
-
-                if yields_tax.value() > 0.0 && value.value() > 0.0 {
-                    magic.set_value(value.value() / yield_month + 1.0);
-                }
-
-                if is_month.is_active() {
-                    yields.set_value(actions.value() * yield_month);
-                }
-                else {
-                    yields.set_value(actions.value() * yield_year);
-                }
-
-                if total.value() < value.value() && actions.value() < 1.0 {
-                    actions.set_value(total.value() / value.value());
-                }
-                else {
-                    total.set_value(actions.value() * value.value());
-                }
-            }
-        ));
+    fn get_title(&self) -> &'static str {
+        Self::TITLE
     }
 }

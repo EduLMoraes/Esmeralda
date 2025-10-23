@@ -9,7 +9,10 @@ use crate::{
         alerts::alert,
         login::ViewLogin,
         register::ViewRegister,
-        view_home::{box_count::BoxCount, box_left_menu::LeftMenu, box_plot::Plot},
+        view_home::{
+            box_count::BoxCount, box_investment::Investments, box_left_menu::LeftMenu,
+            box_plot::Plot,
+        },
     },
 };
 use chrono::{Datelike, Utc};
@@ -66,6 +69,7 @@ impl HomeView {
         self.current_page = Some(page);
         let mut page: std::boxed::Box<dyn IsBoxView> = match page {
             PageHome::Plot => std::boxed::Box::new(Plot::new()),
+            PageHome::Investments => std::boxed::Box::new(Investments::new()),
             _ => std::boxed::Box::new(BoxCount::new(RefCell::new(self.clone()))),
         };
 
