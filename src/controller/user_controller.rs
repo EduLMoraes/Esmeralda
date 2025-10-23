@@ -1,3 +1,4 @@
+#![allow(clippy::await_holding_lock)]
 use crate::{
     controller::people_controller::{gen_peoples_instance, get_peoples, get_peoples_instance},
     model::{
@@ -163,7 +164,7 @@ pub async fn edit_user(user: UserDb) -> Result<(), ControlError> {
 //                     &user_data.email,
 //                     "Recuperação de senha Esmeralda",
 //                     format!("Caso não tenha sido você, apenas ignore este
-// e-mail.\n Sua senha agora é: {}", new_pass),                     
+// e-mail.\n Sua senha agora é: {}", new_pass),
 // String::from("Foi solicitada uma recuperação de senha com seu e-mail")
 //                     ).await;
 //             }));

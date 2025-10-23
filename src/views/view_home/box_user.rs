@@ -1,3 +1,4 @@
+#![allow(unused)]
 use crate::{
     controller::{
         data_controller::update_counts_with_db,

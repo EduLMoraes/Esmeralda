@@ -1,4 +1,3 @@
- 
 use chrono::NaiveDate;
 
 mod test_count;

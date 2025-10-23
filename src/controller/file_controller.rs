@@ -1,6 +1,16 @@
-use std::env::var;
+#![allow(unused)]
 
-use crate::{model::{errors::{ControlError, ErrorLog}, list::ListCount}, utils::{export::{csv::export_csv, html::export_html}, import::self_csv::read_csv}};
+use crate::{
+    model::{
+        errors::{ControlError, ErrorLog},
+        list::ListCount,
+    },
+    utils::{
+        export::{csv::export_csv, html::export_html},
+        import::self_csv::read_csv,
+    },
+};
+use std::env::var;
 
 /// This is to export the datas in a file.
 /// Example:

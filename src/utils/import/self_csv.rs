@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use crate::model::{count::Count, list::ListCount};
 
 pub async fn read_csv(path: &str, data: &mut ListCount) -> Result<(), String> {
@@ -5,7 +7,7 @@ pub async fn read_csv(path: &str, data: &mut ListCount) -> Result<(), String> {
 
     for record in reader.records() {
         let record = record.map_err(|e| format!("{e} to parse record"))?;
-        if record[0] == "id".to_string() {
+        if record[0].trim() == "id" {
             continue;
         }
         for row in &record {
@@ -32,7 +34,7 @@ pub async fn read_csv(path: &str, data: &mut ListCount) -> Result<(), String> {
             let value = row[9]
                 .parse::<f32>()
                 .map_err(|e| format!("{e} to parse value"))?;
-            let status = row[10].to_string() == "Paga";
+            let status = row[10] == "Paga";
             let count = Count {
                 id,
                 debtor,

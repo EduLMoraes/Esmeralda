@@ -1,7 +1,5 @@
 use crate::utils::validate::{alphabetic::is_alphabetic, email_valid};
 
- 
-
 #[deprecated]
 #[allow(unused)]
 pub fn is_alpha(text: &str) -> bool {

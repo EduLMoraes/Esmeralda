@@ -17,6 +17,7 @@ impl Investments {
         Self {}
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn auto_complete(
         input: &SpinButton,
         actions: &SpinButton,

@@ -1,8 +1,5 @@
 use std::{fs::File, path::Path};
-
 use zip::ZipArchive;
-
- 
 
 pub fn unzip(file_path: &str, destination: &str) -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open(file_path)?;

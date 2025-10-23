@@ -1,3 +1,5 @@
+#![allow(static_mut_refs)]
+
 use crate::{
     controller::{
         user_controller::{add_user, login},
@@ -35,6 +37,9 @@ impl ViewRegister {
     }
 
     pub fn rgter_screen(&self) -> Box {
+        unsafe {
+            *ACCEPT.borrow_mut() = false;
+        }
         self.stack
             .borrow()
             .set_css_classes(&["register_window", "window"]);

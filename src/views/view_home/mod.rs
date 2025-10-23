@@ -18,15 +18,9 @@ use crate::{
 use chrono::{Datelike, Utc};
 use glib::clone;
 use gtk::{
-    prelude::*, Align, Box, Button, DropDown, Image, Label, ListBox, Orientation, SearchEntry,
-    Stack,
+    prelude::*, Align, Box, Button, DropDown, Image, Label, Orientation, SearchEntry, Stack,
 };
-use std::{
-    borrow::BorrowMut,
-    cell::RefCell,
-    env,
-    sync::{Mutex, OnceLock},
-};
+use std::{borrow::BorrowMut, cell::RefCell, env};
 use tokio::runtime::Runtime;
 
 mod box_count;
@@ -34,10 +28,6 @@ mod box_investment;
 mod box_left_menu;
 mod box_plot;
 mod box_user;
-
-static mut LISTBOX: OnceLock<ListBox> = OnceLock::new();
-static mut BOXHOME: OnceLock<Box> = OnceLock::new();
-const IS_ALERTED: Mutex<bool> = Mutex::new(false);
 
 #[derive(Clone, Copy, Debug)]
 pub enum PageHome {
@@ -113,7 +103,7 @@ impl HomeView {
     }
 
     pub fn reload_home(&mut self) {
-        let curr_page = self.current_page.as_ref().unwrap().clone();
+        let curr_page = *self.current_page.as_ref().unwrap();
         tracing::info!("curr_page {curr_page:?}");
         self.load_page(curr_page);
     }

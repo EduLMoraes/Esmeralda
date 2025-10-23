@@ -1,9 +1,10 @@
+use crate::segurance::criptography::gen_string::gen_string;
 use std::{
-    env, fs::{self, File}, io::{Read, Write}
+    env,
+    fs::{self, File},
+    io::{Read, Write},
 };
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
-
-use crate::segurance::criptography::gen_string::gen_string;
 
 /// This gen the variables of ambient if she's not exists
 /// garant the functionality of system.
@@ -77,7 +78,7 @@ pub fn get_config() {
         env::set_var("CSS_PATH", format!("{path}/.esmeralda/styles/global.css"))
     }
     if env::var("CARGO_PKG_VERSION").is_err() {
-        env::set_var("CARGO_PKG_VERSION", format!("1.2.3"))
+        env::set_var("CARGO_PKG_VERSION", "1.4.0")
     }
     if env::var("MANAGER_PATH").is_err() {
         env::set_var("MANAGER_PATH", format!("{path}/.esmeralda/manager_db"));

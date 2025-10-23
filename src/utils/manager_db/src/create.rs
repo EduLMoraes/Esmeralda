@@ -3,7 +3,6 @@ use rusqlite::Connection;
 // use std::os::unix::fs::PermissionsExt;
 #[path = "./versions/mod.rs"]
 mod versions;
- 
 
 pub fn create_database(conn: &Connection, last_version: String) -> Result<(), String> {
     let _ = match last_version.trim() {

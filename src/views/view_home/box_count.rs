@@ -4,12 +4,7 @@ use crate::{
         data_controller::{edit, get_groups, save, update_counts_with_db},
         people_controller::{add_people, get_peoples_instance},
     },
-    model::{
-        count::Count,
-        debtor::Debtor,
-        list::{get_counts_instance, ListCount},
-        people::People,
-    },
+    model::{count::Count, debtor::Debtor, list::get_counts_instance, people::People},
     views::{
         alerts::{alert, confirm, edit_count},
         view_home::{HomeView, IsBoxView},
@@ -172,16 +167,13 @@ impl BoxCount {
                                 #[strong]
                                 slf,
                                 move |_, res| {
-                                    match res {
-                                        ResponseType::Yes => {
-                                            if !get_counts_instance().remove(&info.id) {
-                                                alert("Ocorreu um erro ao tentar", "Erro!");
-                                            }
-                                            else {
-                                                slf.home.borrow_mut().reload_home();
-                                            }
+                                    if res == ResponseType::Yes {
+                                        if !get_counts_instance().remove(&info.id) {
+                                            alert("Ocorreu um erro ao tentar", "Erro!");
                                         }
-                                        _ => {}
+                                        else {
+                                            slf.home.borrow_mut().reload_home();
+                                        }
                                     }
                                 }
                             ));
@@ -391,16 +383,13 @@ impl BoxCount {
                                 #[strong]
                                 slf,
                                 move |_, res| {
-                                    match res {
-                                        ResponseType::Yes => {
-                                            if !get_counts_instance().remove(&info.id) {
-                                                alert("Ocorreu um erro ao tentar", "Erro!");
-                                            }
-                                            else {
-                                                slf.home.borrow_mut().reload_home();
-                                            }
+                                    if res == ResponseType::Yes {
+                                        if !get_counts_instance().remove(&info.id) {
+                                            alert("Ocorreu um erro ao tentar", "Erro!");
                                         }
-                                        _ => {}
+                                        else {
+                                            slf.home.borrow_mut().reload_home();
+                                        }
                                     }
                                 }
                             ));
@@ -538,7 +527,7 @@ impl BoxCount {
         nature: &str,
         infos: &Vec<Count>,
         stack: &Stack,
-        stack_home: &Stack,
+        _stack_home: &Stack,
     ) -> Box {
         let mut soma: f32 = 0.0;
         let mut status: bool = true;
@@ -617,8 +606,6 @@ impl BoxCount {
             stack,
             #[strong]
             infos,
-            #[weak]
-            stack_home,
             move |_| {
                 let _ = slf.get_grid_infos(&stack, &infos, &title.text());
                 stack.set_visible_child_name("details");
@@ -1157,7 +1144,7 @@ impl BoxCount {
         nature: &str,
         infos: &Vec<Count>,
         stack: &Stack,
-        stack_home: &Stack,
+        _stack_home: &Stack,
     ) -> Box {
         let mut soma: f32 = 0.0;
 
@@ -1243,8 +1230,6 @@ impl BoxCount {
             stack,
             #[strong]
             infos,
-            #[weak]
-            stack_home,
             move |_| {
                 let _ = slf.get_grid_infos(&stack, &infos, &title.text());
                 stack.set_visible_child_name("details");

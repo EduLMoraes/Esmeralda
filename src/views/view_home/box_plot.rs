@@ -1,4 +1,4 @@
-use crate::{utils, views::view_home::IsBoxView};
+use crate::views::view_home::IsBoxView;
 use gtk::{prelude::*, Box, Orientation, Picture};
 use std::env;
 

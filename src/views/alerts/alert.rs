@@ -1,6 +1,6 @@
 #![allow(deprecated)]
 use crate::views::alerts::HAS_MESSAGE_DIALOG;
-use gtk::{MessageDialog, prelude::*};
+use gtk::{prelude::*, MessageDialog};
 
 #[allow(deprecated)]
 pub fn alert(message: &str, title: &str) {

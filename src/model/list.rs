@@ -1,3 +1,4 @@
+#![allow(unused)]
 use chrono::Datelike;
 use std::{cmp::Reverse, collections::HashMap, sync::Mutex};
 use tokio::runtime::Runtime;
