@@ -1,0 +1,33 @@
+[package]
+name = "esmeralda-bin"
+version = "1.5.0"
+edition = "2021"
+description = "The purpose of the Emerald is to help control spending and money, knowing where the money goes, how much can be spent, who made the debt and the total of that debt."
+resolver = "2"
+license = "GNU"
+
+[dependencies]
+
+
+[package.metadata.bundle]
+name = "esmeralda-bin"
+identifier = "io.github.edulmoraes.esmeralda"
+icon = ["src/Views/assets/icon/icon.ico"]
+resources = ["src/Views/assets", "src/Views/styles"]
+license = "GNU"
+category = "Finance"
+long_description = """
+The Esmeralda app is a free software, if you has dificulty to control your debs, you can use he to help you.
+Its easy use and hight perfomance.
+"""
+
+[package.metadata.bundle.windows]
+resources = [
+    "./src/Views/assets",
+    "./src/Views/styles",
+    "C:/msys64/mingw64/lib/pkgconfig",
+]
+windows_use_terminal = false
+
+[build-dependencies]
+zip = "2.1.0"
