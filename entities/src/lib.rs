@@ -1,0 +1,24 @@
+use chrono::NaiveDate;
+use serde::{Deserialize, Deserializer, Serializer, de};
+
+pub mod goal;
+pub mod people;
+pub mod user;
+pub mod debt;
+
+const FORMAT: &str = "%D-%m-%y";
+
+fn serialize_naive_date<S>(date: &NaiveDate, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    serializer.serialize_str(&date.format(FORMAT).to_string())
+}
+
+fn deserialize_naive_date<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    NaiveDate::parse_from_str(&s, FORMAT).map_err(de::Error::custom)
+}
