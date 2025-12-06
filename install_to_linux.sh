@@ -21,7 +21,7 @@ rm sources.zip
 echo "Criando atalhos na Área de Trabalho..."
 
 BASE_DIR="$HOME/.esmeralda"
-DESKTOP_DIR="$HOME/Área de trabalho"
+DESKTOP_DIR="$HOME/Área\ de\ Trabalho"
 ICON_PATH="$BASE_DIR/assets/icon/icon.png"
 
 if [[ ! -f "$ICON_PATH" ]]; then
