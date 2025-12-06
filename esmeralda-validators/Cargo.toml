@@ -1,0 +1,7 @@
+[package]
+name = "esmeralda-validators"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+regex = "1.10.5"

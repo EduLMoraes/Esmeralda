@@ -5,3 +5,7 @@ edition.workspace = true
 
 [dependencies]
 thiserror.workspace = true
+chrono.workspace = true
+
+[dependencies.esmeralda-entities]
+path = "../entities"

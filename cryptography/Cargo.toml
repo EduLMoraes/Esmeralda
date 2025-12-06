@@ -1,7 +1,10 @@
 [package]
 name = "esmeralda-cryptography"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
 thiserror.workspace = true
+bcrypt = "0.15.1"
+aes-gcm = "0.10.3"
+rand = "0.8.5"

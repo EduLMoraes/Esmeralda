@@ -1,0 +1,16 @@
+[package]
+name = "esmeralda-services"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+esmeralda-entities = { path = "../entities" }
+esmeralda-database = { path = "../database" }
+esmeralda-cryptography = { path = "../cryptography" }
+esmeralda-debt = { path = "../debt" }
+esmeralda-apis = { path = "../esmeralda-apis" }
+esmeralda-validators = { path = "../esmeralda-validators" }
+thiserror.workspace = true
+async-trait = "0.1"
+uuid = { version = "1.0", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }

@@ -6,3 +6,9 @@ edition.workspace = true
 [dependencies]
 serde.workspace = true
 thiserror.workspace = true
+rusqlite = { version = "0.31.0", features = ["bundled"] }
+chrono.workspace = true
+serde_json = "1.0"
+esmeralda-entities = { path = "../entities" }
+uuid.workspace = true
+async-trait = "0.1"
