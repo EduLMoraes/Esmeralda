@@ -1,0 +1,8 @@
+[package]
+name = "esmeralda-views"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+egui = { workspace = true }
+eframe = { workspace = true }

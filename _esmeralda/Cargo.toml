@@ -7,8 +7,14 @@ resolver = "2"
 license = "MIT"
 
 [dependencies]
+eframe = { workspace = true }
+egui = { workspace = true }
+async-trait = "0.1"
+esmeralda-services = { path = "../esmeralda-services" }
+esmeralda-apis = { path = "../esmeralda-apis" }
 esmeralda-cryptography = { path = "../cryptography" }
 esmeralda-database = { path = "../database" }
 esmeralda-debt = { path = "../debt" }
 esmeralda-entities = { path = "../entities" }
 esmeralda-file-export = { path = "../file-export" }
+esmeralda-views = { path = "../esmeralda-views" }

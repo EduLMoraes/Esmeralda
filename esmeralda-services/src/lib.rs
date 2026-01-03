@@ -20,10 +20,14 @@ pub enum UserServiceError {
     Api(String),
 }
 
-#[async_trait::async_trait]
 pub trait UserService {
-    async fn login(&self, email: &str, password: &str) -> Result<User, UserServiceError>;
-    async fn add_user(&self, username: &str, email: &str, password: &str) -> Result<User, UserServiceError>;
-    async fn edit_user(&self, user: &User) -> Result<(), UserServiceError>;
-    async fn restore_password(&self, email: &str) -> Result<(), UserServiceError>;
+    fn login(&self, email: &str, password: &str) -> Result<User, UserServiceError>;
+    fn add_user(
+        &self,
+        username: &str,
+        email: &str,
+        password: &str,
+    ) -> Result<User, UserServiceError>;
+    fn edit_user(&self, user: &User) -> Result<(), UserServiceError>;
+    fn restore_password(&self, email: &str) -> Result<(), UserServiceError>;
 }

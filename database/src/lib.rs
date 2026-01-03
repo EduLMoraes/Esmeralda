@@ -32,7 +32,7 @@ pub trait Database<'a, D: Data + serde::Serialize + serde::de::DeserializeOwned 
     fn edit(&self, data: D) -> Result<(), DatabaseError>;
     fn suspend(&self, data: D) -> Result<(), DatabaseError>;
     fn get_data(&self, id: &'a str) -> Result<D, DatabaseError>;
-    fn get_by_email(&self, email: &'a str) -> Result<D, DatabaseError> {
+    fn get_by_email(&self, _email: &'a str) -> Result<D, DatabaseError> {
         Err(DatabaseError::ErrorOnGetDataOfDatabase("Method not implemented".to_string()))
     }
 }

@@ -1,5 +1,4 @@
 use super::{UserService, UserServiceError};
-use async_trait::async_trait;
 use chrono::Utc;
 use esmeralda_apis::mailjet::MailjetApi;
 use esmeralda_cryptography::PasswordHasher;
@@ -10,9 +9,9 @@ use uuid::Uuid;
 
 pub struct UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User> + Send + Sync,
-    H: PasswordHasher + Send + Sync,
-    M: MailjetApi + Send + Sync,
+    D: for<'a> Database<'a, User>,
+    H: PasswordHasher,
+    M: MailjetApi,
 {
     user_repo: Arc<D>,
     hasher: Arc<H>,
@@ -21,9 +20,9 @@ where
 
 impl<D, H, M> UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User> + Send + Sync,
-    H: PasswordHasher + Send + Sync,
-    M: MailjetApi + Send + Sync,
+    D: for<'a> Database<'a, User>,
+    H: PasswordHasher,
+    M: MailjetApi,
 {
     pub fn new(user_repo: Arc<D>, hasher: Arc<H>, mail_api: Arc<M>) -> Self {
         Self {
@@ -34,14 +33,13 @@ where
     }
 }
 
-#[async_trait]
 impl<D, H, M> UserService for UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User> + Send + Sync,
-    H: PasswordHasher + Send + Sync,
-    M: MailjetApi + Send + Sync,
+    D: for<'a> Database<'a, User>,
+    H: PasswordHasher,
+    M: MailjetApi,
 {
-    async fn login(&self, email: &str, password: &str) -> Result<User, UserServiceError> {
+    fn login(&self, email: &str, password: &str) -> Result<User, UserServiceError> {
         let user = self
             .user_repo
             .get_by_email(email)
@@ -64,7 +62,7 @@ where
         }
     }
 
-    async fn add_user(
+    fn add_user(
         &self,
         username: &str,
         email: &str,
@@ -89,13 +87,13 @@ where
         Ok(new_user)
     }
 
-    async fn edit_user(&self, user: &User) -> Result<(), UserServiceError> {
+    fn edit_user(&self, user: &User) -> Result<(), UserServiceError> {
         self.user_repo
             .edit(user.clone())
             .map_err(|e| UserServiceError::Database(e.to_string()))
     }
 
-    async fn restore_password(&self, email: &str) -> Result<(), UserServiceError> {
+    fn restore_password(&self, email: &str) -> Result<(), UserServiceError> {
         let mut user = self
             .user_repo
             .get_by_email(email)
@@ -122,7 +120,6 @@ where
                 format!("Your new password is: {}", new_password),
                 "Password recovery".to_string(),
             )
-            .await
             .map_err(|e| UserServiceError::Api(e.to_string()))
     }
 }

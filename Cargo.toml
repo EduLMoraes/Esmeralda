@@ -1,5 +1,17 @@
 [workspace]
-members = ["debt", "database", "cryptography", "entities", "file-export", "_esmeralda", "esmeralda-charts", "esmeralda-validators", "esmeralda-apis", "esmeralda-services"]
+members = [
+    "debt",
+    "database",
+    "cryptography",
+    "entities",
+    "file-export",
+    "_esmeralda",
+    "esmeralda-charts",
+    "esmeralda-validators",
+    "esmeralda-apis",
+    "esmeralda-services",
+    "esmeralda-views",
+]
 resolver = "2"
 
 [workspace.package]
@@ -7,7 +19,9 @@ version = "1.5.0"
 edition = "2021"
 
 [workspace.dependencies]
-thiserror = "1.0"
+thiserror = "2.0.17"
+egui = "0.33.3"
+eframe = "0.33.3"
 serde = { version = "1.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.0", features = ["v4", "serde"] }
