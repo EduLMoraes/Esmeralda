@@ -1,6 +1,7 @@
 use rusqlite::Connection;
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct Db {
     pub conn: Arc<Connection>,
 }

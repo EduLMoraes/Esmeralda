@@ -1,7 +1,7 @@
-use super::{rusqlite_impl::Db, Data, Database, DatabaseError};
+use super::{rusqlite_impl::Db, Database, DatabaseError};
 use esmeralda_entities::user::User;
 use rusqlite::params;
-use serde_json;
+use chrono::NaiveDate;
 
 pub struct UserRepository {
     db: Db,
@@ -12,13 +12,13 @@ impl UserRepository {
         // Create table if it doesn't exist
         db.conn
             .execute(
-                &format!(
-                    "CREATE TABLE IF NOT EXISTS {} (
-                        id TEXT PRIMARY KEY,
-                        data TEXT NOT NULL
-                    )",
-                    User::TITLE
-                ),
+                "CREATE TABLE IF NOT EXISTS Users (
+                    id TEXT PRIMARY KEY,
+                    username TEXT NOT NULL UNIQUE,
+                    email TEXT NOT NULL UNIQUE,
+                    password TEXT NOT NULL,
+                    last_login TEXT NOT NULL
+                )",
                 [],
             )
             .unwrap();
@@ -26,28 +26,36 @@ impl UserRepository {
     }
 }
 
-impl<'a> Database<'a, User> for UserRepository {
+impl Database<User> for UserRepository {
     fn insert(&self, data: User) -> Result<(), DatabaseError> {
-        let data_json = serde_json::to_string(&data)
-            .map_err(|e| DatabaseError::ErrorOnInsertData(e.to_string()))?;
         self.db
             .conn
             .execute(
-                &format!("INSERT INTO {} (id, data) VALUES (?1, ?2)", User::TITLE),
-                params![data.id.to_string(), data_json],
+                "INSERT INTO Users (id, username, email, password, last_login) VALUES (?1, ?2, ?3, ?4, ?5)",
+                params![
+                    data.id.to_string(),
+                    data.username,
+                    data.email,
+                    data.password,
+                    data.last_login.format("%d-%m-%Y").to_string()
+                ],
             )
             .map_err(|e| DatabaseError::ErrorOnInsertData(e.to_string()))?;
         Ok(())
     }
 
     fn edit(&self, data: User) -> Result<(), DatabaseError> {
-        let data_json = serde_json::to_string(&data)
-            .map_err(|e| DatabaseError::ErrorOnEditData(e.to_string()))?;
         self.db
             .conn
             .execute(
-                &format!("UPDATE {} SET data = ?2 WHERE id = ?1", User::TITLE),
-                params![data.id.to_string(), data_json],
+                "UPDATE Users SET username = ?2, email = ?3, password = ?4, last_login = ?5 WHERE id = ?1",
+                params![
+                    data.id.to_string(),
+                    data.username,
+                    data.email,
+                    data.password,
+                    data.last_login.format("%d-%m-%Y").to_string()
+                ],
             )
             .map_err(|e| DatabaseError::ErrorOnEditData(e.to_string()))?;
         Ok(())
@@ -57,18 +65,18 @@ impl<'a> Database<'a, User> for UserRepository {
         self.db
             .conn
             .execute(
-                &format!("DELETE FROM {} WHERE id = ?1", User::TITLE),
+                "DELETE FROM Users WHERE id = ?1",
                 params![data.id.to_string()],
             )
             .map_err(|e| DatabaseError::ErrorOnSuspendData(e.to_string()))?;
         Ok(())
     }
 
-    fn get_data(&self, id: &'a str) -> Result<User, DatabaseError> {
+    fn get_data(&self, id: &str) -> Result<User, DatabaseError> {
         let mut stmt = self
             .db
             .conn
-            .prepare(&format!("SELECT data FROM {} WHERE id = ?1", User::TITLE))
+            .prepare("SELECT id, username, email, password, last_login FROM Users WHERE id = ?1")
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
 
         let mut rows = stmt
@@ -79,11 +87,15 @@ impl<'a> Database<'a, User> for UserRepository {
             .next()
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?
         {
-            let data: String = row
-                .get(0)
-                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
-            serde_json::from_str(&data)
-                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))
+            let id: String = row.get(0).unwrap();
+            let last_login_str: String = row.get(4).unwrap();
+            Ok(User {
+                id: id.parse().unwrap(),
+                username: row.get(1).unwrap(),
+                email: row.get(2).unwrap(),
+                password: row.get(3).unwrap(),
+                last_login: NaiveDate::parse_from_str(&last_login_str, "%d-%m-%Y").unwrap(),
+            })
         } else {
             Err(DatabaseError::ErrorOnGetDataOfDatabase(
                 "User not found".to_string(),
@@ -91,14 +103,11 @@ impl<'a> Database<'a, User> for UserRepository {
         }
     }
 
-    fn get_by_email(&self, email: &'a str) -> Result<User, DatabaseError> {
+    fn get_by_email(&self, email: &str) -> Result<User, DatabaseError> {
         let mut stmt = self
             .db
             .conn
-            .prepare(&format!(
-                "SELECT data FROM {} WHERE json_extract(data, '$.email') = ?1",
-                User::TITLE
-            ))
+            .prepare("SELECT id, username, email, password, last_login FROM Users WHERE email = ?1")
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
 
         let mut rows = stmt
@@ -109,11 +118,15 @@ impl<'a> Database<'a, User> for UserRepository {
             .next()
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?
         {
-            let data: String = row
-                .get(0)
-                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
-            serde_json::from_str(&data)
-                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))
+            let id: String = row.get(0).unwrap();
+            let last_login_str: String = row.get(4).unwrap();
+            Ok(User {
+                id: id.parse().unwrap(),
+                username: row.get(1).unwrap(),
+                email: row.get(2).unwrap(),
+                password: row.get(3).unwrap(),
+                last_login: NaiveDate::parse_from_str(&last_login_str, "%d-%m-%Y").unwrap(),
+            })
         } else {
             Err(DatabaseError::ErrorOnGetDataOfDatabase(
                 "User not found".to_string(),

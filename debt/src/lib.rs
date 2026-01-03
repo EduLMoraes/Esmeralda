@@ -10,6 +10,8 @@ pub enum DebtError {
 }
 
 pub trait DebtService {
+    fn get_all(&self, user_id: &str) -> Result<Vec<Debt>, DebtError>;
+    fn insert(&self, debt: Debt) -> Result<(), DebtError>;
     fn pay_installment(&self, debt: &mut Debt) -> Result<(), DebtError>;
     fn pay_all(&self, debt: &mut Debt) -> Result<(), DebtError>;
     fn calculate_end_date(&self, debt: &Debt) -> chrono::NaiveDate;

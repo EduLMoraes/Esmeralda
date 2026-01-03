@@ -5,6 +5,8 @@ use egui::Vec2;
 use egui::{Color32, RichText, Stroke};
 use esmeralda_entities::debt::{Debt, NatureDebt};
 use uuid::Uuid;
+use esmeralda_entities::user::User;
+use esmeralda_entities::people::People;
 
 pub struct AddDebtScreen {
     pub title: String,
@@ -15,10 +17,11 @@ pub struct AddDebtScreen {
     pub start_date: NaiveDate,
     pub is_paid: bool,
     pub error_msg: Option<String>,
+    pub user: Option<User>,
 }
 
-impl Default for AddDebtScreen {
-    fn default() -> Self {
+impl AddDebtScreen {
+    pub fn new(user: Option<User>) -> Self {
         Self {
             title: String::new(),
             value: String::new(),
@@ -28,11 +31,10 @@ impl Default for AddDebtScreen {
             start_date: Local::now().naive_local().date(),
             is_paid: false,
             error_msg: None,
+            user,
         }
     }
-}
 
-impl AddDebtScreen {
     pub fn ui(&mut self, ctx: &egui::Context, is_open: &mut bool) -> Option<Debt> {
         let mut result = None;
         let mut close_modal = false;
@@ -238,13 +240,15 @@ impl AddDebtScreen {
                     .min_size(Vec2::new(ui.available_width(), 35.0));
 
                     if ui.add(btn_save).clicked() {
-                        match self.validate_and_build(end_date) {
-                            Ok(debt) => {
-                                result = Some(debt);
-                                close_modal = true;
-                                self.reset();
+                        if let Some(user) = &self.user {
+                            match self.validate_and_build(end_date, user) {
+                                Ok(debt) => {
+                                    result = Some(debt);
+                                    close_modal = true;
+                                    self.reset();
+                                }
+                                Err(e) => self.error_msg = Some(e),
                             }
-                            Err(e) => self.error_msg = Some(e),
                         }
                     }
                 });
@@ -257,7 +261,7 @@ impl AddDebtScreen {
         result
     }
 
-    fn validate_and_build(&self, end_date: NaiveDate) -> Result<Debt, String> {
+    fn validate_and_build(&self, end_date: NaiveDate, user: &User) -> Result<Debt, String> {
         if self.title.trim().is_empty() {
             return Err("O título é obrigatório.".to_string());
         }
@@ -294,7 +298,7 @@ impl AddDebtScreen {
             status: self.is_paid,
             date_start: self.start_date,
             date_end: end_date,
-            debtor: Default::default(),
+            debtor: People { id: user.id, ..Default::default() },
             proof: None,
         })
     }

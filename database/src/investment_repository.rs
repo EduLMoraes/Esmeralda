@@ -26,7 +26,7 @@ impl InvestmentRepository {
     }
 }
 
-impl<'a> Database<'a, Investment> for InvestmentRepository {
+impl Database<Investment> for InvestmentRepository {
     fn insert(&self, data: Investment) -> Result<(), DatabaseError> {
         let data_json = serde_json::to_string(&data)
             .map_err(|e| DatabaseError::ErrorOnInsertData(e.to_string()))?;
@@ -67,7 +67,7 @@ impl<'a> Database<'a, Investment> for InvestmentRepository {
         Ok(())
     }
 
-    fn get_data(&self, id: &'a str) -> Result<Investment, DatabaseError> {
+    fn get_data(&self, id: &str) -> Result<Investment, DatabaseError> {
         let mut stmt = self
             .db
             .conn

@@ -18,3 +18,6 @@ esmeralda-debt = { path = "../debt" }
 esmeralda-entities = { path = "../entities" }
 esmeralda-file-export = { path = "../file-export" }
 esmeralda-views = { path = "../esmeralda-views" }
+rusqlite = { version = "0.31.0", features = ["bundled"] }
+bcrypt = "0.15.1"
+

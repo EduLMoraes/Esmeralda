@@ -2,6 +2,9 @@ use crate::home::HomeScreen;
 use crate::login::{LoginAction, LoginScreen};
 use crate::register::{RegisterAction, RegisterScreen};
 use eframe::egui;
+use esmeralda_services::UserService;
+use esmeralda_debt::DebtService;
+use std::sync::Arc;
 
 pub mod add_debt;
 pub mod add_incoming;
@@ -32,13 +35,17 @@ pub struct EsmeraldaApp {
     pub home_screen: HomeScreen,
 }
 
-impl Default for EsmeraldaApp {
-    fn default() -> Self {
+impl EsmeraldaApp {
+    pub fn new(user_service: Arc<dyn UserService>, debt_service: Arc<dyn DebtService>) -> Self {
+        let login_screen = LoginScreen::new(user_service.clone());
+        let register_screen = RegisterScreen::new(user_service.clone());
+        let home_screen = HomeScreen::new(user_service, debt_service);
+
         Self {
             state: AppState::Login,
-            login_screen: LoginScreen::default(),
-            register_screen: RegisterScreen::default(),
-            home_screen: HomeScreen::default(),
+            login_screen,
+            register_screen,
+            home_screen,
         }
     }
 }
@@ -52,7 +59,10 @@ impl eframe::App for EsmeraldaApp {
                 egui::CentralPanel::default().show(ctx, |ui| {
                     if let Some(action) = self.login_screen.ui(ui) {
                         match action {
-                            LoginAction::Submit => self.state = AppState::Dashboard,
+                            LoginAction::Submit(user) => {
+                                self.home_screen.set_user(user);
+                                self.state = AppState::Dashboard;
+                            },
                             LoginAction::GoToRegister => self.state = AppState::Register,
                         }
                     }

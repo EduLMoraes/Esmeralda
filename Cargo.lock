@@ -1242,6 +1242,7 @@ name = "esmeralda-bin"
 version = "1.5.0"
 dependencies = [
  "async-trait",
+ "bcrypt",
  "eframe",
  "egui",
  "esmeralda-apis",
@@ -1252,6 +1253,7 @@ dependencies = [
  "esmeralda-file-export",
  "esmeralda-services",
  "esmeralda-views",
+ "rusqlite",
 ]
 
 [[package]]
@@ -1293,6 +1295,7 @@ name = "esmeralda-debt"
 version = "1.5.0"
 dependencies = [
  "chrono",
+ "esmeralda-database",
  "esmeralda-entities",
  "thiserror 2.0.17",
 ]

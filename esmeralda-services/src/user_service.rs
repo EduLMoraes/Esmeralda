@@ -9,7 +9,7 @@ use uuid::Uuid;
 
 pub struct UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User>,
+    D: Database<User>,
     H: PasswordHasher,
     M: MailjetApi,
 {
@@ -20,7 +20,7 @@ where
 
 impl<D, H, M> UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User>,
+    D: Database<User>,
     H: PasswordHasher,
     M: MailjetApi,
 {
@@ -35,7 +35,7 @@ where
 
 impl<D, H, M> UserService for UserServiceImpl<D, H, M>
 where
-    D: for<'a> Database<'a, User>,
+    D: Database<User>,
     H: PasswordHasher,
     M: MailjetApi,
 {
@@ -123,3 +123,4 @@ where
             .map_err(|e| UserServiceError::Api(e.to_string()))
     }
 }
+

@@ -6,10 +6,13 @@ use crate::{
 use chrono::{Datelike, Months, NaiveDate};
 use eframe::egui;
 use egui::{Color32, RichText, Stroke, Vec2};
-use esmeralda_debt::{DebtService, DebtServiceImpl};
+use esmeralda_debt::{DebtService};
 use esmeralda_entities::debt::{Debt, NatureDebt};
 use std::collections::HashMap;
 use uuid::Uuid;
+use esmeralda_services::UserService;
+use esmeralda_entities::user::User;
+use std::sync::Arc;
 
 #[derive(PartialEq)]
 enum Tab {
@@ -42,46 +45,39 @@ pub struct HomeScreen {
     mode: ViewMode,
     data: Vec<Debt>,
     search_query: String,
-    debt_service: DebtServiceImpl,
-
+    debt_service: Arc<dyn DebtService>,
+    user_service: Arc<dyn UserService>,
+    user: Option<User>,
     editing_id: Option<Uuid>,
     calculator_view: CalculatorScreen,
 }
 
-impl Default for HomeScreen {
-    fn default() -> Self {
-        let mut data = Vec::new();
-
-        data.push(Debt {
-            id: Uuid::new_v4(),
-            value: -750.75,
-            nature: NatureDebt::Home,
-            title: "Aluguel".to_string(),
-            status: false,
-            installments: 12,
-            paid_installments: 2,
-            date_start: chrono::Local::now().naive_local().date(),
-            date_end: chrono::Local::now().naive_local().date(),
-            ..Default::default()
-        });
+impl HomeScreen {
+    pub fn new(user_service: Arc<dyn UserService>, debt_service: Arc<dyn DebtService>) -> Self {
+        let data = debt_service.get_all("").unwrap_or_default();
 
         Self {
             selected_tab: Tab::Overview,
-            add_debt_modal: AddDebtScreen::default(),
+            add_debt_modal: AddDebtScreen::new(None),
             is_adding_debt: false,
-            add_incoming_modal: AddIncomingScreen::default(),
+            add_incoming_modal: AddIncomingScreen::new(None),
             is_adding_incoming: false,
             mode: ViewMode::Natures,
             data,
             search_query: String::new(),
-            debt_service: DebtServiceImpl,
+            debt_service,
+            user_service,
+            user: None,
             editing_id: None,
             calculator_view: CalculatorScreen::default(),
         }
     }
-}
 
-impl HomeScreen {
+    pub fn set_user(&mut self, user: User) {
+        self.data = self.debt_service.get_all(&user.id.to_string()).unwrap_or_default();
+        self.user = Some(user);
+    }
+
     pub fn ui(&mut self, ctx: &egui::Context) {
         egui::SidePanel::left("side_panel")
             .resizable(false)
@@ -148,16 +144,18 @@ impl HomeScreen {
         });
 
         if self.is_adding_debt {
+            self.add_debt_modal.user = self.user.clone();
             if let Some(new_debt) = self.add_debt_modal.ui(ctx, &mut self.is_adding_debt) {
-                self.data.push(new_debt);
+                let _ = self.debt_service.insert(new_debt);
+                self.data = self.debt_service.get_all(&self.user.as_ref().unwrap().id.to_string()).unwrap_or_default();
             }
         }
         if self.is_adding_incoming {
-            if let Some(new_incoming) = self
-                .add_incoming_modal
-                .ui(ctx, &mut self.is_adding_incoming)
+            self.add_incoming_modal.user = self.user.clone();
+            if let Some(new_incoming) = self.add_incoming_modal.ui(ctx, &mut self.is_adding_incoming)
             {
-                self.data.push(new_incoming);
+                let _ = self.debt_service.insert(new_incoming);
+                self.data = self.debt_service.get_all(&self.user.as_ref().unwrap().id.to_string()).unwrap_or_default();
             }
         }
     }

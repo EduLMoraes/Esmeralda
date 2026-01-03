@@ -27,12 +27,17 @@ pub enum DatabaseError {
     ErrorOnGetDataOfDatabase(String),
 }
 
-pub trait Database<'a, D: Data + serde::Serialize + serde::de::DeserializeOwned + Sized> {
+pub trait Database<D: Data + serde::Serialize + serde::de::DeserializeOwned + Sized> {
     fn insert(&self, data: D) -> Result<(), DatabaseError>;
     fn edit(&self, data: D) -> Result<(), DatabaseError>;
     fn suspend(&self, data: D) -> Result<(), DatabaseError>;
-    fn get_data(&self, id: &'a str) -> Result<D, DatabaseError>;
-    fn get_by_email(&self, _email: &'a str) -> Result<D, DatabaseError> {
+    fn get_data(&self, id: &str) -> Result<D, DatabaseError>;
+    fn get_by_email(&self, _email: &str) -> Result<D, DatabaseError> {
+        Err(DatabaseError::ErrorOnGetDataOfDatabase(
+            "Method not implemented".to_string(),
+        ))
+    }
+    fn get_all_from_user(&self, _user_id: &str) -> Result<Vec<D>, DatabaseError> {
         Err(DatabaseError::ErrorOnGetDataOfDatabase(
             "Method not implemented".to_string(),
         ))

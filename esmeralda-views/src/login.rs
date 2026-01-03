@@ -1,24 +1,27 @@
 use crate::*;
 use eframe::egui;
 use egui::{Color32, RichText, Shadow, TextureOptions, Vec2};
+use esmeralda_services::UserService;
+use std::sync::Arc;
+use esmeralda_entities::user::User;
 
 pub struct LoginScreen {
     username: String,
     password: String,
     error_msg: Option<String>,
+    user_service: Arc<dyn UserService>,
 }
 
-impl Default for LoginScreen {
-    fn default() -> Self {
+impl LoginScreen {
+    pub fn new(user_service: Arc<dyn UserService>) -> Self {
         Self {
             username: String::new(),
             password: String::new(),
             error_msg: None,
+            user_service,
         }
     }
-}
 
-impl LoginScreen {
     pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<LoginAction> {
         let mut action = None;
 
@@ -135,8 +138,9 @@ impl LoginScreen {
                     .min_size(egui::vec2(140.0, 45.0));
 
                     if ui.add(btn_enter).clicked() {
-                        if self.validate().is_ok() {
-                            action = Some(LoginAction::Submit);
+                        match self.user_service.login(&self.username, &self.password) {
+                            Ok(user) => action = Some(LoginAction::Submit(user)),
+                            Err(e) => self.error_msg = Some(e.to_string()),
                         }
                     }
 
@@ -160,17 +164,9 @@ impl LoginScreen {
 
         action
     }
-
-    fn validate(&mut self) -> Result<(), String> {
-        if self.username.len() < 1 || self.password.len() < 4 {
-            self.error_msg = Some("Usuário/Senha inválidos (min. 4 caracteres)".to_string());
-            return Err("Erro".to_string());
-        }
-        Ok(())
-    }
 }
 
 pub enum LoginAction {
-    Submit,
+    Submit(User),
     GoToRegister,
 }

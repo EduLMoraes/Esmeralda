@@ -26,7 +26,7 @@ impl PeopleRepository {
     }
 }
 
-impl<'a> Database<'a, People> for PeopleRepository {
+impl Database<People> for PeopleRepository {
     fn insert(&self, data: People) -> Result<(), DatabaseError> {
         let data_json = serde_json::to_string(&data)
             .map_err(|e| DatabaseError::ErrorOnInsertData(e.to_string()))?;
@@ -64,7 +64,7 @@ impl<'a> Database<'a, People> for PeopleRepository {
         Ok(())
     }
 
-    fn get_data(&self, id: &'a str) -> Result<People, DatabaseError> {
+    fn get_data(&self, id: &str) -> Result<People, DatabaseError> {
         let mut stmt = self
             .db
             .conn

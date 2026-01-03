@@ -1,4 +1,6 @@
 use eframe::egui;
+use esmeralda_services::UserService;
+use std::sync::Arc;
 
 pub struct RegisterScreen {
     pub name: String,
@@ -6,21 +8,21 @@ pub struct RegisterScreen {
     pub password: String,
     pub confirm_password: String,
     pub error_msg: Option<String>,
+    user_service: Arc<dyn UserService>,
 }
 
-impl Default for RegisterScreen {
-    fn default() -> Self {
+impl RegisterScreen {
+    pub fn new(user_service: Arc<dyn UserService>) -> Self {
         Self {
             name: String::new(),
             email: String::new(),
             password: String::new(),
             confirm_password: String::new(),
             error_msg: None,
+            user_service,
         }
     }
-}
 
-impl RegisterScreen {
     pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<RegisterAction> {
         let mut action = None;
 
@@ -91,7 +93,10 @@ impl RegisterScreen {
 
                     if ui.add(btn_register).clicked() {
                         if self.validate() {
-                            action = Some(RegisterAction::Submit);
+                            match self.user_service.add_user(&self.name, &self.email, &self.password) {
+                                Ok(_) => action = Some(RegisterAction::Submit),
+                                Err(e) => self.error_msg = Some(e.to_string()),
+                            }
                         }
                     }
 

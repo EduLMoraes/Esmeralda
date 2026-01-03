@@ -6,6 +6,7 @@ edition.workspace = true
 [dependencies]
 thiserror.workspace = true
 chrono.workspace = true
+esmeralda-database = { path = "../database" }
 
 [dependencies.esmeralda-entities]
 path = "../entities"
