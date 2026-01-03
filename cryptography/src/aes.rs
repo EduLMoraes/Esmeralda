@@ -49,7 +49,6 @@ impl Encryptor for AesGcmEncryptor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
 
     const TEST_KEY: &str = "a_32_byte_long_secret_key_for_testing";
 
@@ -71,7 +70,7 @@ mod tests {
     #[test]
     fn test_new_aes_gcm_encryptor_no_key() {
         teardown(); // Ensure the key is not set
-        let result = AesGcmEncryptor::new([0;32]);
+        let result = AesGcmEncryptor::new([0; 32]);
         assert!(result.is_err());
         match result.unwrap_err() {
             CryptoError::InvalidKey(msg) => {
@@ -84,7 +83,7 @@ mod tests {
     #[test]
     fn test_new_aes_gcm_encryptor_invalid_key_length() {
         unsafe { std::env::set_var("KEYESMERALD", "short_key") };
-        let result = AesGcmEncryptor::new([0;32]);
+        let result = AesGcmEncryptor::new([0; 32]);
         assert!(result.is_err());
         match result.unwrap_err() {
             CryptoError::InvalidKey(msg) => assert_eq!(msg, "Key must be 32 bytes long"),
@@ -96,7 +95,7 @@ mod tests {
     #[test]
     fn test_encrypt_decrypt_success() {
         setup();
-        let encryptor = AesGcmEncryptor::new([0;32]).unwrap();
+        let encryptor = AesGcmEncryptor::new([0; 32]).unwrap();
         let data = b"hello world";
         let encrypted_data = encryptor.encrypt(data).unwrap();
         let decrypted_data = encryptor.decrypt(&encrypted_data).unwrap();
@@ -107,7 +106,7 @@ mod tests {
     #[test]
     fn test_decrypt_invalid_data() {
         setup();
-        let encryptor = AesGcmEncryptor::new([0;32]).unwrap();
+        let encryptor = AesGcmEncryptor::new([0; 32]).unwrap();
         let invalid_data = b"invalid data";
         let result = encryptor.decrypt(invalid_data);
         assert!(result.is_err());
@@ -121,13 +120,13 @@ mod tests {
     #[test]
     fn test_decrypt_wrong_key() {
         setup();
-        let encryptor1 = AesGcmEncryptor::new([0;32]).unwrap();
+        let encryptor1 = AesGcmEncryptor::new([0; 32]).unwrap();
         let data = b"some secret data";
         let encrypted_data = encryptor1.encrypt(data).unwrap();
 
         // Create another encryptor with a different key
         unsafe { std::env::set_var("KEYESMERALD", "another_32_byte_key_for_tests") };
-        let encryptor2 = AesGcmEncryptor::new([0;32]).unwrap();
+        let encryptor2 = AesGcmEncryptor::new([0; 32]).unwrap();
 
         let result = encryptor2.decrypt(&encrypted_data);
         assert!(result.is_err());

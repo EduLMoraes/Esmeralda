@@ -1,22 +1,24 @@
+use crate::home::HomeScreen;
+use crate::login::{LoginAction, LoginScreen};
+use crate::register::{RegisterAction, RegisterScreen};
 use eframe::egui;
-use egui::Color32;
 
-use crate::{
-    home::HomeScreen,
-    login::{LoginAction, LoginScreen},
-    register::{RegisterAction, RegisterScreen},
-};
-pub mod add_account;
+pub mod add_debt;
+pub mod add_incoming;
+pub mod calculator;
+pub mod dashboard;
 pub mod home;
 pub mod login;
 pub mod register;
 
-const ICON_SIZE: f32 = 32.0;
-const GOLD_ACCENT: Color32 = Color32::from_rgb(212, 175, 55);
-const SLATE_BG: Color32 = Color32::from_rgb(26, 28, 30);
-const CARD_BG: Color32 = Color32::from_rgb(35, 37, 40);
-const SUCCESS_GREEN: Color32 = Color32::from_rgb(76, 175, 80);
-const DEBT_RED: Color32 = Color32::from_rgb(155, 0, 0);
+pub const PADDING: f32 = 12.0;
+pub const GOLD_ACCENT: egui::Color32 = egui::Color32::from_rgb(222, 164, 55);
+pub const DEBT_RED: egui::Color32 = egui::Color32::from_rgb(255, 105, 97);
+pub const SUCCESS_GREEN: egui::Color32 = egui::Color32::from_rgb(144, 238, 144);
+pub const SLATE_BG: egui::Color32 = egui::Color32::from_rgb(31, 31, 46);
+pub const CARD_BG: egui::Color32 = egui::Color32::from_rgb(41, 41, 64);
+pub const ICON_SIZE: f32 = 24.0;
+pub const TEXT_WHITE: egui::Color32 = egui::Color32::from_rgb(255, 255, 255);
 
 pub enum AppState {
     Login,
@@ -27,7 +29,18 @@ pub struct EsmeraldaApp {
     pub state: AppState,
     pub login_screen: LoginScreen,
     pub register_screen: RegisterScreen,
-    pub home_screen: HomeScreen, // Adicionado
+    pub home_screen: HomeScreen,
+}
+
+impl Default for EsmeraldaApp {
+    fn default() -> Self {
+        Self {
+            state: AppState::Login,
+            login_screen: LoginScreen::default(),
+            register_screen: RegisterScreen::default(),
+            home_screen: HomeScreen::default(),
+        }
+    }
 }
 
 impl eframe::App for EsmeraldaApp {
@@ -39,7 +52,7 @@ impl eframe::App for EsmeraldaApp {
                 egui::CentralPanel::default().show(ctx, |ui| {
                     if let Some(action) = self.login_screen.ui(ui) {
                         match action {
-                            LoginAction::Submit => self.state = AppState::Dashboard, // Vai para Home
+                            LoginAction::Submit => self.state = AppState::Dashboard,
                             LoginAction::GoToRegister => self.state = AppState::Register,
                         }
                     }
@@ -56,7 +69,6 @@ impl eframe::App for EsmeraldaApp {
                 });
             }
             AppState::Dashboard => {
-                // A Home gerencia seus próprios painéis (Side/Central)
                 self.home_screen.ui(ctx);
             }
         }
@@ -66,11 +78,9 @@ impl eframe::App for EsmeraldaApp {
 pub fn apply_custom_style(ctx: &egui::Context) {
     let mut visuals = egui::Visuals::dark();
 
-    // Tons de cinza neutros para a base
-    visuals.panel_fill = egui::Color32::from_rgb(18, 18, 18); // Fundo quase preto
-    visuals.window_fill = egui::Color32::from_rgb(26, 28, 30); // Cards e janelas
+    visuals.panel_fill = egui::Color32::from_rgb(18, 18, 18);
+    visuals.window_fill = egui::Color32::from_rgb(26, 28, 30);
 
-    // Ouro para a marca e interações
     let gold = egui::Color32::from_rgb(212, 175, 55);
     visuals.selection.bg_fill = gold.gamma_multiply(0.3);
     visuals.widgets.active.bg_fill = gold;

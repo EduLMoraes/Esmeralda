@@ -1,5 +1,5 @@
-use chrono::NaiveDate;
 use crate::Data;
+use chrono::NaiveDate;
 use uuid::Uuid;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone, PartialEq)]

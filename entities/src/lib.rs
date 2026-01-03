@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use serde::{Deserialize, Deserializer, Serializer, de};
+use serde::{de, Deserialize, Deserializer, Serializer};
 
 pub trait Data {
     const TITLE: &'static str;
@@ -9,11 +9,11 @@ pub trait Data {
     }
 }
 
-pub mod investment;
+pub mod debt;
 pub mod goal;
+pub mod investment;
 pub mod people;
 pub mod user;
-pub mod debt;
 
 const FORMAT: &str = "%d-%m-%Y";
 

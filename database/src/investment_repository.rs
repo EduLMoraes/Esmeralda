@@ -1,4 +1,4 @@
-use super::{Data, Database, DatabaseError, rusqlite_impl::Db};
+use super::{rusqlite_impl::Db, Data, Database, DatabaseError};
 use esmeralda_entities::investment::Investment;
 use rusqlite::params;
 use serde_json;
@@ -33,7 +33,10 @@ impl<'a> Database<'a, Investment> for InvestmentRepository {
         self.db
             .conn
             .execute(
-                &format!("INSERT INTO {} (id, data) VALUES (?1, ?2)", Investment::TITLE),
+                &format!(
+                    "INSERT INTO {} (id, data) VALUES (?1, ?2)",
+                    Investment::TITLE
+                ),
                 params![data.id.to_string(), data_json],
             )
             .map_err(|e| DatabaseError::ErrorOnInsertData(e.to_string()))?;
@@ -68,19 +71,29 @@ impl<'a> Database<'a, Investment> for InvestmentRepository {
         let mut stmt = self
             .db
             .conn
-            .prepare(&format!("SELECT data FROM {} WHERE id = ?1", Investment::TITLE))
+            .prepare(&format!(
+                "SELECT data FROM {} WHERE id = ?1",
+                Investment::TITLE
+            ))
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
 
         let mut rows = stmt
             .query(params![id])
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
 
-        if let Some(row) = rows.next().map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))? {
-            let data: String = row.get(0).map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
+        if let Some(row) = rows
+            .next()
+            .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?
+        {
+            let data: String = row
+                .get(0)
+                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
             serde_json::from_str(&data)
                 .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))
         } else {
-            Err(DatabaseError::ErrorOnGetDataOfDatabase("Investment not found".to_string()))
+            Err(DatabaseError::ErrorOnGetDataOfDatabase(
+                "Investment not found".to_string(),
+            ))
         }
     }
 }

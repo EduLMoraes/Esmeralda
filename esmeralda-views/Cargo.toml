@@ -6,3 +6,10 @@ edition.workspace = true
 [dependencies]
 egui = { workspace = true }
 eframe = { workspace = true }
+esmeralda-services = { path = "../esmeralda-services" }
+esmeralda-debt = { path = "../debt" }
+esmeralda-entities = { path = "../entities" }
+chrono = { workspace = true }
+uuid = { workspace = true }
+egui_plot = "0.34.0"
+meval = "0.2.0"

@@ -1,5 +1,5 @@
-use chrono::NaiveDate;
 use crate::Data;
+use chrono::NaiveDate;
 use uuid::Uuid;
 
 #[derive(serde::Serialize, serde::Deserialize, Default, Debug, Clone, PartialEq)]
@@ -24,4 +24,3 @@ pub struct People {
 impl Data for People {
     const TITLE: &'static str = "people";
 }
-

@@ -1,5 +1,7 @@
 use chrono::NaiveDate;
-use esmeralda_database::{investment_repository::InvestmentRepository, rusqlite_impl::Db, Database};
+use esmeralda_database::{
+    investment_repository::InvestmentRepository, rusqlite_impl::Db, Database,
+};
 use esmeralda_entities::{
     investment::{Investment, InvestmentType, StockExchangeShares},
     people::People,

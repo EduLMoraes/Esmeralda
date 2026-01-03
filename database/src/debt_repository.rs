@@ -1,4 +1,4 @@
-use super::{Data, Database, DatabaseError, rusqlite_impl::Db};
+use super::{rusqlite_impl::Db, Data, Database, DatabaseError};
 use esmeralda_entities::debt::Debt;
 use rusqlite::params;
 use serde_json;
@@ -75,12 +75,19 @@ impl<'a> Database<'a, Debt> for DebtRepository {
             .query(params![id])
             .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
 
-        if let Some(row) = rows.next().map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))? {
-            let data: String = row.get(0).map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
+        if let Some(row) = rows
+            .next()
+            .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?
+        {
+            let data: String = row
+                .get(0)
+                .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))?;
             serde_json::from_str(&data)
                 .map_err(|e| DatabaseError::ErrorOnGetDataOfDatabase(e.to_string()))
         } else {
-            Err(DatabaseError::ErrorOnGetDataOfDatabase("Debt not found".to_string()))
+            Err(DatabaseError::ErrorOnGetDataOfDatabase(
+                "Debt not found".to_string(),
+            ))
         }
     }
 }

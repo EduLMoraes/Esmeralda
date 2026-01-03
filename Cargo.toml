@@ -25,3 +25,8 @@ eframe = "0.33.3"
 serde = { version = "1.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.0", features = ["v4", "serde"] }
+esmeralda-services = { path = "esmeralda-services" }
+esmeralda-debt = { path = "debt" }
+entities = { path = "entities" }
+
+

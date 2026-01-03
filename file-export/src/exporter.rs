@@ -1,4 +1,4 @@
-use super::{FileExporter, FileExportError};
+use super::{FileExportError, FileExporter};
 use esmeralda_entities::debt::Debt;
 use std::fs::{create_dir_all, File};
 use std::io::Write;

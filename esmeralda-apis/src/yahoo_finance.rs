@@ -1,12 +1,15 @@
 use super::ApiError;
-use yahoo_finance_api as yahoo;
+use async_trait::async_trait;
 use time::OffsetDateTime;
 use yahoo::YahooConnector;
-use async_trait::async_trait;
+use yahoo_finance_api as yahoo;
 
 #[async_trait]
 pub trait YahooFinanceApi {
-    async fn get_quote(&self, quote: &str) -> Result<(yahoo::Quote, Option<yahoo::Dividend>), ApiError>;
+    async fn get_quote(
+        &self,
+        quote: &str,
+    ) -> Result<(yahoo::Quote, Option<yahoo::Dividend>), ApiError>;
 }
 
 pub struct YahooFinanceApiImpl {
@@ -22,10 +25,16 @@ impl YahooFinanceApiImpl {
 
 #[async_trait]
 impl YahooFinanceApi for YahooFinanceApiImpl {
-    async fn get_quote(&self, quote: &str) -> Result<(yahoo::Quote, Option<yahoo::Dividend>), ApiError> {
+    async fn get_quote(
+        &self,
+        quote: &str,
+    ) -> Result<(yahoo::Quote, Option<yahoo::Dividend>), ApiError> {
         let now = OffsetDateTime::now_utc();
         let last_year = now.replace_year(now.year() - 1).unwrap_or(now);
-        let response = self.provider.get_quote_history_interval(quote, last_year, now, "1mo").await?;
+        let response = self
+            .provider
+            .get_quote_history_interval(quote, last_year, now, "1mo")
+            .await?;
 
         let last_quote = response.last_quote()?;
 
@@ -34,7 +43,7 @@ impl YahooFinanceApi for YahooFinanceApiImpl {
                 return Ok((last_quote, Some(dividends[0].clone())));
             }
         }
-        
+
         Ok((last_quote, None))
     }
 }

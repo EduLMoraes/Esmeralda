@@ -1,6 +1,6 @@
 use crate::people::People;
-use chrono::NaiveDate;
 use crate::Data;
+use chrono::NaiveDate;
 use uuid::Uuid;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
@@ -31,7 +31,7 @@ impl Data for Debt {
     const TITLE: &'static str = "debts";
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash, PartialOrd)]
 pub enum NatureDebt {
     Health,
     Home,

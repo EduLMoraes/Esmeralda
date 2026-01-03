@@ -1,6 +1,9 @@
 use chrono::NaiveDate;
 use esmeralda_database::{debt_repository::DebtRepository, rusqlite_impl::Db, Database};
-use esmeralda_entities::{debt::{Debt, NatureDebt}, people::People};
+use esmeralda_entities::{
+    debt::{Debt, NatureDebt},
+    people::People,
+};
 use uuid::Uuid;
 
 fn setup() -> (DebtRepository, Debt) {
